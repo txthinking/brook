@@ -8,20 +8,20 @@
 
 ### Table of Content
 
-* [What is Brook](#What-is-Brook)
-* [Server](#Server)
-    * [Brook Server](#Brook-Server)
-    * [Shadowsocks Server](#Shadowsocks-Server)
-* [Client](#Client)
-    * [Linux Client](#Linux-Client)
-    * [MacOS Client](#MacOS-Client)
-    * [Windows Client](#Windows-Client)
-    * [Android Client](#Android-Client)
-    * [iOS Client](#iOS-Client)
-* [Advanced Usage](#Advanced-Usage)
-    * [Relay Server](#Relay-Server)
-* [Developer](#Developer)
-* [License](#License)
+* [What is Brook](#what-is-brook)
+* [Server](#server)
+    * [Brook Server](#brook-server)
+    * [Shadowsocks Server](#shadowsocks-server)
+* [Client](#client)
+    * [Linux Client](#linux-client)
+    * [MacOS Client](#macos-client)
+    * [Windows Client](#windows-client)
+    * [Android Client](#android-client)
+    * [iOS Client](#ios-client)
+* [Advanced Usage](#advanced-usage)
+    * [Relay Server](#relay-server)
+* [Developer](#developer)
+* [License](#license)
 
 ## What is Brook
 
