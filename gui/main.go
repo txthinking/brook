@@ -29,17 +29,29 @@ func main() {
 			systray.SetTooltip(msg)
 			notice.SetTitle("[Brook] " + msg)
 		}
-		showNotice("status", "stoped")
+		showNotice("Status", "stoped")
 		mStart := systray.AddMenuItem("Start", "")
+		mStop := systray.AddMenuItem("Stop", "")
 		mSetting := systray.AddMenuItem("Setting", "")
 		mGithub := systray.AddMenuItem("Github", "")
 		mEmail := systray.AddMenuItem("Author: cloud@txthinking.com", "")
-		mEmail := systray.AddMenuItem("Version: 20170316", "")
+		systray.AddMenuItem("Version: 20170316", "")
 		mQuit := systray.AddMenuItem("Quit", "")
 
+		mStop.Disable()
+		var bk *brook.BKClient
+		var ss *brook.SSClient
+		var s5 *brook.S5Client
+		var quitTimes int
+		quit := make(chan struct{})
+
 		start := func() {
-			defer mStart.Enable()
+			defer func() {
+				mStart.Enable()
+				mStop.Disable()
+			}()
 			mStart.Disable()
+			mStop.Enable()
 			showNotice("Status", "running")
 			st, err := RetrieveSetting()
 			if err != nil {
@@ -51,23 +63,49 @@ func main() {
 				return
 			}
 			if st.Type == "bk" {
-				if err := brook.RunBKClient(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, st.Music); err != nil {
+				bk, err = brook.NewBKClient(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, st.Music, nil)
+				if err != nil {
 					showNotice("Error", err.Error())
 					return
 				}
-			} else if st.Type == "ss" {
-				if err := brook.RunSSClient(st.Local, st.Server, st.Password, st.Timeout, st.Deadline); err != nil {
-					showNotice("Error", err.Error())
+				if err := bk.ListenAndServe(); err != nil {
+					showNotice("Status", "stoped")
 					return
 				}
-			} else if st.Type == "s5" {
-				if err := brook.RunS5Client(st.Local, st.Server, st.Password, st.Timeout, st.Deadline); err != nil {
-					showNotice("Error", err.Error())
-					return
-				}
-			} else {
-				showNotice("Error", "error type")
 			}
+			if st.Type == "ss" {
+				ss = brook.NewSSClient(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, nil)
+				if err := ss.ListenAndServe(); err != nil {
+					showNotice("Status", "stoped")
+					return
+				}
+			}
+			if st.Type == "s5" {
+				s5 = brook.NewS5Client(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, nil)
+				if err := ss.ListenAndServe(); err != nil {
+					showNotice("Status", "stoped")
+					return
+				}
+			}
+			showNotice("Error", "error type")
+		}
+		stop := func() error {
+			if err := sysproxy.TurnOffSystemProxy(); err != nil {
+				return err
+			}
+			if bk != nil {
+				bk.Shutdown()
+				bk = nil
+			}
+			if ss != nil {
+				ss.Shutdown()
+				ss = nil
+			}
+			if s5 != nil {
+				s5.Shutdown()
+				s5 = nil
+			}
+			return nil
 		}
 		go func() {
 			if err := RunHTTPServer("127.0.0.1:1980"); err != nil {
@@ -77,6 +115,12 @@ func main() {
 		go func() {
 			for {
 				select {
+				case <-mStart.ClickedCh:
+					go start()
+				case <-mStop.ClickedCh:
+					if err := stop(); err != nil {
+						showNotice("Error", err.Error())
+					}
 				case <-mSetting.ClickedCh:
 					if err := open.Run("http://127.0.0.1:1980"); err != nil {
 						showNotice("Error", err.Error())
@@ -85,21 +129,27 @@ func main() {
 					if err := open.Run("https://github.com/txthinking/brook"); err != nil {
 						showNotice("Error", err.Error())
 					}
-				case <-mStart.ClickedCh:
-					go start()
 				case <-mEmail.ClickedCh:
 					if err := open.Run("mailto:cloud@txthinking.com"); err != nil {
 						showNotice("Error", err.Error())
 					}
+				case <-mQuit.ClickedCh:
+					quitTimes++
+					err := stop()
+					if err == nil {
+						quit <- struct{}{}
+					}
+					if err != nil {
+						showNotice("Error", err.Error())
+						if quitTimes > 1 {
+							quit <- struct{}{}
+						}
+					}
 				}
 			}
 		}()
-		<-mQuit.ClickedCh
+		<-quit
 		showNotice("Status", "Quiting")
-		if err := sysproxy.TurnOffSystemProxy(); err != nil {
-			showNotice("Error", err.Error())
-			return
-		}
 		systray.Quit()
 		os.Exit(0)
 	})

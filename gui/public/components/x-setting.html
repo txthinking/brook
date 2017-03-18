@@ -22,7 +22,6 @@
         <template is="dom-if" if="{{isSS(o.Type)}}">
         <paper-input label="Method" disabled is="iron-input" value="aes-256-cfb"></paper-input>
         </template>
-        <paper-input label="Local" is="iron-input" value="{{o.Local}}" placeholder="ep: 127.0.0.1:1080"></paper-input>
         <div style="text-align:center">
             <paper-button raised on-click="go">Save</paper-button>
         </div>
@@ -34,7 +33,7 @@
             properties: {
             },
             ready: function(){
-                this.o = {"Type": "bk"};
+                this.o = {"Type": "bk", "Local": "127.0.0.1:1080"};
                 this.init();
             },
             init: function(){
@@ -56,6 +55,10 @@
                     switch(res.status) {
                     case 200:
                         self.o = res.body;
+                        self.o.Local = "127.0.0.1:1080";
+                        if(self.o.Type === ""){
+                            self.o.Type = "bk";
+                        }
                         break;
                     default:
                         self.$.toast.text = res.text;
