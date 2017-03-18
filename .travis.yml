@@ -1,0 +1,7 @@
+language: go
+sudo: false
+go:
+install:
+script:
+  - go test  -v .
+  - cd cli/brook && go build .
