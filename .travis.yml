@@ -2,6 +2,7 @@ language: go
 sudo: false
 go:
 install:
+    - go get -t -v .
 script:
-  - go test  -v .
-  - cd cli/brook && go build .
+    - go test -v .
+    - cd cli/brook && go get -t -v . && go build .
