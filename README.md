@@ -65,8 +65,6 @@ GLOBAL OPTIONS:
    --version, -v             print the version
 ```
 
-**If you run a public/shared server, do not forget this parameter `--deadline 60` or `-d 60`**
-
 ### Brook Server
 
 ```
@@ -91,8 +89,9 @@ $ brook bkservers \
 
 [More about Brook Music](https://github.com/txthinking/brook/wiki/Music-List)
 
-### Shadowsocks Server
+> If you run a public/shared server, do not forget this parameter --deadline 60 or -d 60
 
+### Shadowsocks Server
 
 ```
 # Run as a shadowsocks server
@@ -108,6 +107,8 @@ $ brook ssservers \
 ```
 
 Fixed method is aes-256-cfb
+
+> If you run a public/shared server, do not forget this parameter --deadline 60 or -d 60
 
 ## Client
 
@@ -195,6 +196,10 @@ $ brook relays \
 $ go get github.com/txthinking/brook/cli/brook
 $ brook -h
 ```
+
+### Contributing
+
+* Please create PR on `develop` branch
 
 ## License
 
