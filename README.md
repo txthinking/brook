@@ -29,7 +29,7 @@ Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software
 
 ## Server
 
-### [Download Server for Linux (amd64)](https://dn-txthinking.qbox.me/init/brook) [version: 20170316]
+### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170316/brook) [version: 20170316]
 
 ```
 NAME:
@@ -136,7 +136,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 ### MacOS Client
 
-#### [Download Client for MacOS (amd64)](https://dn-txthinking.qbox.me/init/Brook.macos.zip) [version: 20170316]
+#### [Download Client for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170316/Brook.app.zip) [version: 20170316]
 
 * Need MacOS version > 10.12
 * If MacOS notice it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
@@ -145,7 +145,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 ### Windows Client
 
-#### [Download Client for Windows (amd64)](https://dn-txthinking.qbox.me/init/Brook.windows.zip) [version: 20170316]
+#### [Download Client for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170316/Brook.exe) [version: 20170316]
 
 * Need Windows version > 7
 * Please like to use Chrome browser
@@ -154,7 +154,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 ### Android Client
 
 #### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook)
-#### [Download Client for Android(apk)](https://dn-txthinking.qbox.me/init/Brook.apk)
+#### [Download Client for Android (apk)](https://github.com/txthinking/brook/releases/download/v20170316/Brook.apk)
 
 * This client use this [app white list](https://github.com/txthinking/pac/blob/master/white_apps.list)  auto proxy rule
 
