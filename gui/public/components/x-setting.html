@@ -33,7 +33,10 @@
             properties: {
             },
             ready: function(){
-                this.o = {"Type": "bk", "Local": "127.0.0.1:1080"};
+                this.o = {
+                    "Type": "bk",
+                    "Local": "127.0.0.1:1080",
+                };
                 this.init();
             },
             init: function(){
@@ -68,6 +71,11 @@
                 });
             },
             go: function(){
+                this.o.Type = this.o.Type.trim();
+                this.o.Server = this.o.Server.trim();
+                this.o.Password = this.o.Password.trim();
+                this.o.Music = this.o.Music.trim();
+                this.o.Local = this.o.Local.trim();
                 var self = this;
                 R.post('/setting')
                 .set('Accept', 'application/json')
