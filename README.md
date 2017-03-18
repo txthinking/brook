@@ -141,7 +141,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 * Need MacOS version > 10.12
 * If MacOS notice it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
 * You may prefer to copy Brook.app to Application folder
-* This client use this [pac](https://github.com/txthinking/pac) auto proxy rule
+* This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### Windows Client
 
@@ -149,7 +149,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 * Need Windows version > 7
 * Please like to use Chrome browser
-* This client use this [pac](https://github.com/txthinking/pac) auto proxy rule
+* This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### Android Client
 
@@ -162,7 +162,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 #### [Download Client for iOS on AppStore](https://play.google.com/store/apps/details?id=com.txthinking.brook)
 
-* This client use this [pac](https://github.com/txthinking/pac) auto proxy rule
+* This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
 
