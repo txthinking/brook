@@ -185,8 +185,8 @@ $ brook relay -l :9999 -s server_address:port -t 10
 ```
 # Run as multiple relay servers
 $ brook relays \
-        -l ":9999 -s server1_address:port" \
-        -l ":8888 -s server2_address:port" \
+        -l ":9999 server1_address:port" \
+        -l ":8888 server2_address:port" \
         -t 10
 ```
 
