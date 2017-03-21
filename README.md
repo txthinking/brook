@@ -164,7 +164,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 #### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
 
-* Need iOS version >= 10.0
+* Need iOS version >= 9.0
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
