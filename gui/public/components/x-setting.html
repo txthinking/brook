@@ -73,7 +73,17 @@
             go: function(){
                 this.o.Type = this.o.Type.trim();
                 this.o.Server = this.o.Server.trim();
+                if(!/.+?\:\d+/.test(this.o.Server)){
+                    this.$.toast.text = "Server Invalid";
+                    this.$.toast.open();
+                    return;
+                }
                 this.o.Password = this.o.Password.trim();
+                if(!this.o.Password){
+                    this.$.toast.text = "Misss Password";
+                    this.$.toast.open();
+                    return;
+                }
                 this.o.Music = this.o.Music.trim();
                 this.o.Local = this.o.Local.trim();
                 var self = this;

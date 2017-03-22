@@ -32,12 +32,15 @@ func run() {
 		systray.SetTooltip(msg)
 		notice.SetTitle("[Brook] " + msg)
 	}
+	systray.AddMenuItem("---------", "").Disable()
 	mStart := systray.AddMenuItem("Start", "")
 	mStop := systray.AddMenuItem("Stop", "")
 	mSetting := systray.AddMenuItem("Setting", "")
+	systray.AddMenuItem("---------", "").Disable()
 	mGithub := systray.AddMenuItem("Github", "")
 	mEmail := systray.AddMenuItem("Author: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20170316", "")
+	systray.AddMenuItem("Version: 20170322", "")
+	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
 	showNotice("Status", "stoped")

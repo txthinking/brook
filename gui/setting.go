@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -96,7 +97,7 @@ func RetrieveSetting() (*Setting, error) {
 	}
 	f, err := os.OpenFile(fp, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {
-		return &Setting{}, nil
+		return nil, errors.New("No setting")
 	}
 	if err != nil {
 		return nil, err
