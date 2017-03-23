@@ -1,6 +1,7 @@
 package music
 
 import (
+	"crypto/tls"
 	"errors"
 	"io/ioutil"
 	"net/http"
@@ -19,6 +20,9 @@ func NewCustom(u *url.URL) (*Custom, error) {
 	if u.Scheme == "http" || u.Scheme == "https" {
 		c := http.Client{
 			Timeout: time.Second * 10,
+			Transport: &http.Transport{ // https://github.com/golang/go/issues/14514, it may not be resolved completely
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
 		}
 		res, err := c.Get(u.String())
 		if err != nil {

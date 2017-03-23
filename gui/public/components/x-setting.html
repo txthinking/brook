@@ -35,7 +35,10 @@
             ready: function(){
                 this.o = {
                     "Type": "bk",
-                    "Local": "127.0.0.1:1080",
+                    "Server": "",
+                    "Password": "",
+                    "Music": "",
+                    "Local": "local.txthinking.com:1080",
                 };
                 this.init();
             },
@@ -58,7 +61,7 @@
                     switch(res.status) {
                     case 200:
                         self.o = res.body;
-                        self.o.Local = "127.0.0.1:1080";
+                        self.o.Local = "local.txthinking.com:1080";
                         if(self.o.Type === ""){
                             self.o.Type = "bk";
                         }

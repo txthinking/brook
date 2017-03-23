@@ -9,7 +9,7 @@ import (
 	"github.com/txthinking/brook/sysproxy"
 )
 
-const pac = "https://pac.nixisall.com/white/SOCKS5%20127.0.0.1:1080;%20SOCKS%20127.0.0.1:1080"
+const pac = "https://pac.txthinking.com/white/SOCKS5%20local.txthinking.com:1080;%20SOCKS%20local.txthinking.com:1080"
 
 func main() {
 	systray.Run(run)
@@ -39,7 +39,7 @@ func run() {
 	systray.AddMenuItem("---------", "").Disable()
 	mGithub := systray.AddMenuItem("Github", "")
 	mEmail := systray.AddMenuItem("Author: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20170322", "")
+	systray.AddMenuItem("Version: 20170323", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
@@ -116,7 +116,7 @@ func run() {
 	}
 
 	go func() {
-		if err := RunHTTPServer("127.0.0.1:1980"); err != nil {
+		if err := RunHTTPServer("local.txthinking.com:1980"); err != nil {
 			showNotice("Error", err.Error())
 		}
 	}()
@@ -130,7 +130,7 @@ func run() {
 					showNotice("Error", err.Error())
 				}
 			case <-mSetting.ClickedCh:
-				if err := open.Run("http://127.0.0.1:1980"); err != nil {
+				if err := open.Run("http://local.txthinking.com:1980"); err != nil {
 					showNotice("Error", err.Error())
 				}
 			case <-mGithub.ClickedCh:

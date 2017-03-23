@@ -32,7 +32,7 @@ func main() {
 		cli.StringFlag{
 			Name:        "listen, l",
 			Usage:       "Listen address for debug",
-			Value:       "0.0.0.0:6060",
+			Value:       ":6060",
 			Destination: &debugAddress,
 		},
 	}
