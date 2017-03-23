@@ -108,7 +108,13 @@ func (c *BKClient) handle(conn *net.TCPConn) error {
 
 	rc, err := c.Dial.Dial("tcp", c.Server)
 	if err != nil {
-		if err := socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, []byte{0x00, 0x00, 0x00, 0x00}, []byte{0x09, 0x0a}).WriteTo(conn); err != nil {
+		var p *socks5.Reply
+		if request.Atyp == socks5.ATYPIPv4 || request.Atyp == socks5.ATYPDomain {
+			p = socks5.NewReply(socks5.RepHostUnreachable, socks5.ATYPIPv4, []byte{0x00, 0x00, 0x00, 0x00}, []byte{0x00, 0x00})
+		} else {
+			p = socks5.NewReply(socks5.RepHostUnreachable, socks5.ATYPIPv6, []byte(net.IPv6zero), []byte{0x00, 0x00})
+		}
+		if err := p.WriteTo(conn); err != nil {
 			return err
 		}
 		return err
@@ -133,13 +139,25 @@ func (c *BKClient) handle(conn *net.TCPConn) error {
 	}
 	crc, err := c.wrapCipherConn(rc)
 	if err != nil {
-		if err := socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, []byte{0x00, 0x00, 0x00, 0x00}, []byte{0x09, 0x0a}).WriteTo(conn); err != nil {
+		var p *socks5.Reply
+		if request.Atyp == socks5.ATYPIPv4 || request.Atyp == socks5.ATYPDomain {
+			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, []byte{0x00, 0x00, 0x00, 0x00}, []byte{0x00, 0x00})
+		} else {
+			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, []byte(net.IPv6zero), []byte{0x00, 0x00})
+		}
+		if err := p.WriteTo(conn); err != nil {
 			return err
 		}
 		return err
 	}
 	if _, err := crc.Write(rawaddr); err != nil {
-		if err := socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, []byte{0x00, 0x00, 0x00, 0x00}, []byte{0x09, 0x0a}).WriteTo(conn); err != nil {
+		var p *socks5.Reply
+		if request.Atyp == socks5.ATYPIPv4 || request.Atyp == socks5.ATYPDomain {
+			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, []byte{0x00, 0x00, 0x00, 0x00}, []byte{0x00, 0x00})
+		} else {
+			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, []byte(net.IPv6zero), []byte{0x00, 0x00})
+		}
+		if err := p.WriteTo(conn); err != nil {
 			return err
 		}
 		return err
