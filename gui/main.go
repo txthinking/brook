@@ -9,7 +9,7 @@ import (
 	"github.com/txthinking/brook/sysproxy"
 )
 
-const pac = "https://pac.txthinking.com/white/SOCKS5%20local.txthinking.com:1080;%20SOCKS%20local.txthinking.com:1080"
+const pac = "https://pac.txthinking.com/white/SOCKS5%20local.txthinking.com:1080;%20SOCKS%20local.txthinking.com:1080;%20DIRECT"
 
 func main() {
 	systray.Run(run)
