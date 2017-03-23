@@ -144,6 +144,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 * Need MacOS version >= 10.12
 * If MacOS notice it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
 * You may prefer to copy Brook.app to Application folder
+* Recommend DNS: 119.29.29.29
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### Windows Client
@@ -153,6 +154,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 * Need Windows version >= 7
 * Please like to use Chrome browser
+* Recommend DNS: 119.29.29.29
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### Android Client
@@ -161,6 +163,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 #### [Download Client for Android (apk)](https://dn-txthinking.qbox.me/init/Brook.apk) [China Mirror]
 
 * Need Android version >= 5.0 (tested on 6.x,7.x)
+* Recommend DNS when you using WIFI: 119.29.29.29
 * This client use this [app white list](https://github.com/txthinking/pac/blob/master/white_apps.list)  auto proxy rule
 
 ### iOS Client
@@ -168,6 +171,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 #### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
 
 * Need iOS version >= 9.0
+* Recommend DNS when you using WIFI: 119.29.29.29
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
