@@ -162,8 +162,8 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 #### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook)
 #### [Download Client for Android (apk)](https://dn-txthinking.qbox.me/init/Brook.apk) [China Mirror]
 
-* Need Android version >= 5.0 (tested on 6.x,7.x)
-* Recommend DNS when you using WIFI: 119.29.29.29
+* Need Android version >= 5.0
+* Recommend DNS when you are using WIFI: 119.29.29.29
 * This client use this [app white list](https://github.com/txthinking/pac/blob/master/white_apps.list)  auto proxy rule
 
 ### iOS Client
@@ -171,7 +171,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 #### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
 
 * Need iOS version >= 9.0
-* Recommend DNS when you using WIFI: 119.29.29.29
+* Recommend DNS when you are using WIFI: 119.29.29.29
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
