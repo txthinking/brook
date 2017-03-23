@@ -29,7 +29,7 @@ Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software
 
 ## Server
 
-### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170316/brook) [Version: 20170316]
+### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook) [Version: 20170323]
 ### [Download Server for Linux (amd64)](https://dn-txthinking.qbox.me/init/brook) [China Mirror]
 
 ```
@@ -40,7 +40,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20170316
+   20170323
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
@@ -61,7 +61,7 @@ COMMANDS:
 
 GLOBAL OPTIONS:
    --debug, -d               Enable debug, more logs
-   --listen value, -l value  Listen address for debug (default: "0.0.0.0:6060")
+   --listen value, -l value  Listen address for debug (default: ":6060")
    --help, -h                show help
    --version, -v             print the version
 ```
@@ -138,7 +138,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 ### MacOS Client
 
-#### [Download Client for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170322/Brook.app.zip) [Version: 20170322]
+#### [Download Client for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/Brook.app.zip) [Version: 20170323]
 #### [Download Client for MacOS (amd64)](https://dn-txthinking.qbox.me/init/Brook.app.zip) [China Mirror]
 
 * Need MacOS version >= 10.12
@@ -148,7 +148,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 ### Windows Client
 
-#### [Download Client for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170322/Brook.exe) [Version: 20170322]
+#### [Download Client for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/Brook.exe) [Version: 20170323]
 #### [Download Client for Windows (amd64)](https://dn-txthinking.qbox.me/init/Brook.exe) [China Mirror]
 
 * Need Windows version >= 7
@@ -158,7 +158,6 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 ### Android Client
 
 #### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook)
-#### [Download Client for Android (apk)](https://github.com/txthinking/brook/releases/download/v20170316/Brook.apk)
 #### [Download Client for Android (apk)](https://dn-txthinking.qbox.me/init/Brook.apk) [China Mirror]
 
 * Need Android version >= 5.0 (tested on 6.x,7.x)
@@ -168,7 +167,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 #### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
 
-* Need iOS version >= 10.0 (9.0 support coming soon)
+* Need iOS version >= 9.0
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
