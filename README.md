@@ -1,6 +1,6 @@
 # Brook
 
-[![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook) [![Go Report Card](https://goreportcard.com/badge/github.com/txthinking/brook)](https://goreportcard.com/report/github.com/txthinking/brook) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Wiki](https://img.shields.io/badge/doc-wiki-green.svg)](https://github.com/txthinking/brook/wiki) [![Slack](https://img.shields.io/badge/chat-slack-red.svg)](https://brook-proxy.herokuapp.com)
+[![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook) [![Go Report Card](https://goreportcard.com/badge/github.com/txthinking/brook)](https://goreportcard.com/report/github.com/txthinking/brook) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Wiki](https://img.shields.io/badge/docs-wiki-blue.svg)](https://github.com/txthinking/brook/wiki) [![Slack](https://img.shields.io/badge/chat-slack-brightgreen.svg)](https://brook-proxy.herokuapp.com)
 
 <p align="center">
     <img style="float: right;" src="https://dn-txthinking.qbox.me/img/logo200.png" alt="Brook"/>
@@ -29,7 +29,7 @@ Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software
 
 ## Server
 
-### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/brook) [China Mirror]
+### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/brook)
 ### [Download Server for Linux (386)](https://github.com/txthinking/brook/releases/download/v20170323/brook386) [Version: 20170323]
 
 ```
@@ -155,7 +155,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 ### Android Client
 
-#### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) [China Mirror](https://dn-txthinking.qbox.me/init/Brook.apk)
+#### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) | [China Mirror](https://dn-txthinking.qbox.me/init/Brook.apk)
 
 * Need Android version >= 5.0
 * This client use this [app white list](https://github.com/txthinking/pac/blob/master/white_apps.list)  auto proxy rule
