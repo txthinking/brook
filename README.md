@@ -1,6 +1,6 @@
 # Brook
 
-[![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook) [![Go Report Card](https://goreportcard.com/badge/github.com/txthinking/brook)](https://goreportcard.com/report/github.com/txthinking/brook) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Slack](https://img.shields.io/badge/join-slack-red.svg)](https://brook-proxy.herokuapp.com)
+[![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook) [![Go Report Card](https://goreportcard.com/badge/github.com/txthinking/brook)](https://goreportcard.com/report/github.com/txthinking/brook) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Wiki](https://img.shields.io/badge/doc-wiki-green.svg)](https://github.com/txthinking/brook/wiki) [![Slack](https://img.shields.io/badge/chat-slack-red.svg)](https://brook-proxy.herokuapp.com)
 
 <p align="center">
     <img style="float: right;" src="https://dn-txthinking.qbox.me/img/logo200.png" alt="Brook"/>
@@ -29,8 +29,8 @@ Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software
 
 ## Server
 
-### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook) [Version: 20170323]
-### [Download Server for Linux (amd64)](https://dn-txthinking.qbox.me/init/brook) [China Mirror]
+### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/brook) [China Mirror]
+### [Download Server for Linux (386)](https://github.com/txthinking/brook/releases/download/v20170323/brook386) [Version: 20170323]
 
 ```
 NAME:
@@ -138,32 +138,26 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 
 ### MacOS Client
 
-#### [Download Client for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/Brook.app.zip) [Version: 20170323]
-#### [Download Client for MacOS (amd64)](https://dn-txthinking.qbox.me/init/Brook.app.zip) [China Mirror]
+#### [Download Client for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/Brook.app.zip) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.app.zip)
 
 * Need MacOS version >= 10.12
 * If MacOS notice it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
 * You may prefer to copy Brook.app to Application folder
-* Recommend DNS: 119.29.29.29
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### Windows Client
 
-#### [Download Client for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/Brook.exe) [Version: 20170323]
-#### [Download Client for Windows (amd64)](https://dn-txthinking.qbox.me/init/Brook.exe) [China Mirror]
+#### [Download Client for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/Brook.exe) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.exe)
 
 * Need Windows version >= 7
 * Please like to use Chrome browser
-* Recommend DNS: 119.29.29.29
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### Android Client
 
-#### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook)
-#### [Download Client for Android (apk)](https://dn-txthinking.qbox.me/init/Brook.apk) [China Mirror]
+#### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) [China Mirror](https://dn-txthinking.qbox.me/init/Brook.apk)
 
 * Need Android version >= 5.0
-* Recommend DNS when you are using WIFI: 119.29.29.29
 * This client use this [app white list](https://github.com/txthinking/pac/blob/master/white_apps.list)  auto proxy rule
 
 ### iOS Client
@@ -171,7 +165,6 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 #### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
 
 * Need iOS version >= 9.0
-* Recommend DNS when you are using WIFI: 119.29.29.29
 * This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
