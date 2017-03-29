@@ -31,6 +31,9 @@ Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software
 
 ### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/brook)
 ### [Download Server for Linux (386)](https://github.com/txthinking/brook/releases/download/v20170323/brook386) [Version: 20170323]
+### [Download Server for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brookmacos) [Version: 20170323]
+### [Download Server for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook.exe) [Version: 20170323]
+### [Download Server for Windows (386)](https://github.com/txthinking/brook/releases/download/v20170323/brook.386.exe) [Version: 20170323]
 
 ```
 NAME:
