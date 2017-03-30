@@ -17,14 +17,15 @@ import (
 
 // BKClient is the client of brook protocol
 type BKClient struct {
-	Address  string
-	Password string
-	Server   string
-	Timeout  int
-	Deadline int
-	Music    music.Music
-	Dial     Dialer
-	Listen   net.Listener
+	Address       string
+	Password      string
+	Server        string
+	Timeout       int
+	Deadline      int
+	Music         music.Music
+	Dial          Dialer
+	Listen        net.Listener
+	HTTPMiddleman HTTPMiddleman
 }
 
 // NewBKClient returns a new BKClient, dial can be set to nil
@@ -75,7 +76,7 @@ func (c *BKClient) ListenAndServe() error {
 }
 
 // ListenAndServeHTTP will let client start a http(s) proxy to listen and serve
-func (c *BKClient) ListenAndServeHTTP() error {
+func (c *BKClient) ListenAndServeHTTP(h HTTPMiddleman) error {
 	ta, err := net.ResolveTCPAddr("tcp", c.Address)
 	if err != nil {
 		return err
@@ -86,6 +87,7 @@ func (c *BKClient) ListenAndServeHTTP() error {
 	}
 	defer l.Close()
 	c.Listen = l
+	c.HTTPMiddleman = h
 
 	for {
 		conn, err := l.AcceptTCP()
@@ -228,7 +230,7 @@ func (c *BKClient) handleHTTP(conn *net.TCPConn) error {
 
 	b := make([]byte, 0, 1024)
 	for {
-		var b1 [50]byte
+		var b1 [1024]byte
 		n, err := conn.Read(b1[:])
 		if err != nil {
 			return err
@@ -253,6 +255,13 @@ func (c *BKClient) handleHTTP(conn *net.TCPConn) error {
 			return err
 		}
 	}
+
+	if c.HTTPMiddleman != nil {
+		if handled, err := c.HTTPMiddleman(method, aoru, b, conn); handled {
+			return err
+		}
+	}
+
 	a, h, p, err := socks5.ParseAddress(addr)
 	if err != nil {
 		return err
