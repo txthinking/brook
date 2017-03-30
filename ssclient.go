@@ -149,7 +149,19 @@ func (c *SSClient) handle(conn *net.TCPConn) error {
 		}
 		return err
 	}
-	a, addr, port := socks5.ParseAddress(rc.LocalAddr())
+	a, addr, port, err := socks5.ParseAddress(rc.LocalAddr().String())
+	if err != nil {
+		var p *socks5.Reply
+		if request.Atyp == socks5.ATYPIPv4 || request.Atyp == socks5.ATYPDomain {
+			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, []byte{0x00, 0x00, 0x00, 0x00}, []byte{0x00, 0x00})
+		} else {
+			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, []byte(net.IPv6zero), []byte{0x00, 0x00})
+		}
+		if err := p.WriteTo(conn); err != nil {
+			return err
+		}
+		return err
+	}
 	if err := socks5.NewReply(socks5.RepSuccess, a, addr, port).WriteTo(conn); err != nil {
 		return err
 	}

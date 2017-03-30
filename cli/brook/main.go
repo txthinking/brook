@@ -130,6 +130,10 @@ func main() {
 					Name:  "listen, l",
 					Usage: "Client listen address: like: 127.0.0.1:1080",
 				},
+				cli.BoolFlag{
+					Name:  "http",
+					Usage: "If true, client start a http(s) proxy. default socks5",
+				},
 				cli.StringFlag{
 					Name:  "server, s",
 					Usage: "Server address, like: 1.2.3.4:1080",
@@ -160,6 +164,9 @@ func main() {
 				}
 				if debug {
 					enableDebug()
+				}
+				if c.Bool("http") {
+					return brook.RunBKHTTPClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"), c.String("music"))
 				}
 				return brook.RunBKClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"), c.String("music"))
 			},

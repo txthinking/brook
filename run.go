@@ -18,6 +18,15 @@ func RunBKClient(address, server, password string, timeout, deadline int, m stri
 	return c.ListenAndServe()
 }
 
+// RunBKClient used to make a new BKClient and start a http proxy to listen
+func RunBKHTTPClient(address, server, password string, timeout, deadline int, m string) error {
+	c, err := NewBKClient(address, server, password, timeout, deadline, m, nil)
+	if err != nil {
+		return err
+	}
+	return c.ListenAndServeHTTP()
+}
+
 // RunS5Server used to make a new S5Server and start to listen
 func RunS5Server(address, password string, timeout, deadline int) error {
 	s := NewS5Server(address, password, timeout, deadline)
