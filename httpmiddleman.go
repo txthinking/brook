@@ -21,13 +21,16 @@ type WhiteHTTPMiddleman struct {
 	Deadline int
 }
 
+// NewWhiteHTTPMiddleman returns a WhiteHTTPMiddleman which can used to handle http proxy request
 func NewWhiteHTTPMiddleman(timeout, deadline int) *WhiteHTTPMiddleman {
+	blackwhite.InitWhiteList()
 	return &WhiteHTTPMiddleman{
 		Timeout:  timeout,
 		Deadline: deadline,
 	}
 }
 
+// HandleHTTPProxy handle http proxy request, if the domain is in the white list
 func (w *WhiteHTTPMiddleman) HandleHTTPProxy(method, addr string, request []byte, conn *net.TCPConn) (handled bool, err error) {
 	host, _, err := net.SplitHostPort(addr)
 	if err != nil {

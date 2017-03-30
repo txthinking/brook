@@ -29,11 +29,11 @@ Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software
 
 ## Server
 
-### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/brook)
-### [Download Server for Linux (386)](https://github.com/txthinking/brook/releases/download/v20170323/brook386) [Version: 20170323]
-### [Download Server for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brookmacos) [Version: 20170323]
-### [Download Server for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/brook.exe) [Version: 20170323]
-### [Download Server for Windows (386)](https://github.com/txthinking/brook/releases/download/v20170323/brook.386.exe) [Version: 20170323]
+### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170330/brook) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/brook)
+### [Download Server for Linux (386)](https://github.com/txthinking/brook/releases/download/v20170330/brook386) [Version: 20170330]
+### [Download Server for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170330/brookmacos) [Version: 20170330]
+### [Download Server for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170330/brook.exe) [Version: 20170330]
+### [Download Server for Windows (386)](https://github.com/txthinking/brook/releases/download/v20170330/brook.386.exe) [Version: 20170330]
 
 ```
 NAME:
@@ -43,7 +43,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20170323
+   20170330
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
@@ -123,8 +123,13 @@ Fixed method is aes-256-cfb
 #### Brook Client
 
 ```
-# Run as brook client
+# Run as brook client, start a socks5 proxy
 $ brook bkclient -l 127.0.0.1:1080 -s server_address:port -p password
+```
+
+```
+# Run as brook client, start a http(s) proxy
+$ brook bkclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 ```
 
 ```
@@ -135,8 +140,13 @@ $ brook bkclient -l 127.0.0.1:1080 -s server_address:port -p password -m muisc_n
 #### Shadowsocks Client
 
 ```
-# Run as shadowsocks client
+# Run as shadowsocks client, start a socks5 proxy
 $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
+```
+
+```
+# Run as shadowsocks client, start a http(s) proxy
+$ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 ```
 
 ### MacOS Client
@@ -168,7 +178,7 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 #### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
 
 * Need iOS version >= 9.0
-* This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+* This client use this [domain white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
 

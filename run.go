@@ -9,7 +9,7 @@ func RunBKServer(address, password string, timeout, deadline int, m string) erro
 	return s.ListenAndServe()
 }
 
-// RunBKClient used to make a new BKClient and start to listen
+// RunBKClient used to make a new BKClient and start a socks5 proxy to listen
 func RunBKClient(address, server, password string, timeout, deadline int, m string) error {
 	c, err := NewBKClient(address, server, password, timeout, deadline, m, nil)
 	if err != nil {
@@ -33,7 +33,7 @@ func RunS5Server(address, password string, timeout, deadline int) error {
 	return s.ListenAndServe()
 }
 
-// RunS5Client used to make a new S5Client and start to listen
+// RunS5Client used to make a new S5Client and start a socks5 proxy to listen
 func RunS5Client(address, server, password string, timeout, deadline int) error {
 	c := NewS5Client(address, server, password, timeout, deadline, nil)
 	return c.ListenAndServe()
@@ -45,7 +45,7 @@ func RunSSServer(address, password string, timeout, deadline int) error {
 	return s.ListenAndServe()
 }
 
-// RunSSClient used to make a new SSClient and start to listen
+// RunSSClient used to make a new SSClient and start a socks5 proxy to listen
 func RunSSClient(address, server, password string, timeout, deadline int) error {
 	c := NewSSClient(address, server, password, timeout, deadline, nil)
 	return c.ListenAndServe()
