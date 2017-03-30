@@ -151,7 +151,7 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 
 ### MacOS Client
 
-#### [Download Client for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/Brook.app.zip) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.app.zip)
+#### [Download Client for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170330/Brook.app.zip) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.app.zip)
 
 * Need MacOS version >= 10.12
 * If MacOS notice it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
