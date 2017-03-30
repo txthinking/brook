@@ -18,13 +18,13 @@ func RunBKClient(address, server, password string, timeout, deadline int, m stri
 	return c.ListenAndServe()
 }
 
-// RunBKClient used to make a new BKClient and start a http proxy to listen
+// RunBKHTTPClient used to make a new BKClient and start a http proxy to listen
 func RunBKHTTPClient(address, server, password string, timeout, deadline int, m string) error {
 	c, err := NewBKClient(address, server, password, timeout, deadline, m, nil)
 	if err != nil {
 		return err
 	}
-	return c.ListenAndServeHTTP()
+	return c.ListenAndServeHTTP(nil)
 }
 
 // RunS5Server used to make a new S5Server and start to listen
@@ -49,6 +49,12 @@ func RunSSServer(address, password string, timeout, deadline int) error {
 func RunSSClient(address, server, password string, timeout, deadline int) error {
 	c := NewSSClient(address, server, password, timeout, deadline, nil)
 	return c.ListenAndServe()
+}
+
+// RunSSHTTPClient used to make a new SSClient and start a http proxy to listen
+func RunSSHTTPClient(address, server, password string, timeout, deadline int) error {
+	c := NewSSClient(address, server, password, timeout, deadline, nil)
+	return c.ListenAndServeHTTP(nil)
 }
 
 // RunRelay used to make a new Relay and start to listen

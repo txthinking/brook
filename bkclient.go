@@ -75,7 +75,8 @@ func (c *BKClient) ListenAndServe() error {
 	}
 }
 
-// ListenAndServeHTTP will let client start a http(s) proxy to listen and serve
+// ListenAndServeHTTP will let client start a http(s) proxy to listen and serve.
+// For just a http proxy server, so httpmiddleman can be nil
 func (c *BKClient) ListenAndServeHTTP(h HTTPMiddleman) error {
 	ta, err := net.ResolveTCPAddr("tcp", c.Address)
 	if err != nil {
@@ -257,7 +258,7 @@ func (c *BKClient) handleHTTP(conn *net.TCPConn) error {
 	}
 
 	if c.HTTPMiddleman != nil {
-		if handled, err := c.HTTPMiddleman(method, aoru, b, conn); handled {
+		if handled, err := c.HTTPMiddleman.HandleHTTPProxy(method, aoru, b, conn); err != nil || handled {
 			return err
 		}
 	}
