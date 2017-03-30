@@ -39,7 +39,7 @@ func run() {
 	systray.AddMenuItem("---------", "").Disable()
 	mGithub := systray.AddMenuItem("Github", "")
 	mEmail := systray.AddMenuItem("Author: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20170323", "")
+	systray.AddMenuItem("Version: 20170330", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
