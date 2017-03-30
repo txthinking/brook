@@ -29,11 +29,11 @@ Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software
 
 ## Server
 
-### [Download Server for Linux (amd64)](https://github.com/txthinking/brook/releases/download/v20170330/brook) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/brook)
-### [Download Server for Linux (386)](https://github.com/txthinking/brook/releases/download/v20170330/brook386) [Version: 20170330]
-### [Download Server for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170330/brookmacos) [Version: 20170330]
-### [Download Server for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170330/brook.exe) [Version: 20170330]
-### [Download Server for Windows (386)](https://github.com/txthinking/brook/releases/download/v20170330/brook.386.exe) [Version: 20170330]
+#### Download [brook](https://github.com/txthinking/brook/releases/download/v20170330/brook) for Linux (amd64) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/brook)
+#### Download [brook386](https://github.com/txthinking/brook/releases/download/v20170330/brook386) for Linux (386) [Version: 20170330]
+#### Download [brookmacos](https://github.com/txthinking/brook/releases/download/v20170330/brookmacos) for MacOS (amd64) [Version: 20170330]
+#### Download [brookserver.exe](https://github.com/txthinking/brook/releases/download/v20170330/brookserver.exe) for Windows (amd64) [Version: 20170330]
+#### Download [brookserver.386.exe](https://github.com/txthinking/brook/releases/download/v20170330/brookserver.386.exe) for Windows (386) [Version: 20170330]
 
 ```
 NAME:
@@ -151,7 +151,7 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 
 ### MacOS Client
 
-#### [Download Client for MacOS (amd64)](https://github.com/txthinking/brook/releases/download/v20170330/Brook.app.zip) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.app.zip)
+#### Download [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170330/Brook.app.zip) for MacOS (amd64) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.app.zip)
 
 * Need MacOS version >= 10.12
 * If MacOS notice it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
@@ -160,7 +160,8 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 
 ### Windows Client
 
-#### [Download Client for Windows (amd64)](https://github.com/txthinking/brook/releases/download/v20170323/Brook.exe) [Version: 20170323] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.exe)
+#### Download [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170330/Brook.exe) for Windows (amd64) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.exe)
+#### Download [Brook.386.exe](https://github.com/txthinking/brook/releases/download/v20170330/Brook.386.exe) for Windows (386) [Version: 20170330]
 
 * Need Windows version >= 7
 * Please like to use Chrome browser
