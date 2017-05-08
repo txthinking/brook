@@ -6,6 +6,8 @@ package sysproxy
 import (
 	"bytes"
 	"errors"
+	"fmt"
+	"os"
 	"os/exec"
 	"syscall"
 	"time"
@@ -98,7 +100,7 @@ func restartWindowsIE() error {
 			}
 		}
 	}
-	c = exec.Command(`c:\Program Files\Internet Explorer\iexplore.exe`, `-nohome`)
+	c = exec.Command(fmt.Sprintf(`%s\Internet Explorer\iexplore.exe`, os.Getenv("PROGRAMFILES")), `-nohome`)
 	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	if err := c.Start(); err != nil {
 		return errors.New("ie start:" + err.Error())
