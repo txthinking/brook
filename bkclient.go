@@ -5,6 +5,7 @@ import (
 	"crypto/aes"
 	"crypto/rand"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -246,6 +247,7 @@ func (c *BKClient) handleHTTP(conn *net.TCPConn) error {
 		return errors.New("Invalid Request")
 	}
 	method, aoru := string(bb[0]), string(bb[1])
+	fmt.Print(string(b))
 	var addr string
 	if method == "CONNECT" {
 		addr = aoru

@@ -63,3 +63,16 @@ func (c *Custom) Length() int {
 func (c *Custom) GetSong() []byte {
 	return c.Song
 }
+
+// GetResponse returns response when the request does not equal with the song
+func (c *Custom) GetResponse(request []byte) []byte {
+	ss := ""
+	ss += "HTTP/1.1 404 Not Found\r\n"
+	ss += "Cache-Control: no-cache\r\n"
+	ss += "Connection: close\r\n"
+	ss += "Content-Type: text/html\r\n"
+	ss += "Content-Length: 48\r\n"
+	ss += "\r\n"
+	ss += "<html><body><h1>404 Not Found</h1></body></html>"
+	return []byte(ss)
+}

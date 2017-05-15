@@ -7,6 +7,8 @@ import "net/url"
 type Music interface {
 	Length() int
 	GetSong() []byte
+	// Length of request is equal with song, but it may be any data and may be not complete data as some protocol, like a part of HTTP request
+	GetResponse(request []byte) []byte
 }
 
 // GetMusic return a music by the given key/url, or nil if not found

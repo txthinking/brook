@@ -1,6 +1,7 @@
 package brook
 
 import (
+	"bytes"
 	"crypto/aes"
 	"errors"
 	"io"
@@ -89,6 +90,13 @@ func (s *BKServer) handle(c *net.TCPConn) error {
 		tmp := make([]byte, s.Music.Length())
 		if _, err := io.ReadFull(c, tmp); err != nil {
 			return err
+		}
+		if !bytes.Equal(tmp, s.Music.GetSong()) {
+			log.Println("Got a invalid song")
+			if _, err := c.Write(s.Music.GetResponse(tmp)); err != nil {
+				return err
+			}
+			return nil
 		}
 	}
 	cc, err := s.wrapCipherConn(c)
