@@ -15,14 +15,15 @@ import (
 
 // SSClient is the client of shadowsocks protocol
 type SSClient struct {
-	Address       string
-	Password      string
-	Server        string
-	Timeout       int
-	Deadline      int
-	Dial          Dialer
-	Listen        net.Listener
-	HTTPMiddleman HTTPMiddleman
+	Address         string
+	Password        string
+	Server          string
+	Timeout         int
+	Deadline        int
+	Dial            Dialer
+	Listen          net.Listener
+	HTTPMiddleman   HTTPMiddleman
+	Socks5Middleman Socks5Middleman
 }
 
 // NewSSClient returns a new SSClient
@@ -42,7 +43,7 @@ func NewSSClient(address, server, password string, timeout, deadline int, dial D
 }
 
 // ListenAndServe will let client start to listen and serve
-func (c *SSClient) ListenAndServe() error {
+func (c *SSClient) ListenAndServe(sm Socks5Middleman) error {
 	ta, err := net.ResolveTCPAddr("tcp", c.Address)
 	if err != nil {
 		return err
@@ -53,6 +54,7 @@ func (c *SSClient) ListenAndServe() error {
 	}
 	defer l.Close()
 	c.Listen = l
+	c.Socks5Middleman = sm
 
 	for {
 		conn, err := l.AcceptTCP()
@@ -124,6 +126,13 @@ func (c *SSClient) handle(conn *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
+
+	if c.Socks5Middleman != nil {
+		if handled, err := c.Socks5Middleman.HandleSocks5Proxy(request, conn); err != nil || handled {
+			return err
+		}
+	}
+
 	rawaddr := make([]byte, 0)
 	rawaddr = append(rawaddr, request.Atyp)
 	rawaddr = append(rawaddr, request.DstAddr...)

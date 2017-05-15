@@ -15,7 +15,7 @@ func RunBKClient(address, server, password string, timeout, deadline int, m stri
 	if err != nil {
 		return err
 	}
-	return c.ListenAndServe()
+	return c.ListenAndServe(nil)
 }
 
 // RunBKHTTPClient used to make a new BKClient and start a http proxy to listen
@@ -48,7 +48,7 @@ func RunSSServer(address, password string, timeout, deadline int) error {
 // RunSSClient used to make a new SSClient and start a socks5 proxy to listen
 func RunSSClient(address, server, password string, timeout, deadline int) error {
 	c := NewSSClient(address, server, password, timeout, deadline, nil)
-	return c.ListenAndServe()
+	return c.ListenAndServe(nil)
 }
 
 // RunSSHTTPClient used to make a new SSClient and start a http proxy to listen

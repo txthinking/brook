@@ -5,7 +5,6 @@ import (
 	"crypto/aes"
 	"crypto/rand"
 	"errors"
-	"fmt"
 	"io"
 	"log"
 	"net"
@@ -18,15 +17,16 @@ import (
 
 // BKClient is the client of brook protocol
 type BKClient struct {
-	Address       string
-	Password      string
-	Server        string
-	Timeout       int
-	Deadline      int
-	Music         music.Music
-	Dial          Dialer
-	Listen        net.Listener
-	HTTPMiddleman HTTPMiddleman
+	Address         string
+	Password        string
+	Server          string
+	Timeout         int
+	Deadline        int
+	Music           music.Music
+	Dial            Dialer
+	Listen          net.Listener
+	HTTPMiddleman   HTTPMiddleman
+	Socks5Middleman Socks5Middleman
 }
 
 // NewBKClient returns a new BKClient, dial can be set to nil
@@ -50,8 +50,8 @@ func NewBKClient(address, server, password string, timeout, deadline int, m stri
 	return c, nil
 }
 
-// ListenAndServe will let client start to listen and serve
-func (c *BKClient) ListenAndServe() error {
+// ListenAndServe will let client start to listen and serve, sm can be nil
+func (c *BKClient) ListenAndServe(sm Socks5Middleman) error {
 	ta, err := net.ResolveTCPAddr("tcp", c.Address)
 	if err != nil {
 		return err
@@ -62,6 +62,7 @@ func (c *BKClient) ListenAndServe() error {
 	}
 	defer l.Close()
 	c.Listen = l
+	c.Socks5Middleman = sm
 
 	for {
 		conn, err := l.AcceptTCP()
@@ -133,6 +134,13 @@ func (c *BKClient) handle(conn *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
+
+	if c.Socks5Middleman != nil {
+		if handled, err := c.Socks5Middleman.HandleSocks5Proxy(request, conn); err != nil || handled {
+			return err
+		}
+	}
+
 	rawaddr := make([]byte, 0)
 	rawaddr = append(rawaddr, request.Atyp)
 	rawaddr = append(rawaddr, request.DstAddr...)
@@ -247,7 +255,7 @@ func (c *BKClient) handleHTTP(conn *net.TCPConn) error {
 		return errors.New("Invalid Request")
 	}
 	method, aoru := string(bb[0]), string(bb[1])
-	fmt.Print(string(b))
+	//fmt.Print(string(b))
 	var addr string
 	if method == "CONNECT" {
 		addr = aoru
