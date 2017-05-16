@@ -255,7 +255,6 @@ func (c *BKClient) handleHTTP(conn *net.TCPConn) error {
 		return errors.New("Invalid Request")
 	}
 	method, aoru := string(bb[0]), string(bb[1])
-	//fmt.Print(string(b))
 	var addr string
 	if method == "CONNECT" {
 		addr = aoru
@@ -268,7 +267,7 @@ func (c *BKClient) handleHTTP(conn *net.TCPConn) error {
 	}
 
 	if c.HTTPMiddleman != nil {
-		if handled, err := c.HTTPMiddleman.HandleHTTPProxy(method, aoru, b, conn); err != nil || handled {
+		if handled, err := c.HTTPMiddleman.HandleHTTPProxy(method, addr, b, conn); err != nil || handled {
 			return err
 		}
 	}

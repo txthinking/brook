@@ -260,7 +260,7 @@ func (c *SSClient) handleHTTP(conn *net.TCPConn) error {
 	}
 
 	if c.HTTPMiddleman != nil {
-		if handled, err := c.HTTPMiddleman.HandleHTTPProxy(method, aoru, b, conn); err != nil || handled {
+		if handled, err := c.HTTPMiddleman.HandleHTTPProxy(method, addr, b, conn); err != nil || handled {
 			return err
 		}
 	}

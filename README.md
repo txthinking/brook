@@ -19,6 +19,7 @@
     * [Android Client](#android-client)
     * [iOS Client](#ios-client)
 * [Advanced Usage](#advanced-usage)
+    * [Run as Daemon](#run-as-daemon)
     * [Relay Server](#relay-server)
 * [Developer](#developer)
 * [License](#license)
@@ -29,8 +30,7 @@ Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software
 
 ## Server
 
-#### Download [brook](https://github.com/txthinking/brook/releases/download/v20170330/brook) for Linux (amd64) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/brook)
-#### More platform go [Releases](https://github.com/txthinking/brook/releases)
+#### Download [brook](https://github.com/txthinking/brook/releases/download/v20170516/brook) for Linux (amd64) [Version: 20170516] [China Mirror](https://dn-txthinking.qbox.me/init/brook) | [Other Platforms](https://github.com/txthinking/brook/releases)
 
 ```
 NAME:
@@ -40,7 +40,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20170330
+   20170516
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
@@ -148,7 +148,7 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 
 ### MacOS Client
 
-#### Download [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170330/Brook.app.zip) for MacOS (amd64) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.app.zip)
+#### Download [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170516/Brook.app.zip) for MacOS (amd64) [Version: 20170516] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.app.zip)
 
 * Need MacOS version >= 10.12
 * If MacOS notice it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
@@ -157,8 +157,7 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 
 ### Windows Client
 
-#### Download [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170330/Brook.exe) for Windows (amd64) [Version: 20170330] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.exe)
-#### Download [Brook.386.exe](https://github.com/txthinking/brook/releases/download/v20170330/Brook.386.exe) for Windows (386) [Version: 20170330]
+#### Download [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170516/Brook.exe) for Windows (amd64) [Version: 20170516] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.exe)
 
 * Need Windows version >= 7
 * Please like to use Chrome browser
@@ -169,16 +168,50 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 #### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) | [China Mirror](https://dn-txthinking.qbox.me/init/Brook.apk)
 
 * Need Android version >= 5.0
-* This client use this [app white list](https://github.com/txthinking/pac/blob/master/white_apps.list)  auto proxy rule
+* This client use this [app, domain, CIDR white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### iOS Client
 
 #### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
 
-* Need iOS version >= 9.0
-* This client use this [domain white list](https://github.com/txthinking/pac) auto proxy rule
+* Need iOS version >= 10.0
+* This client use this [domain, CIDR white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
+
+### Run as Daemon
+
+#### With nohup
+
+```
+# Start
+$ nohup brook bkserver -l :9999 -p password -t 10 &
+
+# Stop
+$ killall brook
+```
+
+#### With systemd
+
+If your linux run with systemd, like Ubuntu 16.04, Archlinux, etc:
+
+```
+# Install
+$ curl -L git.io/getbrook | sudo bash
+$ sudo systemctl daemon-reload
+
+# Config command options
+$ sudo vim /etc/default/brook
+
+# Start
+$ sudo systemctl start brook.service
+
+# Stop
+$ sudo systemctl stop brook.service
+
+# Start on bootup
+$ sudo systemctl enable brook.service
+```
 
 ### Relay Server
 

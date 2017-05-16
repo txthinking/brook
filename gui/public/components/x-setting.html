@@ -14,7 +14,7 @@
                 <paper-item name="s5">Socks5 Encrypt</paper-item>
             </paper-menu>
         </paper-dropdown-menu>
-        <paper-input label="Server" is="iron-input" value="{{o.Server}}" placeholder="ep: 1.2.3.4:8080"></paper-input>
+        <paper-input label="Server" is="iron-input" value="{{o.Server}}" placeholder="1.2.3.4:8080"></paper-input>
         <paper-input label="Password" is="iron-input" value="{{o.Password}}" placeholder="your server password"></paper-input>
         <template is="dom-if" if="{{isBrook(o.Type)}}">
         <paper-input label="Music" is="iron-input" value="{{o.Music}}" placeholder="must same as your server"></paper-input><a href="https://github.com/txthinking/brook/wiki/Music-List" target="_blank">more about music</a>
