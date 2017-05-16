@@ -26,7 +26,7 @@
 
 ## What is Brook
 
-Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software.
+Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software.<br/>
 Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 
 ## Server
