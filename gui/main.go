@@ -37,9 +37,9 @@ func run() {
 	mStop := systray.AddMenuItem("Stop", "")
 	mSetting := systray.AddMenuItem("Setting", "")
 	systray.AddMenuItem("---------", "").Disable()
-	mGithub := systray.AddMenuItem("Github", "")
+	mGithub := systray.AddMenuItem("Upgrade", "")
 	mEmail := systray.AddMenuItem("Author: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20170330", "")
+	systray.AddMenuItem("Version: 20170516", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
@@ -74,21 +74,21 @@ func run() {
 				showNotice("Error", err.Error())
 				return
 			}
-			if err := bk.ListenAndServe(); err != nil {
+			if err := bk.ListenAndServe(nil); err != nil {
 				showNotice("Status", "stoped")
 				return
 			}
 		}
 		if st.Type == "ss" {
 			ss = brook.NewSSClient(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, nil)
-			if err := ss.ListenAndServe(); err != nil {
+			if err := ss.ListenAndServe(nil); err != nil {
 				showNotice("Status", "stoped")
 				return
 			}
 		}
 		if st.Type == "s5" {
 			s5 = brook.NewS5Client(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, nil)
-			if err := ss.ListenAndServe(); err != nil {
+			if err := s5.ListenAndServe(); err != nil {
 				showNotice("Status", "stoped")
 				return
 			}
