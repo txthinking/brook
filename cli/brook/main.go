@@ -485,6 +485,32 @@ func main() {
 				return <-errch
 			},
 		},
+		cli.Command{
+			Name:  "qr",
+			Usage: "Print brook server QR code",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "server, s",
+					Usage: "Server address, like: 1.2.3.4:1080",
+				},
+				cli.StringFlag{
+					Name:  "password, p",
+					Usage: "Server password",
+				},
+				cli.StringFlag{
+					Name:  "music, m",
+					Usage: "Server music",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "qr")
+					return nil
+				}
+				brook.QR(c.String("server"), c.String("password"), c.String("music"))
+				return nil
+			},
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
