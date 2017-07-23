@@ -155,7 +155,7 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 * Need MacOS version >= 10.12
 * If MacOS notice it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
 * You may prefer to copy Brook.app to Application folder
-* This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### Windows Client
 
@@ -164,21 +164,21 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 * Need Windows version >= 7
 * Please set chrome as your default browser
 * You may need to run as an administrator
-* This client use this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### Android Client
 
 #### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) | [APK](https://github.com/txthinking/brook/releases/download/v20170723/Brook.apk)
 
 * Need Android version >= 5.0
-* This client use this [app, domain, CIDR white list](https://github.com/txthinking/pac) auto proxy rule
+* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ### iOS Client
 
 #### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
 
 * Need iOS version >= 10.0
-* This client use this [domain, CIDR white list](https://github.com/txthinking/pac) auto proxy rule
+* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
 
 ## Advanced Usage
 
