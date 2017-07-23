@@ -521,4 +521,5 @@ func enableDebug() {
 	go func() {
 		log.Println(http.ListenAndServe(debugAddress, nil))
 	}()
+	brook.EnableDebug()
 }
