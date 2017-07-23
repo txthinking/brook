@@ -7,6 +7,7 @@ import (
 	"github.com/mdp/qrterminal"
 )
 
+// QR generate and print QR code
 func QR(server, password, music string) {
 	s := server + " " + password
 	if music != "" {
