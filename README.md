@@ -150,7 +150,7 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 
 ### MacOS Client
 
-#### Download [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170516/Brook.app.zip) for MacOS (amd64) [Version: 20170516] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.app.zip)
+#### Download [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170516/Brook.app.zip) for MacOS (amd64) [Version: 20170516]
 
 * Need MacOS version >= 10.12
 * If MacOS prompts it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
@@ -159,7 +159,7 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 
 ### Windows Client
 
-#### Download [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170516/Brook.exe) for Windows (amd64) [Version: 20170516] [China Mirror](https://dn-txthinking.qbox.me/init/Brook.exe)
+#### Download [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170516/Brook.exe) for Windows (amd64) [Version: 20170516]
 
 * Need Windows version >= 7
 * Please set chrome as your default browser
@@ -172,6 +172,7 @@ $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 
 * Need Android version >= 5.0
 * Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+* Not tested on IPv6
 
 ### iOS Client
 
