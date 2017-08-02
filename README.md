@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook) [![Go Report Card](https://goreportcard.com/badge/github.com/txthinking/brook)](https://goreportcard.com/report/github.com/txthinking/brook) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Wiki](https://img.shields.io/badge/docs-wiki-blue.svg)](https://github.com/txthinking/brook/wiki)
 
 <p align="center">
-    <img style="float: right;" src="https://dn-txthinking.qbox.me/img/logo200.png" alt="Brook"/>
+    <img style="float: right;" src="https://storage.googleapis.com/txthinking-init/img/logo200.png" alt="Brook"/>
 </p>
 
 ### Table of Content
