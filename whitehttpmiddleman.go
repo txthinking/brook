@@ -16,7 +16,6 @@ type WhiteHTTPMiddleman struct {
 
 // NewWhiteHTTPMiddleman returns a WhiteHTTPMiddleman which can used to handle http proxy request
 func NewWhiteHTTPMiddleman(timeout, deadline int) *WhiteHTTPMiddleman {
-	blackwhite.InitWhiteList()
 	return &WhiteHTTPMiddleman{
 		Timeout:  timeout,
 		Deadline: deadline,

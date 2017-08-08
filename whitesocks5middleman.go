@@ -17,7 +17,6 @@ type WhiteSocks5Middleman struct {
 
 // NewWhiteSocks5Middleman returns a WhiteSocks5Middleman which can used to handle http proxy request
 func NewWhiteSocks5Middleman(timeout, deadline int, dial Dialer) *WhiteSocks5Middleman {
-	blackwhite.InitWhiteList()
 	if dial == nil {
 		dial = &DefaultDial{}
 	}

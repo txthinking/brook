@@ -8,6 +8,7 @@ import (
 	"errors"
 	"os/exec"
 	"regexp"
+	"strings"
 )
 
 func getNetworkServices() ([]string, error) {
@@ -47,7 +48,15 @@ func TurnOnSystemProxy(pac string) error {
 		return err
 	}
 	for _, v := range nss {
-		c := exec.Command("networksetup", "-setautoproxyurl", v, pac)
+		c := exec.Command("networksetup", "-getautoproxyurl", v)
+		out, err := c.CombinedOutput()
+		if err != nil {
+			return errors.New("ns apu:" + string(out) + ":" + err.Error())
+		}
+		if strings.Contains(string(out), pac) && strings.Contains(string(out), "Yes") {
+			continue
+		}
+		c = exec.Command("networksetup", "-setautoproxyurl", v, pac)
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New("ns apu:" + string(out) + ":" + err.Error())
 		}
