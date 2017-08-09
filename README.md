@@ -152,7 +152,7 @@ Fixed method is aes-256-cfb
 
 #### Run as Daemon
 
-**With nohup**
+With nohup
 
 ```
 # Start
@@ -162,7 +162,7 @@ $ nohup brook bkserver -l :9999 -p password -t 10 &
 $ killall brook
 ```
 
-**With systemd**
+With systemd
 
 If your linux run with systemd, like Ubuntu 16.04, Archlinux, etc:
 
@@ -186,13 +186,13 @@ $ sudo systemctl enable brook.service
 
 #### Relay Server
 
-**What is Relay Server**
+What is Relay Server
 
 ```
 client <---> relay server <---> server
 ```
 
-**Relay Server**
+Relay Server
 
 ```
 # Run as a relay server
