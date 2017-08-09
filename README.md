@@ -9,18 +9,13 @@
 ### Table of Content
 
 * [What is Brook](#what-is-brook)
+* [Download](#download)
 * [Server](#server)
     * [Brook Server](#brook-server)
     * [Shadowsocks Server](#shadowsocks-server)
-* [Client](#client)
-    * [Linux Client](#linux-client)
-    * [MacOS Client](#macos-client)
-    * [Windows Client](#windows-client)
-    * [Android Client](#android-client)
-    * [iOS Client](#ios-client)
-* [Advanced Usage](#advanced-usage)
     * [Run as Daemon](#run-as-daemon)
     * [Relay Server](#relay-server)
+* [Client (CLI)](#client-cli)
 * [Developer](#developer)
 * [License](#license)
 
@@ -29,9 +24,51 @@
 Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software.<br/>
 Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 
-## Server
+## Download
 
-#### Download [brook](https://github.com/txthinking/brook/releases/download/v20170809/brook) for Linux (amd64) [Version: 20170809] | [Other Platforms](https://github.com/txthinking/brook/releases)
+| Download | Server/Client | OS | Arch | Remark |
+| --- | --- | --- | --- | --- |
+| [brook](https://github.com/txthinking/brook/releases/download/v20170809/brook) | Server & Client | Linux | amd64 | CLI |
+| [brook_linux_386](https://github.com/txthinking/brook/releases/download/v20170809/brook_linux_386) | Server & Client | Linux | 386 | CLI |
+| [brook_linux_arm64](https://github.com/txthinking/brook/releases/download/v20170809/brook_linux_arm64) | Server & Client | Linux | arm64 | CLI |
+| [brook_linux_arm5](https://github.com/txthinking/brook/releases/download/v20170809/brook_linux_arm5) | Server & Client | Linux | arm5 | CLI |
+| [brook_linux_arm6](https://github.com/txthinking/brook/releases/download/v20170809/brook_linux_arm6) | Server & Client | Linux | arm6 | CLI |
+| [brook_linux_arm7](https://github.com/txthinking/brook/releases/download/v20170809/brook_linux_arm7) | Server & Client | Linux | arm7 | CLI |
+| [brook_macos_amd64](https://github.com/txthinking/brook/releases/download/v20170809/brook_macos_amd64) | Server & Client | MacOS | amd64 | CLI |
+| [brook_windows_amd64.exe](https://github.com/txthinking/brook/releases/download/v20170809/brook_windows_amd64.exe) | Server & Client | Windows | amd64 | CLI |
+| [brook_windows_386.exe](https://github.com/txthinking/brook/releases/download/v20170809/brook_windows_386.exe) | Server & Client | Windows | 386 | CLI |
+| [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170809/Brook.app.zip) | Client | MacOS | amd64 | GUI |
+| [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170809/Brook.exe) | Client | Windows | amd64 | GUI |
+| [Brook.386.exe](https://github.com/txthinking/brook/releases/download/v20170809/Brook.386.exe) | Client | Windows | 386 | GUI |
+| [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
+| [Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) / [Brook.apk](https://github.com/txthinking/brook/releases/download/v20170809/Brook.apk) | Client | Android | - | GUI |
+
+MacOS GUI Client
+
+* Need MacOS version >= 10.12
+* If MacOS prompts it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
+* You may prefer to copy Brook.app to Application folder
+* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+
+Windows GUI Client
+
+* Need Windows version >= 7
+* Please set chrome as your default browser
+* You may need to run as an administrator
+* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+
+Android Client
+
+* Need Android version >= 5.0
+* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+* Not tested on IPv6
+
+iOS Client
+
+* Need iOS version >= 10.0
+* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+
+## Server
 
 ```
 NAME:
@@ -68,7 +105,7 @@ GLOBAL OPTIONS:
    --version, -v             print the version
 ```
 
-### Brook Server
+#### Brook Server
 
 ```
 # Run as a brook server
@@ -94,7 +131,7 @@ $ brook bkservers \
 
 > If you run a public/shared server, do not forget this parameter --deadline 60 or -d 60
 
-### Shadowsocks Server
+#### Shadowsocks Server
 
 ```
 # Run as a shadowsocks server
@@ -113,11 +150,64 @@ Fixed method is aes-256-cfb
 
 > If you run a public/shared server, do not forget this parameter --deadline 60 or -d 60
 
-## Client
+#### Run as Daemon
 
-### Linux Client
+**With nohup**
 
-#### Download (Same as the above server link, server and client are in one on linux)
+```
+# Start
+$ nohup brook bkserver -l :9999 -p password -t 10 &
+
+# Stop
+$ killall brook
+```
+
+**With systemd**
+
+If your linux run with systemd, like Ubuntu 16.04, Archlinux, etc:
+
+```
+# Install
+$ curl -L git.io/getbrook | sudo bash
+$ sudo systemctl daemon-reload
+
+# Config command options
+$ sudo vim /etc/default/brook
+
+# Start
+$ sudo systemctl start brook.service
+
+# Stop
+$ sudo systemctl stop brook.service
+
+# Start on bootup
+$ sudo systemctl enable brook.service
+```
+
+#### Relay Server
+
+**What is Relay Server**
+
+```
+client <---> relay server <---> server
+```
+
+**Relay Server**
+
+```
+# Run as a relay server
+$ brook relay -l :9999 -s server_address:port -t 10
+```
+
+```
+# Run as multiple relay servers
+$ brook relays \
+        -l ":9999 server1_address:port" \
+        -l ":8888 server2_address:port" \
+        -t 10
+```
+
+## Client (CLI)
 
 #### Brook Client
 
@@ -148,98 +238,6 @@ $ brook ssclient -l 127.0.0.1:1080 -s server_address:port -p password
 $ brook ssclient -l 127.0.0.1:8080 -s server_address:port -p password --http
 ```
 
-### MacOS Client
-
-#### Download [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170809/Brook.app.zip) for MacOS (amd64)
-
-* Need MacOS version >= 10.12
-* If MacOS prompts it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
-* You may prefer to copy Brook.app to Application folder
-* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
-
-### Windows Client
-
-#### Download [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170809/Brook.exe) for Windows (amd64)
-
-* Need Windows version >= 7
-* Please set chrome as your default browser
-* You may need to run as an administrator
-* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
-
-### Android Client
-
-#### [Download Client for Android on Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) | [APK](https://github.com/txthinking/brook/releases/download/v20170809/Brook.apk)
-
-* Need Android version >= 5.0
-* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
-* Not tested on IPv6
-
-### iOS Client
-
-#### [Download Client for iOS on AppStore](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642)
-
-* Need iOS version >= 10.0
-* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
-
-## Advanced Usage
-
-### Run as Daemon
-
-#### With nohup
-
-```
-# Start
-$ nohup brook bkserver -l :9999 -p password -t 10 &
-
-# Stop
-$ killall brook
-```
-
-#### With systemd
-
-If your linux run with systemd, like Ubuntu 16.04, Archlinux, etc:
-
-```
-# Install
-$ curl -L git.io/getbrook | sudo bash
-$ sudo systemctl daemon-reload
-
-# Config command options
-$ sudo vim /etc/default/brook
-
-# Start
-$ sudo systemctl start brook.service
-
-# Stop
-$ sudo systemctl stop brook.service
-
-# Start on bootup
-$ sudo systemctl enable brook.service
-```
-
-### Relay Server
-
-#### What is Relay Server
-
-```
-client <---> relay server <---> server
-```
-
-#### Relay Server
-
-```
-# Run as a relay server
-$ brook relay -l :9999 -s server_address:port -t 10
-```
-
-```
-# Run as multiple relay servers
-$ brook relays \
-        -l ":9999 server1_address:port" \
-        -l ":8888 server2_address:port" \
-        -t 10
-```
-
 ## Developer
 
 ```
@@ -247,7 +245,7 @@ $ go get github.com/txthinking/brook/cli/brook
 $ brook -h
 ```
 
-### Contributing
+#### Contributing
 
 * Please create PR on `develop` branch
 
