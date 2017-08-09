@@ -16,6 +16,8 @@
     * [Run as Daemon](#run-as-daemon)
     * [Relay Server](#relay-server)
 * [Client (CLI)](#client-cli)
+    * [Brook Client](#brook-client)
+    * [Shadowsocks Client](#shadowsocks-client)
 * [Developer](#developer)
 * [License](#license)
 
