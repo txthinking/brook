@@ -13,6 +13,7 @@ func RunHTTPServer(address string) error {
 
 	r.Methods("POST").Path("/setting").HandlerFunc(PostSetting)
 	r.Methods("GET").Path("/setting").HandlerFunc(GetSetting)
+	r.Methods("GET").Path("/pac").HandlerFunc(GetPAC)
 
 	n := negroni.New()
 	n.Use(negroni.NewRecovery())

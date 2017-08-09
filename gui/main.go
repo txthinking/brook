@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"runtime"
 
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
@@ -9,7 +10,7 @@ import (
 	"github.com/txthinking/brook/sysproxy"
 )
 
-const pac = "https://pac.txthinking.com/white/SOCKS5%20local.txthinking.com:1080;%20SOCKS%20local.txthinking.com:1080;%20DIRECT"
+const pac = "http://local.txthinking.com:1980/pac"
 
 func main() {
 	systray.Run(run)
@@ -38,8 +39,8 @@ func run() {
 	mSetting := systray.AddMenuItem("Setting", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mGithub := systray.AddMenuItem("Upgrade", "")
-	mEmail := systray.AddMenuItem("Author: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20170516", "")
+	mEmail := systray.AddMenuItem("Contact: cloud@txthinking.com", "")
+	systray.AddMenuItem("Version: 20170809", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
@@ -97,8 +98,10 @@ func run() {
 	}
 
 	stop := func() error {
-		if err := sysproxy.TurnOffSystemProxy(); err != nil {
-			return err
+		if runtime.GOOS == "windows" {
+			if err := sysproxy.TurnOffSystemProxy(); err != nil {
+				return err
+			}
 		}
 		if bk != nil {
 			bk.Shutdown()
