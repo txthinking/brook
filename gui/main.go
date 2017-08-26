@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"runtime"
 
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
@@ -40,7 +39,7 @@ func run() {
 	systray.AddMenuItem("---------", "").Disable()
 	mGithub := systray.AddMenuItem("Upgrade", "")
 	mEmail := systray.AddMenuItem("Contact: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20170814", "")
+	systray.AddMenuItem("Version: 20170826", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
@@ -98,10 +97,8 @@ func run() {
 	}
 
 	stop := func() error {
-		if runtime.GOOS == "windows" {
-			if err := sysproxy.TurnOffSystemProxy(); err != nil {
-				return err
-			}
+		if err := sysproxy.TurnOffSystemProxy(); err != nil {
+			return err
 		}
 		if bk != nil {
 			bk.Shutdown()
