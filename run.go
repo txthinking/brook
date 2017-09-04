@@ -62,3 +62,13 @@ func RunRelay(address, server string, timeout, deadline int) error {
 	r := NewRelay(address, server, timeout, deadline)
 	return r.ListenAndServe()
 }
+
+// RunSocks5Server used to make a new Socks5Server and start a raw socks5 proxy to listen
+func RunSocks5Server(address, username, password string, timeout, deadline int) error {
+	s, err := NewSocks5Server(address, username, password, timeout, deadline, nil)
+	if err != nil {
+		return err
+	}
+	//return s.ListenAndServe(nil)
+	return s.ListenAndForward(nil, "127.0.0.1:1080")
+}

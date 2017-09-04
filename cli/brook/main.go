@@ -38,7 +38,7 @@ func main() {
 	}
 	app.Commands = []cli.Command{
 		cli.Command{
-			Name:  "bkserver",
+			Name:  "server",
 			Usage: "Run as brook protocol server mode",
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -66,7 +66,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "bkserver")
+					cli.ShowCommandHelp(c, "server")
 					return nil
 				}
 				if debug {
@@ -76,7 +76,7 @@ func main() {
 			},
 		},
 		cli.Command{
-			Name:  "bkservers",
+			Name:  "servers",
 			Usage: "Run as brook protocol multiple servers mode",
 			Flags: []cli.Flag{
 				cli.IntFlag{
@@ -96,7 +96,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if len(c.StringSlice("listenpasswordmusic")) == 0 {
-					cli.ShowCommandHelp(c, "bkservers")
+					cli.ShowCommandHelp(c, "servers")
 					return nil
 				}
 				if debug {
@@ -123,7 +123,7 @@ func main() {
 			},
 		},
 		cli.Command{
-			Name:  "bkclient",
+			Name:  "client",
 			Usage: "Run as brook protocol client mode",
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -159,7 +159,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "bkclient")
+					cli.ShowCommandHelp(c, "client")
 					return nil
 				}
 				if debug {
@@ -169,121 +169,6 @@ func main() {
 					return brook.RunBKHTTPClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"), c.String("music"))
 				}
 				return brook.RunBKClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"), c.String("music"))
-			},
-		},
-		cli.Command{
-			Name:  "s5server",
-			Usage: "Run as socks5 encrypt protocol server mode",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Server listen address, like: 0.0.0.0:1080",
-				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
-				},
-				cli.IntFlag{
-					Name:  "timeout, t",
-					Value: 0,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				cli.IntFlag{
-					Name:  "deadline, d",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "s5server")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				return brook.RunS5Server(c.String("listen"), c.String("password"), c.Int("timeout"), c.Int("deadline"))
-			},
-		},
-		cli.Command{
-			Name:  "s5servers",
-			Usage: "Run as socks5 encrypt protocol multiple servers mode",
-			Flags: []cli.Flag{
-				cli.IntFlag{
-					Name:  "timeout, t",
-					Value: 0,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				cli.IntFlag{
-					Name:  "deadline, d",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				cli.StringSliceFlag{
-					Name:  "listenpassword, l",
-					Usage: "server address and password, like '0.0.0.0:1080 password'",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("listenpassword")) == 0 {
-					cli.ShowCommandHelp(c, "s5servers")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				errch := make(chan error)
-				go func() {
-					for _, v := range c.StringSlice("listenpassword") {
-						ss := strings.Split(v, " ")
-						if len(ss) != 2 {
-							errch <- errors.New("Invalid listenpassword")
-							return
-						}
-						go func() {
-							errch <- brook.RunS5Server(ss[0], ss[1], c.Int("timeout"), c.Int("deadline"))
-						}()
-					}
-				}()
-				return <-errch
-			},
-		},
-		cli.Command{
-			Name:  "s5client",
-			Usage: "Run as socks5 encrypt protocol client mode",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
-				},
-				cli.StringFlag{
-					Name:  "server, s",
-					Usage: "Server address, like: 1.2.3.4:1080",
-				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
-				},
-				cli.IntFlag{
-					Name:  "timeout, t",
-					Value: 0,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				cli.IntFlag{
-					Name:  "deadline, d",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "s5client")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				return brook.RunS5Client(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"))
 			},
 		},
 		cli.Command{
@@ -509,6 +394,44 @@ func main() {
 				}
 				brook.QR(c.String("server"), c.String("password"), c.String("music"))
 				return nil
+			},
+		},
+		cli.Command{
+			Name:  "socks5",
+			Usage: "Run as raw socks5 protocol server",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "listen, l",
+					Usage: "Client listen address: like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "username, u",
+					Usage: "User name, optional",
+				},
+				cli.StringFlag{
+					Name:  "password, p",
+					Usage: "Password, optional",
+				},
+				cli.IntFlag{
+					Name:  "timeout, t",
+					Value: 0,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				cli.IntFlag{
+					Name:  "deadline, d",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" {
+					cli.ShowCommandHelp(c, "socks5")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				return brook.RunSocks5Server(c.String("listen"), c.String("username"), c.String("password"), c.Int("timeout"), c.Int("deadline"))
 			},
 		},
 	}

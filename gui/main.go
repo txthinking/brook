@@ -43,7 +43,7 @@ func run() {
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
-	showNotice("Status", "stoped")
+	showNotice("Status", "stopped")
 	mStop.Disable()
 	var bk *brook.BKClient
 	var ss *brook.SSClient
@@ -75,21 +75,21 @@ func run() {
 				return
 			}
 			if err := bk.ListenAndServe(nil); err != nil {
-				showNotice("Status", "stoped")
+				showNotice("Status", "stopped")
 				return
 			}
 		}
 		if st.Type == "ss" {
 			ss = brook.NewSSClient(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, nil)
 			if err := ss.ListenAndServe(nil); err != nil {
-				showNotice("Status", "stoped")
+				showNotice("Status", "stopped")
 				return
 			}
 		}
 		if st.Type == "s5" {
 			s5 = brook.NewS5Client(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, nil)
 			if err := s5.ListenAndServe(); err != nil {
-				showNotice("Status", "stoped")
+				showNotice("Status", "stopped")
 				return
 			}
 		}
