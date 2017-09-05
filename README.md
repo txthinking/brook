@@ -30,20 +30,20 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 
 | Download | Server/Client | OS | Arch | Remark |
 | --- | --- | --- | --- | --- |
-| [brook](https://github.com/txthinking/brook/releases/download/v20170826/brook) | Server & Client | Linux | amd64 | CLI |
-| [brook_linux_386](https://github.com/txthinking/brook/releases/download/v20170826/brook_linux_386) | Server & Client | Linux | 386 | CLI |
-| [brook_linux_arm64](https://github.com/txthinking/brook/releases/download/v20170826/brook_linux_arm64) | Server & Client | Linux | arm64 | CLI |
-| [brook_linux_arm5](https://github.com/txthinking/brook/releases/download/v20170826/brook_linux_arm5) | Server & Client | Linux | arm5 | CLI |
-| [brook_linux_arm6](https://github.com/txthinking/brook/releases/download/v20170826/brook_linux_arm6) | Server & Client | Linux | arm6 | CLI |
-| [brook_linux_arm7](https://github.com/txthinking/brook/releases/download/v20170826/brook_linux_arm7) | Server & Client | Linux | arm7 | CLI |
-| [brook_macos_amd64](https://github.com/txthinking/brook/releases/download/v20170826/brook_macos_amd64) | Server & Client | MacOS | amd64 | CLI |
-| [brook_windows_amd64.exe](https://github.com/txthinking/brook/releases/download/v20170826/brook_windows_amd64.exe) | Server & Client | Windows | amd64 | CLI |
-| [brook_windows_386.exe](https://github.com/txthinking/brook/releases/download/v20170826/brook_windows_386.exe) | Server & Client | Windows | 386 | CLI |
-| [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170826/Brook.app.zip) | Client | MacOS | amd64 | GUI |
-| [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170826/Brook.exe) | Client | Windows | amd64 | GUI |
-| [Brook.386.exe](https://github.com/txthinking/brook/releases/download/v20170826/Brook.386.exe) | Client | Windows | 386 | GUI |
+| [brook](https://github.com/txthinking/brook/releases/download/v20170909/brook) | Server & Client | Linux | amd64 | CLI |
+| [brook_linux_386](https://github.com/txthinking/brook/releases/download/v20170909/brook_linux_386) | Server & Client | Linux | 386 | CLI |
+| [brook_linux_arm64](https://github.com/txthinking/brook/releases/download/v20170909/brook_linux_arm64) | Server & Client | Linux | arm64 | CLI |
+| [brook_linux_arm5](https://github.com/txthinking/brook/releases/download/v20170909/brook_linux_arm5) | Server & Client | Linux | arm5 | CLI |
+| [brook_linux_arm6](https://github.com/txthinking/brook/releases/download/v20170909/brook_linux_arm6) | Server & Client | Linux | arm6 | CLI |
+| [brook_linux_arm7](https://github.com/txthinking/brook/releases/download/v20170909/brook_linux_arm7) | Server & Client | Linux | arm7 | CLI |
+| [brook_macos_amd64](https://github.com/txthinking/brook/releases/download/v20170909/brook_macos_amd64) | Server & Client | MacOS | amd64 | CLI |
+| [brook_windows_amd64.exe](https://github.com/txthinking/brook/releases/download/v20170909/brook_windows_amd64.exe) | Server & Client | Windows | amd64 | CLI |
+| [brook_windows_386.exe](https://github.com/txthinking/brook/releases/download/v20170909/brook_windows_386.exe) | Server & Client | Windows | 386 | CLI |
+| [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20170909/Brook.app.zip) | Client | MacOS | amd64 | GUI |
+| [Brook.exe](https://github.com/txthinking/brook/releases/download/v20170909/Brook.exe) | Client | Windows | amd64 | GUI |
+| [Brook.386.exe](https://github.com/txthinking/brook/releases/download/v20170909/Brook.386.exe) | Client | Windows | 386 | GUI |
 | [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
-| [Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) / [Brook.apk](https://github.com/txthinking/brook/releases/download/v20170826/Brook.apk) | Client | Android | - | GUI |
+| [Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) / [Brook.apk](https://github.com/txthinking/brook/releases/download/v20170909/Brook.apk) | Client | Android | - | GUI |
 
 MacOS GUI Client
 
@@ -80,25 +80,24 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20170826
+   20170909
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
 
 COMMANDS:
-     bkserver   Run as brook protocol server mode
-     bkservers  Run as brook protocol multiple servers mode
-     bkclient   Run as brook protocol client mode
-     s5server   Run as socks5 encrypt protocol server mode
-     s5servers  Run as socks5 encrypt protocol multiple servers mode
-     s5client   Run as socks5 encrypt protocol client mode
-     ssserver   Run as shadowsocks protocol server mode, fixed method is aes-256-cfb
-     ssservers  Run as shadowsocks protocol multiple servers mode, fixed method is aes-256-cfb
-     ssclient   Run as shadowsocks protocol client mode, fixed method is aes-256-cfb
-     relay      Run as relay mode
-     relays     Run as multiple relays mode
-     qr         Print brook server QR code
-     help, h    Shows a list of commands or help for one command
+     server        Run as server mode
+     servers       Run as multiple servers mode
+     client        Run as client mode
+     ssserver      Run as shadowsocks server mode, fixed method is aes-256-cfb
+     ssservers     Run as shadowsocks multiple servers mode, fixed method is aes-256-cfb
+     ssclient      Run as shadowsocks client mode, fixed method is aes-256-cfb
+     relay         Run as relay mode
+     relays        Run as multiple relays mode
+     qr            Print brook server QR code
+     socks5        Run as raw socks5 server
+     socks5tohttp  Convert socks5 to http proxy
+     help, h       Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
    --debug, -d               Enable debug, more logs
