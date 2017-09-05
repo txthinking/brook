@@ -23,7 +23,7 @@ type Socks5Server struct {
 }
 
 // NewSocks5Server returns a new Socks5Server, dial can be set to nil
-func NewSocks5Server(address, userName, password string, timeout, deadline int, dial Dialer) (*Socks5Server, error) {
+func NewSocks5Server(address, userName, password string, timeout, deadline int, dial Dialer) *Socks5Server {
 	if dial == nil {
 		dial = &DefaultDial{}
 	}
@@ -35,7 +35,7 @@ func NewSocks5Server(address, userName, password string, timeout, deadline int, 
 		Deadline: deadline,
 		Dial:     dial,
 	}
-	return c, nil
+	return c
 }
 
 // ListenAndServe will let client start to listen and serve, sm can be nil
