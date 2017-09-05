@@ -69,6 +69,14 @@ func RunSocks5Server(address, username, password string, timeout, deadline int) 
 	if err != nil {
 		return err
 	}
-	//return s.ListenAndServe(nil)
-	return s.ListenAndForward(nil, "127.0.0.1:1080")
+	return s.ListenAndServe(nil)
+}
+
+// RunSocks5ToHTTP used to make a new Socks5ToHTTP and start a http proxy to listen
+func RunSocks5ToHTTP(address, socks5 string, timeout, deadline int) error {
+	s, err := NewSocks5ToHTTP(address, socks5, timeout, deadline)
+	if err != nil {
+		return err
+	}
+	return s.ListenAndServe(nil)
 }

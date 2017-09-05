@@ -39,7 +39,7 @@ func main() {
 	app.Commands = []cli.Command{
 		cli.Command{
 			Name:  "server",
-			Usage: "Run as brook protocol server mode",
+			Usage: "Run as server mode",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "listen, l",
@@ -77,7 +77,7 @@ func main() {
 		},
 		cli.Command{
 			Name:  "servers",
-			Usage: "Run as brook protocol multiple servers mode",
+			Usage: "Run as multiple servers mode",
 			Flags: []cli.Flag{
 				cli.IntFlag{
 					Name:  "timeout, t",
@@ -124,7 +124,7 @@ func main() {
 		},
 		cli.Command{
 			Name:  "client",
-			Usage: "Run as brook protocol client mode",
+			Usage: "Run as client mode",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "listen, l",
@@ -173,7 +173,7 @@ func main() {
 		},
 		cli.Command{
 			Name:  "ssserver",
-			Usage: "Run as shadowsocks protocol server mode, fixed method is aes-256-cfb",
+			Usage: "Run as shadowsocks server mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "listen, l",
@@ -207,7 +207,7 @@ func main() {
 		},
 		cli.Command{
 			Name:  "ssservers",
-			Usage: "Run as shadowsocks protocol multiple servers mode, fixed method is aes-256-cfb",
+			Usage: "Run as shadowsocks multiple servers mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
 				cli.IntFlag{
 					Name:  "timeout, t",
@@ -250,7 +250,7 @@ func main() {
 		},
 		cli.Command{
 			Name:  "ssclient",
-			Usage: "Run as shadowsocks protocol client mode, fixed method is aes-256-cfb",
+			Usage: "Run as shadowsocks client mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "listen, l",
@@ -398,7 +398,7 @@ func main() {
 		},
 		cli.Command{
 			Name:  "socks5",
-			Usage: "Run as raw socks5 protocol server",
+			Usage: "Run as raw socks5 server",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "listen, l",
@@ -434,6 +434,43 @@ func main() {
 				return brook.RunSocks5Server(c.String("listen"), c.String("username"), c.String("password"), c.Int("timeout"), c.Int("deadline"))
 			},
 		},
+		cli.Command{
+			Name:  "socks5tohttp",
+			Usage: "Convert socks5 to http proxy",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "listen, l",
+					Usage: "Client listen address: like: 127.0.0.1:8080",
+				},
+				cli.StringFlag{
+					Name:  "socks5, s",
+					Usage: "Socks5 address",
+				},
+				cli.IntFlag{
+					Name:  "timeout, t",
+					Value: 0,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				cli.IntFlag{
+					Name:  "deadline, d",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" || c.String("socks5") == "" {
+					cli.ShowCommandHelp(c, "socks5tohttp")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				return brook.RunSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.Int("timeout"), c.Int("deadline"))
+			},
+		},
+	}
+	if len(os.Args) > 1 {
+		os.Args[1] = strings.Replace(os.Args[1], "bk", "", -1)
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)

@@ -64,7 +64,9 @@ func (c *Socks5Server) ListenAndServe(sm Socks5Middleman) error {
 	}
 }
 
-// ListenAndForward will let client start to listen and forward to another socks5, sm can be nil
+// ListenAndForward will let client start a no auth socks5 proxy to listen and forward to another socks5,
+// c.UserName, c.Password will effect the forwarded socks5,
+// sm can be nil
 func (c *Socks5Server) ListenAndForward(sm Socks5Middleman, addr string) error {
 	ta, err := net.ResolveTCPAddr("tcp", c.Address)
 	if err != nil {
