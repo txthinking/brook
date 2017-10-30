@@ -1,33 +1,30 @@
 package brook
 
 import (
-	"crypto/aes"
-	"errors"
 	"io"
 	"log"
 	"net"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"github.com/txthinking/ant"
 	"github.com/txthinking/socks5"
 )
 
-// StreamServer is socks5 server wrapper
-type StreamServer struct {
+// Server is socks5 server wrapper
+type Server struct {
 	Password     []byte
 	TCPAddr      *net.TCPAddr
 	UDPAddr      *net.UDPAddr
 	TCPListen    *net.TCPListener
 	UDPConn      *net.UDPConn
 	UDPExchanges *cache.Cache
-	TCPDeadline  int // Not refreshed
+	TCPDeadline  int
 	TCPTimeout   int
-	UDPDeadline  int // Refreshed
+	UDPDeadline  int
 }
 
-// NewStreamServer return a server which allow none method
-func NewStreamServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*StreamServer, error) {
+// NewServer return a server which allow none method
+func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Server, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -37,8 +34,8 @@ func NewStreamServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline
 		return nil, err
 	}
 	cs := cache.New(60*time.Minute, 10*time.Minute)
-	s := &StreamServer{
-		Password:     []byte(ant.MD5(password)),
+	s := &Server{
+		Password:     []byte(password),
 		TCPAddr:      taddr,
 		UDPAddr:      uaddr,
 		UDPExchanges: cs,
@@ -50,7 +47,7 @@ func NewStreamServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline
 }
 
 // Run server
-func (s *StreamServer) ListenAndServe() error {
+func (s *Server) ListenAndServe() error {
 	errch := make(chan error)
 	go func() {
 		errch <- s.RunTCPServer()
@@ -62,7 +59,7 @@ func (s *StreamServer) ListenAndServe() error {
 }
 
 // RunTCPServer starts tcp server
-func (s *StreamServer) RunTCPServer() error {
+func (s *Server) RunTCPServer() error {
 	var err error
 	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
 	if err != nil {
@@ -97,7 +94,7 @@ func (s *StreamServer) RunTCPServer() error {
 }
 
 // RunUDPServer starts udp server
-func (s *StreamServer) RunUDPServer() error {
+func (s *Server) RunUDPServer() error {
 	var err error
 	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
 	if err != nil {
@@ -120,64 +117,22 @@ func (s *StreamServer) RunUDPServer() error {
 	return nil
 }
 
-// Shutdown server
-func (s *StreamServer) Shutdown() error {
-	var err, err1 error
-	if s.TCPListen != nil {
-		err = s.TCPListen.Close()
-	}
-	if s.UDPConn != nil {
-		err1 = s.UDPConn.Close()
-	}
-	if err != nil {
-		return err
-	}
-	return err1
-}
-
 // TCPHandle handle request. You may prefer to do yourself.
-func (s *StreamServer) TCPHandle(c *net.TCPConn) error {
-	cc, err := s.WrapCipherConn(c)
+func (s *Server) TCPHandle(c *net.TCPConn) error {
+	cn := make([]byte, 12)
+	if _, err := io.ReadFull(c, cn); err != nil {
+		return err
+	}
+	ck, err := GetKey(s.Password, cn)
 	if err != nil {
 		return err
 	}
-	bb := make([]byte, 1)
-	if _, err := io.ReadFull(cc, bb); err != nil {
+	var b []byte
+	b, cn, err = ReadFrom(c, ck, cn, true)
+	if err != nil {
 		return err
 	}
-	var addr []byte
-	if bb[0] == socks5.ATYPIPv4 {
-		addr = make([]byte, 4)
-		if _, err := io.ReadFull(cc, addr); err != nil {
-			return err
-		}
-	} else if bb[0] == socks5.ATYPIPv6 {
-		addr = make([]byte, 16)
-		if _, err := io.ReadFull(cc, addr); err != nil {
-			return err
-		}
-	} else if bb[0] == socks5.ATYPDomain {
-		dal := make([]byte, 1)
-		if _, err := io.ReadFull(cc, dal); err != nil {
-			return err
-		}
-		if dal[0] == 0 {
-			return err
-		}
-		addr = make([]byte, int(dal[0]))
-		if _, err := io.ReadFull(cc, addr); err != nil {
-			return err
-		}
-		addr = append(dal, addr...)
-	} else {
-		return errors.New("Unknown address type")
-	}
-	port := make([]byte, 2)
-	if _, err := io.ReadFull(cc, port); err != nil {
-		return err
-	}
-	address := socks5.ToAddress(bb[0], addr, port)
-
+	address := socks5.ToAddress(b[0], b[1:len(b)-2], b[len(b)-2:])
 	tmp, err := Dial.Dial("tcp", address)
 	if err != nil {
 		return err
@@ -196,15 +151,52 @@ func (s *StreamServer) TCPHandle(c *net.TCPConn) error {
 	}
 
 	go func() {
-		_, _ = io.Copy(cc, rc)
+		k, n, err := PrepareKey(s.Password)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		if _, err := c.Write(n); err != nil {
+			return
+		}
+		var b [1024 * 2]byte
+		for {
+			if s.TCPDeadline != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+					return
+				}
+			}
+			i, err := rc.Read(b[:])
+			if err != nil {
+				return
+			}
+			n, err = WriteTo(c, b[0:i], k, n, false)
+			if err != nil {
+				return
+			}
+		}
 	}()
-	_, _ = io.Copy(rc, cc)
+
+	for {
+		if s.TCPDeadline != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				return nil
+			}
+		}
+		b, cn, err = ReadFrom(c, ck, cn, false)
+		if err != nil {
+			return nil
+		}
+		if _, err := rc.Write(b); err != nil {
+			return nil
+		}
+	}
 	return nil
 }
 
 // UDPHandle handle packet
-func (s *StreamServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
-	a, h, p, data, err := s.Decrypt(b)
+func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
+	a, h, p, data, err := Decrypt(s.Password, b)
 	if err != nil {
 		return err
 	}
@@ -246,13 +238,11 @@ func (s *StreamServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		for {
 			if s.UDPDeadline != 0 {
 				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
-					log.Println(err)
 					break
 				}
 			}
 			n, err := ue.RemoteConn.Read(b[:])
 			if err != nil {
-				log.Println(err)
 				break
 			}
 			a, addr, port, err := socks5.ParseAddress(ue.ClientAddr.String())
@@ -260,13 +250,17 @@ func (s *StreamServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
 				log.Println(err)
 				break
 			}
-			cd, err := s.Encrypt(a, addr, port, b[0:n])
+			d := make([]byte, 0, 7)
+			d = append(d, a)
+			d = append(d, addr...)
+			d = append(d, port...)
+			d = append(d, b[0:n]...)
+			cd, err := Encrypt(s.Password, d)
 			if err != nil {
 				log.Println(err)
 				break
 			}
 			if _, err := s.UDPConn.WriteToUDP(cd, ue.ClientAddr); err != nil {
-				log.Println(err)
 				break
 			}
 		}
@@ -274,75 +268,17 @@ func (s *StreamServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	return nil
 }
 
-// WrapChiperConn make a chiper conn
-func (s *StreamServer) WrapCipherConn(conn net.Conn) (*CipherConn, error) {
-	iv := make([]byte, aes.BlockSize)
-	if _, err := io.ReadFull(conn, iv); err != nil {
-		return nil, err
+// Shutdown server
+func (s *Server) Shutdown() error {
+	var err, err1 error
+	if s.TCPListen != nil {
+		err = s.TCPListen.Close()
 	}
-	return NewCipherConn(conn, s.Password, iv)
-}
-
-// Encrypt data
-func (s *StreamServer) Encrypt(a byte, h, p, d []byte) ([]byte, error) {
-	b := make([]byte, 0, 7)
-	b = append(b, a)
-	b = append(b, h...)
-	b = append(b, p...)
-	b = append(b, d...)
-	return ant.AESCFBEncrypt(b, s.Password)
-}
-
-// Decrypt data
-func (s *StreamServer) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
-	var bb []byte
-	bb, err = ant.AESCFBDecrypt(cd, s.Password)
+	if s.UDPConn != nil {
+		err1 = s.UDPConn.Close()
+	}
 	if err != nil {
-		return
+		return err
 	}
-	err = errors.New("Data length error")
-	n := len(bb)
-	minl := 1
-	if n < minl {
-		return
-	}
-	if bb[0] == socks5.ATYPIPv4 {
-		minl += 4
-		if n < minl {
-			return
-		}
-		addr = bb[minl-4 : minl]
-	} else if bb[0] == socks5.ATYPIPv6 {
-		minl += 16
-		if n < minl {
-			return
-		}
-		addr = bb[minl-16 : minl]
-	} else if bb[0] == socks5.ATYPDomain {
-		minl += 1
-		if n < minl {
-			return
-		}
-		l := bb[1]
-		if l == 0 {
-			return
-		}
-		minl += int(l)
-		if n < minl {
-			return
-		}
-		addr = bb[minl-int(l) : minl]
-		addr = append([]byte{l}, addr...)
-	} else {
-		return
-	}
-	minl += 2
-	if n <= minl {
-		return
-	}
-	a = bb[0]
-	port = bb[minl-2 : minl]
-	data = bb[minl:]
-	err = nil
-	return
+	return err1
 }

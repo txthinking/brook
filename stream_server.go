@@ -2,7 +2,6 @@ package brook
 
 import (
 	"crypto/aes"
-	"crypto/rand"
 	"errors"
 	"io"
 	"log"
@@ -14,8 +13,8 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// SSServer is socks5 server wrapper
-type SSServer struct {
+// StreamServer is socks5 server wrapper
+type StreamServer struct {
 	Password     []byte
 	TCPAddr      *net.TCPAddr
 	UDPAddr      *net.UDPAddr
@@ -27,8 +26,8 @@ type SSServer struct {
 	UDPDeadline  int
 }
 
-// NewSSServer return a server which allow none method
-func NewSSServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*SSServer, error) {
+// NewStreamServer return a server which allow none method
+func NewStreamServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*StreamServer, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -38,8 +37,8 @@ func NewSSServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int
 		return nil, err
 	}
 	cs := cache.New(60*time.Minute, 10*time.Minute)
-	s := &SSServer{
-		Password:     MakeSSKey(password),
+	s := &StreamServer{
+		Password:     []byte(ant.MD5(password)),
 		TCPAddr:      taddr,
 		UDPAddr:      uaddr,
 		UDPExchanges: cs,
@@ -50,8 +49,8 @@ func NewSSServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int
 	return s, nil
 }
 
-// ListenAndServe server
-func (s *SSServer) ListenAndServe() error {
+// Run server
+func (s *StreamServer) ListenAndServe() error {
 	errch := make(chan error)
 	go func() {
 		errch <- s.RunTCPServer()
@@ -63,7 +62,7 @@ func (s *SSServer) ListenAndServe() error {
 }
 
 // RunTCPServer starts tcp server
-func (s *SSServer) RunTCPServer() error {
+func (s *StreamServer) RunTCPServer() error {
 	var err error
 	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
 	if err != nil {
@@ -98,7 +97,7 @@ func (s *SSServer) RunTCPServer() error {
 }
 
 // RunUDPServer starts udp server
-func (s *SSServer) RunUDPServer() error {
+func (s *StreamServer) RunUDPServer() error {
 	var err error
 	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
 	if err != nil {
@@ -122,7 +121,7 @@ func (s *SSServer) RunUDPServer() error {
 }
 
 // Shutdown server
-func (s *SSServer) Shutdown() error {
+func (s *StreamServer) Shutdown() error {
 	var err, err1 error
 	if s.TCPListen != nil {
 		err = s.TCPListen.Close()
@@ -137,7 +136,7 @@ func (s *SSServer) Shutdown() error {
 }
 
 // TCPHandle handle request. You may prefer to do yourself.
-func (s *SSServer) TCPHandle(c *net.TCPConn) error {
+func (s *StreamServer) TCPHandle(c *net.TCPConn) error {
 	cc, err := s.WrapCipherConn(c)
 	if err != nil {
 		return err
@@ -197,23 +196,14 @@ func (s *SSServer) TCPHandle(c *net.TCPConn) error {
 	}
 
 	go func() {
-		iv := make([]byte, aes.BlockSize)
-		if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-			log.Println(err)
-			return
-		}
-		if _, err := cc.Write(iv); err != nil {
-			log.Println(err)
-			return
-		}
 		_, _ = io.Copy(cc, rc)
 	}()
 	_, _ = io.Copy(rc, cc)
 	return nil
 }
 
-// UDPHandle handle packet. You may prefer to do yourself.
-func (s *SSServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
+// UDPHandle handle packet
+func (s *StreamServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	a, h, p, data, err := s.Decrypt(b)
 	if err != nil {
 		return err
@@ -285,7 +275,7 @@ func (s *SSServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
 }
 
 // WrapChiperConn make a chiper conn
-func (s *SSServer) WrapCipherConn(conn net.Conn) (*CipherConn, error) {
+func (s *StreamServer) WrapCipherConn(conn net.Conn) (*CipherConn, error) {
 	iv := make([]byte, aes.BlockSize)
 	if _, err := io.ReadFull(conn, iv); err != nil {
 		return nil, err
@@ -294,7 +284,7 @@ func (s *SSServer) WrapCipherConn(conn net.Conn) (*CipherConn, error) {
 }
 
 // Encrypt data
-func (s *SSServer) Encrypt(a byte, h, p, d []byte) ([]byte, error) {
+func (s *StreamServer) Encrypt(a byte, h, p, d []byte) ([]byte, error) {
 	b := make([]byte, 0, 7)
 	b = append(b, a)
 	b = append(b, h...)
@@ -304,7 +294,7 @@ func (s *SSServer) Encrypt(a byte, h, p, d []byte) ([]byte, error) {
 }
 
 // Decrypt data
-func (s *SSServer) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
+func (s *StreamServer) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
 	var bb []byte
 	bb, err = ant.AESCFBDecrypt(cd, s.Password)
 	if err != nil {

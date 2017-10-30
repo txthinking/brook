@@ -21,7 +21,7 @@ type SSClient struct {
 	RemoteAddr      string
 	Password        []byte
 	TCPTimeout      int
-	TCPDeadline     int
+	TCPDeadline     int // Not refreshed
 	UDPDeadline     int
 	Socks5Middleman Socks5Middleman
 	HTTPMiddleman   HTTPMiddleman

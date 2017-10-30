@@ -2,6 +2,8 @@ package brook
 
 import (
 	"bytes"
+	"crypto/aes"
+	"crypto/rand"
 	"errors"
 	"io"
 	"log"
@@ -13,29 +15,29 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// Client is the client of raw socks5 protocol
-type Client struct {
+// StreamClient is the client of raw socks5 protocol
+type StreamClient struct {
 	Server          *socks5.Server
 	RemoteAddr      string
 	Password        []byte
 	TCPTimeout      int
-	TCPDeadline     int
+	TCPDeadline     int // Not refreshed
 	UDPDeadline     int
 	Socks5Middleman Socks5Middleman
 	HTTPMiddleman   HTTPMiddleman
 	TCPListen       *net.TCPListener
 }
 
-// NewClient returns a new Client
-func NewClient(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Client, error) {
+// NewStreamClient returns a new StreamClient
+func NewStreamClient(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*StreamClient, error) {
 	s5, err := socks5.NewClassicServer(addr, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return nil, err
 	}
-	x := &Client{
+	x := &StreamClient{
 		RemoteAddr:  server,
 		Server:      s5,
-		Password:    []byte(password),
+		Password:    []byte(ant.MD5(password)),
 		TCPTimeout:  tcpTimeout,
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
@@ -45,13 +47,13 @@ func NewClient(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadli
 
 // ListenAndServe will let client start a socks5 proxy
 // sm can be nil
-func (x *Client) ListenAndServe(sm Socks5Middleman) error {
+func (x *StreamClient) ListenAndServe(sm Socks5Middleman) error {
 	x.Socks5Middleman = sm
 	return x.Server.Run(x)
 }
 
 // TCPHandle handles tcp reqeust
-func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
+func (x *StreamClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
 	// waiting for reply about connect failure or success
 	if x.Socks5Middleman != nil {
 		done, err := x.Socks5Middleman.TCPHandle(s, c, r)
@@ -84,83 +86,31 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 				return ErrorReply(r, c, err)
 			}
 		}
-
-		k, n, err := PrepareKey(x.Password)
+		crc, err := x.WrapCipherConn(rc)
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
-		if _, err := rc.Write(n); err != nil {
-			return ErrorReply(r, c, err)
-		}
-
 		rawaddr := make([]byte, 0, 7)
 		rawaddr = append(rawaddr, r.Atyp)
 		rawaddr = append(rawaddr, r.DstAddr...)
 		rawaddr = append(rawaddr, r.DstPort...)
-		n, err = WriteTo(rc, rawaddr, k, n, true)
-		if err != nil {
+		if _, err := crc.Write(rawaddr); err != nil {
 			return ErrorReply(r, c, err)
 		}
-
 		a, address, port, err := socks5.ParseAddress(rc.LocalAddr().String())
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
+
 		rp := socks5.NewReply(socks5.RepSuccess, a, address, port)
 		if err := rp.WriteTo(c); err != nil {
 			return err
 		}
 
 		go func() {
-			n := make([]byte, 12)
-			if _, err := io.ReadFull(rc, n); err != nil {
-				log.Println(err)
-				return
-			}
-			k, err := GetKey(x.Password, n)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			var b []byte
-			for {
-				if x.TCPDeadline != 0 {
-					if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
-						log.Println(err)
-						return
-					}
-				}
-				b, n, err = ReadFrom(rc, k, n, false)
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				if _, err := c.Write(b); err != nil {
-					log.Println(err)
-					return
-				}
-			}
+			_, _ = io.Copy(c, crc)
 		}()
-
-		var b [1024 * 2]byte
-		for {
-			if x.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
-					log.Println(err)
-					return nil
-				}
-			}
-			i, err := c.Read(b[:])
-			if err != nil {
-				log.Println(err)
-				return nil
-			}
-			n, err = WriteTo(rc, b[0:i], k, n, false)
-			if err != nil {
-				log.Println(err)
-				return nil
-			}
-		}
+		_, _ = io.Copy(crc, c)
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {
@@ -185,7 +135,7 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 }
 
 // UDPHandle handles udp reqeust
-func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {
+func (x *StreamClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {
 	if x.Socks5Middleman != nil {
 		if done, err := x.Socks5Middleman.UDPHandle(s, addr, d); err != nil || done {
 			return err
@@ -193,7 +143,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
-		cd, err := Encrypt(x.Password, data)
+		cd, err := x.Encrypt(data)
 		if err != nil {
 			return err
 		}
@@ -238,14 +188,16 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		for {
 			if s.UDPDeadline != 0 {
 				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+					log.Println(err)
 					break
 				}
 			}
 			n, err := ue.RemoteConn.Read(b[:])
 			if err != nil {
+				log.Println(err)
 				break
 			}
-			_, _, _, data, err := Decrypt(x.Password, b[0:n])
+			_, _, _, data, err := x.Decrypt(b[0:n])
 			if err != nil {
 				log.Println(err)
 				break
@@ -257,6 +209,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 			}
 			d1 := socks5.NewDatagram(a, addr, port, data)
 			if _, err := s.UDPConn.WriteToUDP(d1.Bytes(), ue.ClientAddr); err != nil {
+				log.Println(err)
 				break
 			}
 		}
@@ -266,7 +219,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 
 // ListenAndServeHTTP will let client start a http proxy
 // m can be nil
-func (x *Client) ListenAndServeHTTP(m HTTPMiddleman) error {
+func (x *StreamClient) ListenAndServeHTTP(m HTTPMiddleman) error {
 	var err error
 	x.HTTPMiddleman = m
 	x.TCPListen, err = net.ListenTCP("tcp", x.Server.TCPAddr)
@@ -301,7 +254,7 @@ func (x *Client) ListenAndServeHTTP(m HTTPMiddleman) error {
 }
 
 // HTTPHandle handle http request
-func (x *Client) HTTPHandle(c *net.TCPConn) error {
+func (x *StreamClient) HTTPHandle(c *net.TCPConn) error {
 	b := make([]byte, 0, 1024)
 	for {
 		var b1 [1024]byte
@@ -340,6 +293,10 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 		}
 	}
 
+	a, h, p, err := socks5.ParseAddress(addr)
+	if err != nil {
+		return err
+	}
 	tmp, err := Dial.Dial("tcp", x.RemoteAddr)
 	if err != nil {
 		return err
@@ -356,28 +313,18 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 			return err
 		}
 	}
-
-	k, n, err := PrepareKey(x.Password)
+	crc, err := x.WrapCipherConn(rc)
 	if err != nil {
 		return err
 	}
-	if _, err := rc.Write(n); err != nil {
-		return err
-	}
 
-	a, h, p, err := socks5.ParseAddress(addr)
-	if err != nil {
-		return err
-	}
-	rawaddr := make([]byte, 0, 7)
+	rawaddr := make([]byte, 0)
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, h...)
 	rawaddr = append(rawaddr, p...)
-	n, err = WriteTo(rc, rawaddr, k, n, true)
-	if err != nil {
+	if _, err := crc.Write(rawaddr); err != nil {
 		return err
 	}
-
 	if method == "CONNECT" {
 		_, err := c.Write([]byte("HTTP/1.1 200 Connection established\r\n\r\n"))
 		if err != nil {
@@ -385,66 +332,90 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 		}
 	}
 	if method != "CONNECT" {
-		n, err = WriteTo(rc, b, k, n, false)
-		if err != nil {
+		if _, err := crc.Write(b); err != nil {
 			return err
 		}
 	}
 
 	go func() {
-		n := make([]byte, 12)
-		if _, err := io.ReadFull(rc, n); err != nil {
-			log.Println(err)
-			return
-		}
-		k, err := GetKey(x.Password, n)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		var b []byte
-		for {
-			if x.TCPDeadline != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
-					log.Println(err)
-					return
-				}
-			}
-			b, n, err = ReadFrom(rc, k, n, false)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			if _, err := c.Write(b); err != nil {
-				log.Println(err)
-				return
-			}
-		}
+		_, _ = io.Copy(c, crc)
 	}()
-
-	var bf [1024 * 2]byte
-	for {
-		if x.TCPDeadline != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
-				log.Println(err)
-				return nil
-			}
-		}
-		i, err := c.Read(bf[:])
-		if err != nil {
-			log.Println(err)
-			return nil
-		}
-		n, err = WriteTo(rc, bf[0:i], k, n, false)
-		if err != nil {
-			log.Println(err)
-			return nil
-		}
-	}
+	_, _ = io.Copy(crc, c)
 	return nil
 }
 
 // Shutdown used to stop the client
-func (x *Client) Shutdown() error {
+func (x *StreamClient) Shutdown() error {
 	return x.Server.Stop()
+}
+
+// WrapChiperConn make a chiper conn
+func (x *StreamClient) WrapCipherConn(conn *net.TCPConn) (*CipherConn, error) {
+	iv := make([]byte, aes.BlockSize)
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		return nil, err
+	}
+	if _, err := conn.Write(iv); err != nil {
+		return nil, err
+	}
+	return NewCipherConn(conn, x.Password, iv)
+}
+
+// Encrypt data
+func (x *StreamClient) Encrypt(rawdata []byte) ([]byte, error) {
+	return ant.AESCFBEncrypt(rawdata, x.Password)
+}
+
+// Decrypt data
+func (x *StreamClient) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
+	var bb []byte
+	bb, err = ant.AESCFBDecrypt(cd, x.Password)
+	if err != nil {
+		return
+	}
+	err = errors.New("Data length error")
+	n := len(bb)
+	minl := 1
+	if n < minl {
+		return
+	}
+	if bb[0] == socks5.ATYPIPv4 {
+		minl += 4
+		if n < minl {
+			return
+		}
+		addr = bb[minl-4 : minl]
+	} else if bb[0] == socks5.ATYPIPv6 {
+		minl += 16
+		if n < minl {
+			return
+		}
+		addr = bb[minl-16 : minl]
+	} else if bb[0] == socks5.ATYPDomain {
+		minl += 1
+		if n < minl {
+			return
+		}
+		l := bb[1]
+		if l == 0 {
+			return
+		}
+		minl += int(l)
+		if n < minl {
+			return
+		}
+		addr = bb[minl-int(l) : minl]
+		addr = append([]byte{l}, addr...)
+	} else {
+		return
+	}
+	minl += 2
+	if n <= minl {
+		return
+	}
+	a = bb[0]
+	port = bb[minl-2 : minl]
+	data = bb[minl:]
+	err = nil
+	return
 }

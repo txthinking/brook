@@ -21,7 +21,7 @@ type Relay struct {
 	UDPExchanges  *cache.Cache
 	TCPDeadline   int // Not refreshed
 	TCPTimeout    int
-	UDPDeadline   int // Refreshed
+	UDPDeadline   int
 }
 
 // NewRelay return a server which allow none method

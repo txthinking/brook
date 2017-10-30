@@ -16,7 +16,7 @@ type Socks5Server struct {
 	Server          *socks5.Server
 	Middleman       Socks5Middleman
 	TCPTimeout      int
-	TCPDeadline     int
+	TCPDeadline     int // not refreshed
 	UDPDeadline     int
 	UDPSessionTime  int
 	ForwardAddress  string
@@ -66,16 +66,7 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 			if done {
 				return err
 			}
-			var p *socks5.Reply
-			if r.Atyp == socks5.ATYPIPv4 || r.Atyp == socks5.ATYPDomain {
-				p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, net.IPv4zero, []byte{0x00, 0x00})
-			} else {
-				p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, net.IPv6zero, []byte{0x00, 0x00})
-			}
-			if err := p.WriteTo(c); err != nil {
-				return err
-			}
-			return err
+			return ErrorReply(r, c, err)
 		}
 		if done {
 			return nil
@@ -87,16 +78,7 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 		return err
 	}
 	if err := client.Negotiate(); err != nil {
-		var p *socks5.Reply
-		if r.Atyp == socks5.ATYPIPv4 || r.Atyp == socks5.ATYPDomain {
-			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, net.IPv4zero, []byte{0x00, 0x00})
-		} else {
-			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, net.IPv6zero, []byte{0x00, 0x00})
-		}
-		if err := p.WriteTo(c); err != nil {
-			return err
-		}
-		return err
+		return ErrorReply(r, c, err)
 	}
 	defer client.TCPConn.Close()
 
@@ -111,32 +93,14 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 	}
 	rp, err := client.Request(r)
 	if err != nil {
-		var p *socks5.Reply
-		if r.Atyp == socks5.ATYPIPv4 || r.Atyp == socks5.ATYPDomain {
-			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, net.IPv4zero, []byte{0x00, 0x00})
-		} else {
-			p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, net.IPv6zero, []byte{0x00, 0x00})
-		}
-		if err := p.WriteTo(c); err != nil {
-			return err
-		}
-		return err
+		return ErrorReply(r, c, err)
 	}
 
 	// reply ok and choose address according to cmd or something wrong
 	if r.Cmd == socks5.CmdConnect {
 		a, address, port, err := socks5.ParseAddress(client.TCPConn.LocalAddr().String())
 		if err != nil {
-			var p *socks5.Reply
-			if r.Atyp == socks5.ATYPIPv4 || r.Atyp == socks5.ATYPDomain {
-				p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, net.IPv4zero, []byte{0x00, 0x00})
-			} else {
-				p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, net.IPv6zero, []byte{0x00, 0x00})
-			}
-			if err := p.WriteTo(c); err != nil {
-				return err
-			}
-			return err
+			return ErrorReply(r, c, err)
 		}
 		rp.Atyp = a
 		rp.BndAddr = address
@@ -173,16 +137,7 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 		<-ch
 		return nil
 	}
-	var p *socks5.Reply
-	if r.Atyp == socks5.ATYPIPv4 || r.Atyp == socks5.ATYPDomain {
-		p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, net.IPv4zero, []byte{0x00, 0x00})
-	} else {
-		p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, net.IPv6zero, []byte{0x00, 0x00})
-	}
-	if err := p.WriteTo(c); err != nil {
-		return err
-	}
-	return socks5.ErrUnsupportCmd
+	return ErrorReply(r, c, socks5.ErrUnsupportCmd)
 }
 
 // UDPHandle handles udp reqeust

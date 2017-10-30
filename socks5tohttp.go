@@ -17,7 +17,7 @@ type Socks5ToHTTP struct {
 	Socks5Address string
 	Dial          proxy.Dialer
 	Timeout       int
-	Deadline      int
+	Deadline      int // Not refreshed
 	Listen        *net.TCPListener
 	Middleman     HTTPMiddleman
 }
