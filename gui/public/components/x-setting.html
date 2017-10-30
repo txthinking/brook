@@ -15,9 +15,6 @@
         </paper-dropdown-menu>
         <paper-input label="Server" is="iron-input" value="{{o.Server}}" placeholder="1.2.3.4:8080"></paper-input>
         <paper-input label="Password" is="iron-input" value="{{o.Password}}" placeholder="your server password"></paper-input>
-        <template is="dom-if" if="{{isBrook(o.Type)}}">
-        <paper-input label="Music" is="iron-input" value="{{o.Music}}" placeholder="must same as your server"></paper-input><a href="https://github.com/txthinking/brook/wiki/Music-List" target="_blank">more about music</a>
-        </template>
         <template is="dom-if" if="{{isSS(o.Type)}}">
         <paper-input label="Method" disabled is="iron-input" value="aes-256-cfb"></paper-input>
         </template>
@@ -36,7 +33,6 @@
                     "Type": "bk",
                     "Server": "",
                     "Password": "",
-                    "Music": "",
                     "Local": "local.txthinking.com:1080",
                 };
                 this.init();
@@ -86,7 +82,6 @@
                     this.$.toast.open();
                     return;
                 }
-                this.o.Music = this.o.Music.trim();
                 this.o.Local = this.o.Local.trim();
                 var self = this;
                 R.post('/setting')

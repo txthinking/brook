@@ -26,7 +26,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:        "debug, d",
-			Usage:       "Enable debug, more logs",
+			Usage:       "Enable debug",
 			Destination: &debug,
 		},
 		cli.StringFlag{
@@ -50,18 +50,19 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "tcpTimeout, t",
 					Value: 0,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "tcpDeadline, d",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.StringFlag{
-					Name:  "music, m",
-					Usage: "The music you love to listen: https://github.com/txthinking/brook/wiki/Music-List",
+				cli.IntFlag{
+					Name:  "udpDeadline, u",
+					Value: 0,
+					Usage: "connection deadline time (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -72,30 +73,35 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunBKServer(c.String("listen"), c.String("password"), c.Int("timeout"), c.Int("deadline"), c.String("music"))
+				return brook.RunServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 			},
 		},
 		cli.Command{
 			Name:  "servers",
 			Usage: "Run as multiple servers mode",
 			Flags: []cli.Flag{
+				cli.StringSliceFlag{
+					Name:  "listenpassword, l",
+					Usage: "server and password, like '0.0.0.0:1080 password'",
+				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "tcpTimeout, t",
 					Value: 0,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "tcpDeadline, d",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.StringSliceFlag{
-					Name:  "listenpasswordmusic, l",
-					Usage: "server address and password, like '0.0.0.0:1080 password' or '0.0.0.0:1080 password music'",
+				cli.IntFlag{
+					Name:  "udpDeadline, u",
+					Value: 0,
+					Usage: "connection deadline time (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("listenpasswordmusic")) == 0 {
+				if len(c.StringSlice("listenpassword")) == 0 {
 					cli.ShowCommandHelp(c, "servers")
 					return nil
 				}
@@ -104,18 +110,14 @@ func main() {
 				}
 				errch := make(chan error)
 				go func() {
-					for _, v := range c.StringSlice("listenpasswordmusic") {
+					for _, v := range c.StringSlice("listenpassword") {
 						ss := strings.Split(v, " ")
-						if len(ss) < 2 || len(ss) > 3 {
-							errch <- errors.New("Invalid listenpasswordmusic")
+						if len(ss) != 2 {
+							errch <- errors.New("Invalid listenpassword")
 							return
 						}
-						var music string
-						if len(ss) == 3 {
-							music = ss[2]
-						}
 						go func() {
-							errch <- brook.RunBKServer(ss[0], ss[1], c.Int("timeout"), c.Int("deadline"), music)
+							errch <- brook.RunServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 						}()
 					}
 				}()
@@ -130,10 +132,6 @@ func main() {
 					Name:  "listen, l",
 					Usage: "Client listen address: like: 127.0.0.1:1080",
 				},
-				cli.BoolFlag{
-					Name:  "http",
-					Usage: "If true, client start a http(s) proxy. default socks5",
-				},
 				cli.StringFlag{
 					Name:  "server, s",
 					Usage: "Server address, like: 1.2.3.4:1080",
@@ -143,18 +141,28 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "tcpTimeout, t",
 					Value: 0,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "tcpDeadline, d",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.StringFlag{
-					Name:  "music, m",
-					Usage: "The music you love to listen: https://github.com/txthinking/brook/wiki/Music-List or a url(http://a.com/some https://a.com/some file:///path/to/file)",
+				cli.IntFlag{
+					Name:  "udpDeadline, u",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpSessionTime, i",
+					Value: 60,
+					Usage: "udp session time (s), in most cases need this",
+				},
+				cli.BoolFlag{
+					Name:  "http",
+					Usage: "If true, client start a http(s) proxy. default socks5",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -166,9 +174,9 @@ func main() {
 					enableDebug()
 				}
 				if c.Bool("http") {
-					return brook.RunBKHTTPClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"), c.String("music"))
+					return brook.RunClientAsHTTP(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
-				return brook.RunBKClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"), c.String("music"))
+				return brook.RunClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -184,12 +192,17 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "tcpTimeout, t",
 					Value: 0,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "tcpDeadline, d",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline, u",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
@@ -202,26 +215,31 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunSSServer(c.String("listen"), c.String("password"), c.Int("timeout"), c.Int("deadline"))
+				return brook.RunSSServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 			},
 		},
 		cli.Command{
 			Name:  "ssservers",
 			Usage: "Run as shadowsocks multiple servers mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
+				cli.StringSliceFlag{
+					Name:  "listenpassword, l",
+					Usage: "server address and password, like '0.0.0.0:1080 password'",
+				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "tcpTimeout, t",
 					Value: 0,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "tcpDeadline, d",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.StringSliceFlag{
-					Name:  "listenpassword, l",
-					Usage: "server address and password, like '0.0.0.0:1080 password'",
+				cli.IntFlag{
+					Name:  "udpDeadline, u",
+					Value: 0,
+					Usage: "connection deadline time (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -241,7 +259,7 @@ func main() {
 							return
 						}
 						go func() {
-							errch <- brook.RunSSServer(ss[0], ss[1], c.Int("timeout"), c.Int("deadline"))
+							errch <- brook.RunSSServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 						}()
 					}
 				}()
@@ -256,10 +274,6 @@ func main() {
 					Name:  "listen, l",
 					Usage: "Client listen address: like: 127.0.0.1:1080",
 				},
-				cli.BoolFlag{
-					Name:  "http",
-					Usage: "If true, client start a http(s) proxy. default socks5",
-				},
 				cli.StringFlag{
 					Name:  "server, s",
 					Usage: "Server address, like: 1.2.3.4:1080",
@@ -269,14 +283,28 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "tcpTimeout, t",
 					Value: 0,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "tcpDeadline, d",
 					Value: 0,
 					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline, u",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpSessionTime, i",
+					Value: 60,
+					Usage: "udp session time (s), in most cases need this",
+				},
+				cli.BoolFlag{
+					Name:  "http",
+					Usage: "If true, client start a http(s) proxy. default socks5",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -288,9 +316,57 @@ func main() {
 					enableDebug()
 				}
 				if c.Bool("http") {
-					return brook.RunSSHTTPClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"))
+					return brook.RunSSClientAsHTTP(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
-				return brook.RunSSClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("timeout"), c.Int("deadline"))
+				return brook.RunSSClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+			},
+		},
+		cli.Command{
+			Name:  "socks5",
+			Usage: "Run as raw socks5 server",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "listen, l",
+					Usage: "Client listen address: like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "username, u",
+					Usage: "User name, optional",
+				},
+				cli.StringFlag{
+					Name:  "password, p",
+					Usage: "Password, optional",
+				},
+				cli.IntFlag{
+					Name:  "tcpTimeout, t",
+					Value: 0,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				cli.IntFlag{
+					Name:  "tcpDeadline, d",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline, e",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpSessionTime, i",
+					Value: 60,
+					Usage: "udp session time (s), in most cases need this",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" {
+					cli.ShowCommandHelp(c, "socks5")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				return brook.RunSocks5Server(c.String("listen"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -299,32 +375,37 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "listen, l",
-					Usage: "Relay server address: :1080",
+					Usage: "Relay server address: 0.0.0.0:1080",
 				},
 				cli.StringFlag{
-					Name:  "server, s",
+					Name:  "remote, r",
 					Usage: "Server address, like: 1.2.3.4:1080",
 				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "tcpTimeout, t",
 					Value: 0,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "tcpDeadline, d",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline, u",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("server") == "" {
+				if c.String("listen") == "" || c.String("remote") == "" {
 					cli.ShowCommandHelp(c, "relay")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				return brook.RunRelay(c.String("listen"), c.String("server"), c.Int("timeout"), c.Int("deadline"))
+				return brook.RunRelay(c.String("listen"), c.String("remote"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 			},
 		},
 		cli.Command{
@@ -336,12 +417,17 @@ func main() {
 					Usage: "listen address and server address, like '0.0.0.0:1080 1.2.3.4:1080'",
 				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "tcpTimeout, t",
 					Value: 0,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "tcpDeadline, d",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline, u",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
@@ -363,7 +449,7 @@ func main() {
 							return
 						}
 						go func() {
-							errch <- brook.RunRelay(ss[0], ss[1], c.Int("timeout"), c.Int("deadline"))
+							errch <- brook.RunRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 						}()
 					}
 				}()
@@ -382,56 +468,14 @@ func main() {
 					Name:  "password, p",
 					Usage: "Server password",
 				},
-				cli.StringFlag{
-					Name:  "music, m",
-					Usage: "Server music",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "qr")
 					return nil
 				}
-				brook.QR(c.String("server"), c.String("password"), c.String("music"))
+				brook.QR(c.String("server"), c.String("password"))
 				return nil
-			},
-		},
-		cli.Command{
-			Name:  "socks5",
-			Usage: "Run as raw socks5 server",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
-				},
-				cli.StringFlag{
-					Name:  "username, u",
-					Usage: "User name, optional",
-				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Password, optional",
-				},
-				cli.IntFlag{
-					Name:  "timeout, t",
-					Value: 0,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				cli.IntFlag{
-					Name:  "deadline, d",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" {
-					cli.ShowCommandHelp(c, "socks5")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				return brook.RunSocks5Server(c.String("listen"), c.String("username"), c.String("password"), c.Int("timeout"), c.Int("deadline"))
 			},
 		},
 		cli.Command{
@@ -468,9 +512,6 @@ func main() {
 				return brook.RunSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.Int("timeout"), c.Int("deadline"))
 			},
 		},
-	}
-	if len(os.Args) > 1 {
-		os.Args[1] = strings.Replace(os.Args[1], "bk", "", -1)
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)

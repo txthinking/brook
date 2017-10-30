@@ -12,13 +12,14 @@ import (
 
 // Setting is the config of your server/client
 type Setting struct {
-	Type     string `json:"Type"`
-	Server   string `json:"Server"`
-	Password string `json:"Password"`
-	Timeout  int    `json:"Timeout"`
-	Deadline int    `json:"Deadline"`
-	Local    string `json:"Local"`
-	Music    string `json:"Music"`
+	Type           string `json:"Type"`
+	Address        string `json:"Address"`
+	Server         string `json:"Server"`
+	Password       string `json:"Password"`
+	TCPTimeout     int    `json:"TCPTimeout"`
+	TCPDeadline    int    `json:"TCPDeadline"`
+	UDPDeadline    int    `json:"UDPDeadline"`
+	UDPSessionTime int    `json:"UDPSessionTime"`
 }
 
 // PostSetting used to add/update setting
@@ -64,9 +65,9 @@ func StoreSetting(setting *Setting) error {
 	}
 	var fp string
 	if runtime.GOOS == "windows" {
-		fp = u.HomeDir + "\\.brook.setting"
+		fp = u.HomeDir + "\\.brookrc"
 	} else {
-		fp = u.HomeDir + "/.brook.setting"
+		fp = u.HomeDir + "/.brookrc"
 	}
 	f, err := os.OpenFile(fp, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0600)
 	if err != nil {
@@ -91,9 +92,9 @@ func RetrieveSetting() (*Setting, error) {
 	}
 	var fp string
 	if runtime.GOOS == "windows" {
-		fp = u.HomeDir + "\\.brook.setting"
+		fp = u.HomeDir + "\\.brookrc"
 	} else {
-		fp = u.HomeDir + "/.brook.setting"
+		fp = u.HomeDir + "/.brookrc"
 	}
 	f, err := os.OpenFile(fp, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {

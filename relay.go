@@ -5,95 +5,222 @@ import (
 	"log"
 	"net"
 	"time"
+
+	cache "github.com/patrickmn/go-cache"
+	"github.com/txthinking/socks5"
 )
 
-// Relay is a relay for two network
+// Relay is stream relay server
 type Relay struct {
-	Address  string
-	Server   string
-	Timeout  int
-	Deadline int
-	Listen   net.Listener
+	TCPAddr       *net.TCPAddr
+	UDPAddr       *net.UDPAddr
+	RemoteTCPAddr *net.TCPAddr
+	RemoteUDPAddr *net.UDPAddr
+	TCPListen     *net.TCPListener
+	UDPConn       *net.UDPConn
+	UDPExchanges  *cache.Cache
+	TCPDeadline   int // Not refreshed
+	TCPTimeout    int
+	UDPDeadline   int // Refreshed
 }
 
-// NewRelay returns a new Relay
-func NewRelay(address, server string, timeout, deadline int) *Relay {
-	r := &Relay{
-		Address:  address,
-		Server:   server,
-		Timeout:  timeout,
-		Deadline: deadline,
+// NewRelay return a server which allow none method
+func NewRelay(addr, remote string, tcpTimeout, tcpDeadline, udpDeadline int) (*Relay, error) {
+	taddr, err := net.ResolveTCPAddr("tcp", addr)
+	if err != nil {
+		return nil, err
 	}
-	return r
+	uaddr, err := net.ResolveUDPAddr("udp", addr)
+	if err != nil {
+		return nil, err
+	}
+	rtaddr, err := net.ResolveTCPAddr("tcp", remote)
+	if err != nil {
+		return nil, err
+	}
+	ruaddr, err := net.ResolveUDPAddr("udp", remote)
+	if err != nil {
+		return nil, err
+	}
+	cs := cache.New(60*time.Minute, 10*time.Minute)
+	s := &Relay{
+		TCPAddr:       taddr,
+		UDPAddr:       uaddr,
+		RemoteTCPAddr: rtaddr,
+		RemoteUDPAddr: ruaddr,
+		UDPExchanges:  cs,
+		TCPTimeout:    tcpTimeout,
+		TCPDeadline:   tcpDeadline,
+		UDPDeadline:   udpDeadline,
+	}
+	return s, nil
 }
 
-// ListenAndServe will let relay start to listen and serve
-func (r *Relay) ListenAndServe() error {
-	ta, err := net.ResolveTCPAddr("tcp", r.Address)
+// Run server
+func (s *Relay) ListenAndServe() error {
+	errch := make(chan error)
+	go func() {
+		errch <- s.RunTCPServer()
+	}()
+	go func() {
+		errch <- s.RunUDPServer()
+	}()
+	return <-errch
+}
+
+// RunTCPServer starts tcp server
+func (s *Relay) RunTCPServer() error {
+	var err error
+	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
 	if err != nil {
 		return err
 	}
-	l, err := net.ListenTCP("tcp", ta)
-	if err != nil {
-		return err
-	}
-	r.Listen = l
-
+	defer s.TCPListen.Close()
 	for {
-		conn, err := l.AcceptTCP()
+		c, err := s.TCPListen.AcceptTCP()
 		if err != nil {
 			return err
 		}
-		go func(conn *net.TCPConn) {
-			if err := r.handle(conn); err != nil {
+		go func(c *net.TCPConn) {
+			defer c.Close()
+			if s.TCPTimeout != 0 {
+				if err := c.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
+					log.Println(err)
+					return
+				}
+			}
+			if s.TCPDeadline != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+					log.Println(err)
+					return
+				}
+			}
+			if err := s.TCPHandle(c); err != nil {
 				log.Println(err)
 			}
-		}(conn)
+		}(c)
 	}
+	return nil
 }
 
-// Shutdown used to stop the relay
-func (r *Relay) Shutdown() error {
-	if r.Listen == nil {
+// RunUDPServer starts udp server
+func (s *Relay) RunUDPServer() error {
+	var err error
+	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
+	if err != nil {
+		return err
+	}
+	defer s.UDPConn.Close()
+	for {
+		b := make([]byte, 65536)
+		n, addr, err := s.UDPConn.ReadFromUDP(b)
+		if err != nil {
+			return err
+		}
+		go func(addr *net.UDPAddr, b []byte) {
+			if err := s.UDPHandle(addr, b); err != nil {
+				log.Println(err)
+				return
+			}
+		}(addr, b[0:n])
+	}
+	return nil
+}
+
+// Shutdown server
+func (s *Relay) Shutdown() error {
+	var err, err1 error
+	if s.TCPListen != nil {
+		err = s.TCPListen.Close()
+	}
+	if s.UDPConn != nil {
+		err1 = s.UDPConn.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return err1
+}
+
+// TCPHandle handle request. You may prefer to do yourself.
+func (s *Relay) TCPHandle(c *net.TCPConn) error {
+	tmp, err := Dial.Dial("tcp", s.RemoteTCPAddr.String())
+	if err != nil {
+		return err
+	}
+	rc := tmp.(*net.TCPConn)
+	defer rc.Close()
+	if s.TCPTimeout != 0 {
+		if err := rc.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
+			return err
+		}
+	}
+	if s.TCPDeadline != 0 {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+			return err
+		}
+	}
+
+	go func() {
+		_, _ = io.Copy(c, rc)
+	}()
+	_, _ = io.Copy(rc, c)
+	return nil
+}
+
+// UDPHandle handle packet
+func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
+	send := func(ue *socks5.UDPExchange, data []byte) error {
+		_, err := ue.RemoteConn.Write(data)
+		if err != nil {
+			return err
+		}
 		return nil
 	}
-	return r.Listen.Close()
-}
 
-func (r *Relay) handle(conn *net.TCPConn) error {
-	defer conn.Close()
-	if r.Timeout != 0 {
-		if err := conn.SetKeepAlivePeriod(time.Duration(r.Timeout) * time.Second); err != nil {
-			return err
-		}
+	var ue *socks5.UDPExchange
+	iue, ok := s.UDPExchanges.Get(addr.String())
+	if ok {
+		ue = iue.(*socks5.UDPExchange)
+		return send(ue, b)
 	}
-	if r.Deadline != 0 {
-		if err := conn.SetDeadline(time.Now().Add(time.Duration(r.Deadline) * time.Second)); err != nil {
-			return err
-		}
-	}
-	ta, err := net.ResolveTCPAddr("tcp", r.Server)
+
+	tmp, err := Dial.Dial("udp", s.RemoteUDPAddr.String())
 	if err != nil {
 		return err
 	}
-	rc, err := net.DialTCP("tcp", nil, ta)
-	if err != nil {
+	rc := tmp.(*net.UDPConn)
+	ue = &socks5.UDPExchange{
+		ClientAddr: addr,
+		RemoteConn: rc,
+	}
+	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
+	if err := send(ue, b); err != nil {
 		return err
 	}
-	defer rc.Close()
-	if r.Timeout != 0 {
-		if err := rc.SetKeepAlivePeriod(time.Duration(r.Timeout) * time.Second); err != nil {
-			return err
+	go func(ue *socks5.UDPExchange) {
+		defer func() {
+			s.UDPExchanges.Delete(ue.ClientAddr.String())
+			ue.RemoteConn.Close()
+		}()
+		var b [65536]byte
+		for {
+			if s.UDPDeadline != 0 {
+				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+					log.Println(err)
+					break
+				}
+			}
+			n, err := ue.RemoteConn.Read(b[:])
+			if err != nil {
+				log.Println(err)
+				break
+			}
+			if _, err := s.UDPConn.WriteToUDP(b[0:n], ue.ClientAddr); err != nil {
+				log.Println(err)
+				break
+			}
 		}
-	}
-	if r.Deadline != 0 {
-		if err := rc.SetDeadline(time.Now().Add(time.Duration(r.Deadline) * time.Second)); err != nil {
-			return err
-		}
-	}
-	go func() {
-		_, _ = io.Copy(conn, rc)
-	}()
-	_, _ = io.Copy(rc, conn)
+	}(ue)
 	return nil
 }

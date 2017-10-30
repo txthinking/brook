@@ -8,17 +8,18 @@ import (
 	"net"
 	"time"
 
+	"github.com/txthinking/ant"
 	"golang.org/x/net/proxy"
 )
 
 type Socks5ToHTTP struct {
-	Address       string
+	Addr          *net.TCPAddr
 	Socks5Address string
 	Dial          proxy.Dialer
 	Timeout       int
 	Deadline      int
-	Listen        net.Listener
-	HTTPMiddleman HTTPMiddleman
+	Listen        *net.TCPListener
+	Middleman     HTTPMiddleman
 }
 
 func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToHTTP, error) {
@@ -26,8 +27,12 @@ func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToH
 	if err != nil {
 		return nil, err
 	}
+	ta, err := net.ResolveTCPAddr("tcp", addr)
+	if err != nil {
+		return nil, err
+	}
 	return &Socks5ToHTTP{
-		Address:       addr,
+		Addr:          ta,
 		Socks5Address: socks5addr,
 		Dial:          dial,
 		Timeout:       timeout,
@@ -36,60 +41,54 @@ func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToH
 }
 
 func (s *Socks5ToHTTP) ListenAndServe(h HTTPMiddleman) error {
-	ta, err := net.ResolveTCPAddr("tcp", s.Address)
-	if err != nil {
-		return err
-	}
-	l, err := net.ListenTCP("tcp", ta)
+	l, err := net.ListenTCP("tcp", s.Addr)
 	if err != nil {
 		return err
 	}
 	defer l.Close()
 	s.Listen = l
-	s.HTTPMiddleman = h
+	s.Middleman = h
 	for {
-		conn, err := l.AcceptTCP()
+		c, err := l.AcceptTCP()
 		if err != nil {
 			return err
 		}
-		go func(conn *net.TCPConn) {
-			if err := s.handle(conn); err != nil {
-				log.Println(err)
+		go func(c *net.TCPConn) {
+			defer c.Close()
+			if s.Timeout != 0 {
+				if err := c.SetKeepAlivePeriod(time.Duration(s.Timeout) * time.Second); err != nil {
+					log.Println(err)
+					return
+				}
 			}
-		}(conn)
+			if s.Deadline != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(s.Deadline) * time.Second)); err != nil {
+					log.Println(err)
+					return
+				}
+			}
+			if err := s.Handle(c); err != nil {
+				log.Println(err)
+				return
+			}
+		}(c)
 	}
 }
 
-func (s *Socks5ToHTTP) Shutdown() error {
-	if s.Listen == nil {
-		return nil
-	}
-	return s.Listen.Close()
-}
-
-func (s *Socks5ToHTTP) handle(conn *net.TCPConn) error {
-	defer conn.Close()
-	if s.Timeout != 0 {
-		if err := conn.SetKeepAlivePeriod(time.Duration(s.Timeout) * time.Second); err != nil {
-			return err
-		}
-	}
-	if s.Deadline != 0 {
-		if err := conn.SetDeadline(time.Now().Add(time.Duration(s.Deadline) * time.Second)); err != nil {
-			return err
-		}
-	}
-
+func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 	b := make([]byte, 0, 1024)
 	for {
 		var b1 [1024]byte
-		n, err := conn.Read(b1[:])
+		n, err := c.Read(b1[:])
 		if err != nil {
 			return err
 		}
 		b = append(b, b1[:n]...)
 		if bytes.Contains(b, []byte{0x0d, 0x0a, 0x0d, 0x0a}) {
 			break
+		}
+		if len(b) >= 2083+18 {
+			return errors.New("HTTP header too long")
 		}
 	}
 
@@ -101,30 +100,30 @@ func (s *Socks5ToHTTP) handle(conn *net.TCPConn) error {
 	var addr string
 	if method == "CONNECT" {
 		addr = address
-	} else {
+	}
+	if method != "CONNECT" {
 		var err error
-		addr, err = GetAddressFromURL(address)
+		addr, err = ant.GetAddressFromURL(address)
 		if err != nil {
 			return err
 		}
 	}
 
-	if s.HTTPMiddleman != nil {
-		if handled, err := s.HTTPMiddleman.HandleHTTPProxy(method, addr, b, conn); err != nil || handled {
+	if s.Middleman != nil {
+		if done, err := s.Middleman.Handle(method, addr, b, c); err != nil || done {
 			return err
 		}
 	}
 
-	rc, err := s.Dial.Dial("tcp", addr)
+	tmp, err := Dial.Dial("tcp", addr)
 	if err != nil {
 		return err
 	}
+	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if s.Timeout != 0 {
-		if rtc, ok := rc.(*net.TCPConn); ok {
-			if err := rtc.SetKeepAlivePeriod(time.Duration(s.Timeout) * time.Second); err != nil {
-				return err
-			}
+		if err := rc.SetKeepAlivePeriod(time.Duration(s.Timeout) * time.Second); err != nil {
+			return err
 		}
 	}
 	if s.Deadline != 0 {
@@ -133,7 +132,7 @@ func (s *Socks5ToHTTP) handle(conn *net.TCPConn) error {
 		}
 	}
 	if method == "CONNECT" {
-		_, err := conn.Write([]byte("HTTP/1.1 200 Connection established\r\n\r\n"))
+		_, err := c.Write([]byte("HTTP/1.1 200 Connection established\r\n\r\n"))
 		if err != nil {
 			return err
 		}
@@ -144,8 +143,15 @@ func (s *Socks5ToHTTP) handle(conn *net.TCPConn) error {
 		}
 	}
 	go func() {
-		_, _ = io.Copy(rc, conn)
+		_, _ = io.Copy(rc, c)
 	}()
-	_, _ = io.Copy(conn, rc)
+	_, _ = io.Copy(c, rc)
 	return nil
+}
+
+func (s *Socks5ToHTTP) Shutdown() error {
+	if s.Listen == nil {
+		return nil
+	}
+	return s.Listen.Close()
 }

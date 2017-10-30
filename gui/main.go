@@ -12,7 +12,7 @@ import (
 const pac = "http://local.txthinking.com:1980/pac"
 
 func main() {
-	systray.Run(run)
+	systray.Run(run, func() {})
 }
 
 func run() {
@@ -45,9 +45,8 @@ func run() {
 
 	showNotice("Status", "stopped")
 	mStop.Disable()
-	var bk *brook.BKClient
+	var bk *brook.Client
 	var ss *brook.SSClient
-	var s5 *brook.S5Client
 	var quitTimes int
 	quit := make(chan struct{})
 
@@ -69,7 +68,7 @@ func run() {
 			return
 		}
 		if st.Type == "bk" {
-			bk, err = brook.NewBKClient(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, st.Music, nil)
+			bk, err = brook.NewClient(st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
 			if err != nil {
 				showNotice("Error", err.Error())
 				return
@@ -80,15 +79,8 @@ func run() {
 			}
 		}
 		if st.Type == "ss" {
-			ss = brook.NewSSClient(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, nil)
+			ss, err = brook.NewSSClient(st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
 			if err := ss.ListenAndServe(nil); err != nil {
-				showNotice("Status", "stopped")
-				return
-			}
-		}
-		if st.Type == "s5" {
-			s5 = brook.NewS5Client(st.Local, st.Server, st.Password, st.Timeout, st.Deadline, nil)
-			if err := s5.ListenAndServe(); err != nil {
 				showNotice("Status", "stopped")
 				return
 			}
@@ -107,10 +99,6 @@ func run() {
 		if ss != nil {
 			ss.Shutdown()
 			ss = nil
-		}
-		if s5 != nil {
-			s5.Shutdown()
-			s5 = nil
 		}
 		return nil
 	}

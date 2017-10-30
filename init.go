@@ -1,8 +1,13 @@
 package brook
 
-import "github.com/txthinking/socks5"
+import (
+	"github.com/txthinking/ant"
+	"github.com/txthinking/socks5"
+)
 
-// EnableDebug will print more logs
+var Dial ant.Dialer = ant.DefaultDial
+
+// EnableDebug
 func EnableDebug() {
 	socks5.Debug = true
 }

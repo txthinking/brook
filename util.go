@@ -2,22 +2,19 @@ package brook
 
 import (
 	"net"
-	"net/url"
-	"regexp"
+
+	"github.com/txthinking/socks5"
 )
 
-func GetAddressFromURL(s string) (string, error) {
-	u, err := url.Parse(s)
-	if err != nil {
-		return "", err
+func ErrorReply(r *socks5.Request, c *net.TCPConn, e error) error {
+	var p *socks5.Reply
+	if r.Atyp == socks5.ATYPIPv4 || r.Atyp == socks5.ATYPDomain {
+		p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv4, net.IPv4zero, []byte{0x00, 0x00})
+	} else {
+		p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, net.IPv6zero, []byte{0x00, 0x00})
 	}
-	if HasPort(u.Host) {
-		return u.Host, nil
+	if err := p.WriteTo(c); err != nil {
+		return err
 	}
-	return net.JoinHostPort(u.Host, "80"), nil
-}
-
-func HasPort(host string) bool {
-	r := regexp.MustCompile(`.+:\d+$`)
-	return r.MatchString(host)
+	return e
 }
