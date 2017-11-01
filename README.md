@@ -136,10 +136,9 @@ $ brook streamserver -l :9999 -p password
 
 ```
 # Run as multiple brook servers
-$ brook bkservers \
+$ brook servers \
         -l ":9999 password" \
-        -l ":8888 password" \
-        -t 10
+        -l ":8888 password"
 ```
 
 #### Shadowsocks Server
