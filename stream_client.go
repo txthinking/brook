@@ -29,8 +29,8 @@ type StreamClient struct {
 }
 
 // NewStreamClient returns a new StreamClient
-func NewStreamClient(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*StreamClient, error) {
-	s5, err := socks5.NewClassicServer(addr, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func NewStreamClient(addr, udpAddr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*StreamClient, error) {
+	s5, err := socks5.NewClassicServer(addr, udpAddr, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func (x *StreamClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {
-		caddr, err := r.UDP(c, x.Server.ServerAddr)
+		caddr, err := r.UDP(c, x.Server.UDPAddr)
 		if err != nil {
 			return err
 		}

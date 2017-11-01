@@ -7,14 +7,22 @@
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <dom-module id="x-setting">
     <template>
+        <style>
+            paper-button {
+                background-color: #000000;
+                color: #ffffff;
+            }
+        </style>
         <paper-dropdown-menu label="Type">
             <paper-menu class="dropdown-content" attr-for-selected="name" selected="{{o.Type}}">
-                <paper-item name="bk">Brook</paper-item>
-                <paper-item name="ss">Shadowsocks</paper-item>
+                <paper-item name="Brook">Brook</paper-item>
+                <paper-item name="Brook Stream">Brook Stream</paper-item>
+                <paper-item name="Shadowsocks">Shadowsocks</paper-item>
             </paper-menu>
         </paper-dropdown-menu>
         <paper-input label="Server" is="iron-input" value="{{o.Server}}" placeholder="1.2.3.4:8080"></paper-input>
         <paper-input label="Password" is="iron-input" value="{{o.Password}}" placeholder="your server password"></paper-input>
+        <paper-input label="UDP Session Time(s)" type="number" is="iron-input" value="{{o.UDPSessionTime}}" placeholder="60"></paper-input>
         <template is="dom-if" if="{{isSS(o.Type)}}">
         <paper-input label="Method" disabled is="iron-input" value="aes-256-cfb"></paper-input>
         </template>
@@ -30,21 +38,22 @@
             },
             ready: function(){
                 this.o = {
-                    "Type": "bk",
+                    "Type": "Brook",
+                    "Address": "local.txthinking.com:1080",
                     "Server": "",
                     "Password": "",
-                    "Local": "local.txthinking.com:1080",
+                    "TCPTimeout": 60,
+                    "TCPDeadline": 0,
+                    "UDPDeadline": 60,
+                    "UDPSessionTime": 60,
                 };
                 this.init();
             },
             init: function(){
                 this.initSetting();
             },
-            isBrook: function(tp){
-                return tp === "bk";
-            },
             isSS: function(tp){
-                return tp === "ss";
+                return tp === "Shadowsocks";
             },
             initSetting: function(){
                 var self = this;
@@ -56,10 +65,6 @@
                     switch(res.status) {
                     case 200:
                         self.o = res.body;
-                        self.o.Local = "local.txthinking.com:1080";
-                        if(self.o.Type === ""){
-                            self.o.Type = "bk";
-                        }
                         break;
                     default:
                         self.$.toast.text = res.text;
@@ -70,6 +75,7 @@
             },
             go: function(){
                 this.o.Type = this.o.Type.trim();
+                this.o.Address = this.o.Address.trim();
                 this.o.Server = this.o.Server.trim();
                 if(!/.+?\:\d+/.test(this.o.Server)){
                     this.$.toast.text = "Server Invalid";
@@ -82,7 +88,14 @@
                     this.$.toast.open();
                     return;
                 }
-                this.o.Local = this.o.Local.trim();
+                this.o.TCPTimeout = isNaN(parseInt(this.o.TCPTimeout)) ? 0 : parseInt(this.o.TCPTimeout);
+                this.o.TCPDeadline = isNaN(parseInt(this.o.TCPDeadline)) ? 0 : parseInt(this.o.TCPDeadline);
+                this.o.UDPDeadline = parseInt(this.o.UDPDeadline);
+                this.o.UDPDeadline = isNaN(parseInt(this.o.UDPDeadline)) ? 0 : parseInt(this.o.UDPDeadline);
+                this.o.UDPSessionTime = parseInt(this.o.UDPSessionTime);
+                if (isNaN(this.o.UDPSessionTime) || this.o.UDPSessionTime === 0){
+                    this.o.UDPSessionTime = 60;
+                }
                 var self = this;
                 R.post('/setting')
                 .set('Accept', 'application/json')

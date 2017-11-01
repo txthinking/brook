@@ -19,7 +19,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20170909"
+	app.Version = "20171111"
 	app.Usage = "A Cross-Platform Proxy Software"
 	app.Author = "Cloud"
 	app.Email = "cloud@txthinking.com"
@@ -50,17 +50,17 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -85,17 +85,17 @@ func main() {
 					Usage: "server and password, like '0.0.0.0:1080 password'",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -129,7 +129,11 @@ func main() {
 			Usage: "Run as client mode",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "listen, l",
+					Name:  "tcpListen, t",
+					Usage: "Client listen address: like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "udpListen, u",
 					Usage: "Client listen address: like: 127.0.0.1:1080",
 				},
 				cli.StringFlag{
@@ -141,22 +145,22 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpSessionTime, i",
+					Name:  "udpSessionTime",
 					Value: 60,
 					Usage: "udp session time (s), in most cases need this",
 				},
@@ -166,7 +170,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("tcpListen") == "" || c.String("udpListen") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "client")
 					return nil
 				}
@@ -174,9 +178,9 @@ func main() {
 					enableDebug()
 				}
 				if c.Bool("http") {
-					return brook.RunClientAsHTTP(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+					return brook.RunClientAsHTTP(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
-				return brook.RunClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				return brook.RunClient(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -192,17 +196,17 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -227,17 +231,17 @@ func main() {
 					Usage: "server and password, like '0.0.0.0:1080 password'",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -271,7 +275,11 @@ func main() {
 			Usage: "Run as client mode",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "listen, l",
+					Name:  "tcpListen, t",
+					Usage: "Client listen address: like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "udpListen, u",
 					Usage: "Client listen address: like: 127.0.0.1:1080",
 				},
 				cli.StringFlag{
@@ -283,22 +291,22 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpSessionTime, i",
+					Name:  "udpSessionTime",
 					Value: 60,
 					Usage: "udp session time (s), in most cases need this",
 				},
@@ -308,7 +316,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("tcpListen") == "" || c.String("udpListen") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "streamclient")
 					return nil
 				}
@@ -316,9 +324,9 @@ func main() {
 					enableDebug()
 				}
 				if c.Bool("http") {
-					return brook.RunStreamClientAsHTTP(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+					return brook.RunStreamClientAsHTTP(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
-				return brook.RunStreamClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				return brook.RunStreamClient(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -334,17 +342,17 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -369,17 +377,17 @@ func main() {
 					Usage: "server address and password, like '0.0.0.0:1080 password'",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -413,7 +421,11 @@ func main() {
 			Usage: "Run as shadowsocks client mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "listen, l",
+					Name:  "tcpListen, t",
+					Usage: "Client listen address: like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "udpListen, u",
 					Usage: "Client listen address: like: 127.0.0.1:1080",
 				},
 				cli.StringFlag{
@@ -425,22 +437,22 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpSessionTime, i",
+					Name:  "udpSessionTime",
 					Value: 60,
 					Usage: "udp session time (s), in most cases need this",
 				},
@@ -450,7 +462,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("tcpListen") == "" || c.String("udpListen") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "ssclient")
 					return nil
 				}
@@ -458,9 +470,9 @@ func main() {
 					enableDebug()
 				}
 				if c.Bool("http") {
-					return brook.RunSSClientAsHTTP(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+					return brook.RunSSClientAsHTTP(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
-				return brook.RunSSClient(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				return brook.RunSSClient(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -468,47 +480,51 @@ func main() {
 			Usage: "Run as raw socks5 server",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "listen, l",
+					Name:  "tcpListen, t",
 					Usage: "Client listen address: like: 127.0.0.1:1080",
 				},
 				cli.StringFlag{
-					Name:  "username, u",
+					Name:  "udpListen, u",
+					Usage: "Client listen address: like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "username",
 					Usage: "User name, optional",
 				},
 				cli.StringFlag{
-					Name:  "password, p",
+					Name:  "password",
 					Usage: "Password, optional",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, e",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpSessionTime, i",
+					Name:  "udpSessionTime",
 					Value: 60,
 					Usage: "udp session time (s), in most cases need this",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" {
+				if c.String("tcpListen") == "" || c.String("udpListen") == "" {
 					cli.ShowCommandHelp(c, "socks5")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				return brook.RunSocks5Server(c.String("listen"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				return brook.RunSocks5Server(c.String("tcpListen"), c.String("udpListen"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -524,17 +540,17 @@ func main() {
 					Usage: "Server address, like: 1.2.3.4:1080",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -559,17 +575,17 @@ func main() {
 					Usage: "listen address and server address, like '0.0.0.0:1080 1.2.3.4:1080'",
 				},
 				cli.IntFlag{
-					Name:  "tcpTimeout, t",
+					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "tcpDeadline, d",
+					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
-					Name:  "udpDeadline, u",
+					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -610,13 +626,17 @@ func main() {
 					Name:  "password, p",
 					Usage: "Server password",
 				},
+				cli.BoolFlag{
+					Name:  "stream",
+					Usage: "Brook stream or not",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "qr")
 					return nil
 				}
-				brook.QR(c.String("server"), c.String("password"))
+				brook.QR(c.Bool("stream"), c.String("server"), c.String("password"))
 				return nil
 			},
 		},
@@ -633,12 +653,12 @@ func main() {
 					Usage: "Socks5 address",
 				},
 				cli.IntFlag{
-					Name:  "timeout, t",
+					Name:  "timeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
 				cli.IntFlag{
-					Name:  "deadline, d",
+					Name:  "deadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},

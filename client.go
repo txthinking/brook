@@ -27,8 +27,8 @@ type Client struct {
 }
 
 // NewClient returns a new Client
-func NewClient(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Client, error) {
-	s5, err := socks5.NewClassicServer(addr, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func NewClient(addr, udpAddr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Client, error) {
+	s5, err := socks5.NewClassicServer(addr, udpAddr, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +114,6 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		go func() {
 			n := make([]byte, 12)
 			if _, err := io.ReadFull(rc, n); err != nil {
-				log.Println(err)
 				return
 			}
 			k, err := GetKey(x.Password, n)
@@ -126,17 +125,14 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 			for {
 				if x.TCPDeadline != 0 {
 					if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
-						log.Println(err)
 						return
 					}
 				}
 				b, n, err = ReadFrom(rc, k, n, false)
 				if err != nil {
-					log.Println(err)
 					return
 				}
 				if _, err := c.Write(b); err != nil {
-					log.Println(err)
 					return
 				}
 			}
@@ -146,25 +142,22 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		for {
 			if x.TCPDeadline != 0 {
 				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
-					log.Println(err)
 					return nil
 				}
 			}
 			i, err := c.Read(b[:])
 			if err != nil {
-				log.Println(err)
 				return nil
 			}
 			n, err = WriteTo(rc, b[0:i], k, n, false)
 			if err != nil {
-				log.Println(err)
 				return nil
 			}
 		}
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {
-		caddr, err := r.UDP(c, x.Server.ServerAddr)
+		caddr, err := r.UDP(c, x.Server.UDPAddr)
 		if err != nil {
 			return err
 		}
@@ -302,6 +295,7 @@ func (x *Client) ListenAndServeHTTP(m HTTPMiddleman) error {
 
 // HTTPHandle handle http request
 func (x *Client) HTTPHandle(c *net.TCPConn) error {
+	log.Println("Got http connection")
 	b := make([]byte, 0, 1024)
 	for {
 		var b1 [1024]byte
@@ -394,7 +388,6 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	go func() {
 		n := make([]byte, 12)
 		if _, err := io.ReadFull(rc, n); err != nil {
-			log.Println(err)
 			return
 		}
 		k, err := GetKey(x.Password, n)
@@ -406,17 +399,14 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 		for {
 			if x.TCPDeadline != 0 {
 				if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
-					log.Println(err)
 					return
 				}
 			}
 			b, n, err = ReadFrom(rc, k, n, false)
 			if err != nil {
-				log.Println(err)
 				return
 			}
 			if _, err := c.Write(b); err != nil {
-				log.Println(err)
 				return
 			}
 		}
@@ -426,18 +416,15 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	for {
 		if x.TCPDeadline != 0 {
 			if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
-				log.Println(err)
 				return nil
 			}
 		}
 		i, err := c.Read(bf[:])
 		if err != nil {
-			log.Println(err)
 			return nil
 		}
 		n, err = WriteTo(rc, bf[0:i], k, n, false)
 		if err != nil {
-			log.Println(err)
 			return nil
 		}
 	}

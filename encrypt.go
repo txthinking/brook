@@ -51,6 +51,7 @@ func ReadFrom(c *net.TCPConn, k, n []byte, hasTime bool) ([]byte, []byte, error)
 			return nil, nil, err
 		}
 		if time.Now().Unix()-int64(i) > 90 {
+			time.Sleep(time.Duration(ant.Random(1, 60*10)) * time.Second)
 			return nil, nil, errors.New("Expired request")
 		}
 		d = d[10:]
@@ -128,6 +129,7 @@ func Decrypt(p, b []byte) (a byte, addr, port, data []byte, err error) {
 		return
 	}
 	if time.Now().Unix()-int64(i) > 90 {
+		time.Sleep(time.Duration(ant.Random(1, 60*10)) * time.Second)
 		err = errors.New("Expired request")
 		return
 	}

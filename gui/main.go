@@ -39,13 +39,14 @@ func run() {
 	systray.AddMenuItem("---------", "").Disable()
 	mGithub := systray.AddMenuItem("Upgrade", "")
 	mEmail := systray.AddMenuItem("Contact: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20170909", "")
+	systray.AddMenuItem("Version: 20171111", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
 	showNotice("Status", "stopped")
 	mStop.Disable()
 	var bk *brook.Client
+	var bs *brook.StreamClient
 	var ss *brook.SSClient
 	var quitTimes int
 	quit := make(chan struct{})
@@ -67,8 +68,8 @@ func run() {
 			showNotice("Error", err.Error())
 			return
 		}
-		if st.Type == "bk" {
-			bk, err = brook.NewClient(st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
+		if st.Type == "Brook" {
+			bk, err = brook.NewClient(st.Address, st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
 			if err != nil {
 				showNotice("Error", err.Error())
 				return
@@ -78,8 +79,19 @@ func run() {
 				return
 			}
 		}
-		if st.Type == "ss" {
-			ss, err = brook.NewSSClient(st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
+		if st.Type == "Brook Stream" {
+			bs, err = brook.NewStreamClient(st.Address, st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
+			if err != nil {
+				showNotice("Error", err.Error())
+				return
+			}
+			if err := bs.ListenAndServe(nil); err != nil {
+				showNotice("Status", "stopped")
+				return
+			}
+		}
+		if st.Type == "Shadowsocks" {
+			ss, err = brook.NewSSClient(st.Address, st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
 			if err := ss.ListenAndServe(nil); err != nil {
 				showNotice("Status", "stopped")
 				return
@@ -95,6 +107,10 @@ func run() {
 		if bk != nil {
 			bk.Shutdown()
 			bk = nil
+		}
+		if bs != nil {
+			bs.Shutdown()
+			bs = nil
 		}
 		if ss != nil {
 			ss.Shutdown()

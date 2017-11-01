@@ -10,8 +10,8 @@ func RunServer(address, password string, tcpTimeout, tcpDeadline, udpDeadline in
 }
 
 // RunClient used to make a new Client and start a socks5 proxy to listen
-func RunClient(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	c, err := NewClient(address, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func RunClient(address, udpAddress, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
+	c, err := NewClient(address, udpAddress, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return err
 	}
@@ -19,8 +19,8 @@ func RunClient(address, server, password string, tcpTimeout, tcpDeadline, udpDea
 }
 
 // RunClientAsHTTP used to make a new Client and start a http proxy to listen
-func RunClientAsHTTP(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	c, err := NewClient(address, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func RunClientAsHTTP(address, udpAddress, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
+	c, err := NewClient(address, udpAddress, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return err
 	}
@@ -37,8 +37,8 @@ func RunStreamServer(address, password string, tcpTimeout, tcpDeadline, udpDeadl
 }
 
 // RunStreamClient used to make a new StreamClient and start a socks5 proxy to listen
-func RunStreamClient(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	c, err := NewStreamClient(address, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func RunStreamClient(address, udpAddress, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
+	c, err := NewStreamClient(address, udpAddress, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return err
 	}
@@ -46,8 +46,8 @@ func RunStreamClient(address, server, password string, tcpTimeout, tcpDeadline, 
 }
 
 // RunClientAsHTTP used to make a new StreamClient and start a http proxy to listen
-func RunStreamClientAsHTTP(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	c, err := NewStreamClient(address, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func RunStreamClientAsHTTP(address, udpAddress, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
+	c, err := NewStreamClient(address, udpAddress, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return err
 	}
@@ -64,8 +64,8 @@ func RunSSServer(address, password string, tcpTimeout, tcpDeadline, udpDeadline 
 }
 
 // RunSSClient used to make a new Client and start a socks5 proxy to listen
-func RunSSClient(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	c, err := NewSSClient(address, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func RunSSClient(address, udpAddress, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
+	c, err := NewSSClient(address, udpAddress, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return err
 	}
@@ -73,8 +73,8 @@ func RunSSClient(address, server, password string, tcpTimeout, tcpDeadline, udpD
 }
 
 // RunSSClientAsHTTP used to make a new Client and start a http proxy to listen
-func RunSSClientAsHTTP(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	c, err := NewSSClient(address, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func RunSSClientAsHTTP(address, udpAddress, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
+	c, err := NewSSClient(address, udpAddress, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return err
 	}
@@ -91,8 +91,8 @@ func RunRelay(address, remote string, tcpTimeout, tcpDeadline, udpDeadline int) 
 }
 
 // RunSocks5Server used to make a new Socks5Server and start a raw socks5 proxy to listen
-func RunSocks5Server(address, username, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	s, err := NewSocks5Server(address, username, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func RunSocks5Server(address, udpAddress, username, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
+	s, err := NewSocks5Server(address, udpAddress, username, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return err
 	}
