@@ -15,7 +15,7 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// SSClient is the client of raw socks5 protocol
+// SSClient
 type SSClient struct {
 	Server          *socks5.Server
 	RemoteAddr      string
@@ -54,7 +54,6 @@ func (x *SSClient) ListenAndServe(sm Socks5Middleman) error {
 
 // TCPHandle handles tcp reqeust
 func (x *SSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
-	// waiting for reply about connect failure or success
 	if x.Socks5Middleman != nil {
 		done, err := x.Socks5Middleman.TCPHandle(s, c, r)
 		if err != nil {
@@ -68,7 +67,6 @@ func (x *SSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 		}
 	}
 
-	// reply ok and choose address according to cmd or something wrong
 	if r.Cmd == socks5.CmdConnect {
 		tmp, err := Dial.Dial("tcp", x.RemoteAddr)
 		if err != nil {
@@ -354,11 +352,6 @@ func (x *SSClient) HTTPHandle(c *net.TCPConn) error {
 	return nil
 }
 
-// Shutdown used to stop the client
-func (x *SSClient) Shutdown() error {
-	return x.Server.Stop()
-}
-
 // WrapChiperConn make a chiper conn
 func (x *SSClient) WrapCipherConn(conn *net.TCPConn) (*CipherConn, error) {
 	iv := make([]byte, aes.BlockSize)
@@ -428,4 +421,9 @@ func (x *SSClient) Decrypt(cd []byte) (a byte, addr, port, data []byte, err erro
 	data = bb[minl:]
 	err = nil
 	return
+}
+
+// Shutdown used to stop the client
+func (x *SSClient) Shutdown() error {
+	return x.Server.Stop()
 }

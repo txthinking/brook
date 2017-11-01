@@ -10,7 +10,7 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// Server is socks5 server wrapper
+// Server
 type Server struct {
 	Password     []byte
 	TCPAddr      *net.TCPAddr
@@ -23,7 +23,7 @@ type Server struct {
 	UDPDeadline  int
 }
 
-// NewServer return a server which allow none method
+// NewServer
 func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Server, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
@@ -117,7 +117,7 @@ func (s *Server) RunUDPServer() error {
 	return nil
 }
 
-// TCPHandle handle request. You may prefer to do yourself.
+// TCPHandle handle request
 func (s *Server) TCPHandle(c *net.TCPConn) error {
 	cn := make([]byte, 12)
 	if _, err := io.ReadFull(c, cn); err != nil {

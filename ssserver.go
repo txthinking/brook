@@ -14,7 +14,7 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// SSServer is socks5 server wrapper
+// SSServer
 type SSServer struct {
 	Password     []byte
 	TCPAddr      *net.TCPAddr
@@ -27,7 +27,7 @@ type SSServer struct {
 	UDPDeadline  int
 }
 
-// NewSSServer return a server which allow none method
+// NewSSServer
 func NewSSServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*SSServer, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
@@ -121,22 +121,7 @@ func (s *SSServer) RunUDPServer() error {
 	return nil
 }
 
-// Shutdown server
-func (s *SSServer) Shutdown() error {
-	var err, err1 error
-	if s.TCPListen != nil {
-		err = s.TCPListen.Close()
-	}
-	if s.UDPConn != nil {
-		err1 = s.UDPConn.Close()
-	}
-	if err != nil {
-		return err
-	}
-	return err1
-}
-
-// TCPHandle handle request. You may prefer to do yourself.
+// TCPHandle handle request
 func (s *SSServer) TCPHandle(c *net.TCPConn) error {
 	cc, err := s.WrapCipherConn(c)
 	if err != nil {
@@ -212,7 +197,7 @@ func (s *SSServer) TCPHandle(c *net.TCPConn) error {
 	return nil
 }
 
-// UDPHandle handle packet. You may prefer to do yourself.
+// UDPHandle handle packet
 func (s *SSServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	a, h, p, data, err := s.Decrypt(b)
 	if err != nil {
@@ -355,4 +340,19 @@ func (s *SSServer) Decrypt(cd []byte) (a byte, addr, port, data []byte, err erro
 	data = bb[minl:]
 	err = nil
 	return
+}
+
+// Shutdown server
+func (s *SSServer) Shutdown() error {
+	var err, err1 error
+	if s.TCPListen != nil {
+		err = s.TCPListen.Close()
+	}
+	if s.UDPConn != nil {
+		err1 = s.UDPConn.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return err1
 }

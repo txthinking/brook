@@ -13,7 +13,7 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// Client is the client of raw socks5 protocol
+// Client
 type Client struct {
 	Server          *socks5.Server
 	RemoteAddr      string
@@ -52,7 +52,6 @@ func (x *Client) ListenAndServe(sm Socks5Middleman) error {
 
 // TCPHandle handles tcp reqeust
 func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
-	// waiting for reply about connect failure or success
 	if x.Socks5Middleman != nil {
 		done, err := x.Socks5Middleman.TCPHandle(s, c, r)
 		if err != nil {
@@ -66,7 +65,6 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		}
 	}
 
-	// reply ok and choose address according to cmd or something wrong
 	if r.Cmd == socks5.CmdConnect {
 		tmp, err := Dial.Dial("tcp", x.RemoteAddr)
 		if err != nil {

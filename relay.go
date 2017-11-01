@@ -24,7 +24,7 @@ type Relay struct {
 	UDPDeadline   int
 }
 
-// NewRelay return a server which allow none method
+// NewRelay
 func NewRelay(addr, remote string, tcpTimeout, tcpDeadline, udpDeadline int) (*Relay, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
@@ -142,7 +142,7 @@ func (s *Relay) Shutdown() error {
 	return err1
 }
 
-// TCPHandle handle request. You may prefer to do yourself.
+// TCPHandle handle request
 func (s *Relay) TCPHandle(c *net.TCPConn) error {
 	tmp, err := Dial.Dial("tcp", s.RemoteTCPAddr.String())
 	if err != nil {

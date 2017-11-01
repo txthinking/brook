@@ -13,7 +13,7 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// StreamServer is socks5 server wrapper
+// StreamServer
 type StreamServer struct {
 	Password     []byte
 	TCPAddr      *net.TCPAddr
@@ -26,7 +26,7 @@ type StreamServer struct {
 	UDPDeadline  int
 }
 
-// NewStreamServer return a server which allow none method
+// NewStreamServer
 func NewStreamServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*StreamServer, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
@@ -120,22 +120,7 @@ func (s *StreamServer) RunUDPServer() error {
 	return nil
 }
 
-// Shutdown server
-func (s *StreamServer) Shutdown() error {
-	var err, err1 error
-	if s.TCPListen != nil {
-		err = s.TCPListen.Close()
-	}
-	if s.UDPConn != nil {
-		err1 = s.UDPConn.Close()
-	}
-	if err != nil {
-		return err
-	}
-	return err1
-}
-
-// TCPHandle handle request. You may prefer to do yourself.
+// TCPHandle handle request
 func (s *StreamServer) TCPHandle(c *net.TCPConn) error {
 	cc, err := s.WrapCipherConn(c)
 	if err != nil {
@@ -345,4 +330,19 @@ func (s *StreamServer) Decrypt(cd []byte) (a byte, addr, port, data []byte, err 
 	data = bb[minl:]
 	err = nil
 	return
+}
+
+// Shutdown server
+func (s *StreamServer) Shutdown() error {
+	var err, err1 error
+	if s.TCPListen != nil {
+		err = s.TCPListen.Close()
+	}
+	if s.UDPConn != nil {
+		err1 = s.UDPConn.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return err1
 }
