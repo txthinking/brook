@@ -6,17 +6,19 @@
     <img style="float: right;" src="https://storage.googleapis.com/txthinking-file/_/brook_200x200.png" alt="Brook"/>
 </p>
 
-### NEW FEATURES v20171111
+---
+### New features (v20171111)
 
 * **New Brook Protocol, TCP/UDP full supported**
 * Brook Stream Protocol, TCP/UDP full supported
 * Shadowsocks Protocol, TCP/UDP full supported
 
-### BREAKING CHANGE v20171111 
+### Breaking change (v20171111)
 
 * Rename orignal brook protocol to `Brook Stream`, `$ brook streamserver`, `$ brook streamclient`. Music removed
 * Many command arguments changed
 * If you use shadowsocks protocol on Brook Android, your shadowsocks server must full support UDP
+---
 
 ### Table of Contents
 
