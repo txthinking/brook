@@ -26,8 +26,8 @@ type Socks5Server struct {
 }
 
 // NewSocks5Server returns a new Socks5Server
-func NewSocks5Server(addr, udpAddr, userName, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Socks5Server, error) {
-	s5, err := socks5.NewClassicServer(addr, udpAddr, userName, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Socks5Server, error) {
+	s5, err := socks5.NewClassicServer(addr, ip, userName, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {
-		caddr, err := r.UDP(c, x.Server.UDPAddr)
+		caddr, err := r.UDP(c, x.Server.ServerAddr)
 		if err != nil {
 			return err
 		}

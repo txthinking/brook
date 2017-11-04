@@ -19,7 +19,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20171111"
+	app.Version = "20171122"
 	app.Usage = "A Cross-Platform Proxy Software"
 	app.Author = "Cloud"
 	app.Email = "cloud@txthinking.com"
@@ -129,12 +129,12 @@ func main() {
 			Usage: "Run as client mode",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "tcpListen, t",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
+					Name:  "listen, l",
+					Usage: "Client listen address, like: 127.0.0.1:1080",
 				},
 				cli.StringFlag{
-					Name:  "udpListen, u",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
+					Name:  "ip, i",
+					Usage: "Client IP address, like: 127.0.0.1",
 				},
 				cli.StringFlag{
 					Name:  "server, s",
@@ -170,7 +170,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("tcpListen") == "" || c.String("udpListen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || c.String("ip") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "client")
 					return nil
 				}
@@ -178,9 +178,9 @@ func main() {
 					enableDebug()
 				}
 				if c.Bool("http") {
-					return brook.RunClientAsHTTP(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+					return brook.RunClientAsHTTP(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
-				return brook.RunClient(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				return brook.RunClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -275,12 +275,12 @@ func main() {
 			Usage: "Run as client mode",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "tcpListen, t",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
+					Name:  "listen, l",
+					Usage: "Client listen address, like: 127.0.0.1:1080",
 				},
 				cli.StringFlag{
-					Name:  "udpListen, u",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
+					Name:  "ip, i",
+					Usage: "Client IP address, like: 127.0.0.1",
 				},
 				cli.StringFlag{
 					Name:  "server, s",
@@ -316,7 +316,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("tcpListen") == "" || c.String("udpListen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || c.String("ip") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "streamclient")
 					return nil
 				}
@@ -324,9 +324,9 @@ func main() {
 					enableDebug()
 				}
 				if c.Bool("http") {
-					return brook.RunStreamClientAsHTTP(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+					return brook.RunStreamClientAsHTTP(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
-				return brook.RunStreamClient(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				return brook.RunStreamClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -421,12 +421,12 @@ func main() {
 			Usage: "Run as shadowsocks client mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "tcpListen, t",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
+					Name:  "listen, l",
+					Usage: "Client listen address, like: 127.0.0.1:1080",
 				},
 				cli.StringFlag{
-					Name:  "udpListen, u",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
+					Name:  "ip, i",
+					Usage: "Client IP address, like: 127.0.0.1",
 				},
 				cli.StringFlag{
 					Name:  "server, s",
@@ -462,7 +462,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("tcpListen") == "" || c.String("udpListen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || c.String("ip") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "ssclient")
 					return nil
 				}
@@ -470,9 +470,9 @@ func main() {
 					enableDebug()
 				}
 				if c.Bool("http") {
-					return brook.RunSSClientAsHTTP(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+					return brook.RunSSClientAsHTTP(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
-				return brook.RunSSClient(c.String("tcpListen"), c.String("udpListen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				return brook.RunSSClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
@@ -480,12 +480,12 @@ func main() {
 			Usage: "Run as raw socks5 server",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "tcpListen, t",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
+					Name:  "listen, l",
+					Usage: "Client listen address, like: 127.0.0.1:1080",
 				},
 				cli.StringFlag{
-					Name:  "udpListen, u",
-					Usage: "Client listen address: like: 127.0.0.1:1080",
+					Name:  "ip, i",
+					Usage: "Client IP address, like: 127.0.0.1",
 				},
 				cli.StringFlag{
 					Name:  "username",
@@ -517,14 +517,14 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("tcpListen") == "" || c.String("udpListen") == "" {
+				if c.String("listen") == "" || c.String("ip") == "" {
 					cli.ShowCommandHelp(c, "socks5")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				return brook.RunSocks5Server(c.String("tcpListen"), c.String("udpListen"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				return brook.RunSocks5Server(c.String("listen"), c.String("ip"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 			},
 		},
 		cli.Command{
