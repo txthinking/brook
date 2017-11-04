@@ -27,8 +27,8 @@ type Client struct {
 }
 
 // NewClient returns a new Client
-func NewClient(addr, udpAddr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Client, error) {
-	s5, err := socks5.NewClassicServer(addr, udpAddr, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Client, error) {
+	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +155,7 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {
-		caddr, err := r.UDP(c, x.Server.UDPAddr)
+		caddr, err := r.UDP(c, x.Server.ServerAddr)
 		if err != nil {
 			return err
 		}
