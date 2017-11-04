@@ -23,7 +23,10 @@ type Socks5ToHTTP struct {
 }
 
 func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToHTTP, error) {
-	dial, err := proxy.SOCKS5("tcp", socks5addr, nil, proxy.Direct)
+	dial, err := proxy.SOCKS5("tcp", socks5addr, nil, &net.Dialer{
+		Timeout:   30 * time.Second,
+		KeepAlive: 30 * time.Second,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +118,7 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 		}
 	}
 
-	tmp, err := Dial.Dial("tcp", addr)
+	tmp, err := s.Dial.Dial("tcp", addr)
 	if err != nil {
 		return err
 	}
