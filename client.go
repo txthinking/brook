@@ -50,7 +50,7 @@ func (x *Client) ListenAndServe(sm Socks5Middleman) error {
 	return x.Server.Run(x)
 }
 
-// TCPHandle handles tcp reqeust
+// TCPHandle handles tcp request
 func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
 	if x.Socks5Middleman != nil {
 		done, err := x.Socks5Middleman.TCPHandle(s, c, r)
@@ -175,7 +175,7 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 	return socks5.ErrUnsupportCmd
 }
 
-// UDPHandle handles udp reqeust
+// UDPHandle handles udp request
 func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {
 	if x.Socks5Middleman != nil {
 		if done, err := x.Socks5Middleman.UDPHandle(s, addr, d); err != nil || done {
