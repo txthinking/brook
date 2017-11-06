@@ -18,7 +18,7 @@
 * Rename orignal brook protocol to `Brook Stream`, `$ brook streamserver`, `$ brook streamclient`. Music removed
 * Many command arguments changed
 * If you use shadowsocks protocol on Brook Android, your shadowsocks server must full support UDP
-* Thanks to Shdowsocks AEAD
+* Thanks to shdowsocks AEAD
 ---
 
 ### Table of Contents
@@ -61,7 +61,7 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 | [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
 | [Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) / [Brook.apk](https://github.com/txthinking/brook/releases/download/v20171113/Brook.apk) | Client | Android | - | GUI |
 
-**See the [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
+**See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
 ## Server
 
@@ -176,7 +176,7 @@ $ brook ssclient -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p passwo
 $ brook ssclient -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p password --http
 ```
 
-**See the [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
+**See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
 #### Contributing
 
