@@ -7,6 +7,18 @@
 </p>
 
 ---
+### New features (v20171111)
+
+* **New Brook Protocol, TCP/UDP full supported**
+* Brook Stream Protocol, TCP/UDP full supported
+* Shadowsocks Protocol, TCP/UDP full supported
+
+### Breaking change (v20171111)
+
+* Rename orignal brook protocol to `Brook Stream`, `$ brook streamserver`, `$ brook streamclient`. Music removed
+* Many command arguments changed
+* If you use shadowsocks protocol on Brook Android, your shadowsocks server must full support UDP
+---
 
 ### Table of Contents
 
@@ -15,12 +27,10 @@
 * [Server](#server)
     * [Brook Server](#brook-server)
     * [Shadowsocks Server](#shadowsocks-server)
-    * [Run as Daemon](#run-as-daemon)
-    * [Relay Server](#relay-server)
 * [Client (CLI)](#client-cli)
     * [Brook Client](#brook-client)
     * [Shadowsocks Client](#shadowsocks-client)
-* [Developer](#developer)
+* [Contributing](#contributing)
 * [License](#license)
 
 ## What is Brook
@@ -47,29 +57,7 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 | [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
 | [Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) / [Brook.apk](https://github.com/txthinking/brook/releases/download/v20171122/Brook.apk) | Client | Android | - | GUI |
 
-MacOS GUI Client
-
-* Need MacOS version >= 10.12
-* If MacOS prompts it is from an unidentified developer, then go `System Preferences` -> `Security & Privacy`, click Open Anyway
-* You may prefer to copy Brook.app to Application folder
-* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
-
-Windows GUI Client
-
-* Need Windows version >= 7
-* Please set chrome as your default browser
-* You may need to run as an administrator
-* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
-
-Android Client
-
-* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
-* Not tested on IPv6
-
-iOS Client
-
-* Need iOS version >= 10.0
-* Follow this [pac white list](https://github.com/txthinking/pac) auto proxy rule
+**See the [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
 ## Server
 
@@ -81,7 +69,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20171122
+   20171113
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
@@ -147,62 +135,6 @@ Fixed method is aes-256-cfb
 
 > If you run a public/shared server, do not forget this parameter --tcpDeadline
 
-#### Run as Daemon
-
-With nohup
-
-```
-# Start
-$ nohup brook server -l :9999 -p password &
-
-# Stop
-$ killall brook
-```
-
-With systemd
-
-If your linux run with systemd, like Ubuntu 16.04, Archlinux, etc:
-
-```
-# Install
-$ curl -L git.io/getbrook | sudo bash
-$ sudo systemctl daemon-reload
-
-# Config command options
-$ sudo vim /etc/default/brook
-
-# Start
-$ sudo systemctl start brook.service
-
-# Stop
-$ sudo systemctl stop brook.service
-
-# Start on bootup
-$ sudo systemctl enable brook.service
-```
-
-#### Relay Server
-
-What is Relay Server
-
-```
-client <---> relay server <---> server
-```
-
-Relay Server
-
-```
-# Run as a relay server
-$ brook relay -l :9999 -r server_address:port
-```
-
-```
-# Run as multiple relay servers
-$ brook relays \
-        -l ":9999 server1_address:port" \
-        -l ":8888 server2_address:port"
-```
-
 ## Client (CLI)
 
 #### Brook Client
@@ -239,6 +171,8 @@ $ brook ssclient -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p passwo
 # Run as shadowsocks client, start a http(s) proxy
 $ brook ssclient -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p password --http
 ```
+
+**See the [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
 #### Contributing
 
