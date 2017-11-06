@@ -53,11 +53,11 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 | [brook_windows_amd64.exe](https://github.com/txthinking/brook/releases/download/v20171113/brook_windows_amd64.exe) | Server & Client | Windows | amd64 | CLI |
 | [brook_windows_386.exe](https://github.com/txthinking/brook/releases/download/v20171113/brook_windows_386.exe) | Server & Client | Windows | 386 | CLI |
 | [Brook.app.zip](https://github.com/txthinking/brook/releases/download/v20171113/Brook.app.zip) | Client | MacOS | amd64 | GUI |
-| [Brook.app.white.zip](https://github.com/txthinking/brook/releases/download/v20171113/Brook.app.zip) | Client(white icon) | MacOS | amd64 | GUI |
+| [Brook.app.white.zip](https://github.com/txthinking/brook/releases/download/v20171113/Brook.app.white.zip) | Client(white icon) | MacOS | amd64 | GUI |
 | [Brook.exe](https://github.com/txthinking/brook/releases/download/v20171113/Brook.exe) | Client | Windows | amd64 | GUI |
-| [Brook.white.exe](https://github.com/txthinking/brook/releases/download/v20171113/Brook.exe) | Client(white icon) | Windows | amd64 | GUI |
+| [Brook.white.exe](https://github.com/txthinking/brook/releases/download/v20171113/Brook.white.exe) | Client(white icon) | Windows | amd64 | GUI |
 | [Brook.386.exe](https://github.com/txthinking/brook/releases/download/v20171113/Brook.386.exe) | Client | Windows | 386 | GUI |
-| [Brook.386.white.exe](https://github.com/txthinking/brook/releases/download/v20171113/Brook.386.exe) | Client(white icon) | Windows | 386 | GUI |
+| [Brook.386.white.exe](https://github.com/txthinking/brook/releases/download/v20171113/Brook.386.white.exe) | Client(white icon) | Windows | 386 | GUI |
 | [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
 | [Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) / [Brook.apk](https://github.com/txthinking/brook/releases/download/v20171113/Brook.apk) | Client | Android | - | GUI |
 
