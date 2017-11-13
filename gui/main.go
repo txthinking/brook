@@ -39,7 +39,7 @@ func run() {
 	systray.AddMenuItem("---------", "").Disable()
 	mGithub := systray.AddMenuItem("Upgrade", "")
 	mEmail := systray.AddMenuItem("Contact: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20171111", "")
+	systray.AddMenuItem("Version: 20171113", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
@@ -69,7 +69,7 @@ func run() {
 			return
 		}
 		if st.Type == "Brook" {
-			bk, err = brook.NewClient(st.Address, st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
+			bk, err = brook.NewClient(st.Address, "local.txthinking.com", st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
 			if err != nil {
 				showNotice("Error", err.Error())
 				return
@@ -80,7 +80,7 @@ func run() {
 			}
 		}
 		if st.Type == "Brook Stream" {
-			bs, err = brook.NewStreamClient(st.Address, st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
+			bs, err = brook.NewStreamClient(st.Address, "local.txthinking.com", st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
 			if err != nil {
 				showNotice("Error", err.Error())
 				return
@@ -91,7 +91,7 @@ func run() {
 			}
 		}
 		if st.Type == "Shadowsocks" {
-			ss, err = brook.NewSSClient(st.Address, st.Address, st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
+			ss, err = brook.NewSSClient(st.Address, "local.txthinking.com", st.Server, st.Password, st.TCPTimeout, st.TCPDeadline, st.UDPDeadline, st.UDPSessionTime)
 			if err := ss.ListenAndServe(nil); err != nil {
 				showNotice("Status", "stopped")
 				return
