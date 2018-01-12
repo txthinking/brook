@@ -293,7 +293,6 @@ func (x *Client) ListenAndServeHTTP(m HTTPMiddleman) error {
 
 // HTTPHandle handle http request
 func (x *Client) HTTPHandle(c *net.TCPConn) error {
-	log.Println("Got http connection")
 	b := make([]byte, 0, 1024)
 	for {
 		var b1 [1024]byte

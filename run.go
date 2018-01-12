@@ -27,6 +27,15 @@ func RunClientAsHTTP(address, ip, server, password string, tcpTimeout, tcpDeadli
 	return c.ListenAndServeHTTP(nil)
 }
 
+// RunTunnel used to start a tunnel
+func RunTunnel(address, to, server, password string, tcpTimeout, tcpDeadline, udpDeadline int) error {
+	c, err := NewTunnel(address, to, server, password, tcpTimeout, tcpDeadline, udpDeadline)
+	if err != nil {
+		return err
+	}
+	return c.ListenAndServe()
+}
+
 // RunStreamServer used to make a new StreamServer and start to listen
 func RunStreamServer(address, password string, tcpTimeout, tcpDeadline, udpDeadline int) error {
 	s, err := NewStreamServer(address, password, tcpTimeout, tcpDeadline, udpDeadline)

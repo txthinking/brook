@@ -19,7 +19,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20171113"
+	app.Version = "20180112"
 	app.Usage = "A Cross-Platform Proxy Software"
 	app.Author = "Cloud"
 	app.Email = "cloud@txthinking.com"
@@ -56,7 +56,7 @@ func main() {
 				},
 				cli.IntFlag{
 					Name:  "tcpDeadline",
-					Value: 60,
+					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
@@ -91,7 +91,7 @@ func main() {
 				},
 				cli.IntFlag{
 					Name:  "tcpDeadline",
-					Value: 60,
+					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
@@ -151,7 +151,7 @@ func main() {
 				},
 				cli.IntFlag{
 					Name:  "tcpDeadline",
-					Value: 60,
+					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				cli.IntFlag{
@@ -181,6 +181,53 @@ func main() {
 					return brook.RunClientAsHTTP(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				}
 				return brook.RunClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+			},
+		},
+		cli.Command{
+			Name:  "tunnel",
+			Usage: "Run as tunnel mode",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "listen, l",
+					Usage: "Client listen address, like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "to, t",
+					Usage: "Tunnel to where, like: 8.8.8.8:53",
+				},
+				cli.StringFlag{
+					Name:  "server, s",
+					Usage: "Server address, like: 1.2.3.4:1080",
+				},
+				cli.StringFlag{
+					Name:  "password, p",
+					Usage: "Server password",
+				},
+				cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 60,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				cli.IntFlag{
+					Name:  "tcpDeadline",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" || c.String("to") == "" || c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "client")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				return brook.RunTunnel(c.String("listen"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 			},
 		},
 		cli.Command{

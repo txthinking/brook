@@ -39,7 +39,7 @@ func run() {
 	systray.AddMenuItem("---------", "").Disable()
 	mGithub := systray.AddMenuItem("Upgrade", "")
 	mEmail := systray.AddMenuItem("Contact: cloud@txthinking.com", "")
-	systray.AddMenuItem("Version: 20171113", "")
+	systray.AddMenuItem("Version: 20180112", "")
 	systray.AddMenuItem("---------", "").Disable()
 	mQuit := systray.AddMenuItem("Quit", "")
 
@@ -142,7 +142,7 @@ func run() {
 					showNotice("Error", err.Error())
 				}
 			case <-mEmail.ClickedCh:
-				if err := open.Run("mailto:cloud@txthinking.com"); err != nil {
+				if err := open.Run("mailto:cloud+brookdesktop@txthinking.com"); err != nil {
 					showNotice("Error", err.Error())
 				}
 			case <-mQuit.ClickedCh:
