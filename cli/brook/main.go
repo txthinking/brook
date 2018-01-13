@@ -221,7 +221,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("to") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "client")
+					cli.ShowCommandHelp(c, "tunnel")
 					return nil
 				}
 				if debug {
