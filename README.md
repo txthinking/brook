@@ -58,7 +58,7 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 | [Brook.386.exe](https://github.com/txthinking/brook/releases/download/v20180112/Brook.386.exe) | Client | Windows | 386 | GUI |
 | [Brook.386.white.exe](https://github.com/txthinking/brook/releases/download/v20180112/Brook.386.white.exe) | Client(white icon) | Windows | 386 | GUI |
 | [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
-| [Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) / [Brook.apk](https://github.com/txthinking/brook/releases/download/v20180112/Brook.apk) | Client | Android | - | GUI |
+| [Google Play](https://play.google.com/store/apps/details?id=com.txthinking.brook) / [Brook.apk](https://github.com/txthinking/brook/releases/download/v20171113/Brook.apk) | Client | Android | - | GUI |
 
 **See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
