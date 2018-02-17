@@ -57,7 +57,7 @@ func (w *WhiteSocks5) UDPHandle(s *socks5.Server, ca *net.UDPAddr, d *socks5.Dat
 	return true, nil
 }
 
-// WhiteHTTP is a HTTPMiddleman who only handle domain in white list
+// WhiteHTTP is a HTTPMiddleman who only handles domain in white list
 type WhiteHTTP struct {
 	Timeout  int
 	Deadline int
@@ -71,7 +71,7 @@ func NewWhiteHTTP(timeout, deadline int) *WhiteHTTP {
 	}
 }
 
-// Handle handle http proxy request, if the domain is in the white list
+// Handle handles http proxy request, if the domain is in the white list
 func (w *WhiteHTTP) Handle(method, addr string, request []byte, conn *net.TCPConn) (handled bool, err error) {
 	h, _, err := net.SplitHostPort(addr)
 	if err != nil {
