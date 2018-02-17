@@ -24,8 +24,8 @@ type Client struct {
 	TCPDeadline     int
 	UDPDeadline     int
 	TCPListen       *net.TCPListener
-	Socks5Middleman Socks5Middleman
-	HTTPMiddleman   HTTPMiddleman
+	Socks5Middleman plugin.Socks5Middleman
+	HTTPMiddleman   plugin.HTTPMiddleman
 	Token           plugin.Token
 }
 
@@ -46,15 +46,24 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 	return x, nil
 }
 
-// SetToken set token plugin
+// SetToken sets token plugin
 func (x *Client) SetToken(token plugin.Token) {
 	x.Token = token
 }
 
+// SetSocks5Middleman sets socks5middleman plugin
+func (x *Client) SetSocks5Middleman(m plugin.Socks5Middleman) {
+	x.Socks5Middleman = m
+}
+
+// SetHTTPMiddleman sets httpmiddleman plugin
+func (x *Client) SetHTTPMiddleman(m plugin.HTTPMiddleman) {
+	x.HTTPMiddleman = m
+}
+
 // ListenAndServe will let client start a socks5 proxy
 // sm can be nil
-func (x *Client) ListenAndServe(sm Socks5Middleman) error {
-	x.Socks5Middleman = sm
+func (x *Client) ListenAndServe() error {
 	return x.Server.Run(x)
 }
 
@@ -290,10 +299,8 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 }
 
 // ListenAndServeHTTP will let client start a http proxy
-// m can be nil
-func (x *Client) ListenAndServeHTTP(m HTTPMiddleman) error {
+func (x *Client) ListenAndServeHTTP() error {
 	var err error
-	x.HTTPMiddleman = m
 	x.TCPListen, err = net.ListenTCP("tcp", x.Server.TCPAddr)
 	if err != nil {
 		return nil

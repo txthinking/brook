@@ -7,6 +7,6 @@ type Token interface {
 	Get() ([]byte, error)
 
 	// Check token, token will be checked on server.
-	// You should not do a lot of Time-consuming operation, like DB query.
+	// You should not do a lot of time-consuming operations.
 	Check([]byte) error
 }
