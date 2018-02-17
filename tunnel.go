@@ -27,7 +27,7 @@ type Tunnel struct {
 	TCPDeadline   int
 	TCPTimeout    int
 	UDPDeadline   int
-	Token         plugin.Token
+	TokenGetter   plugin.TokenGetter
 }
 
 // NewTunnel
@@ -65,8 +65,8 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, tcpDeadline, udpDe
 }
 
 // SetToken set token plugin
-func (s *Tunnel) SetToken(token plugin.Token) {
-	s.Token = token
+func (s *Tunnel) SetTokenGetter(token plugin.TokenGetter) {
+	s.TokenGetter = token
 }
 
 // Run server
@@ -190,8 +190,8 @@ func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, address...)
 	rawaddr = append(rawaddr, port...)
-	if s.Token != nil {
-		t, err := s.Token.Get()
+	if s.TokenGetter != nil {
+		t, err := s.TokenGetter.Get()
 		if err != nil {
 			return err
 		}
@@ -267,8 +267,8 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	b = append(rawaddr, b...)
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
-		if s.Token != nil {
-			t, err := s.Token.Get()
+		if s.TokenGetter != nil {
+			t, err := s.TokenGetter.Get()
 			if err != nil {
 				return err
 			}

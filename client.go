@@ -26,7 +26,7 @@ type Client struct {
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
-	Token           plugin.Token
+	TokenGetter     plugin.TokenGetter
 }
 
 // NewClient returns a new Client
@@ -47,8 +47,8 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 }
 
 // SetToken sets token plugin
-func (x *Client) SetToken(token plugin.Token) {
-	x.Token = token
+func (x *Client) SetTokenGetter(token plugin.TokenGetter) {
+	x.TokenGetter = token
 }
 
 // SetSocks5Middleman sets socks5middleman plugin
@@ -112,8 +112,8 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		rawaddr = append(rawaddr, r.Atyp)
 		rawaddr = append(rawaddr, r.DstAddr...)
 		rawaddr = append(rawaddr, r.DstPort...)
-		if x.Token != nil {
-			t, err := x.Token.Get()
+		if x.TokenGetter != nil {
+			t, err := x.TokenGetter.Get()
 			if err != nil {
 				return ErrorReply(r, c, err)
 			}
@@ -214,8 +214,8 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
-		if x.Token != nil {
-			t, err := x.Token.Get()
+		if x.TokenGetter != nil {
+			t, err := x.TokenGetter.Get()
 			if err != nil {
 				return err
 			}
@@ -405,8 +405,8 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, h...)
 	rawaddr = append(rawaddr, p...)
-	if x.Token != nil {
-		t, err := x.Token.Get()
+	if x.TokenGetter != nil {
+		t, err := x.TokenGetter.Get()
 		if err != nil {
 			return err
 		}

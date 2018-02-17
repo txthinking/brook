@@ -23,7 +23,7 @@ type Server struct {
 	TCPDeadline  int
 	TCPTimeout   int
 	UDPDeadline  int
-	Token        plugin.Token
+	TokenChecker plugin.TokenChecker
 }
 
 // NewServer
@@ -50,8 +50,8 @@ func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) 
 }
 
 // SetToken set token plugin
-func (s *Server) SetToken(token plugin.Token) {
-	s.Token = token
+func (s *Server) SetTokenChecker(token plugin.TokenChecker) {
+	s.TokenChecker = token
 }
 
 // Run server
@@ -140,10 +140,10 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
-	if s.Token != nil {
+	if s.TokenChecker != nil {
 		l := int(binary.BigEndian.Uint16(b[0:2]))
 		t := b[2 : l+2]
-		if err := s.Token.Check(t); err != nil {
+		if err := s.TokenChecker.Check(t); err != nil {
 			return err
 		}
 		b = b[l+2:]
@@ -212,7 +212,7 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 
 // UDPHandle handle packet
 func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
-	a, h, p, data, err := Decrypt(s.Password, b, s.Token)
+	a, h, p, data, err := Decrypt(s.Password, b, s.TokenChecker)
 	if err != nil {
 		return err
 	}

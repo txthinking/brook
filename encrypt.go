@@ -115,7 +115,7 @@ func Encrypt(p, b []byte) ([]byte, error) {
 }
 
 // Decrypt data
-func Decrypt(p, b []byte, token plugin.Token) (a byte, addr, port, data []byte, err error) {
+func Decrypt(p, b []byte, token plugin.TokenChecker) (a byte, addr, port, data []byte, err error) {
 	err = errors.New("Data length error")
 	if len(b) <= 12+16 {
 		return
