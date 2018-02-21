@@ -8,13 +8,14 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
+	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
 
 // Socks5Server is the client of raw socks5 protocol
 type Socks5Server struct {
 	Server          *socks5.Server
-	Middleman       Socks5Middleman
+	Socks5Middleman plugin.Socks5Middleman
 	TCPTimeout      int
 	TCPDeadline     int // not refreshed
 	UDPDeadline     int
@@ -43,6 +44,11 @@ func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadlin
 	return x, nil
 }
 
+// SetSocks5Middleman sets socks5middleman plugin
+func (x *Socks5Server) SetSocks5Middleman(m plugin.Socks5Middleman) {
+	x.Socks5Middleman = m
+}
+
 // ListenAndServe will let client start to listen and serve, sm can be nil
 func (x *Socks5Server) ListenAndServe() error {
 	return x.Server.Run(nil)
@@ -50,18 +56,17 @@ func (x *Socks5Server) ListenAndServe() error {
 
 // ListenAndForward will let client start a proxy to listen and forward to another socks5,
 // sm can be nil
-func (x *Socks5Server) ListenAndForward(addr, username, password string, sm Socks5Middleman) error {
+func (x *Socks5Server) ListenAndForward(addr, username, password string) error {
 	x.ForwardAddress = addr
 	x.ForwardUserName = username
 	x.ForwardPassword = password
-	x.Middleman = sm
 	return x.Server.Run(x)
 }
 
 // TCPHandle handles tcp request
 func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
-	if x.Middleman != nil {
-		done, err := x.Middleman.TCPHandle(s, c, r)
+	if x.Socks5Middleman != nil {
+		done, err := x.Socks5Middleman.TCPHandle(s, c, r)
 		if err != nil {
 			if done {
 				return err
@@ -142,8 +147,8 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 
 // UDPHandle handles udp request
 func (x *Socks5Server) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {
-	if x.Middleman != nil {
-		if done, err := x.Middleman.UDPHandle(s, addr, d); err != nil || done {
+	if x.Socks5Middleman != nil {
+		if done, err := x.Socks5Middleman.UDPHandle(s, addr, d); err != nil || done {
 			return err
 		}
 	}

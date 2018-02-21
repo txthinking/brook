@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/txthinking/ant"
+	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
 
@@ -114,7 +115,7 @@ func Encrypt(p, b []byte) ([]byte, error) {
 }
 
 // Decrypt data
-func Decrypt(p, b []byte) (a byte, addr, port, data []byte, err error) {
+func Decrypt(p, b []byte, token plugin.TokenChecker) (a byte, addr, port, data []byte, err error) {
 	err = errors.New("Data length error")
 	if len(b) <= 12+16 {
 		return
@@ -134,6 +135,14 @@ func Decrypt(p, b []byte) (a byte, addr, port, data []byte, err error) {
 		return
 	}
 	bb = bb[10:]
+	if token != nil {
+		l := int(binary.BigEndian.Uint16(bb[0:2]))
+		t := bb[2 : l+2]
+		if err = token.Check(t); err != nil {
+			return
+		}
+		bb = b[l+2:]
+	}
 	a = bb[0]
 	if a == socks5.ATYPIPv4 {
 		addr = bb[1:5]

@@ -15,7 +15,7 @@ func RunClient(address, ip, server, password string, tcpTimeout, tcpDeadline, ud
 	if err != nil {
 		return err
 	}
-	return c.ListenAndServe(nil)
+	return c.ListenAndServe()
 }
 
 // RunClientAsHTTP used to make a new Client and start a http proxy to listen
@@ -24,7 +24,7 @@ func RunClientAsHTTP(address, ip, server, password string, tcpTimeout, tcpDeadli
 	if err != nil {
 		return err
 	}
-	return c.ListenAndServeHTTP(nil)
+	return c.ListenAndServeHTTP()
 }
 
 // RunTunnel used to start a tunnel
@@ -51,7 +51,7 @@ func RunStreamClient(address, ip, server, password string, tcpTimeout, tcpDeadli
 	if err != nil {
 		return err
 	}
-	return c.ListenAndServe(nil)
+	return c.ListenAndServe()
 }
 
 // RunClientAsHTTP used to make a new StreamClient and start a http proxy to listen
@@ -60,7 +60,7 @@ func RunStreamClientAsHTTP(address, ip, server, password string, tcpTimeout, tcp
 	if err != nil {
 		return err
 	}
-	return c.ListenAndServeHTTP(nil)
+	return c.ListenAndServeHTTP()
 }
 
 // RunSSServer used to make a new Server and start to listen
@@ -78,7 +78,7 @@ func RunSSClient(address, ip, server, password string, tcpTimeout, tcpDeadline, 
 	if err != nil {
 		return err
 	}
-	return c.ListenAndServe(nil)
+	return c.ListenAndServe()
 }
 
 // RunSSClientAsHTTP used to make a new Client and start a http proxy to listen
@@ -87,7 +87,7 @@ func RunSSClientAsHTTP(address, ip, server, password string, tcpTimeout, tcpDead
 	if err != nil {
 		return err
 	}
-	return c.ListenAndServeHTTP(nil)
+	return c.ListenAndServeHTTP()
 }
 
 // RunRelay used to make a new Relay and start to listen
@@ -114,5 +114,5 @@ func RunSocks5ToHTTP(address, socks5 string, timeout, deadline int) error {
 	if err != nil {
 		return err
 	}
-	return s.ListenAndServe(nil)
+	return s.ListenAndServe()
 }
