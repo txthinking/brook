@@ -5,9 +5,12 @@ import (
 	"net"
 	"time"
 
+	"github.com/txthinking/ant"
 	"github.com/txthinking/pac/blackwhite"
 	"github.com/txthinking/socks5"
 )
+
+var Dial ant.Dialer = ant.DefaultDial
 
 // WhiteSocks5 is a Socks5Middleman who only handles domain in white list
 type WhiteSocks5 struct {
