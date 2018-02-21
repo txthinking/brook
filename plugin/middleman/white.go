@@ -1,4 +1,4 @@
-package brook
+package middleman
 
 import (
 	"io"
