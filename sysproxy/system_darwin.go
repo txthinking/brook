@@ -1,6 +1,3 @@
-// +build darwin
-// +build amd64 386
-
 package sysproxy
 
 import (
