@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 
 	"net/http"
@@ -721,6 +722,51 @@ func main() {
 				return brook.RunSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.Int("timeout"), c.Int("deadline"))
 			},
 		},
+	}
+	if runtime.GOOS == "linux" {
+		app.Commands = append(app.Commands, cli.Command{
+			Name:  "tproxy",
+			Usage: "Run as tproxy mode",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "listen, l",
+					Usage: "Client listen address, like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "server, s",
+					Usage: "Server address, like: 1.2.3.4:1080",
+				},
+				cli.StringFlag{
+					Name:  "password, p",
+					Usage: "Server password",
+				},
+				cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 60,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				cli.IntFlag{
+					Name:  "tcpDeadline",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "tproxy")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				return brook.RunTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+			},
+		})
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
