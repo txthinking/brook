@@ -232,7 +232,7 @@ func main() {
 		},
 		cli.Command{
 			Name:  "tproxy",
-			Usage: "Run as tproxy mode, only works on Linux",
+			Usage: "Run as tproxy mode, transparent proxy, only works on Linux",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "listen, l",
