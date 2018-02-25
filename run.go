@@ -1,5 +1,7 @@
 package brook
 
+import "github.com/txthinking/brook/sysproxy"
+
 // RunServer used to make a new Server and start to listen
 func RunServer(address, password string, tcpTimeout, tcpDeadline, udpDeadline int) error {
 	s, err := NewServer(address, password, tcpTimeout, tcpDeadline, udpDeadline)
@@ -115,4 +117,18 @@ func RunSocks5ToHTTP(address, socks5 string, timeout, deadline int) error {
 		return err
 	}
 	return s.ListenAndServe()
+}
+
+// RunSystemProxy used to set/remove system proxy
+func RunSystemProxy(remove bool, pac string) error {
+	if remove {
+		if err := sysproxy.TurnOffSystemProxy(); err != nil {
+			return err
+		}
+		return nil
+	}
+	if err := sysproxy.TurnOnSystemProxy(pac); err != nil {
+		return err
+	}
+	return nil
 }
