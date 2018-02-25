@@ -30,7 +30,7 @@ function createWindow () {
         },
     })
     w.loadURL(winURL)
-    w.webContents.openDevTools()
+    // w.webContents.openDevTools()
     w.webContents.on('new-window', (e, url) =>{
           e.preventDefault();
           shell.openExternal(url);
@@ -113,8 +113,8 @@ function createTray(){
             },
         },
     ])
-    t.setToolTip('Brook')
     t.setTitle('Stopped')
+    t.setToolTip('Brook: stopped')
     t.setContextMenu(contextMenu)
 }
 
@@ -189,9 +189,11 @@ function runBrook(o){
         o.UDPSessionTime,
     ])
     t.setTitle('')
+    t.setToolTip('Brook: started')
     brook.on('exit', (code) => {
         brook = null
         t.setTitle('Stopped')
+        t.setToolTip('Brook: stopped')
     });
 }
 
@@ -199,6 +201,7 @@ function stopBrook(){
     brook.kill()
     brook = null
     t.setTitle('Stopped')
+    t.setToolTip('Brook: stopped')
 }
 
 function cleanAndQuit(o){
