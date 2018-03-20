@@ -23,7 +23,7 @@
                                 label="Set the system proxy automatically"
                                 v-model="o.AutoSystemProxy"
                                 ></v-switch>
-                            <p v-if="!o.AutoSystemProxy">You can use <code>socks5://local.txthinking.com:1080</code> by yourself.</p>
+                            <p v-if="!o.AutoSystemProxy">You can use <code>socks5://[::1]:1080</code> or <code>socks5://127.0.0.1:1080</code> by yourself.</p>
                         </v-flex>
                     </v-layout>
                 </v-container>
