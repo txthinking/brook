@@ -39,11 +39,12 @@
     </v-layout>
 </template>
 <script>
+var dns = require("dns");
 export default {
     data: () => ({
         o: {
             Type: 'Brook',
-            Address: 'local.txthinking.com:1080',
+            Address: '',
             Server: '',
             Password: '',
             TCPTimeout: 60,
@@ -64,11 +65,23 @@ export default {
 
     created () {
         this.initialize()
+        dns.lookup("local.txthinking.com", null, (e, a, f)=>{
+            if(e){
+                this.girl = e.message;
+                this.hey = true;
+                return;
+            }
+            if(f == 4){
+                this.o.Address = "127.0.0.1:1080";
+            }else{
+                this.o.Address = "[::1]:1080";
+            }
+        })
     },
 
     methods: {
         initialize () {
-            var s = localStorage.getItem('Setting');
+            var s = localStorage.getItem('brook/setting');
             if (s){
                 this.o = JSON.parse(s);
             }
@@ -84,7 +97,7 @@ export default {
                 this.hey = true;
                 return;
             }
-            localStorage.setItem('Setting', JSON.stringify(this.o));
+            localStorage.setItem('brook/setting', JSON.stringify(this.o));
             this.girl = "OK";
             this.hey = true;
         },

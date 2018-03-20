@@ -6,7 +6,6 @@
                     <v-layout column>
                         <v-flex>
                             <h2>Brook</h2>
-                            <p>Version: 20180227</p>
                             <p><a href="https://github.com/txthinking/brook" target="_blank">https://github.com/txthinking/brook</a></p>
                             <p>Brook is an open source cross-platform(Linux/MacOS/Windows/Android/iOS) proxy software</p>
                             <p>Licensed under The <a href="https://github.com/txthinking/brook/blob/master/LICENSE" target="_blank">GPLv3</a> License. <a href="https://github.com/txthinking/brook/blob/master/OPENSOURCELICENSES" target="_blank">Open source licenses</a></p>

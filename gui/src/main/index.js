@@ -1,6 +1,7 @@
 const {app, BrowserWindow, Tray, Menu, shell, protocol} = require('electron')
 const path = require('path')
 const { spawn } = require('child_process')
+var addrToIPPort = require('addr-to-ip-port')
 
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
@@ -30,7 +31,7 @@ function createWindow () {
         },
     })
     w.loadURL(winURL)
-    // w.webContents.openDevTools()
+    //w.webContents.openDevTools()
     w.webContents.on('new-window', (e, url) =>{
           e.preventDefault();
           shell.openExternal(url);
@@ -92,7 +93,7 @@ function createTray(){
             },
         },
         {
-            label: 'Brook: v20180227',
+            label: 'Brook: v20180401',
             click: ()=>{
                 shell.openExternal("https://github.com/txthinking/brook/releases");
             },
@@ -174,7 +175,7 @@ function runBrook(o){
         '-l',
         o.Address,
         '-i',
-        o.Address.slice(0, o.Address.lastIndexOf(':')),
+        o.Address ? addrToIPPort(o.Address)[0] : "",
         '-s',
         o.Server,
         '-p',
@@ -241,9 +242,10 @@ function stop(o){
 
 function run(o){
     if (o.AutoSystemProxy){
-        var pac = "https://pac.txthinking.com/white/SOCKS5%20"+o.Address+";%20SOCKS%20"+o.Address+";DIRECT"
+        var s = "SOCKS5 "+o.Address+"; SOCKS "+o.Address+"; DIRECT";
+        var pac = "https://pac.txthinking.com/white/" + encodeURIComponent(s)
         if (o.UseGlobalProxyMode){
-            pac = "https://pac.txthinking.com/all/SOCKS5%20"+o.Address+";%20SOCKS%20"+o.Address+";DIRECT"
+            pac = "https://pac.txthinking.com/all/" + encodeURIComponent(s)
         }
         var sp = spawn(path.join(__static, '/' + exec), ['systemproxy', '-u', pac])
         sp.on('exit', (code) => {

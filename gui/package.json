@@ -1,6 +1,6 @@
 {
   "name": "Brook",
-  "version": "20180227.0.0",
+  "version": "20180401.0.0",
   "author": "Cloud <cloud@txthinking.com>",
   "description": "Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy software",
   "license": null,
@@ -52,6 +52,7 @@
     }
   },
   "dependencies": {
+    "addr-to-ip-port": "^1.4.3",
     "axios": "^0.16.1",
     "vue": "^2.4.2",
     "vue-electron": "^1.0.6",
