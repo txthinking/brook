@@ -39,7 +39,6 @@
     </v-layout>
 </template>
 <script>
-var dns = require("dns");
 export default {
     data: () => ({
         o: {
@@ -65,18 +64,22 @@ export default {
 
     created () {
         this.initialize()
-        dns.lookup("local.txthinking.com", null, (e, a, f)=>{
-            if(e){
-                this.girl = e.message;
-                this.hey = true;
-                return;
-            }
-            if(f == 4){
-                this.o.Address = "127.0.0.1:1080";
-            }else{
+        this.$http.get('https://ipapi.co/ip/')
+        .withCredentials()
+        .end((err, res)=>{
+            switch(res.status) {
+            case 200:
                 this.o.Address = "[::1]:1080";
+                if(res.text.indexOf(":") === -1){
+                    this.o.Address = "127.0.0.1:1080";
+                }
+                break;
+            default:
+                this.girl = "Can't find IP";
+                this.hey = true;
+                break;
             }
-        })
+        });
     },
 
     methods: {

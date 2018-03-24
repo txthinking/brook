@@ -53,10 +53,10 @@
   },
   "dependencies": {
     "addr-to-ip-port": "^1.4.3",
-    "axios": "^0.16.1",
     "vue": "^2.4.2",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
+    "vue-superagent": "^1.2.0",
     "vuetify": "1.0.0"
   },
   "devDependencies": {
