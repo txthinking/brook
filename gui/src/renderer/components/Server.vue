@@ -23,7 +23,12 @@
                             <v-text-field
                                 label="Password"
                                 placeholder="Your server password"
+                                hint="Your server password"
                                 v-model="o.Password"
+                                :append-icon="o.PasswordVisibility ? 'visibility' : 'visibility_off'"
+                                :append-icon-cb="() => (o.PasswordVisibility = !o.PasswordVisibility)"
+                                :type="o.PasswordVisibility ? 'password' : 'text'"
+                                counter
                                 ></v-text-field>
                         </v-flex>
                         <v-flex>
@@ -46,6 +51,7 @@ export default {
             Address: 'local.txthinking.com:1080',
             Server: '',
             Password: '',
+            PasswordVisibility: false,
             TCPTimeout: 60,
             TCPDeadline: 0,
             UDPDeadline: 60,
