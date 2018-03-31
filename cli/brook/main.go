@@ -661,7 +661,7 @@ func main() {
 			Usage: "Run as multiple relays mode",
 			Flags: []cli.Flag{
 				cli.StringSliceFlag{
-					Name:  "listenserver, l",
+					Name:  "listenremote, l",
 					Usage: "listen address and server address, like '0.0.0.0:1080 1.2.3.4:1080'",
 				},
 				cli.IntFlag{
@@ -681,7 +681,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("listenserver")) == 0 {
+				if len(c.StringSlice("listenremote")) == 0 {
 					cli.ShowCommandHelp(c, "relays")
 					return nil
 				}
@@ -690,10 +690,10 @@ func main() {
 				}
 				errch := make(chan error)
 				go func() {
-					for _, v := range c.StringSlice("listenserver") {
+					for _, v := range c.StringSlice("listenremote") {
 						ss := strings.Split(v, " ")
 						if len(ss) != 2 {
-							errch <- errors.New("Invalid listenserver")
+							errch <- errors.New("Invalid listenremote")
 							return
 						}
 						go func() {
