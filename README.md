@@ -104,7 +104,7 @@ GLOBAL OPTIONS:
    --version, -v             print the version
 ```
 
-#### Server
+### Server
 
 ```
 # Run as a brook server
@@ -118,7 +118,7 @@ $ brook servers -l ":9999 password" -l ":8888 password"
 
 > If you run a public/shared server, do not forget this parameter --tcpDeadline
 
-#### Client (CLI)
+### Client (CLI)
 
 ```
 # Run as brook client, start a socks5 proxy socks5://127.0.0.1:1080
@@ -130,7 +130,7 @@ $ brook client -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p password
 $ brook client -l 127.0.0.1:8080 -i 127.0.0.1 -s server_address:port -p password --http
 ```
 
-#### Client (GUI)
+### Client (GUI)
 
 See [wiki](https://github.com/txthinking/brook/wiki)
 
