@@ -69,8 +69,6 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 sudo pacman -S brook
 ```
 
-**See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
-
 ## Brook
 
 ```
