@@ -19,6 +19,7 @@
 
 * [What is Brook](#what-is-brook)
 * [Download](#download)
+* [Packages](#packages)
 * [**Server**](#server)
 * [**Client (CLI)**](#client-cli)
 * [**Client (GUI)**](#client-gui)
@@ -59,6 +60,14 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 | [Brook.Setup.exe](https://github.com/txthinking/brook/releases/download/v20180401/Brook.Setup.exe) | Client | Windows | amd64 | GUI |
 | [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
 | [Brook.apk](https://github.com/txthinking/brook/releases/download/v20180401/Brook.apk) | Client | Android | - | GUI |
+
+## Packages
+
+### ArchLinux
+
+```
+sudo pacman -S brook
+```
 
 **See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
