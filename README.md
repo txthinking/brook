@@ -8,7 +8,7 @@
 
 ---
 
-### New features (v20180401)
+### v20180401
 
 * Fixed blank page on Android [#138](https://github.com/txthinking/brook/issues/138)
 * **Please download Android Client from Github now**(*Android Client was removed from Play Store, because Google closed my developer account*)
@@ -20,11 +20,14 @@
 * [What is Brook](#what-is-brook)
 * [Download](#download)
 * [Server](#server)
-    * [Brook Server](#brook-server)
-    * [Shadowsocks Server](#shadowsocks-server)
 * [Client (CLI)](#client-cli)
-    * [Brook Client](#brook-client)
-    * [Shadowsocks Client](#shadowsocks-client)
+* [Client (GUI)](#client-gui)
+* [Tunnel](#tunnel)
+* [Tproxy](#tproxy)
+* [Relay](#relay)
+* [Socks5](#socks5)
+* [Socks5 to HTTP](#socks5-to-http)
+* [Shadowsocks](#shadowsocks)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -59,7 +62,7 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 
 **See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
-## Server
+## Brook
 
 ```
 NAME:
@@ -101,7 +104,7 @@ GLOBAL OPTIONS:
    --version, -v             print the version
 ```
 
-#### Brook Server
+#### Server
 
 ```
 # Run as a brook server
@@ -110,32 +113,12 @@ $ brook server -l :9999 -p password
 
 ```
 # Run as multiple brook servers
-$ brook servers \
-        -l ":9999 password" \
-        -l ":8888 password"
+$ brook servers -l ":9999 password" -l ":8888 password"
 ```
-
-#### Shadowsocks Server
-
-```
-# Run as a shadowsocks server
-$ brook ssserver -l :9999 -p password
-```
-
-```
-# Run as multiple shadowsocks servers
-$ brook ssservers \
-        -l ":9999 password" \
-        -l ":8888 password"
-```
-
-Fixed method is aes-256-cfb
 
 > If you run a public/shared server, do not forget this parameter --tcpDeadline
 
-## Client (CLI)
-
-#### Brook Client
+#### Client (CLI)
 
 ```
 # Run as brook client, start a socks5 proxy
@@ -147,7 +130,55 @@ $ brook client -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p password
 $ brook client -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p password --http
 ```
 
-#### Shadowsocks Client
+#### Client (GUI)
+
+See [wiki](https://github.com/txthinking/brook/wiki)
+
+#### Tunnel
+
+```
+# Run as tunnel to 1.2.3.4:5
+$ brook tunnel -l 127.0.0.1:1080 -t 1.2.3.4:5 -s server_address:port -p password
+```
+
+#### Tproxy
+
+See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F)
+
+#### Relay
+
+```
+# Run as relay to 1.2.3.4:5
+$ brook relay -l 127.0.0.1:1080 -r 1.2.3.4:5
+```
+
+#### Socks5
+
+```
+# Run as a raw socks5 server 1.2.3.4:5
+$ brook socks5 -l 1.2.3.4:5 -i 1.2.3.4
+```
+
+#### Socks5 to HTTP
+
+```
+# Convert socks5 to HTTP proxy
+$ brook socks5tohttp -l 127.0.0.1:8080 -s 127.0.0.1:1080
+```
+
+#### Shadowsocks Server
+
+```
+# Run as a shadowsocks server
+$ brook ssserver -l :9999 -p password
+```
+
+```
+# Run as multiple shadowsocks servers
+$ brook ssservers -l ":9999 password" -l ":8888 password"
+```
+
+> If you run a public/shared server, do not forget this parameter --tcpDeadline
 
 ```
 # Run as shadowsocks client, start a socks5 proxy
@@ -159,11 +190,13 @@ $ brook ssclient -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p passwo
 $ brook ssclient -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p password --http
 ```
 
+> Fixed method is aes-256-cfb
+
 **See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
-#### Contributing
+## Contributing
 
-* Please create PR on `develop` branch
+Please read [CONTRIBUTING.md](https://github.com/txthinking/brook/blob/master/.github/CONTRIBUTING.md) first
 
 ## License
 
