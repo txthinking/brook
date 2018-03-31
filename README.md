@@ -19,9 +19,9 @@
 
 * [What is Brook](#what-is-brook)
 * [Download](#download)
-* [Server](#server)
-* [Client (CLI)](#client-cli)
-* [Client (GUI)](#client-gui)
+* [**Server**](#server)
+* [**Client (CLI)**](#client-cli)
+* [**Client (GUI)**](#client-gui)
 * [Tunnel](#tunnel)
 * [Tproxy](#tproxy)
 * [Relay](#relay)
