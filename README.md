@@ -61,6 +61,8 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 | [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
 | [Brook.apk](https://github.com/txthinking/brook/releases/download/v20180401/Brook.apk) | Client | Android | - | GUI |
 
+**See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
+
 ## Packages
 
 ### ArchLinux
