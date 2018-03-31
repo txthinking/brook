@@ -11,6 +11,7 @@
 ### v20180401
 
 * Fixed blank page on Android [#138](https://github.com/txthinking/brook/issues/138)
+* Thanks to [@felixonmars](https://github.com/felixonmars), maintainer of Brook ArchLinux Package
 * **Please download Android Client from Github now**(*Android Client was removed from Play Store, because Google closed my developer account*)
 
 ---
