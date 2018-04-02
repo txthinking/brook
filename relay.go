@@ -8,6 +8,7 @@ import (
 
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/socks5"
+	"golang.org/x/sync/errgroup"
 )
 
 // Relay is stream relay server
@@ -58,14 +59,20 @@ func NewRelay(addr, remote string, tcpTimeout, tcpDeadline, udpDeadline int) (*R
 
 // Run server
 func (s *Relay) ListenAndServe() error {
-	errch := make(chan error)
-	go func() {
-		errch <- s.RunTCPServer()
-	}()
-	go func() {
-		errch <- s.RunUDPServer()
-	}()
-	return <-errch
+	var g errgroup.Group
+	g.Go(func() error {
+		return s.RunTCPServer()
+	})
+
+	g.Go(func() error {
+		return s.RunUDPServer()
+	})
+
+	if err := g.Wait(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // RunTCPServer starts tcp server
@@ -129,17 +136,20 @@ func (s *Relay) RunUDPServer() error {
 
 // Shutdown server
 func (s *Relay) Shutdown() error {
-	var err, err1 error
-	if s.TCPListen != nil {
-		err = s.TCPListen.Close()
-	}
-	if s.UDPConn != nil {
-		err1 = s.UDPConn.Close()
-	}
-	if err != nil {
+	var g errgroup.Group
+	g.Go(func() error {
+		return s.TCPListen.Close()
+	})
+
+	g.Go(func() error {
+		return s.UDPConn.Close()
+	})
+
+	if err := g.Wait(); err != nil {
 		return err
 	}
-	return err1
+
+	return nil
 }
 
 // TCPHandle handle request
