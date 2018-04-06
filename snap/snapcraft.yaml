@@ -1,6 +1,6 @@
 name: brook
 version: master
-version-script: git -C parts/cointop/build rev-parse --short HEAD
+version-script: git -C parts/brook/build rev-parse --short HEAD
 summary: Cross platform proxy software.
 description: |
   Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy software 
