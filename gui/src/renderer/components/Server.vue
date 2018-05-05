@@ -23,11 +23,10 @@
                             <v-text-field
                                 label="Password"
                                 placeholder="Your server password"
-                                hint="Your server password"
                                 v-model="o.Password"
-                                :append-icon="o.PasswordVisibility ? 'visibility' : 'visibility_off'"
-                                :append-icon-cb="() => (o.PasswordVisibility = !o.PasswordVisibility)"
-                                :type="o.PasswordVisibility ? 'password' : 'text'"
+                                :append-icon="passwordVisibility ? 'visibility' : 'visibility_off'"
+                                :append-icon-cb="() => (passwordVisibility = !passwordVisibility)"
+                                :type="passwordVisibility ? 'text' : 'password'"
                                 counter
                                 ></v-text-field>
                         </v-flex>
@@ -51,12 +50,12 @@ export default {
             Address: '',
             Server: '',
             Password: '',
-            PasswordVisibility: false,
             TCPTimeout: 60,
             TCPDeadline: 0,
             UDPDeadline: 60,
             UDPSessionTime: 60,
         },
+        passwordVisibility: false,
         hey: false,
         girl: "",
         types: ["Brook", "Brook Stream", "Shadowsocks", ],
