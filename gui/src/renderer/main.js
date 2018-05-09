@@ -47,7 +47,7 @@ window.getSetting = function (){
         AutoSystemProxy: true,
         UseWhiteTrayIcon: false,
     };
-    s = localStorage.getItem('BuiltIn');
+    s = localStorage.getItem('brook/builtin');
     if (s){
         o1 = JSON.parse(s);
     }

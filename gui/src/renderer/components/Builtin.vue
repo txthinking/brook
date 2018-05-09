@@ -80,13 +80,13 @@ export default {
 
     methods: {
         initialize () {
-            var s = localStorage.getItem('BuiltIn');
+            var s = localStorage.getItem('brook/builtin');
             if (s){
                 this.o = JSON.parse(s);
             }
         },
         save () {
-            localStorage.setItem('BuiltIn', JSON.stringify(this.o));
+            localStorage.setItem('brook/builtin', JSON.stringify(this.o));
             this.girl = "OK";
             this.hey = true;
         },

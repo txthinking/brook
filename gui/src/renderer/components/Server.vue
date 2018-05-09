@@ -47,7 +47,7 @@ export default {
     data: () => ({
         o: {
             Type: 'Brook',
-            Address: '',
+            Address: '127.0.0.1:1080',
             Server: '',
             Password: '',
             TCPTimeout: 60,
@@ -74,9 +74,8 @@ export default {
         .end((err, res)=>{
             switch(res.status) {
             case 200:
-                this.o.Address = "[::1]:1080";
-                if(res.text.indexOf(":") === -1){
-                    this.o.Address = "127.0.0.1:1080";
+                if(res.text.indexOf(":") !== -1){
+                    this.o.Address = "[::1]:1080";
                 }
                 break;
             default:
