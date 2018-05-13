@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Server from '@/components/Server'
+import Mode from '@/components/Mode'
 import Builtin from '@/components/Builtin'
 import Help from '@/components/Help'
 import About from '@/components/About'
@@ -13,6 +14,11 @@ export default new Router({
       path: '/',
       name: 'Server',
       component: Server,
+    },
+    {
+      path: '/mode',
+      name: 'Mode',
+      component: Mode,
     },
     {
       path: '/builtin',

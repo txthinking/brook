@@ -6,7 +6,7 @@
                     <v-layout column>
                         <v-flex>
                             <v-select
-                                :items="types"
+                                :items="['Brook', 'Brook Stream', 'Shadowsocks', ]"
                                 v-model.trim="o.Type"
                                 label="Type"
                                 class="input-group--focused"
@@ -47,7 +47,6 @@ export default {
     data: () => ({
         o: {
             Type: 'Brook',
-            Address: '127.0.0.1:1080',
             Server: '',
             Password: '',
             TCPTimeout: 60,
@@ -58,7 +57,6 @@ export default {
         passwordVisibility: false,
         hey: false,
         girl: "",
-        types: ["Brook", "Brook Stream", "Shadowsocks", ],
     }),
 
     computed: {
@@ -69,42 +67,22 @@ export default {
 
     created () {
         this.initialize()
-        this.$http.get('https://ipapi.co/ip/')
-        .withCredentials()
-        .end((err, res)=>{
-            switch(res.status) {
-            case 200:
-                if(res.text.indexOf(":") !== -1){
-                    this.o.Address = "[::1]:1080";
-                }
-                break;
-            default:
-                this.girl = "Can't find IP";
-                this.hey = true;
-                break;
-            }
-        });
     },
 
     methods: {
         initialize () {
-            var s = localStorage.getItem('brook/setting');
+            var s = localStorage.getItem('brook/server');
             if (s){
                 this.o = JSON.parse(s);
             }
         },
         save () {
-            if(!/.+?\:\d+/.test(this.o.Address)){
-                this.girl = "Invalid Address";
-                this.hey = true;
-                return;
-            }
             if(!/.+?\:\d+/.test(this.o.Server)){
                 this.girl = "Invalid Server";
                 this.hey = true;
                 return;
             }
-            localStorage.setItem('brook/setting', JSON.stringify(this.o));
+            localStorage.setItem('brook/server', JSON.stringify(this.o));
             this.girl = "OK";
             this.hey = true;
         },
