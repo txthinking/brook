@@ -131,6 +131,9 @@ app.on('ready', ()=>{
         spawn("chmod", ["+x", path.join(__static, '/' + brookcmd)])
         spawn("chmod", ["+x", path.join(__static, '/' + paccmd)])
     }
+    if (process.platform === 'win32') {
+        app.setAppUserModelId("com.txthinking.brook")
+    }
 })
 
 app.on('activate', () => {
@@ -175,7 +178,7 @@ function stop(o){
         var sp = spawn(path.join(__static, '/' + brookcmd), ['systemproxy', '-r'])
         sp.on('exit', (code) => {
             if(code !== 0){
-                if(Notification.isSupported()){
+                if(process.platform === 'darwin' && Notification.isSupported()){
                     (new Notification({
                         title: 'Failed',
                         body: 'Failed to clean system proxy',
