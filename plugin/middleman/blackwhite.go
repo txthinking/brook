@@ -16,7 +16,7 @@ import (
 
 var Dial ant.Dialer = ant.DefaultDial
 
-// BlackWhite is a Socks5Middleman who only handles domain in white list
+// BlackWhite is a middleman
 type BlackWhite struct {
 	Mode         string // mode is white or black
 	Domains      map[string]byte
@@ -26,7 +26,7 @@ type BlackWhite struct {
 	Socks5Handle *socks5.DefaultHandle
 }
 
-// NewBlackWhite returns a BlackWhite which can be used to handle http proxy request
+// NewBlackWhite returns a BlackWhite
 func NewBlackWhite(mode, domainURL, cidrURL string, timeout, deadline int) (*BlackWhite, error) {
 	ds := make(map[string]byte)
 	ns := make([]*net.IPNet, 0)
