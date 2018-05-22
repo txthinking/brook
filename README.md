@@ -10,7 +10,7 @@
 
 ### v20180601
 
-* Custom rules [wiki](https://github.com/txthinking/brook/wiki/Custom-Rules)
+* Mode [wiki](https://github.com/txthinking/brook/wiki/Mode-in-Brook-GUI-client)
 * Thanks to [@popey](https://github.com/popey), who sent PR of snap package
 
 ---
