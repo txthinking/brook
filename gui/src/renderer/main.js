@@ -30,7 +30,6 @@ new Vue({
 window.getSetting = function (){
     var o = {
         Type: 'Brook',
-        Address: '',
         Server: '',
         Password: '',
         TCPTimeout: 60,
@@ -38,18 +37,27 @@ window.getSetting = function (){
         UDPDeadline: 60,
         UDPSessionTime: 60,
     };
-    var s = localStorage.getItem('brook/setting');
+    var s = localStorage.getItem('brook/server');
     if (s){
         o = JSON.parse(s);
     }
     var o1 = {
-        UseGlobalProxyMode: false,
-        AutoSystemProxy: true,
-        UseWhiteTrayIcon: false,
+        Address: '127.0.0.1:1080',
+        Mode: 'pac',
+        DomainURL: 'https://www.txthinking.com/pac/white.list',
+        CidrURL: 'https://www.txthinking.com/pac/white_cidr.list',
+        PacURL: 'https://www.txthinking.com/pac/white.pac',
     };
-    s = localStorage.getItem('BuiltIn');
+    s = localStorage.getItem('brook/mode');
     if (s){
         o1 = JSON.parse(s);
     }
-    return Object.assign(o, o1);
+    var o2 = {
+        UseWhiteTrayIcon: false,
+    };
+    s = localStorage.getItem('brook/builtin');
+    if (s){
+        o2 = JSON.parse(s);
+    }
+    return Object.assign(Object.assign(o, o1), o2);
 }
