@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "addr-to-ip-port": "^1.4.3",
+    "electron-context-menu": "^0.9.1",
     "vue": "^2.4.2",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
