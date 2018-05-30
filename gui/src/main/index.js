@@ -3,6 +3,14 @@ const path = require('path')
 const { spawn } = require('child_process')
 var addrToIPPort = require('addr-to-ip-port')
 
+require('electron-context-menu')({
+	prepend: (params, browserWindow) => [{
+		label: 'Rainbow',
+		// Only show it when right-clicking images
+		visible: params.mediaType === 'image'
+	}]
+});
+
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
