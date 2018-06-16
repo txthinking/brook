@@ -3,12 +3,9 @@ package sysproxy
 import (
 	"bytes"
 	"errors"
-	"fmt"
-	"os"
 	"os/exec"
 	"regexp"
 	"syscall"
-	"time"
 )
 
 // TurnOnSystemProxy used to enable system pac proxy, pac is a URL.
@@ -23,7 +20,7 @@ func TurnOnSystemProxy(pac string) error {
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	if err := restartWindowsIE(); err != nil {
+	if err := reloadWinProxy(); err != nil {
 		return err
 	}
 	return nil
@@ -44,36 +41,28 @@ func TurnOffSystemProxy() error {
 			return errors.New(string(out) + err.Error())
 		}
 	}
-	if err := restartWindowsIE(); err != nil {
+	if err := reloadWinProxy(); err != nil {
 		return err
 	}
 	return nil
 }
 
-func restartWindowsIE() error {
-	c := exec.Command(`tasklist`, `/fo`, `list`, `/fi`, `imagename eq iexplore.exe`)
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	out, err := c.CombinedOutput()
+func reloadWinProxy() error {
+	h, err := syscall.LoadLibrary("wininet.dll")
 	if err != nil {
-		return errors.New(string(out) + err.Error())
+		return err
 	}
-	if bytes.Contains(bytes.ToLower(out), []byte("iexplore.exe")) {
-		c := exec.Command(`taskkill`, `/f`, `/t`, `/im`, `iexplore.exe`)
-		c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
+	f, err := syscall.GetProcAddress(h, "InternetSetOptionW")
+	if err != nil {
+		return err
 	}
-	c = exec.Command(fmt.Sprintf(`%s\Internet Explorer\iexplore.exe`, os.Getenv("PROGRAMFILES")), `-nohome`)
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	if err := c.Start(); err != nil {
-		return errors.New("Start IE:" + err.Error())
+	ret, _, errno := syscall.Syscall6(uintptr(f), 4, 0, 39, 0, 0, 0, 0)
+	if ret != 1 {
+		return errors.New(errno.Error())
 	}
-	time.Sleep(2 * time.Second)
-	c = exec.Command(`taskkill`, `/f`, `/t`, `/im`, `iexplore.exe`)
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
+	ret, _, errno = syscall.Syscall6(uintptr(f), 4, 0, 37, 0, 0, 0, 0)
+	if ret != 1 {
+		return errors.New(errno.Error())
 	}
 	return nil
 }
