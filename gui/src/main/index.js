@@ -8,18 +8,13 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let w, t
-var doing = false
-var brook = null
-var pac = null
+var running = false
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
-var brookcmd = process.platform === 'darwin' ? 'brook_macos_amd64' : 'brook_windows_amd64.exe'
-var paccmd = process.platform === 'darwin' ? 'pac_macos_amd64' : 'pac_windows_amd64.exe'
-
-function done(){
-    doing = false
-}
+var brook = process.platform === 'darwin' ? 'brook_macos_amd64' : 'brook_windows_amd64.exe'
+var brook1 = process.platform === 'darwin' ? 'brook1_macos_amd64' : 'brook1_windows_amd64.exe'
+var pac = process.platform === 'darwin' ? 'pac_macos_amd64' : 'pac_windows_amd64.exe'
 
 function createWindow () {
     w = new BrowserWindow({
@@ -54,12 +49,8 @@ function createTray(){
         {
             label: 'Toggle',
             click: ()=>{
-                if(doing){
-                    return
-                }
-                doing = true
                 w.webContents.executeJavaScript("getSetting()", false, (o)=>{
-                    if(brook){
+                    if(running){
                         stop(o)
                         return
                     }
@@ -128,17 +119,27 @@ app.on('ready', ()=>{
     })
     if (process.platform === 'darwin') {
         app.dock.hide()
-        exec("chmod +x " + path.join(__static, '/' + brookcmd), (error, out, err)=>{
+        exec("chmod +x " + path.join(__static, '/' + brook), (error, out, err)=>{
             if(error){
                 if(Notification.isSupported()){
                     (new Notification({
-                        title: 'When chmod +x brook',
+                        title: 'When chmod +x',
                         body: err,
                     })).show()
                 }
             }
         })
-        exec("chmod +x " + path.join(__static, '/' + paccmd), (error, out, err)=>{
+        exec("chmod +x " + path.join(__static, '/' + brook1), (error, out, err)=>{
+            if(error){
+                if(Notification.isSupported()){
+                    (new Notification({
+                        title: 'When chmod +x',
+                        body: err,
+                    })).show()
+                }
+            }
+        })
+        exec("chmod +x " + path.join(__static, '/' + pac), (error, out, err)=>{
             if(error){
                 if(Notification.isSupported()){
                     (new Notification({
@@ -164,154 +165,180 @@ app.on('window-all-closed', () => {
 })
 
 function stop(o){
-    if(brook){
-        if (process.platform !== 'win32') {
-            brook.kill();
-        }
-        if (process.platform === 'win32') {
-            exec("taskkill /pid "+brook.pid+" /f /t", (error, out, err)=>{
-                // if(error){
-                //     if(Notification.isSupported()){
-                //         (new Notification({
-                //             title: 'When kill Brook One',
-                //             body: err,
-                //         })).show()
-                //     }
-                // }
-            })
-        }
-
+    if (process.platform === 'darwin') {
+        exec("ps -acx | grep " + brook, (error, out, err)=>{
+            if(error){
+                return
+            }
+            exec("killall " + brook)
+        })
         if (o.Mode != 'manual'){
-            exec(path.join(__static, '/' + brookcmd) + " systemproxy -r", (error, out, err)=>{
-                // if(error){
-                //     if(Notification.isSupported()){
-                //         (new Notification({
-                //             title: 'When clean system proxy',
-                //             body: err,
-                //         })).show()
-                //     }
-                // }
+            exec("ps -acx | grep " + pac, (error, out, err)=>{
+                if(error){
+                    return
+                }
+                exec("killall " + pac)
             })
         }
-
-        brook = null;
     }
-
-    if(pac){
-        if (process.platform !== 'win32') {
-            pac.kill();
-        }
-        if (process.platform === 'win32') {
-            exec("taskkill /pid "+pac.pid+" /f /t", (error, out, err)=>{
-                // if(error){
-                //     if(Notification.isSupported()){
-                //         (new Notification({
-                //             title: 'When kill PAC server',
-                //             body: err,
-                //         })).show()
-                //     }
-                // }
+    if (process.platform === 'win32') {
+        exec("tasklist /fo list /fi \"imagename eq "+brook+"\"", (error, out, err)=>{
+            if(out.indexOf(brook) === -1){
+                return
+            }
+            exec("taskkill /im "+brook+" /f /t")
+        })
+        if (o.Mode != 'manual'){
+            exec("tasklist /fo list /fi \"imagename eq "+pac+"\"", (error, out, err)=>{
+                if(out.indexOf(pac) === -1){
+                    return
+                }
+                exec("taskkill /im "+pac+" /f /t")
             })
         }
-        pac = null;
+    }
+    if (o.Mode != 'manual'){
+        exec(path.join(__static, '/' + brook1) + " systemproxy -r", (error, out, err)=>{
+            if(error){
+                if(Notification.isSupported()){
+                    (new Notification({
+                        title: 'When clean system proxy',
+                        body: err,
+                    })).show()
+                }
+            }
+        })
     }
 
+    running = false
     t.setTitle('Stopped')
     t.setToolTip('Brook: stopped')
-    return done()
 }
 
 function run(o){
     t.setTitle('')
     t.setToolTip('Brook: started')
+    running = true
+    var pu
 
-    var client = "client"
-    if (o.Type === "Brook Stream"){
-        client = "streamclient"
-    }
-    if (o.Type === "Shadowsocks"){
-        client = "ssclient"
-    }
-    var args = [
-        client,
-        '-l',
-        o.Address,
-        '-i',
-        o.Address ? addrToIPPort(o.Address)[0] : "",
-        '-s',
-        o.Server,
-        '-p',
-        o.Password,
-        '--tcpTimeout',
-        o.TCPTimeout,
-        '--tcpDeadline',
-        o.TCPDeadline,
-        '--udpDeadline',
-        o.UDPDeadline,
-        '--udpSessionTime',
-        o.UDPSessionTime,
-    ]
-    brook = exec(path.join(__static, '/' + brookcmd) + " " + args.join(" "), (error, out, err)=>{
-        if(error && err){
-            if(Notification.isSupported()){
-                (new Notification({
-                    title: 'Brook said',
-                    body: err,
-                })).show()
-            }
+    var runBrook = function(){
+        var client = "client"
+        if (o.Type === "Brook Stream"){
+            client = "streamclient"
         }
-        stop(o);
-    })
-
-    if (o.Mode == 'manual'){
-        return done()
-    }
-
-    var pu;
-    if (o.Mode == 'pac'){
-        pu = o.PacURL;
-    }
-    if (o.Mode != 'pac'){
-        var p = "\"SOCKS5 "+o.Address+"; SOCKS "+o.Address+"; DIRECT\"";
+        if (o.Type === "Shadowsocks"){
+            client = "ssclient"
+        }
         var args = [
-            '-m',
-            o.Mode,
-            '-p',
-            p,
+            client,
             '-l',
-            ':1980',
+            o.Address,
+            '-i',
+            o.Address ? addrToIPPort(o.Address)[0] : "",
+            '-s',
+            o.Server,
+            '-p',
+            o.Password,
+            '--tcpTimeout',
+            o.TCPTimeout,
+            '--tcpDeadline',
+            o.TCPDeadline,
+            '--udpDeadline',
+            o.UDPDeadline,
+            '--udpSessionTime',
+            o.UDPSessionTime,
         ]
-        if(o.Mode != 'global' && o.DomainURL != ''){
-            args = args.concat(['-d', o.DomainURL])
-        }
-        if(o.Mode != 'global' && o.CidrURL != ''){
-            args = args.concat(['-c', o.CidrURL])
-        }
-        pac = exec(path.join(__static, '/' + paccmd) + ' ' + args.join(" "), (error, out, err)=>{
+        exec(path.join(__static, '/' + brook) + " " + args.join(" "), (error, out, err)=>{
             if(error && err){
                 if(Notification.isSupported()){
                     (new Notification({
-                        title: 'PAC server said',
+                        title: 'Brook said',
                         body: err,
                     })).show()
                 }
             }
             stop(o);
         })
-        pu = "http://local.txthinking.com:1980/proxy.pac";
+    }
+    var runPAC = function(){
+        if (o.Mode == 'pac'){
+            pu = o.PacURL;
+        }
+        if (o.Mode != 'pac'){
+            var p = "\"SOCKS5 "+o.Address+"; SOCKS "+o.Address+"; DIRECT\"";
+            var args = [
+                '-m',
+                o.Mode,
+                '-p',
+                p,
+                '-l',
+                ':1980',
+            ]
+            if(o.Mode != 'global' && o.DomainURL != ''){
+                args = args.concat(['-d', o.DomainURL])
+            }
+            if(o.Mode != 'global' && o.CidrURL != ''){
+                args = args.concat(['-c', o.CidrURL])
+            }
+            exec(path.join(__static, '/' + pac) + ' ' + args.join(" "), (error, out, err)=>{
+                if(error && err){
+                    if(Notification.isSupported()){
+                        (new Notification({
+                            title: 'PAC server said',
+                            body: err,
+                        })).show()
+                    }
+                }
+                stop(o);
+            })
+            pu = "http://local.txthinking.com:1980/proxy.pac";
+        }
     }
 
-    exec(path.join(__static, '/' + brookcmd) + " systemproxy -u "+pu, (error, out, err)=>{
-        if(error){
-            if(Notification.isSupported()){
-                (new Notification({
-                    title: 'When set system proxy',
-                    body: err,
-                })).show()
+    if (process.platform === 'darwin') {
+        exec("ps -acx | grep " + brook, (error, out, err)=>{
+            if(!error){
+                return
             }
-            stop(o);
+            runBrook()
+        })
+        if (o.Mode != 'manual'){
+            exec("ps -acx | grep " + pac, (error, out, err)=>{
+                if(!error){
+                    return
+                }
+                runPAC()
+            })
         }
-    })
+    }
+    if (process.platform === 'win32') {
+        exec("tasklist /fo list /fi \"imagename eq "+brook+"\"", (error, out, err)=>{
+            if(out.indexOf(brook) !== -1){
+                return
+            }
+            runBrookOne()
+        })
+        if (o.Mode != 'manual'){
+            exec("tasklist /fo list /fi \"imagename eq "+pac+"\"", (error, out, err)=>{
+                if(out.indexOf(pac) !== -1){
+                    return
+                }
+                runPAC()
+            })
+        }
+    }
 
-    return done()
+    if (o.Mode != 'manual'){
+        exec(path.join(__static, '/' + brook1) + " systemproxy -u "+pu, (error, out, err)=>{
+            if(error){
+                if(Notification.isSupported()){
+                    (new Notification({
+                        title: 'When set system proxy',
+                        body: err,
+                    })).show()
+                }
+                stop(o);
+            }
+        })
+    }
 }
