@@ -325,7 +325,7 @@ function run(o){
             if(out.indexOf(brook) !== -1){
                 return
             }
-            runBrookOne()
+            runBrook()
         })
         if (o.Mode != 'manual'){
             exec("tasklist /fo list /fi \"imagename eq "+pac+"\"", (error, out, err)=>{
