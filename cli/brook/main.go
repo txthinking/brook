@@ -274,6 +274,78 @@ func main() {
 			},
 		},
 		cli.Command{
+			Name:  "vpn",
+			Usage: "Run as VPN mode",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "listen, l",
+					Usage: "Client listen address, must use 127.0.0.1, like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "server, s",
+					Usage: "Server address, must use IP, like: 1.2.3.4:1080",
+				},
+				cli.StringFlag{
+					Name:  "password, p",
+					Usage: "Server password",
+				},
+				cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 60,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				cli.IntFlag{
+					Name:  "tcpDeadline",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpSessionTime",
+					Value: 60,
+					Usage: "udp session time (s), in most cases need this",
+				},
+				cli.StringFlag{
+					Name:  "tunDevice",
+					Usage: "tun name",
+					Value: "tun0",
+				},
+				cli.StringFlag{
+					Name:  "tunIP",
+					Usage: "tun IP",
+					Value: "10.0.0.2",
+				},
+				cli.StringFlag{
+					Name:  "tunGateway",
+					Usage: "tun gateway",
+					Value: "10.0.0.1",
+				},
+				cli.StringFlag{
+					Name:  "tunMask",
+					Usage: "tun mask",
+					Value: "255.255.255.0",
+				},
+				cli.BoolFlag{
+					Name:  "publicOnly",
+					Usage: "Only forward public destination",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "client")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"), c.Bool("publicOnly"))
+			},
+		},
+		cli.Command{
 			Name:  "streamserver",
 			Usage: "Run as server mode",
 			Flags: []cli.Flag{
