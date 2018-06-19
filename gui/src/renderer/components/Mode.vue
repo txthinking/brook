@@ -63,8 +63,8 @@ export default {
         o: {
             Address: '127.0.0.1:1080',
             Mode: 'pac',
-            DomainURL: 'https://www.txthinking.com/pac/white.list',
-            CidrURL: 'https://www.txthinking.com/pac/white_cidr.list',
+            DomainURL: '',
+            CidrURL: '',
             PacURL: 'https://www.txthinking.com/pac/white.pac',
         },
         hey: false,
@@ -94,7 +94,7 @@ export default {
                 this.hey = true;
                 return;
             }
-            if((this.o.Mode == 'white' || this.o.Mode == 'black') && this.o.DomainURL != "" && !/http/.test(this.o.DomainURL)){
+            if((this.o.Mode == 'white' || this.o.Mode == 'black') && !/http/.test(this.o.DomainURL)){
                 this.girl = "Invalid Domain List URL";
                 this.hey = true;
                 return;

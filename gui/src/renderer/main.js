@@ -44,8 +44,8 @@ window.getSetting = function (){
     var o1 = {
         Address: '127.0.0.1:1080',
         Mode: 'pac',
-        DomainURL: 'https://www.txthinking.com/pac/white.list',
-        CidrURL: 'https://www.txthinking.com/pac/white_cidr.list',
+        DomainURL: '',
+        CidrURL: '',
         PacURL: 'https://www.txthinking.com/pac/white.pac',
     };
     s = localStorage.getItem('brook/mode');

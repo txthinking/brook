@@ -86,7 +86,7 @@ function createTray(){
             },
         },
         {
-            label: 'Brook: v20180601',
+            label: 'Brook: v20180707',
             click: ()=>{
                 shell.openExternal("https://github.com/txthinking/brook/releases");
             },
@@ -219,7 +219,6 @@ function run(o){
     t.setTitle('')
     t.setToolTip('Brook: started')
     running = true
-    var pu
 
     var runBrook = function(){
         var client = "client"
@@ -261,9 +260,7 @@ function run(o){
         })
     }
     var runPAC = function(){
-        if (o.Mode == 'pac'){
-            pu = o.PacURL;
-        }
+        var pu = o.PacURL;
         if (o.Mode != 'pac'){
             var p = "\"SOCKS5 "+o.Address+"; SOCKS "+o.Address+"; DIRECT\"";
             var args = [
@@ -281,6 +278,7 @@ function run(o){
                 args = args.concat(['-c', o.CidrURL])
             }
             exec(path.join(__static, '/' + pac) + ' ' + args.join(" "), (error, out, err)=>{
+                console.log(error, err)
                 if(error && err){
                     if(Notification.isSupported()){
                         (new Notification({
@@ -293,6 +291,17 @@ function run(o){
             })
             pu = "http://local.txthinking.com:1980/proxy.pac";
         }
+        exec(path.join(__static, '/' + brook1) + " systemproxy -u "+pu, (error, out, err)=>{
+            if(error){
+                if(Notification.isSupported()){
+                    (new Notification({
+                        title: 'When set system proxy',
+                        body: err,
+                    })).show()
+                }
+                stop(o);
+            }
+        })
     }
 
     if (process.platform === 'darwin') {
@@ -328,17 +337,4 @@ function run(o){
         }
     }
 
-    if (o.Mode != 'manual'){
-        exec(path.join(__static, '/' + brook1) + " systemproxy -u "+pu, (error, out, err)=>{
-            if(error){
-                if(Notification.isSupported()){
-                    (new Notification({
-                        title: 'When set system proxy',
-                        body: err,
-                    })).show()
-                }
-                stop(o);
-            }
-        })
-    }
 }
