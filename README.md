@@ -11,6 +11,7 @@
 ### v20180707
 
 * Mode [wiki](https://github.com/txthinking/brook/wiki/Mode-in-Brook-GUI-client)
+* Thanks [KarlZeo](https://github.com/KarlZeo) for letting us can `brew cask install brook`
 
 ---
 
