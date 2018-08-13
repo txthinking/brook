@@ -12,6 +12,7 @@ import (
 
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/ant"
+	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
 
@@ -23,9 +24,9 @@ type SSClient struct {
 	TCPTimeout      int
 	TCPDeadline     int // Not refreshed
 	UDPDeadline     int
-	Socks5Middleman Socks5Middleman
-	HTTPMiddleman   HTTPMiddleman
 	TCPListen       *net.TCPListener
+	Socks5Middleman plugin.Socks5Middleman
+	HTTPMiddleman   plugin.HTTPMiddleman
 }
 
 // NewSSClient returns a new SSClient
@@ -45,10 +46,19 @@ func NewSSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 	return x, nil
 }
 
+// SetSocks5Middleman sets socks5middleman plugin
+func (x *SSClient) SetSocks5Middleman(m plugin.Socks5Middleman) {
+	x.Socks5Middleman = m
+}
+
+// SetHTTPMiddleman sets httpmiddleman plugin
+func (x *SSClient) SetHTTPMiddleman(m plugin.HTTPMiddleman) {
+	x.HTTPMiddleman = m
+}
+
 // ListenAndServe will let client start a socks5 proxy
 // sm can be nil
-func (x *SSClient) ListenAndServe(sm Socks5Middleman) error {
-	x.Socks5Middleman = sm
+func (x *SSClient) ListenAndServe() error {
 	return x.Server.Run(x)
 }
 
@@ -222,9 +232,8 @@ func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 
 // ListenAndServeHTTP will let client start a http proxy
 // m can be nil
-func (x *SSClient) ListenAndServeHTTP(m HTTPMiddleman) error {
+func (x *SSClient) ListenAndServeHTTP() error {
 	var err error
-	x.HTTPMiddleman = m
 	x.TCPListen, err = net.ListenTCP("tcp", x.Server.TCPAddr)
 	if err != nil {
 		return nil

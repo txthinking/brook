@@ -1,12 +1,14 @@
 package brook
 
 import (
+	"encoding/binary"
 	"io"
 	"log"
 	"net"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
+	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
 
@@ -21,6 +23,7 @@ type Server struct {
 	TCPDeadline  int
 	TCPTimeout   int
 	UDPDeadline  int
+	TokenChecker plugin.TokenChecker
 }
 
 // NewServer
@@ -44,6 +47,11 @@ func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) 
 		UDPDeadline:  udpDeadline,
 	}
 	return s, nil
+}
+
+// SetToken set token plugin
+func (s *Server) SetTokenChecker(token plugin.TokenChecker) {
+	s.TokenChecker = token
 }
 
 // Run server
@@ -132,6 +140,14 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
+	if s.TokenChecker != nil {
+		l := int(binary.BigEndian.Uint16(b[0:2]))
+		t := b[2 : l+2]
+		if err := s.TokenChecker.Check(t); err != nil {
+			return err
+		}
+		b = b[l+2:]
+	}
 	address := socks5.ToAddress(b[0], b[1:len(b)-2], b[len(b)-2:])
 	tmp, err := Dial.Dial("tcp", address)
 	if err != nil {
@@ -196,7 +212,7 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 
 // UDPHandle handle packet
 func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
-	a, h, p, data, err := Decrypt(s.Password, b)
+	a, h, p, data, err := Decrypt(s.Password, b, s.TokenChecker)
 	if err != nil {
 		return err
 	}

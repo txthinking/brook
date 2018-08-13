@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/txthinking/ant"
+	"github.com/txthinking/brook/plugin"
 	"golang.org/x/net/proxy"
 )
 
@@ -19,7 +20,7 @@ type Socks5ToHTTP struct {
 	Timeout       int
 	Deadline      int // Not refreshed
 	Listen        *net.TCPListener
-	Middleman     HTTPMiddleman
+	HTTPMiddleman plugin.HTTPMiddleman
 }
 
 func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToHTTP, error) {
@@ -43,14 +44,18 @@ func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToH
 	}, nil
 }
 
-func (s *Socks5ToHTTP) ListenAndServe(h HTTPMiddleman) error {
+// SetHTTPMiddleman sets httpmiddleman plugin
+func (s *Socks5ToHTTP) SetHTTPMiddleman(m plugin.HTTPMiddleman) {
+	s.HTTPMiddleman = m
+}
+
+func (s *Socks5ToHTTP) ListenAndServe() error {
 	l, err := net.ListenTCP("tcp", s.Addr)
 	if err != nil {
 		return err
 	}
 	defer l.Close()
 	s.Listen = l
-	s.Middleman = h
 	for {
 		c, err := l.AcceptTCP()
 		if err != nil {
@@ -112,8 +117,8 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 		}
 	}
 
-	if s.Middleman != nil {
-		if done, err := s.Middleman.Handle(method, addr, b, c); err != nil || done {
+	if s.HTTPMiddleman != nil {
+		if done, err := s.HTTPMiddleman.Handle(method, addr, b, c); err != nil || done {
 			return err
 		}
 	}

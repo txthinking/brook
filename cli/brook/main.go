@@ -19,7 +19,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20180112"
+	app.Version = "20180707"
 	app.Usage = "A Cross-Platform Proxy Software"
 	app.Author = "Cloud"
 	app.Email = "cloud@txthinking.com"
@@ -228,6 +228,49 @@ func main() {
 					enableDebug()
 				}
 				return brook.RunTunnel(c.String("listen"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+			},
+		},
+		cli.Command{
+			Name:  "tproxy",
+			Usage: "Run as tproxy mode, transparent proxy, only works on Linux",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "listen, l",
+					Usage: "Client listen address, like: 127.0.0.1:1080",
+				},
+				cli.StringFlag{
+					Name:  "server, s",
+					Usage: "Server address, like: 1.2.3.4:1080",
+				},
+				cli.StringFlag{
+					Name:  "password, p",
+					Usage: "Server password",
+				},
+				cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 60,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				cli.IntFlag{
+					Name:  "tcpDeadline",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				cli.IntFlag{
+					Name:  "udpDeadline",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "tproxy")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				return brook.RunTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 			},
 		},
 		cli.Command{
@@ -618,7 +661,7 @@ func main() {
 			Usage: "Run as multiple relays mode",
 			Flags: []cli.Flag{
 				cli.StringSliceFlag{
-					Name:  "listenserver, l",
+					Name:  "listenremote, l",
 					Usage: "listen address and server address, like '0.0.0.0:1080 1.2.3.4:1080'",
 				},
 				cli.IntFlag{
@@ -638,7 +681,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("listenserver")) == 0 {
+				if len(c.StringSlice("listenremote")) == 0 {
 					cli.ShowCommandHelp(c, "relays")
 					return nil
 				}
@@ -647,10 +690,10 @@ func main() {
 				}
 				errch := make(chan error)
 				go func() {
-					for _, v := range c.StringSlice("listenserver") {
+					for _, v := range c.StringSlice("listenremote") {
 						ss := strings.Split(v, " ")
 						if len(ss) != 2 {
-							errch <- errors.New("Invalid listenserver")
+							errch <- errors.New("Invalid listenremote")
 							return
 						}
 						go func() {
@@ -719,6 +762,27 @@ func main() {
 					enableDebug()
 				}
 				return brook.RunSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.Int("timeout"), c.Int("deadline"))
+			},
+		},
+		cli.Command{
+			Name:  "systemproxy",
+			Usage: "Set system proxy with pac url, or remove, only works on MacOS/Windows",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "url, u",
+					Usage: "Pac address: like: http://127.0.0.1/pac",
+				},
+				cli.BoolFlag{
+					Name:  "remove, r",
+					Usage: "Remove pac url from system proxy",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if !c.Bool("remove") && c.String("url") == "" {
+					cli.ShowCommandHelp(c, "systemproxy")
+					return nil
+				}
+				return brook.RunSystemProxy(c.Bool("remove"), c.String("url"))
 			},
 		},
 	}

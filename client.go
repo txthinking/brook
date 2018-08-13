@@ -2,6 +2,7 @@ package brook
 
 import (
 	"bytes"
+	"encoding/binary"
 	"errors"
 	"io"
 	"log"
@@ -10,6 +11,7 @@ import (
 
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/ant"
+	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
 
@@ -21,9 +23,10 @@ type Client struct {
 	TCPTimeout      int
 	TCPDeadline     int
 	UDPDeadline     int
-	Socks5Middleman Socks5Middleman
-	HTTPMiddleman   HTTPMiddleman
 	TCPListen       *net.TCPListener
+	Socks5Middleman plugin.Socks5Middleman
+	HTTPMiddleman   plugin.HTTPMiddleman
+	TokenGetter     plugin.TokenGetter
 }
 
 // NewClient returns a new Client
@@ -43,10 +46,24 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 	return x, nil
 }
 
+// SetToken sets token plugin
+func (x *Client) SetTokenGetter(token plugin.TokenGetter) {
+	x.TokenGetter = token
+}
+
+// SetSocks5Middleman sets socks5middleman plugin
+func (x *Client) SetSocks5Middleman(m plugin.Socks5Middleman) {
+	x.Socks5Middleman = m
+}
+
+// SetHTTPMiddleman sets httpmiddleman plugin
+func (x *Client) SetHTTPMiddleman(m plugin.HTTPMiddleman) {
+	x.HTTPMiddleman = m
+}
+
 // ListenAndServe will let client start a socks5 proxy
 // sm can be nil
-func (x *Client) ListenAndServe(sm Socks5Middleman) error {
-	x.Socks5Middleman = sm
+func (x *Client) ListenAndServe() error {
 	return x.Server.Run(x)
 }
 
@@ -95,6 +112,19 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		rawaddr = append(rawaddr, r.Atyp)
 		rawaddr = append(rawaddr, r.DstAddr...)
 		rawaddr = append(rawaddr, r.DstPort...)
+		if x.TokenGetter != nil {
+			t, err := x.TokenGetter.Get()
+			if err != nil {
+				return ErrorReply(r, c, err)
+			}
+			if len(t) == 0 {
+				return ErrorReply(r, c, errors.New("Miss Token"))
+			}
+			bb := make([]byte, 2)
+			binary.BigEndian.PutUint16(bb, uint16(len(t)))
+			t = append(bb, t...)
+			rawaddr = append(t, rawaddr...)
+		}
 		n, err = WriteTo(rc, rawaddr, k, n, true)
 		if err != nil {
 			return ErrorReply(r, c, err)
@@ -184,6 +214,19 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
+		if x.TokenGetter != nil {
+			t, err := x.TokenGetter.Get()
+			if err != nil {
+				return err
+			}
+			if len(t) == 0 {
+				return errors.New("Miss Token")
+			}
+			bb := make([]byte, 2)
+			binary.BigEndian.PutUint16(bb, uint16(len(t)))
+			t = append(bb, t...)
+			data = append(t, data...)
+		}
 		cd, err := Encrypt(x.Password, data)
 		if err != nil {
 			return err
@@ -236,7 +279,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 			if err != nil {
 				break
 			}
-			_, _, _, data, err := Decrypt(x.Password, b[0:n])
+			_, _, _, data, err := Decrypt(x.Password, b[0:n], nil)
 			if err != nil {
 				log.Println(err)
 				break
@@ -256,10 +299,8 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 }
 
 // ListenAndServeHTTP will let client start a http proxy
-// m can be nil
-func (x *Client) ListenAndServeHTTP(m HTTPMiddleman) error {
+func (x *Client) ListenAndServeHTTP() error {
 	var err error
-	x.HTTPMiddleman = m
 	x.TCPListen, err = net.ListenTCP("tcp", x.Server.TCPAddr)
 	if err != nil {
 		return nil
@@ -364,6 +405,19 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, h...)
 	rawaddr = append(rawaddr, p...)
+	if x.TokenGetter != nil {
+		t, err := x.TokenGetter.Get()
+		if err != nil {
+			return err
+		}
+		if len(t) == 0 {
+			return errors.New("Miss Token")
+		}
+		bb := make([]byte, 2)
+		binary.BigEndian.PutUint16(bb, uint16(len(t)))
+		t = append(bb, t...)
+		rawaddr = append(t, rawaddr...)
+	}
 	n, err = WriteTo(rc, rawaddr, k, n, true)
 	if err != nil {
 		return err
