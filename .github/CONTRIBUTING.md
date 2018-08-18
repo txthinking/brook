@@ -1,6 +1,7 @@
 ### Please follow rules before doing anything
 
-*  One issue, one topic
+* One issue, one topic
+* Contribute in English
 
 ### I what to ask question or need help.
 

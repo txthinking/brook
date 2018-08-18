@@ -3,6 +3,7 @@ package brook
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -313,14 +314,16 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	}
 	c, err := tproxy.DialUDP("udp", daddr, addr)
 	if err != nil {
-		// TODO repleace with IP spoofing
-		return nil
+		rc.Close()
+		return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 	}
 	ue = &UDPExchange{
 		RemoteConn: rc,
 		LocalConn:  c,
 	}
 	if err := send(ue, b); err != nil {
+		ue.RemoteConn.Close()
+		ue.LocalConn.Close()
 		return err
 	}
 	s.UDPExchanges.Set(ue.LocalConn.RemoteAddr().String(), ue, cache.DefaultExpiration)
@@ -328,6 +331,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		defer func() {
 			s.UDPExchanges.Delete(ue.LocalConn.RemoteAddr().String())
 			ue.RemoteConn.Close()
+			ue.LocalConn.Close()
 		}()
 		var b [65536]byte
 		for {
