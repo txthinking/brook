@@ -8,11 +8,10 @@
 
 ---
 
-### v20180401
+### v20180707
 
-* Fixed blank page on Android [#138](https://github.com/txthinking/brook/issues/138)
-* Thanks to [@felixonmars](https://github.com/felixonmars), maintainer of Brook ArchLinux Package
-* **Please download Android Client from Github now**(*Android Client was removed from Play Store, because Google closed my developer account*)
+* Mode [wiki](https://github.com/txthinking/brook/wiki/Mode-in-Brook-GUI-client)
+* Thanks [KarlZeo](https://github.com/KarlZeo) for letting us can `brew cask install brook`
 
 ---
 
@@ -36,31 +35,31 @@
 ## What is Brook
 
 Brook is a cross-platform(Linux/MacOS/Windows/Android/iOS) proxy/vpn software.<br/>
-Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
+Brook's goal is to keep it simple, stupid and not detectable.
 
 ## Download
 
 | Download | Server/Client | OS | Arch | Remark |
 | --- | --- | --- | --- | --- |
-| [brook](https://github.com/txthinking/brook/releases/download/v20180401/brook) | Server & Client | Linux | amd64 | CLI |
-| [brook_linux_386](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_386) | Server & Client | Linux | 386 | CLI |
-| [brook_linux_arm64](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_arm64) | Server & Client | Linux | arm64 | CLI |
-| [brook_linux_arm5](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_arm5) | Server & Client | Linux | arm5 | CLI |
-| [brook_linux_arm6](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_arm6) | Server & Client | Linux | arm6 | CLI |
-| [brook_linux_arm7](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_arm7) | Server & Client | Linux | arm7 | CLI |
-| [brook_linux_mips](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_mips) | Server & Client | Linux | mips | CLI |
-| [brook_linux_mipsle](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_mipsle) | Server & Client | Linux | mipsle | CLI |
-| [brook_linux_mips64](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_mips64) | Server & Client | Linux | mips64 | CLI |
-| [brook_linux_mips64le](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_mips64le) | Server & Client | Linux | mips64le | CLI |
-| [brook_linux_ppc64](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_ppc64) | Server & Client | Linux | ppc64 | CLI |
-| [brook_linux_ppc64le](https://github.com/txthinking/brook/releases/download/v20180401/brook_linux_ppc64le) | Server & Client | Linux | ppc64le | CLI |
-| [brook_macos_amd64](https://github.com/txthinking/brook/releases/download/v20180401/brook_macos_amd64) | Server & Client | MacOS | amd64 | CLI |
-| [brook_windows_amd64.exe](https://github.com/txthinking/brook/releases/download/v20180401/brook_windows_amd64.exe) | Server & Client | Windows | amd64 | CLI |
-| [brook_windows_386.exe](https://github.com/txthinking/brook/releases/download/v20180401/brook_windows_386.exe) | Server & Client | Windows | 386 | CLI |
-| [Brook.dmg](https://github.com/txthinking/brook/releases/download/v20180401/Brook.dmg) | Client | MacOS | amd64 | GUI |
-| [Brook.Setup.exe](https://github.com/txthinking/brook/releases/download/v20180401/Brook.Setup.exe) | Client | Windows | amd64 | GUI |
+| [brook](https://github.com/txthinking/brook/releases/download/v20180707/brook) | Server & Client | Linux | amd64 | CLI |
+| [brook_linux_386](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_386) | Server & Client | Linux | 386 | CLI |
+| [brook_linux_arm64](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_arm64) | Server & Client | Linux | arm64 | CLI |
+| [brook_linux_arm5](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_arm5) | Server & Client | Linux | arm5 | CLI |
+| [brook_linux_arm6](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_arm6) | Server & Client | Linux | arm6 | CLI |
+| [brook_linux_arm7](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_arm7) | Server & Client | Linux | arm7 | CLI |
+| [brook_linux_mips](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_mips) | Server & Client | Linux | mips | CLI |
+| [brook_linux_mipsle](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_mipsle) | Server & Client | Linux | mipsle | CLI |
+| [brook_linux_mips64](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_mips64) | Server & Client | Linux | mips64 | CLI |
+| [brook_linux_mips64le](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_mips64le) | Server & Client | Linux | mips64le | CLI |
+| [brook_linux_ppc64](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_ppc64) | Server & Client | Linux | ppc64 | CLI |
+| [brook_linux_ppc64le](https://github.com/txthinking/brook/releases/download/v20180707/brook_linux_ppc64le) | Server & Client | Linux | ppc64le | CLI |
+| [brook_macos_amd64](https://github.com/txthinking/brook/releases/download/v20180707/brook_macos_amd64) | Server & Client | MacOS | amd64 | CLI |
+| [brook_windows_amd64.exe](https://github.com/txthinking/brook/releases/download/v20180707/brook_windows_amd64.exe) | Server & Client | Windows | amd64 | CLI |
+| [brook_windows_386.exe](https://github.com/txthinking/brook/releases/download/v20180707/brook_windows_386.exe) | Server & Client | Windows | 386 | CLI |
+| [Brook.dmg](https://github.com/txthinking/brook/releases/download/v20180707/Brook.dmg) | Client | MacOS | amd64 | GUI |
+| [Brook.Setup.exe](https://github.com/txthinking/brook/releases/download/v20180707/Brook.Setup.exe) | Client | Windows | amd64 | GUI |
 | [App Store](https://itunes.apple.com/us/app/brook-brook-shadowsocks-vpn-proxy/id1216002642) | Client | iOS | - | GUI |
-| [Brook.apk](https://github.com/txthinking/brook/releases/download/v20180401/Brook.apk) | Client | Android | - | GUI |
+| [Brook.apk](https://github.com/txthinking/brook/releases/download/v20180707/Brook.apk)(No Google Play) | Client | Android | - | GUI |
 
 **See [wiki](https://github.com/txthinking/brook/wiki) for more tutorials**
 
@@ -70,6 +69,18 @@ Brook's goal is to reduce the configuration steps. Keep it simple, stupid.
 
 ```
 sudo pacman -S brook
+```
+
+### Snap
+
+```
+sudo snap install brook
+```
+
+### MacOS(GUI)
+
+```
+brew cask install brook
 ```
 
 ## Brook
@@ -82,7 +93,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20180401
+   20180707
 
 AUTHOR:
    Cloud <cloud@txthinking.com>

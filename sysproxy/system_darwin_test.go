@@ -14,3 +14,10 @@ func TestGetNetworkServices(t *testing.T) {
 		t.Log("|" + v + "|")
 	}
 }
+
+func TestSetDNSServer(t *testing.T) {
+	err := SetDNSServer("8.8.4.4")
+	if err != nil {
+		t.Fatal(err)
+	}
+}

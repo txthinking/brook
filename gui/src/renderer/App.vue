@@ -79,7 +79,8 @@
       items: [
         { icon: 'cloud', text: 'Server', link: '/', },
         { divider: true },
-        { icon: 'extension', text: 'Advanced', link: '/builtin', },
+        { icon: 'dehaze', text: 'Mode', link: '/mode', },
+        { icon: 'palette', text: 'Builtin', link: '/builtin', },
         /*
         {
           icon: 'keyboard_arrow_up',

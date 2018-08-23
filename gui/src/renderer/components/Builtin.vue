@@ -6,33 +6,6 @@
                     <v-layout column>
                         <v-flex>
                             <v-switch
-                                label="Use global proxy mode"
-                                v-model="o.UseGlobalProxyMode"
-                                ></v-switch>
-                            <p v-if="!o.UseGlobalProxyMode">White list mode. It may take a few seconds to initialize pac after you start Brook</p>
-                            <p>Only effect when enable <code>Set the system proxy automatically</code></p>
-                        </v-flex>
-                    </v-layout>
-                </v-container>
-            </v-card>
-            <v-card>
-                <v-container fluid>
-                    <v-layout column>
-                        <v-flex>
-                            <v-switch
-                                label="Set the system proxy automatically"
-                                v-model="o.AutoSystemProxy"
-                                ></v-switch>
-                            <p v-if="!o.AutoSystemProxy">You can use <code>socks5://[::1]:1080</code> or <code>socks5://127.0.0.1:1080</code> by yourself.</p>
-                        </v-flex>
-                    </v-layout>
-                </v-container>
-            </v-card>
-            <v-card>
-                <v-container fluid>
-                    <v-layout column>
-                        <v-flex>
-                            <v-switch
                                 label="Use white icon on tray"
                                 v-model="o.UseWhiteTrayIcon"
                                 ></v-switch>
@@ -60,8 +33,6 @@
 export default {
     data: () => ({
         o: {
-            UseGlobalProxyMode: false,
-            AutoSystemProxy: true,
             UseWhiteTrayIcon: false,
         },
         hey: false,
@@ -80,13 +51,13 @@ export default {
 
     methods: {
         initialize () {
-            var s = localStorage.getItem('BuiltIn');
+            var s = localStorage.getItem('brook/builtin');
             if (s){
                 this.o = JSON.parse(s);
             }
         },
         save () {
-            localStorage.setItem('BuiltIn', JSON.stringify(this.o));
+            localStorage.setItem('brook/builtin', JSON.stringify(this.o));
             this.girl = "OK";
             this.hey = true;
         },
