@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/txthinking/ant"
-	"github.com/txthinking/brook/plugin"
+	"github.com/curdfu/brook/plugin"
 	"golang.org/x/net/proxy"
 )
 
