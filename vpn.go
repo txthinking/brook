@@ -2,6 +2,7 @@ package brook
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"github.com/txthinking/gotun2socks/tun"
 )
 
+// VPN
 type VPN struct {
 	Client     *Client
 	Tunnel     *Tunnel
@@ -21,6 +23,7 @@ type VPN struct {
 	TunGateway string
 }
 
+// NewVPN
 func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string, publicOnly bool) (*VPN, error) {
 	h, _, err := net.SplitHostPort(addr)
 	if err != nil {
@@ -80,6 +83,7 @@ func (v *VPN) ListenAndServe() error {
 		<-sigs
 		errch <- nil
 	}()
+	fmt.Println("Ctrl-C to quit")
 
 	err := <-errch
 	if err := v.Shutdown(); err != nil {
@@ -90,6 +94,7 @@ func (v *VPN) ListenAndServe() error {
 
 // Shutdown stops VPN
 func (v *VPN) Shutdown() error {
+	fmt.Println("Quitting...")
 	if err := sysproxy.SetDNSServer("8.8.8.8"); err != nil {
 		log.Println(err)
 	}
@@ -107,7 +112,7 @@ func (v *VPN) Shutdown() error {
 		}
 	}
 	if v.Tun != nil {
-		// v.Tun.Stop()
+		v.Tun.Stop()
 	}
 	return nil
 }
