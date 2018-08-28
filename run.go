@@ -1,6 +1,8 @@
 package brook
 
-import "github.com/txthinking/brook/sysproxy"
+import (
+	"github.com/txthinking/brook/sysproxy"
+)
 
 // RunServer used to make a new Server and start to listen
 func RunServer(address, password string, tcpTimeout, tcpDeadline, udpDeadline int) error {
@@ -131,4 +133,13 @@ func RunSystemProxy(remove bool, pac string) error {
 		return err
 	}
 	return nil
+}
+
+// RunVPN used to make a new VPN and start
+func RunVPN(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string, publicOnly bool) error {
+	v, err := NewVPN(address, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime, tunDevice, tunIP, tunGateway, tunMask, publicOnly)
+	if err != nil {
+		return err
+	}
+	return v.ListenAndServe()
 }
