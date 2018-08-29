@@ -65,7 +65,7 @@ export default {
             Mode: 'pac',
             DomainURL: '',
             CidrURL: '',
-            PacURL: 'https://www.txthinking.com/pac/white.pac',
+            PacURL: 'https://blackwhite.txthinking.com/white.pac',
         },
         hey: false,
         girl: "",

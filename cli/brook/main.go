@@ -19,8 +19,8 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20180707"
-	app.Usage = "A Cross-Platform Proxy Software"
+	app.Version = "20180909"
+	app.Usage = "A Cross-Platform Proxy/VPN Software"
 	app.Author = "Cloud"
 	app.Email = "cloud@txthinking.com"
 	app.Flags = []cli.Flag{
