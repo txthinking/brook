@@ -139,7 +139,7 @@ app.on('ready', ()=>{
 })
 
 app.on('activate', () => {
-    // w.show()
+    w.show()
 })
 app.on('before-quit', () => {
     app.quitting = true

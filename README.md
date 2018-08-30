@@ -10,8 +10,7 @@
 
 ### v20180909
 
-* Mode [wiki](https://github.com/txthinking/brook/wiki/Mode-in-Brook-GUI-client)
-* Thanks [KarlZeo](https://github.com/KarlZeo) for letting us can `brew cask install brook`
+* VPN on Linux/MacOS/Windows, maybe you can use it for games [wiki](https://github.com/txthinking/brook/wiki/How-to-run-VPN-on-Linux-MacOS-Windows%3://github.com/txthinking/brook/wiki/How-to-run-VPN-on-Linux,-MacOS-and-Windows%3F)
 
 ---
 
@@ -25,6 +24,7 @@
 * [**Client (GUI)**](#client-gui)
 * [Tunnel](#tunnel)
 * [Tproxy](#tproxy)
+* [VPN](#vpn)
 * [Relay](#relay)
 * [Socks5](#socks5)
 * [Socks5 to HTTP](#socks5-to-http)
@@ -87,7 +87,7 @@ brew cask install brook
 
 ```
 NAME:
-   Brook - A Cross-Platform Proxy Software
+   Brook - A Cross-Platform Proxy/VPN Software
 
 USAGE:
    brook [global options] command [command options] [arguments...]
@@ -104,6 +104,7 @@ COMMANDS:
      client         Run as client mode
      tunnel         Run as tunnel mode
      tproxy         Run as tproxy mode, transparent proxy, only works on Linux
+     vpn            Run as VPN mode
      streamserver   Run as server mode
      streamservers  Run as multiple servers mode
      streamclient   Run as client mode
@@ -162,9 +163,18 @@ See [wiki](https://github.com/txthinking/brook/wiki)
 $ brook tunnel -l 127.0.0.1:5 -t 1.2.3.4:5 -s server_address:port -p password
 ```
 
-#### Tproxy
+#### Tproxy (usually used for linux routers)
 
 See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F)
+
+#### VPN
+
+```
+# Run as VPN to proxy all TCP/UDP. [ROOT privileges required].
+$ sudo brook vpn -l 127.0.0.1:1080 -s server_address:port -p password
+```
+
+**See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-VPN-on-Linux,-MacOS-and-Windows%3F) for more tutorials**
 
 #### Relay
 

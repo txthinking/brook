@@ -24,7 +24,7 @@ type VPN struct {
 }
 
 // NewVPN
-func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string, publicOnly bool) (*VPN, error) {
+func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*VPN, error) {
 	h, _, err := net.SplitHostPort(addr)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline,
 	if err != nil {
 		return nil, err
 	}
-	t := gotun2socks.New(f, addr, []string{"8.8.8.8"}, publicOnly, true)
+	t := gotun2socks.New(f, addr, []string{"8.8.8.8"}, true, true)
 	return &VPN{
 		Client:     c,
 		Tunnel:     tl,
@@ -112,7 +112,7 @@ func (v *VPN) Shutdown() error {
 		}
 	}
 	if v.Tun != nil {
-		v.Tun.Stop()
+		// v.Tun.Stop()
 	}
 	return nil
 }

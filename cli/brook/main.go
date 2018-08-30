@@ -317,21 +317,17 @@ func main() {
 				cli.StringFlag{
 					Name:  "tunIP",
 					Usage: "tun IP",
-					Value: "10.0.0.2",
+					Value: "10.9.9.2",
 				},
 				cli.StringFlag{
 					Name:  "tunGateway",
 					Usage: "tun gateway",
-					Value: "10.0.0.1",
+					Value: "10.9.9.1",
 				},
 				cli.StringFlag{
 					Name:  "tunMask",
 					Usage: "tun mask",
 					Value: "255.255.255.0",
-				},
-				cli.BoolFlag{
-					Name:  "publicOnly",
-					Usage: "Only forward public destination",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -342,7 +338,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"), c.Bool("publicOnly"))
+				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"))
 			},
 		},
 		cli.Command{
