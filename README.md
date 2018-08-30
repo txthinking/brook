@@ -163,7 +163,7 @@ See [wiki](https://github.com/txthinking/brook/wiki)
 $ brook tunnel -l 127.0.0.1:5 -t 1.2.3.4:5 -s server_address:port -p password
 ```
 
-#### Tproxy (usually used for linux routers)
+#### Tproxy (usually used on Linux router box)
 
 See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F)
 
