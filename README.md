@@ -10,7 +10,7 @@
 
 ### v20180909
 
-* VPN on Linux/MacOS/Windows, maybe you can use it for games [wiki](https://github.com/txthinking/brook/wiki/How-to-run-VPN-on-Linux-MacOS-Windows%3://github.com/txthinking/brook/wiki/How-to-run-VPN-on-Linux,-MacOS-and-Windows%3F)
+* VPN on Linux/MacOS/Windows, maybe you can use it for games [wiki](https://github.com/txthinking/brook/wiki/How-to-run-VPN-on-Linux,-MacOS-and-Windows%3F)
 
 ---
 
@@ -69,12 +69,6 @@ Brook's goal is to keep it simple, stupid and not detectable.
 
 ```
 sudo pacman -S brook
-```
-
-### Snap
-
-```
-sudo snap install brook
 ```
 
 ### MacOS(GUI)
