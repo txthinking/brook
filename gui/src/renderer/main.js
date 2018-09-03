@@ -46,7 +46,7 @@ window.getSetting = function (){
         Mode: 'pac',
         DomainURL: '',
         CidrURL: '',
-        PacURL: 'https://www.txthinking.com/pac/white.pac',
+        PacURL: 'https://blackwhite.txthinking.com/white.pac',
     };
     s = localStorage.getItem('brook/mode');
     if (s){

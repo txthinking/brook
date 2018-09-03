@@ -1,6 +1,6 @@
 const {app, Notification, BrowserWindow, Tray, Menu, shell, protocol} = require('electron')
 const path = require('path')
-const { exec } = require('child_process')
+const { exec, execSync } = require('child_process')
 var addrToIPPort = require('addr-to-ip-port')
 
 if (process.env.NODE_ENV !== 'development') {
@@ -12,9 +12,9 @@ var running = false
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
-var brook = process.platform === 'darwin' ? 'brook_macos_amd64' : 'brook_windows_amd64.exe'
-var brook1 = process.platform === 'darwin' ? 'brook1_macos_amd64' : 'brook1_windows_amd64.exe'
-var pac = process.platform === 'darwin' ? 'pac_macos_amd64' : 'pac_windows_amd64.exe'
+var brook = process.platform === 'darwin' ? 'brook_darwin_amd64' : 'brook_windows_amd64.exe'
+var brook1 = process.platform === 'darwin' ? 'brook1_darwin_amd64' : 'brook1_windows_amd64.exe'
+var pac = process.platform === 'darwin' ? 'pac_darwin_amd64' : 'pac_windows_amd64.exe'
 
 function createWindow () {
     w = new BrowserWindow({
@@ -86,7 +86,7 @@ function createTray(){
             },
         },
         {
-            label: 'Brook: v20180707',
+            label: 'Brook: v20180909',
             click: ()=>{
                 shell.openExternal("https://github.com/txthinking/brook/releases");
             },
@@ -119,36 +119,19 @@ app.on('ready', ()=>{
     })
     if (process.platform === 'darwin') {
         app.dock.hide()
-        exec("chmod +x " + path.join(__static, '/' + brook), (error, out, err)=>{
-            if(error){
-                if(Notification.isSupported()){
-                    (new Notification({
-                        title: 'When chmod +x',
-                        body: err,
-                    })).show()
-                }
+        try{
+            execSync("chmod +x " + path.join(__static, '/' + brook))
+            execSync("chmod +x " + path.join(__static, '/' + brook1))
+            execSync("chmod +x " + path.join(__static, '/' + pac))
+        }catch(e){
+            if(Notification.isSupported()){
+                (new Notification({
+                    title: 'When chmod +x',
+                    body: e.message,
+                })).show()
             }
-        })
-        exec("chmod +x " + path.join(__static, '/' + brook1), (error, out, err)=>{
-            if(error){
-                if(Notification.isSupported()){
-                    (new Notification({
-                        title: 'When chmod +x',
-                        body: err,
-                    })).show()
-                }
-            }
-        })
-        exec("chmod +x " + path.join(__static, '/' + pac), (error, out, err)=>{
-            if(error){
-                if(Notification.isSupported()){
-                    (new Notification({
-                        title: 'When chmod +x pac',
-                        body: err,
-                    })).show()
-                }
-            }
-        })
+            return
+        }
     }
     if (process.platform === 'win32') {
         app.setAppUserModelId("com.txthinking.brook")
@@ -166,50 +149,20 @@ app.on('window-all-closed', () => {
 
 function stop(o){
     if (process.platform === 'darwin') {
-        exec("ps -acx | grep " + brook, (error, out, err)=>{
-            if(error){
-                return
-            }
-            exec("killall " + brook)
-        })
+        try{ execSync("killall " + brook) }catch(e){}
         if (o.Mode != 'manual'){
-            exec("ps -acx | grep " + pac, (error, out, err)=>{
-                if(error){
-                    return
-                }
-                exec("killall " + pac)
-            })
+            try{ execSync("killall " + pac) }catch(e){}
         }
     }
     if (process.platform === 'win32') {
-        exec("tasklist /fo list /fi \"imagename eq "+brook+"\"", (error, out, err)=>{
-            if(out.indexOf(brook) === -1){
-                return
-            }
-            exec("taskkill /im "+brook+" /f /t")
-        })
+        try{ execSync("taskkill /im "+brook+" /f /t") }catch(e){}
         if (o.Mode != 'manual'){
-            exec("tasklist /fo list /fi \"imagename eq "+pac+"\"", (error, out, err)=>{
-                if(out.indexOf(pac) === -1){
-                    return
-                }
-                exec("taskkill /im "+pac+" /f /t")
-            })
+            try{ execSync("taskkill /im "+pac+" /f /t") }catch(e){}
         }
     }
     if (o.Mode != 'manual'){
-        exec(path.join(__static, '/' + brook1) + " systemproxy -r", (error, out, err)=>{
-            if(error){
-                if(Notification.isSupported()){
-                    (new Notification({
-                        title: 'When clean system proxy',
-                        body: err,
-                    })).show()
-                }
-            }
-        })
+        try{ execSync(path.join(__static, '/' + brook1) + " systemproxy -r") }catch(e){}
     }
-
     running = false
     t.setTitle('Stopped')
     t.setToolTip('Brook: stopped')
@@ -247,12 +200,12 @@ function run(o){
             '--udpSessionTime',
             o.UDPSessionTime,
         ]
-        exec(path.join(__static, '/' + brook) + " " + args.join(" "), (error, out, err)=>{
-            if(error && err){
+        exec(path.join(__static, '/' + brook) + " " + args.join(" "), (e, out, err)=>{
+            if(e){
                 if(Notification.isSupported()){
                     (new Notification({
                         title: 'Brook said',
-                        body: err,
+                        body: err || e.message,
                     })).show()
                 }
             }
@@ -277,13 +230,12 @@ function run(o){
             if(o.Mode != 'global' && o.CidrURL != ''){
                 args = args.concat(['-c', o.CidrURL])
             }
-            exec(path.join(__static, '/' + pac) + ' ' + args.join(" "), (error, out, err)=>{
-                console.log(error, err)
-                if(error && err){
+            exec(path.join(__static, '/' + pac) + ' ' + args.join(" "), (e, out, err)=>{
+                if(e){
                     if(Notification.isSupported()){
                         (new Notification({
                             title: 'PAC server said',
-                            body: err,
+                            body: err || e.message,
                         })).show()
                     }
                 }
@@ -291,29 +243,29 @@ function run(o){
             })
             pu = "http://local.txthinking.com:1980/proxy.pac";
         }
-        exec(path.join(__static, '/' + brook1) + " systemproxy -u "+pu, (error, out, err)=>{
-            if(error){
-                if(Notification.isSupported()){
-                    (new Notification({
-                        title: 'When set system proxy',
-                        body: err,
-                    })).show()
-                }
-                stop(o);
+        try{
+            execSync(path.join(__static, '/' + brook1) + " systemproxy -u "+pu)
+        }catch(e){
+            if(Notification.isSupported()){
+                (new Notification({
+                    title: 'PAC server said',
+                    body: e.message,
+                })).show()
             }
-        })
+            stop(o);
+        }
     }
 
     if (process.platform === 'darwin') {
-        exec("ps -acx | grep " + brook, (error, out, err)=>{
-            if(!error){
+        exec("ps -acx | grep " + brook, (e, out, err)=>{
+            if(!e){
                 return
             }
             runBrook()
         })
         if (o.Mode != 'manual'){
-            exec("ps -acx | grep " + pac, (error, out, err)=>{
-                if(!error){
+            exec("ps -acx | grep " + pac, (e, out, err)=>{
+                if(!e){
                     return
                 }
                 runPAC()
@@ -321,14 +273,14 @@ function run(o){
         }
     }
     if (process.platform === 'win32') {
-        exec("tasklist /fo list /fi \"imagename eq "+brook+"\"", (error, out, err)=>{
+        exec("tasklist /fo list /fi \"imagename eq "+brook+"\"", (e, out, err)=>{
             if(out.indexOf(brook) !== -1){
                 return
             }
             runBrook()
         })
         if (o.Mode != 'manual'){
-            exec("tasklist /fo list /fi \"imagename eq "+pac+"\"", (error, out, err)=>{
+            exec("tasklist /fo list /fi \"imagename eq "+pac+"\"", (e, out, err)=>{
                 if(out.indexOf(pac) !== -1){
                     return
                 }

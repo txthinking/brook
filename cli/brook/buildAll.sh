@@ -12,6 +12,6 @@ GOOS=linux GOARCH=mips64 go build -o brook_linux_mips64 .
 GOOS=linux GOARCH=mips64le go build -o brook_linux_mips64le .
 GOOS=linux GOARCH=ppc64 go build -o brook_linux_ppc64 .
 GOOS=linux GOARCH=ppc64le go build -o brook_linux_ppc64le .
-GOOS=darwin GOARCH=amd64 go build -o brook_macos_amd64 .
+GOOS=darwin GOARCH=amd64 go build -o brook_darwin_amd64 .
 GOOS=windows GOARCH=amd64 go build -o brook_windows_amd64.exe .
 GOOS=windows GOARCH=386 go build -o brook_windows_386.exe .

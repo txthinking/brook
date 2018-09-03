@@ -7,46 +7,70 @@
       v-model="drawer"
     >
       <v-list dense style="padding-left:16px;">
-        <template v-for="(item, i) in items">
-          <v-list-group v-if="item.children" v-model="item.model" no-action>
-            <v-list-tile slot="item" @click="" exact-active-class="router-link-active">
-              <v-list-tile-action>
-                <v-icon>{{ item.model ? item.icon : item['icon-alt'] }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ item.text }}
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile
-              v-for="(child, i) in item.children"
-              :key="i"
-              v-bind:to="child.link"
-              exact
-            >
-              <v-list-tile-action>
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ child.text }}
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list-group>
-          <v-divider v-else-if="item.divider"></v-divider>
-          <v-list-tile v-else v-bind:to="item.link" exact>
+
+          <v-list-tile v-bind:to="'/'" exact>
             <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon>cloud</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
-                  {{ item.text }}
+                  Server
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-        </template>
+          <v-divider></v-divider>
+          <v-list-tile v-if="egg" v-bind:to="'/mode'" exact>
+            <v-list-tile-action>
+              <v-icon>dehaze</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                  Mode
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile v-bind:to="'/builtin'" exact>
+            <v-list-tile-action>
+              <v-icon>palette</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                  Builtin
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-divider></v-divider>
+          <v-list-tile v-bind:to="'/help'" exact>
+            <v-list-tile-action>
+              <v-icon>help</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                  Help
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile v-bind:to="'/about'" exact>
+            <v-list-tile-action>
+              <v-icon>favorite</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                  About
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile @click="openegg" exact>
+            <v-list-tile-action>
+              <v-icon>info</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                  v20180909
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
       </v-list>
     </v-navigation-drawer>
     <v-toolbar
@@ -76,29 +100,28 @@
     data: () => ({
       dialog: false,
       drawer: null,
-      items: [
-        { icon: 'cloud', text: 'Server', link: '/', },
-        { divider: true },
-        { icon: 'dehaze', text: 'Mode', link: '/mode', },
-        { icon: 'palette', text: 'Builtin', link: '/builtin', },
-        /*
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'Advanced',
-          model: false,
-          children: [
-            { icon: '', text: 'Built-in', link: '/builtin', }
-          ]
-        },
-        */
-        { divider: true },
-        { icon: 'help', text: 'Help', link: '/help', },
-        { icon: 'info', text: 'About', link: '/about', },
-      ]
+      egg: false,
+      count: 0,
     }),
     props: {
       source: String
-    }
+    },
+
+    created () {
+        this.initialize()
+    },
+
+    methods: {
+        initialize () {
+            this.egg = localStorage.getItem('brook/egg');
+        },
+        openegg () {
+            this.count++
+            if(this.count===16){
+                localStorage.setItem('brook/egg', 'Yes');
+                this.egg = true;
+            }
+        },
+    },
   }
 </script>
