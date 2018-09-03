@@ -1,8 +1,6 @@
 package brook
 
-import (
-	"github.com/txthinking/brook/sysproxy"
-)
+import "github.com/curdfu/brook/sysproxy"
 
 // RunServer used to make a new Server and start to listen
 func RunServer(address, password string, tcpTimeout, tcpDeadline, udpDeadline int) error {
