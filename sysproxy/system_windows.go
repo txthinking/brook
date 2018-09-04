@@ -3,6 +3,7 @@ package sysproxy
 import (
 	"bytes"
 	"errors"
+	"net"
 	"os/exec"
 	"regexp"
 	"syscall"
@@ -69,22 +70,18 @@ func reloadWinProxy() error {
 
 // GetNetworkInterfaces returns interface list
 func GetNetworkInterfaces() ([]string, error) {
-	c := exec.Command("netsh", "interface", "ipv4", "show", "address")
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	out, err := c.CombinedOutput()
-	if err != nil {
-		return nil, errors.New(string(out) + err.Error())
-	}
-	r, err := regexp.Compile(`"(.+)".*\n.*Yes`)
+	is, err := net.Interfaces()
 	if err != nil {
 		return nil, err
 	}
-	ss := r.FindAllStringSubmatch(string(out), -1)
-	is := make([]string, 0)
-	for _, v := range ss {
-		is = append(is, v[1])
+	nss := make([]string, 0)
+	for _, v := range is {
+		nss = append(nss, v.Name)
 	}
-	return is, nil
+	if len(nss) == 0 {
+		return nil, errors.New("no available network service")
+	}
+	return nss, nil
 }
 
 // SetDNSServer used to set system DNS server
