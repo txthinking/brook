@@ -2,7 +2,6 @@ package brook
 
 import (
 	"bytes"
-	"encoding/binary"
 	"errors"
 	"io"
 	"log"
@@ -26,7 +25,6 @@ type Client struct {
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
-	TokenGetter     plugin.TokenGetter
 }
 
 // NewClient returns a new Client
@@ -44,11 +42,6 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 		UDPDeadline: udpDeadline,
 	}
 	return x, nil
-}
-
-// SetToken sets token plugin
-func (x *Client) SetTokenGetter(token plugin.TokenGetter) {
-	x.TokenGetter = token
 }
 
 // SetSocks5Middleman sets socks5middleman plugin
@@ -112,19 +105,6 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		rawaddr = append(rawaddr, r.Atyp)
 		rawaddr = append(rawaddr, r.DstAddr...)
 		rawaddr = append(rawaddr, r.DstPort...)
-		if x.TokenGetter != nil {
-			t, err := x.TokenGetter.Get()
-			if err != nil {
-				return ErrorReply(r, c, err)
-			}
-			if len(t) == 0 {
-				return ErrorReply(r, c, errors.New("Miss Token"))
-			}
-			bb := make([]byte, 2)
-			binary.BigEndian.PutUint16(bb, uint16(len(t)))
-			t = append(bb, t...)
-			rawaddr = append(t, rawaddr...)
-		}
 		n, err = WriteTo(rc, rawaddr, k, n, true)
 		if err != nil {
 			return ErrorReply(r, c, err)
@@ -214,19 +194,6 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
-		if x.TokenGetter != nil {
-			t, err := x.TokenGetter.Get()
-			if err != nil {
-				return err
-			}
-			if len(t) == 0 {
-				return errors.New("Miss Token")
-			}
-			bb := make([]byte, 2)
-			binary.BigEndian.PutUint16(bb, uint16(len(t)))
-			t = append(bb, t...)
-			data = append(t, data...)
-		}
 		cd, err := Encrypt(x.Password, data)
 		if err != nil {
 			return err
@@ -279,7 +246,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 			if err != nil {
 				break
 			}
-			_, _, _, data, err := Decrypt(x.Password, b[0:n], nil)
+			_, _, _, data, err := Decrypt(x.Password, b[0:n])
 			if err != nil {
 				log.Println(err)
 				break
@@ -405,19 +372,6 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, h...)
 	rawaddr = append(rawaddr, p...)
-	if x.TokenGetter != nil {
-		t, err := x.TokenGetter.Get()
-		if err != nil {
-			return err
-		}
-		if len(t) == 0 {
-			return errors.New("Miss Token")
-		}
-		bb := make([]byte, 2)
-		binary.BigEndian.PutUint16(bb, uint16(len(t)))
-		t = append(bb, t...)
-		rawaddr = append(t, rawaddr...)
-	}
 	n, err = WriteTo(rc, rawaddr, k, n, true)
 	if err != nil {
 		return err

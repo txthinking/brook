@@ -1,15 +1,12 @@
 package brook
 
 import (
-	"encoding/binary"
-	"errors"
 	"io"
 	"log"
 	"net"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
 
@@ -27,7 +24,6 @@ type Tunnel struct {
 	TCPDeadline   int
 	TCPTimeout    int
 	UDPDeadline   int
-	TokenGetter   plugin.TokenGetter
 }
 
 // NewTunnel
@@ -62,11 +58,6 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, tcpDeadline, udpDe
 		UDPDeadline:   udpDeadline,
 	}
 	return s, nil
-}
-
-// SetToken set token plugin
-func (s *Tunnel) SetTokenGetter(token plugin.TokenGetter) {
-	s.TokenGetter = token
 }
 
 // Run server
@@ -190,19 +181,6 @@ func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, address...)
 	rawaddr = append(rawaddr, port...)
-	if s.TokenGetter != nil {
-		t, err := s.TokenGetter.Get()
-		if err != nil {
-			return err
-		}
-		if len(t) == 0 {
-			return errors.New("Miss Token")
-		}
-		bb := make([]byte, 2)
-		binary.BigEndian.PutUint16(bb, uint16(len(t)))
-		t = append(bb, t...)
-		rawaddr = append(t, rawaddr...)
-	}
 	n, err = WriteTo(rc, rawaddr, k, n, true)
 	if err != nil {
 		return err
@@ -267,19 +245,6 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	b = append(rawaddr, b...)
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
-		if s.TokenGetter != nil {
-			t, err := s.TokenGetter.Get()
-			if err != nil {
-				return err
-			}
-			if len(t) == 0 {
-				return errors.New("Miss Token")
-			}
-			bb := make([]byte, 2)
-			binary.BigEndian.PutUint16(bb, uint16(len(t)))
-			t = append(bb, t...)
-			data = append(t, data...)
-		}
 		cd, err := Encrypt(s.Password, data)
 		if err != nil {
 			return err
@@ -327,7 +292,7 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			if err != nil {
 				break
 			}
-			_, _, _, data, err := Decrypt(s.Password, b[0:n], nil)
+			_, _, _, data, err := Decrypt(s.Password, b[0:n])
 			if err != nil {
 				log.Println(err)
 				break
