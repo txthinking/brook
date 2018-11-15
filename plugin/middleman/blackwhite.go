@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/txthinking/ant"
 	"github.com/txthinking/socks5"
+	"github.com/txthinking/x"
 )
 
-var Dial ant.Dialer = ant.DefaultDial
+var Dial x.Dialer = x.DefaultDial
 
 // BlackWhite is a middleman
 type BlackWhite struct {

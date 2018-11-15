@@ -9,8 +9,8 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"github.com/txthinking/ant"
 	"github.com/txthinking/socks5"
+	"github.com/txthinking/x"
 )
 
 // StreamServer
@@ -38,7 +38,7 @@ func NewStreamServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline
 	}
 	cs := cache.New(60*time.Minute, 10*time.Minute)
 	s := &StreamServer{
-		Password:     []byte(ant.MD5(password)),
+		Password:     []byte(x.MD5(password)),
 		TCPAddr:      taddr,
 		UDPAddr:      uaddr,
 		UDPExchanges: cs,
@@ -275,13 +275,13 @@ func (s *StreamServer) Encrypt(a byte, h, p, d []byte) ([]byte, error) {
 	b = append(b, h...)
 	b = append(b, p...)
 	b = append(b, d...)
-	return ant.AESCFBEncrypt(b, s.Password)
+	return x.AESCFBEncrypt(b, s.Password)
 }
 
 // Decrypt data
 func (s *StreamServer) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
 	var bb []byte
-	bb, err = ant.AESCFBDecrypt(cd, s.Password)
+	bb, err = x.AESCFBDecrypt(cd, s.Password)
 	if err != nil {
 		return
 	}

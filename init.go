@@ -1,11 +1,11 @@
 package brook
 
 import (
-	"github.com/txthinking/ant"
 	"github.com/txthinking/socks5"
+	"github.com/txthinking/x"
 )
 
-var Dial ant.Dialer = ant.DefaultDial
+var Dial x.Dialer = x.DefaultDial
 
 // EnableDebug
 func EnableDebug() {

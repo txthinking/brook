@@ -9,7 +9,6 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"github.com/txthinking/ant"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
@@ -327,7 +326,7 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = ant.GetAddressFromURL(aoru)
+		addr, err = x.GetAddressFromURL(aoru)
 		if err != nil {
 			return err
 		}

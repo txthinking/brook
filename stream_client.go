@@ -11,9 +11,9 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"github.com/txthinking/ant"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
+	"github.com/txthinking/x"
 )
 
 // StreamClient
@@ -38,7 +38,7 @@ func NewStreamClient(addr, ip, server, password string, tcpTimeout, tcpDeadline,
 	x := &StreamClient{
 		RemoteAddr:  server,
 		Server:      s5,
-		Password:    []byte(ant.MD5(password)),
+		Password:    []byte(x.MD5(password)),
 		TCPTimeout:  tcpTimeout,
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
@@ -288,7 +288,7 @@ func (x *StreamClient) HTTPHandle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = ant.GetAddressFromURL(aoru)
+		addr, err = x.GetAddressFromURL(aoru)
 		if err != nil {
 			return err
 		}
@@ -365,13 +365,13 @@ func (x *StreamClient) WrapCipherConn(conn *net.TCPConn) (*CipherConn, error) {
 
 // Encrypt data
 func (x *StreamClient) Encrypt(rawdata []byte) ([]byte, error) {
-	return ant.AESCFBEncrypt(rawdata, x.Password)
+	return x.AESCFBEncrypt(rawdata, x.Password)
 }
 
 // Decrypt data
 func (x *StreamClient) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
 	var bb []byte
-	bb, err = ant.AESCFBDecrypt(cd, x.Password)
+	bb, err = x.AESCFBDecrypt(cd, x.Password)
 	if err != nil {
 		return
 	}

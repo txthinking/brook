@@ -7,7 +7,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/txthinking/ant"
+	"github.com/txthinking/x"
 )
 
 func ListenTCP(network string, laddr *net.TCPAddr) (*net.TCPListener, error) {
@@ -63,7 +63,7 @@ func DialTCP(network, addr string) (net.Conn, error) {
 		return nil, err
 	}
 
-	f := os.NewFile(uintptr(fd), string(ant.RandomNumber()))
+	f := os.NewFile(uintptr(fd), string(x.RandomNumber()))
 	defer f.Close()
 
 	c, err := net.FileConn(f)

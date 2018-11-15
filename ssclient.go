@@ -11,7 +11,6 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"github.com/txthinking/ant"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
@@ -293,7 +292,7 @@ func (x *SSClient) HTTPHandle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = ant.GetAddressFromURL(aoru)
+		addr, err = x.GetAddressFromURL(aoru)
 		if err != nil {
 			return err
 		}
@@ -375,13 +374,13 @@ func (x *SSClient) WrapCipherConn(conn *net.TCPConn) (*CipherConn, error) {
 
 // Encrypt data
 func (x *SSClient) Encrypt(rawdata []byte) ([]byte, error) {
-	return ant.AESCFBEncrypt(rawdata, x.Password)
+	return x.AESCFBEncrypt(rawdata, x.Password)
 }
 
 // Decrypt data
 func (x *SSClient) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
 	var bb []byte
-	bb, err = ant.AESCFBDecrypt(cd, x.Password)
+	bb, err = x.AESCFBDecrypt(cd, x.Password)
 	if err != nil {
 		return
 	}

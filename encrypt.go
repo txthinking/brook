@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/txthinking/ant"
 	"github.com/txthinking/socks5"
+	"github.com/txthinking/x"
 )
 
 // IncrementNonce loves your compute to use Litter Endian
@@ -29,7 +29,7 @@ func ReadFrom(c *net.TCPConn, k, n []byte, hasTime bool) ([]byte, []byte, error)
 		return nil, nil, err
 	}
 	n = IncrementNonce(n)
-	d, err := ant.AESGCMDecrypt(b, k, n)
+	d, err := x.AESGCMDecrypt(b, k, n)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -40,7 +40,7 @@ func ReadFrom(c *net.TCPConn, k, n []byte, hasTime bool) ([]byte, []byte, error)
 		return nil, nil, err
 	}
 	n = IncrementNonce(n)
-	d, err = ant.AESGCMDecrypt(b, k, n)
+	d, err = x.AESGCMDecrypt(b, k, n)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -51,7 +51,7 @@ func ReadFrom(c *net.TCPConn, k, n []byte, hasTime bool) ([]byte, []byte, error)
 			return nil, nil, err
 		}
 		if time.Now().Unix()-int64(i) > 90 {
-			time.Sleep(time.Duration(ant.Random(1, 60*10)) * time.Second)
+			time.Sleep(time.Duration(x.Random(1, 60*10)) * time.Second)
 			return nil, nil, errors.New("Expired request")
 		}
 		d = d[10:]
@@ -69,7 +69,7 @@ func WriteTo(c *net.TCPConn, d, k, n []byte, needTime bool) ([]byte, error) {
 	bb := make([]byte, 2)
 	binary.BigEndian.PutUint16(bb, uint16(i))
 	n = IncrementNonce(n)
-	b, err := ant.AESGCMEncrypt(bb, k, n)
+	b, err := x.AESGCMEncrypt(bb, k, n)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func WriteTo(c *net.TCPConn, d, k, n []byte, needTime bool) ([]byte, error) {
 	}
 
 	n = IncrementNonce(n)
-	b, err = ant.AESGCMEncrypt(d, k, n)
+	b, err = x.AESGCMEncrypt(d, k, n)
 	if err != nil {
 		return nil, err
 	}
@@ -90,12 +90,12 @@ func WriteTo(c *net.TCPConn, d, k, n []byte, needTime bool) ([]byte, error) {
 
 // PrepareKey
 func PrepareKey(p []byte) ([]byte, []byte, error) {
-	return ant.HkdfSha256RandomSalt(p, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}, 12)
+	return x.HkdfSha256RandomSalt(p, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}, 12)
 }
 
 // GetKey
 func GetKey(p, n []byte) ([]byte, error) {
-	return ant.HkdfSha256WithSalt(p, n, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b})
+	return x.HkdfSha256WithSalt(p, n, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b})
 }
 
 // Encrypt data
@@ -105,7 +105,7 @@ func Encrypt(p, b []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	b, err = ant.AESGCMEncrypt(b, k, n)
+	b, err = x.AESGCMEncrypt(b, k, n)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func Decrypt(p, b []byte) (a byte, addr, port, data []byte, err error) {
 		return
 	}
 	k, err := GetKey(p, b[0:12])
-	bb, err := ant.AESGCMDecrypt(b[12:], k, b[0:12])
+	bb, err := x.AESGCMDecrypt(b[12:], k, b[0:12])
 	if err != nil {
 		return
 	}
@@ -129,7 +129,7 @@ func Decrypt(p, b []byte) (a byte, addr, port, data []byte, err error) {
 		return
 	}
 	if time.Now().Unix()-int64(i) > 90 {
-		time.Sleep(time.Duration(ant.Random(1, 60*10)) * time.Second)
+		time.Sleep(time.Duration(x.Random(1, 60*10)) * time.Second)
 		err = errors.New("Expired request")
 		return
 	}

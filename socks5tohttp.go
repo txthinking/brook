@@ -8,8 +8,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/txthinking/ant"
 	"github.com/txthinking/brook/plugin"
+	"github.com/txthinking/x"
 	"golang.org/x/net/proxy"
 )
 
@@ -111,7 +111,7 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = ant.GetAddressFromURL(address)
+		addr, err = x.GetAddressFromURL(address)
 		if err != nil {
 			return err
 		}

@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/txthinking/ant"
+	"github.com/txthinking/x"
 )
 
 func ListenUDP(network string, laddr *net.UDPAddr) (*net.UDPConn, error) {
@@ -123,7 +123,7 @@ func DialUDP(network string, laddr *net.UDPAddr, raddr *net.UDPAddr) (*net.UDPCo
 		return nil, err
 	}
 
-	f := os.NewFile(uintptr(fd), string(ant.RandomNumber()))
+	f := os.NewFile(uintptr(fd), string(x.RandomNumber()))
 	defer f.Close()
 
 	c, err := net.FileConn(f)
