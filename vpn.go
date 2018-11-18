@@ -16,15 +16,16 @@ import (
 
 // VPN
 type VPN struct {
-	Client     *Client
-	Tunnel     *Tunnel
-	Tun        *gotun2socks.Tun2Socks
-	ServerIP   string
-	TunGateway string
+	Client         *Client
+	Tunnel         *Tunnel
+	Tun            *gotun2socks.Tun2Socks
+	ServerIP       string
+	TunGateway     string
+	DefaultGateway string
 }
 
 // NewVPN
-func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*VPN, error) {
+func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask, defaultGateway string) (*VPN, error) {
 	h, _, err := net.SplitHostPort(addr)
 	if err != nil {
 		return nil, err
@@ -50,11 +51,12 @@ func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline,
 	}
 	t := gotun2socks.New(f, addr, []string{"8.8.8.8"}, true, true)
 	return &VPN{
-		Client:     c,
-		Tunnel:     tl,
-		Tun:        t,
-		ServerIP:   h,
-		TunGateway: tunGateway,
+		Client:         c,
+		Tunnel:         tl,
+		Tun:            t,
+		ServerIP:       h,
+		TunGateway:     tunGateway,
+		DefaultGateway: defaultGateway,
 	}, nil
 }
 

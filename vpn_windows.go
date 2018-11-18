@@ -20,11 +20,14 @@ func (v *VPN) AddRoutes() error {
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	gw, err := sysproxy.GetDefaultGateway()
-	if err != nil {
-		return err
+	if v.DefaultGateway == "" {
+		var err error
+		v.DefaultGateway, err = sysproxy.GetDefaultGateway()
+		if err != nil {
+			return err
+		}
 	}
-	c = exec.Command("route", "add", v.ServerIP, "mask", "255.255.255.255", gw, "metric", "1")
+	c = exec.Command("route", "add", v.ServerIP, "mask", "255.255.255.255", v.DefaultGateway, "metric", "1")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
@@ -43,11 +46,14 @@ func (v *VPN) DeleteRoutes() error {
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	gw, err := sysproxy.GetDefaultGateway()
-	if err != nil {
-		return err
+	if v.DefaultGateway == "" {
+		var err error
+		v.DefaultGateway, err = sysproxy.GetDefaultGateway()
+		if err != nil {
+			return err
+		}
 	}
-	c = exec.Command("route", "delete", v.ServerIP, "mask", "255.255.255.255", gw, "metric", "1")
+	c = exec.Command("route", "delete", v.ServerIP, "mask", "255.255.255.255", v.DefaultGateway, "metric", "1")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}

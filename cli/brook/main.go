@@ -329,16 +329,20 @@ func main() {
 					Usage: "tun mask",
 					Value: "255.255.255.0",
 				},
+				cli.StringFlag{
+					Name:  "defaultGateway",
+					Usage: "Your default gateway, Only needed on windows that are not utf8 encoded.",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "client")
+					cli.ShowCommandHelp(c, "vpn")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"))
+				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"), c.String("defaultGateway"))
 			},
 		},
 		cli.Command{
