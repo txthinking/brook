@@ -13,6 +13,7 @@ import (
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
+	xx "github.com/txthinking/x"
 )
 
 // SSClient
@@ -114,6 +115,7 @@ func (x *SSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 			return err
 		}
 
+		// TODO
 		go func() {
 			iv := make([]byte, aes.BlockSize)
 			if _, err := io.ReadFull(crc, iv); err != nil {
@@ -175,6 +177,11 @@ func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 
 	c, err := Dial.Dial("udp", x.RemoteAddr)
 	if err != nil {
+		v, ok := s.TCPUDPAssociate.Get(addr.String())
+		if ok {
+			ch := v.(chan byte)
+			ch <- 0x00
+		}
 		return err
 	}
 	rc := c.(*net.UDPConn)
@@ -183,6 +190,12 @@ func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		RemoteConn: rc,
 	}
 	if err := send(ue, d.Bytes()[3:]); err != nil {
+		v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
+		if ok {
+			ch := v.(chan byte)
+			ch <- 0x00
+		}
+		ue.RemoteConn.Close()
 		return err
 	}
 	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
@@ -191,7 +204,7 @@ func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
 			if ok {
 				ch := v.(chan byte)
-				ch <- '0'
+				ch <- 0x00
 			}
 			s.UDPExchanges.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
@@ -292,7 +305,7 @@ func (x *SSClient) HTTPHandle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = x.GetAddressFromURL(aoru)
+		addr, err = xx.GetAddressFromURL(aoru)
 		if err != nil {
 			return err
 		}
@@ -348,6 +361,7 @@ func (x *SSClient) HTTPHandle(c *net.TCPConn) error {
 		}
 	}
 
+	// TODO
 	go func() {
 		iv := make([]byte, aes.BlockSize)
 		if _, err := io.ReadFull(crc, iv); err != nil {
@@ -374,13 +388,13 @@ func (x *SSClient) WrapCipherConn(conn *net.TCPConn) (*CipherConn, error) {
 
 // Encrypt data
 func (x *SSClient) Encrypt(rawdata []byte) ([]byte, error) {
-	return x.AESCFBEncrypt(rawdata, x.Password)
+	return xx.AESCFBEncrypt(rawdata, x.Password)
 }
 
 // Decrypt data
 func (x *SSClient) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
 	var bb []byte
-	bb, err = x.AESCFBDecrypt(cd, x.Password)
+	bb, err = xx.AESCFBDecrypt(cd, x.Password)
 	if err != nil {
 		return
 	}

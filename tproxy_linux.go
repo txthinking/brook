@@ -46,7 +46,7 @@ func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadli
 	if err != nil {
 		return nil, err
 	}
-	cs := cache.New(60*time.Minute, 10*time.Minute)
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	s := &Tproxy{
 		Password:      []byte(password),
 		TCPAddr:       taddr,

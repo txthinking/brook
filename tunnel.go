@@ -44,7 +44,7 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, tcpDeadline, udpDe
 	if err != nil {
 		return nil, err
 	}
-	cs := cache.New(60*time.Minute, 10*time.Minute)
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	s := &Tunnel{
 		ToAddr:        to,
 		Password:      []byte(password),
@@ -273,6 +273,7 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		RemoteConn: rc,
 	}
 	if err := send(ue, b); err != nil {
+		ue.RemoteConn.Close()
 		return err
 	}
 	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)

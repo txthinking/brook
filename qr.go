@@ -8,11 +8,9 @@ import (
 )
 
 // QR generate and print QR code
-func QR(stream bool, server, password string) {
+func QR(server, password string) {
+	// TODO
 	t := "default"
-	if stream {
-		t = "stream"
-	}
 	s := t + " " + server + " " + password
 	s = "brook://" + url.PathEscape(s)
 	qrterminal.Generate(s, qrterminal.H, os.Stdout)

@@ -33,7 +33,7 @@ func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) 
 	if err != nil {
 		return nil, err
 	}
-	cs := cache.New(60*time.Minute, 10*time.Minute)
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	s := &Server{
 		Password:     []byte(password),
 		TCPAddr:      taddr,
@@ -225,10 +225,11 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		ClientAddr: addr,
 		RemoteConn: rc,
 	}
-	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
 	if err := send(ue, data); err != nil {
+		ue.RemoteConn.Close()
 		return err
 	}
+	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
 	go func(ue *socks5.UDPExchange) {
 		defer func() {
 			s.UDPExchanges.Delete(ue.ClientAddr.String())

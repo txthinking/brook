@@ -32,7 +32,7 @@ func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadlin
 	if err != nil {
 		return nil, err
 	}
-	cs := cache.New(60*time.Minute, 10*time.Minute)
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	x := &Socks5Server{
 		Server:         s5,
 		TCPTimeout:     tcpTimeout,
@@ -113,6 +113,7 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 		if err := rp.WriteTo(c); err != nil {
 			return err
 		}
+		// TODO
 		go func() {
 			_, _ = io.Copy(c, client.TCPConn)
 		}()
@@ -174,6 +175,12 @@ func (x *Socks5Server) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.
 	}
 	tmp, err := Dial.Dial("udp", raddr.(string))
 	if err != nil {
+		v, ok := s.TCPUDPAssociate.Get(addr.String())
+		if ok {
+			ch := v.(chan byte)
+			ch <- 0x00
+			s.TCPUDPAssociate.Delete(addr.String())
+		}
 		return err
 	}
 	rc := tmp.(*net.UDPConn)
@@ -182,6 +189,12 @@ func (x *Socks5Server) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.
 		RemoteConn: rc,
 	}
 	if err := send(ue, d.Bytes()); err != nil {
+		v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
+		if ok {
+			ch := v.(chan byte)
+			ch <- 0x00
+		}
+		ue.RemoteConn.Close()
 		return err
 	}
 	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
@@ -190,7 +203,7 @@ func (x *Socks5Server) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.
 			v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
 			if ok {
 				ch := v.(chan byte)
-				ch <- '0'
+				ch <- 0x00
 			}
 			s.UDPExchanges.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()

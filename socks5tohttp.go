@@ -18,15 +18,15 @@ type Socks5ToHTTP struct {
 	Socks5Address string
 	Dial          proxy.Dialer
 	Timeout       int
-	Deadline      int // Not refreshed
+	Deadline      int
 	Listen        *net.TCPListener
 	HTTPMiddleman plugin.HTTPMiddleman
 }
 
 func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToHTTP, error) {
 	dial, err := proxy.SOCKS5("tcp", socks5addr, nil, &net.Dialer{
-		Timeout:   30 * time.Second,
-		KeepAlive: 30 * time.Second,
+		Timeout:   time.Duration(deadline) * time.Second,
+		KeepAlive: time.Duration(timeout) * time.Second,
 	})
 	if err != nil {
 		return nil, err
@@ -150,6 +150,7 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 			return err
 		}
 	}
+	// TODO
 	go func() {
 		_, _ = io.Copy(rc, c)
 	}()

@@ -87,31 +87,28 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20180909
+   20181212
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
 
 COMMANDS:
-     server         Run as server mode
-     servers        Run as multiple servers mode
-     client         Run as client mode
-     tunnel         Run as tunnel mode
-     tproxy         Run as tproxy mode, transparent proxy, only works on Linux
-     vpn            Run as VPN mode
-     streamserver   Run as server mode
-     streamservers  Run as multiple servers mode
-     streamclient   Run as client mode
-     ssserver       Run as shadowsocks server mode, fixed method is aes-256-cfb
-     ssservers      Run as shadowsocks multiple servers mode, fixed method is aes-256-cfb
-     ssclient       Run as shadowsocks client mode, fixed method is aes-256-cfb
-     socks5         Run as raw socks5 server
-     relay          Run as relay mode
-     relays         Run as multiple relays mode
-     qr             Print brook server QR code
-     socks5tohttp   Convert socks5 to http proxy
-     systemproxy    Set system proxy with pac url, or remove, only works on MacOS/Windows
-     help, h        Shows a list of commands or help for one command
+     server        Run as server mode
+     servers       Run as multiple servers mode
+     client        Run as client mode
+     tunnel        Run as tunnel mode on client-site
+     tproxy        Run as tproxy mode on client-site, transparent proxy, only works on Linux
+     vpn           Run as VPN mode on client-site
+     ssserver      Run as shadowsocks server mode, fixed method is aes-256-cfb
+     ssservers     Run as shadowsocks multiple servers mode, fixed method is aes-256-cfb
+     ssclient      Run as shadowsocks client mode, fixed method is aes-256-cfb
+     socks5        Run as raw socks5 server
+     relay         Run as relay mode
+     relays        Run as multiple relays mode
+     qr            Print brook server QR code
+     socks5tohttp  Convert socks5 to http proxy
+     systemproxy   Set system proxy with pac url, or remove, only works on MacOS/Windows
+     help, h       Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
    --debug, -d               Enable debug

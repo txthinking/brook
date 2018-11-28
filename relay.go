@@ -19,7 +19,7 @@ type Relay struct {
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
 	UDPExchanges  *cache.Cache
-	TCPDeadline   int // Not refreshed
+	TCPDeadline   int
 	TCPTimeout    int
 	UDPDeadline   int
 }
@@ -42,7 +42,7 @@ func NewRelay(addr, remote string, tcpTimeout, tcpDeadline, udpDeadline int) (*R
 	if err != nil {
 		return nil, err
 	}
-	cs := cache.New(60*time.Minute, 10*time.Minute)
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	s := &Relay{
 		TCPAddr:       taddr,
 		UDPAddr:       uaddr,
@@ -161,6 +161,7 @@ func (s *Relay) TCPHandle(c *net.TCPConn) error {
 		}
 	}
 
+	// TODO
 	go func() {
 		_, _ = io.Copy(c, rc)
 	}()
@@ -194,10 +195,11 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		ClientAddr: addr,
 		RemoteConn: rc,
 	}
-	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
 	if err := send(ue, b); err != nil {
+		ue.RemoteConn.Close()
 		return err
 	}
+	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
 	go func(ue *socks5.UDPExchange) {
 		defer func() {
 			s.UDPExchanges.Delete(ue.ClientAddr.String())

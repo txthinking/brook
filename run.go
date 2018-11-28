@@ -40,33 +40,6 @@ func RunTunnel(address, to, server, password string, tcpTimeout, tcpDeadline, ud
 	return c.ListenAndServe()
 }
 
-// RunStreamServer used to make a new StreamServer and start to listen
-func RunStreamServer(address, password string, tcpTimeout, tcpDeadline, udpDeadline int) error {
-	s, err := NewStreamServer(address, password, tcpTimeout, tcpDeadline, udpDeadline)
-	if err != nil {
-		return err
-	}
-	return s.ListenAndServe()
-}
-
-// RunStreamClient used to make a new StreamClient and start a socks5 proxy to listen
-func RunStreamClient(address, ip, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	c, err := NewStreamClient(address, ip, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
-	if err != nil {
-		return err
-	}
-	return c.ListenAndServe()
-}
-
-// RunClientAsHTTP used to make a new StreamClient and start a http proxy to listen
-func RunStreamClientAsHTTP(address, ip, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) error {
-	c, err := NewStreamClient(address, ip, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
-	if err != nil {
-		return err
-	}
-	return c.ListenAndServeHTTP()
-}
-
 // RunSSServer used to make a new Server and start to listen
 func RunSSServer(address, password string, tcpTimeout, tcpDeadline, udpDeadline int) error {
 	s, err := NewSSServer(address, password, tcpTimeout, tcpDeadline, udpDeadline)

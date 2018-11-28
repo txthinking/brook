@@ -179,6 +179,7 @@ func (b *BlackWhite) Handle(method, addr string, request []byte, conn *net.TCPCo
 			return true, err
 		}
 	}
+	// TODO
 	go func() {
 		_, _ = io.Copy(rc, conn)
 	}()

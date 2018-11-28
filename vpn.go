@@ -33,10 +33,27 @@ func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline,
 	if h != "127.0.0.1" {
 		return nil, errors.New("Must listen on 127.0.0.1")
 	}
-	h, _, err = net.SplitHostPort(server)
+	h, p, err := net.SplitHostPort(server)
 	if err != nil {
 		return nil, err
 	}
+	l, err := net.LookupIP(h)
+	if err != nil {
+		return nil, err
+	}
+	s := ""
+	for _, v := range l {
+		if v.To4() == nil {
+			continue
+		}
+		s = v.String()
+		break
+	}
+	if s == "" {
+		return nil, errors.New("Can not find server v4 IP")
+	}
+	server = net.JoinHostPort(s, p)
+
 	c, err := NewClient(addr, "127.0.0.1", server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return nil, err
@@ -54,7 +71,7 @@ func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline,
 		Client:         c,
 		Tunnel:         tl,
 		Tun:            t,
-		ServerIP:       h,
+		ServerIP:       s,
 		TunGateway:     tunGateway,
 		DefaultGateway: defaultGateway,
 	}, nil
