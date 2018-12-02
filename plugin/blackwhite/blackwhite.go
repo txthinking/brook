@@ -1,4 +1,4 @@
-package middleman
+package blackwhite
 
 import (
 	"bytes"
@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/miekg/dns"
 	"github.com/txthinking/socks5"
 	"github.com/txthinking/x"
 )
@@ -24,10 +25,12 @@ type BlackWhite struct {
 	Timeout      int
 	Deadline     int
 	Socks5Handle *socks5.DefaultHandle
+	BlackDNS     string
+	WhiteDNS     string
 }
 
 // NewBlackWhite returns a BlackWhite
-func NewBlackWhite(mode, domainURL, cidrURL string, timeout, deadline int) (*BlackWhite, error) {
+func NewBlackWhite(mode, domainURL, cidrURL, blackDNS, whiteDNS string, timeout, deadline int) (*BlackWhite, error) {
 	ds := make(map[string]byte)
 	ns := make([]*net.IPNet, 0)
 	if domainURL != "" {
@@ -68,6 +71,8 @@ func NewBlackWhite(mode, domainURL, cidrURL string, timeout, deadline int) (*Bla
 		Timeout:      timeout,
 		Deadline:     deadline,
 		Socks5Handle: &socks5.DefaultHandle{},
+		WhiteDNS:     whiteDNS,
+		BlackDNS:     blackDNS,
 	}, nil
 }
 
@@ -123,6 +128,12 @@ func (b *BlackWhite) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Reque
 
 // UDPHandle handles udp packet
 func (b *BlackWhite) UDPHandle(s *socks5.Server, ca *net.UDPAddr, d *socks5.Datagram) (bool, error) {
+	if d.Address() == b.BlackDNS {
+		done, err := b.DNSHandle(s, ca, d)
+		if err != nil || done {
+			return done, err
+		}
+	}
 	h, _, err := net.SplitHostPort(d.Address())
 	if err != nil {
 		return false, err
@@ -136,6 +147,90 @@ func (b *BlackWhite) UDPHandle(s *socks5.Server, ca *net.UDPAddr, d *socks5.Data
 	if err := b.Socks5Handle.UDPHandle(s, ca, d); err != nil {
 		return true, err
 	}
+	return true, nil
+}
+
+// DNSHandle handles DNS query
+func (b *BlackWhite) DNSHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) (bool, error) {
+	bye := func() {
+		v, ok := s.TCPUDPAssociate.Get(addr.String())
+		if ok {
+			ch := v.(chan byte)
+			ch <- 0x00
+			s.TCPUDPAssociate.Delete(addr.String())
+		}
+	}
+	m := &dns.Msg{}
+	if err := m.Unpack(d.Data); err != nil {
+		bye()
+		return true, err
+	}
+	white := false
+	for _, v := range m.Question {
+		if len(v.Name) > 0 && b.Mode == "white" && b.Has(v.Name[0:len(v.Name)-1]) {
+			white = true
+			break
+		}
+		if len(v.Name) > 0 && b.Mode == "black" && !b.Has(v.Name[0:len(v.Name)-1]) {
+			white = true
+			break
+		}
+	}
+	if !white {
+		return false, nil
+	}
+
+	conn, err := Dial.Dial("udp", b.WhiteDNS)
+	if err != nil {
+		bye()
+		return true, err
+	}
+	defer conn.Close()
+	co := &dns.Conn{Conn: conn}
+	if err := co.WriteMsg(m); err != nil {
+		bye()
+		return true, err
+	}
+	m1, err := co.ReadMsg()
+	if err != nil {
+		bye()
+		return true, err
+	}
+	if m1.MsgHdr.Truncated {
+		conn, err := Dial.Dial("tcp", b.WhiteDNS)
+		if err != nil {
+			bye()
+			return true, err
+		}
+		defer conn.Close()
+		co := &dns.Conn{Conn: conn}
+		if err := co.WriteMsg(m); err != nil {
+			bye()
+			return true, err
+		}
+		m1, err = co.ReadMsg()
+		if err != nil {
+			bye()
+			return true, err
+		}
+	}
+	m1b, err := m1.Pack()
+	if err != nil {
+		bye()
+		return true, err
+	}
+
+	a, ad, port, err := socks5.ParseAddress(addr.String())
+	if err != nil {
+		bye()
+		return true, err
+	}
+	d = socks5.NewDatagram(a, ad, port, m1b)
+	if _, err := s.UDPConn.WriteToUDP(d.Bytes(), addr); err != nil {
+		bye()
+		return true, err
+	}
+	bye()
 	return true, nil
 }
 
