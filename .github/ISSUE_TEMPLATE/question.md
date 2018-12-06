@@ -18,9 +18,12 @@ assignees: ''
 ### Environment
 
 * Brook Version:
-* Operating System:
-* Operating System Version:
-* Operation System Language:
+* Server Operating System:
+* Server Operating System Version:
+* Server Operation System Language:
+* Client Operating System:
+* Client Operating System Version:
+* Client Operation System Language:
 
 ### Expected Behavior
 
