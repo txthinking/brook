@@ -7,31 +7,32 @@ assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+### Prerequisites
 
-**To Reproduce**
-Steps to reproduce the behavior:
+* [ ] Did you check the [wiki](https://github.com/txthinking/brook/wiki)?
+* [ ] Did you search in [issues](https://github.com/txthinking/brook/issues)?
+* [ ] Are you running the latest version?
+* [ ] I will write this according to this template.
+* [ ] I will write this in English.
+
+### Environment
+
+* Brook Version:
+* Operating System:
+* Operating System Version:
+* Operation System Language:
+
+### Expected Behavior
+
+### Current Behavior
+
+### Steps to Reproduce
+
 1.
 2.
 3.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+### Detailed Description
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+### Possible Solution
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
