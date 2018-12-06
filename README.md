@@ -12,6 +12,7 @@
 
 * Uninstall/Delete the old client on MacOS or Windows
 * On MacOS, you need to System Preferences -> Security & Privacy, click Open Anyway, when you open Brook
+* No longer support the snap package
 
 ---
 
