@@ -1,5 +1,5 @@
 ```
-name: Bug Report
+name: Bug
 labels: Bug
 about: Did something not work as expected?
 ```
