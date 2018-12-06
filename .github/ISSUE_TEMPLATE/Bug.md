@@ -1,6 +1,6 @@
 ```
 name: Bug
-labels: Bug
+labels: bug
 about: Did something not work as expected?
 ```
 

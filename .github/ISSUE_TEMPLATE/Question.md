@@ -1,6 +1,6 @@
 ```
 name: Question
-labels: Question
+labels: question
 about: Have any questions regarding how to use brook?
 ```
 
