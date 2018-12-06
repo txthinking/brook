@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Describe this issue template's purpose here.
+about: Have any questions regarding how to use Brook?
 title: ''
 labels: question
 assignees: ''
