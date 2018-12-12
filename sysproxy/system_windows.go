@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net"
 	"os/exec"
-	"regexp"
 	"syscall"
 )
 
@@ -98,23 +97,4 @@ func SetDNSServer(server string) error {
 		}
 	}
 	return nil
-}
-
-// GetDefaultGateway returns default gateway
-func GetDefaultGateway() (string, error) {
-	c := exec.Command("netsh", "interface", "ipv4", "show", "address")
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	out, err := c.CombinedOutput()
-	if err != nil {
-		return "", errors.New(string(out) + err.Error())
-	}
-	r, err := regexp.Compile(`Default Gateway.*?(\d+.\d+\.\d+\.\d+)`)
-	if err != nil {
-		return "", err
-	}
-	ss := r.FindStringSubmatch(string(out))
-	if len(ss) == 0 {
-		return "", errors.New("Can not find default gateway")
-	}
-	return ss[1], nil
 }
