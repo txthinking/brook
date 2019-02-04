@@ -1,7 +1,6 @@
 package brook
 
 import (
-	"io"
 	"log"
 	"net"
 	"time"
@@ -161,11 +160,38 @@ func (s *Relay) TCPHandle(c *net.TCPConn) error {
 		}
 	}
 
-	// TODO
 	go func() {
-		_, _ = io.Copy(c, rc)
+		var bf [1024 * 2]byte
+		for {
+			if s.TCPDeadline != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+					return
+				}
+			}
+			i, err := rc.Read(bf[:])
+			if err != nil {
+				return
+			}
+			if _, err := c.Write(bf[0:i]); err != nil {
+				return
+			}
+		}
 	}()
-	_, _ = io.Copy(rc, c)
+	var bf [1024 * 2]byte
+	for {
+		if s.TCPDeadline != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				return nil
+			}
+		}
+		i, err := c.Read(bf[:])
+		if err != nil {
+			return nil
+		}
+		if _, err := rc.Write(bf[0:i]); err != nil {
+			return nil
+		}
+	}
 	return nil
 }
 

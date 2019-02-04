@@ -19,7 +19,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20181212"
+	app.Version = "20190205"
 	app.Usage = "A Cross-Platform Proxy/VPN Software"
 	app.Author = "Cloud"
 	app.Email = "cloud@txthinking.com"
@@ -283,7 +283,7 @@ func main() {
 				},
 				cli.StringFlag{
 					Name:  "server, s",
-					Usage: "Server address, must use IP, like: 1.2.3.4:1080",
+					Usage: "Server address, like: 1.2.3.4:1080",
 				},
 				cli.StringFlag{
 					Name:  "password, p",
@@ -329,10 +329,6 @@ func main() {
 					Usage: "tun mask",
 					Value: "255.255.255.0",
 				},
-				cli.StringFlag{
-					Name:  "defaultGateway",
-					Usage: "Your default gateway, Only needed on windows that are not utf8 encoded.",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
@@ -342,7 +338,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"), c.String("defaultGateway"))
+				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"))
 			},
 		},
 		cli.Command{

@@ -22,7 +22,7 @@ type SSClient struct {
 	RemoteAddr      string
 	Password        []byte
 	TCPTimeout      int
-	TCPDeadline     int // Not refreshed
+	TCPDeadline     int
 	UDPDeadline     int
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
@@ -115,16 +115,43 @@ func (x *SSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 			return err
 		}
 
-		// TODO
 		go func() {
 			iv := make([]byte, aes.BlockSize)
 			if _, err := io.ReadFull(crc, iv); err != nil {
 				log.Println(err)
 				return
 			}
-			_, _ = io.Copy(c, crc)
+			var bf [1024 * 2]byte
+			for {
+				if x.TCPDeadline != 0 {
+					if err := crc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+						return
+					}
+				}
+				i, err := crc.Read(bf[:])
+				if err != nil {
+					return
+				}
+				if _, err := c.Write(bf[0:i]); err != nil {
+					return
+				}
+			}
 		}()
-		_, _ = io.Copy(crc, c)
+		var bf [1024 * 2]byte
+		for {
+			if x.TCPDeadline != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+					return nil
+				}
+			}
+			i, err := c.Read(bf[:])
+			if err != nil {
+				return nil
+			}
+			if _, err := crc.Write(bf[0:i]); err != nil {
+				return nil
+			}
+		}
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {
@@ -361,16 +388,43 @@ func (x *SSClient) HTTPHandle(c *net.TCPConn) error {
 		}
 	}
 
-	// TODO
 	go func() {
 		iv := make([]byte, aes.BlockSize)
 		if _, err := io.ReadFull(crc, iv); err != nil {
 			log.Println(err)
 			return
 		}
-		_, _ = io.Copy(c, crc)
+		var bf [1024 * 2]byte
+		for {
+			if x.TCPDeadline != 0 {
+				if err := crc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+					return
+				}
+			}
+			i, err := crc.Read(bf[:])
+			if err != nil {
+				return
+			}
+			if _, err := c.Write(bf[0:i]); err != nil {
+				return
+			}
+		}
 	}()
-	_, _ = io.Copy(crc, c)
+	var bf [1024 * 2]byte
+	for {
+		if x.TCPDeadline != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+				return nil
+			}
+		}
+		i, err := c.Read(bf[:])
+		if err != nil {
+			return nil
+		}
+		if _, err := crc.Write(bf[0:i]); err != nil {
+			return nil
+		}
+	}
 	return nil
 }
 

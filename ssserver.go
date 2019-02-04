@@ -181,7 +181,6 @@ func (s *SSServer) TCPHandle(c *net.TCPConn) error {
 		}
 	}
 
-	// TODO
 	go func() {
 		iv := make([]byte, aes.BlockSize)
 		if _, err := io.ReadFull(rand.Reader, iv); err != nil {
@@ -192,9 +191,37 @@ func (s *SSServer) TCPHandle(c *net.TCPConn) error {
 			log.Println(err)
 			return
 		}
-		_, _ = io.Copy(cc, rc)
+		var bf [1024 * 2]byte
+		for {
+			if s.TCPDeadline != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+					return
+				}
+			}
+			i, err := rc.Read(bf[:])
+			if err != nil {
+				return
+			}
+			if _, err := cc.Write(bf[0:i]); err != nil {
+				return
+			}
+		}
 	}()
-	_, _ = io.Copy(rc, cc)
+	var bf [1024 * 2]byte
+	for {
+		if s.TCPDeadline != 0 {
+			if err := cc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				return nil
+			}
+		}
+		i, err := cc.Read(bf[:])
+		if err != nil {
+			return nil
+		}
+		if _, err := rc.Write(bf[0:i]); err != nil {
+			return nil
+		}
+	}
 	return nil
 }
 

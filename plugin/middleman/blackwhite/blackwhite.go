@@ -3,7 +3,6 @@ package blackwhite
 import (
 	"bytes"
 	"errors"
-	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -24,7 +23,7 @@ type BlackWhite struct {
 	Nets         []*net.IPNet
 	Timeout      int
 	Deadline     int
-	Socks5Handle *socks5.DefaultHandle
+	Socks5Handle socks5.Handler
 	BlackDNS     string
 	WhiteDNS     string
 }
@@ -274,11 +273,38 @@ func (b *BlackWhite) Handle(method, addr string, request []byte, conn *net.TCPCo
 			return true, err
 		}
 	}
-	// TODO
 	go func() {
-		_, _ = io.Copy(rc, conn)
+		var bf [1024 * 2]byte
+		for {
+			if b.Deadline != 0 {
+				if err := conn.SetDeadline(time.Now().Add(time.Duration(b.Deadline) * time.Second)); err != nil {
+					return
+				}
+			}
+			i, err := conn.Read(bf[:])
+			if err != nil {
+				return
+			}
+			if _, err := rc.Write(bf[0:i]); err != nil {
+				return
+			}
+		}
 	}()
-	_, _ = io.Copy(conn, rc)
+	var bf [1024 * 2]byte
+	for {
+		if b.Deadline != 0 {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(b.Deadline) * time.Second)); err != nil {
+				return true, nil
+			}
+		}
+		i, err := rc.Read(bf[:])
+		if err != nil {
+			return true, nil
+		}
+		if _, err := conn.Write(bf[0:i]); err != nil {
+			return true, nil
+		}
+	}
 	return true, nil
 }
 

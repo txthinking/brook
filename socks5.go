@@ -2,7 +2,6 @@ package brook
 
 import (
 	"errors"
-	"io"
 	"log"
 	"net"
 	"time"
@@ -17,7 +16,7 @@ type Socks5Server struct {
 	Server          *socks5.Server
 	Socks5Middleman plugin.Socks5Middleman
 	TCPTimeout      int
-	TCPDeadline     int // not refreshed
+	TCPDeadline     int
 	UDPDeadline     int
 	UDPSessionTime  int
 	ForwardAddress  string
@@ -113,11 +112,38 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 		if err := rp.WriteTo(c); err != nil {
 			return err
 		}
-		// TODO
 		go func() {
-			_, _ = io.Copy(c, client.TCPConn)
+			var bf [1024 * 2]byte
+			for {
+				if x.TCPDeadline != 0 {
+					if err := client.TCPConn.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+						return
+					}
+				}
+				i, err := client.TCPConn.Read(bf[:])
+				if err != nil {
+					return
+				}
+				if _, err := c.Write(bf[0:i]); err != nil {
+					return
+				}
+			}
 		}()
-		_, _ = io.Copy(client.TCPConn, c)
+		var bf [1024 * 2]byte
+		for {
+			if x.TCPDeadline != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+					return nil
+				}
+			}
+			i, err := c.Read(bf[:])
+			if err != nil {
+				return nil
+			}
+			if _, err := client.TCPConn.Write(bf[0:i]); err != nil {
+				return nil
+			}
+		}
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {

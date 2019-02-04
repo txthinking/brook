@@ -3,7 +3,6 @@ package brook
 import (
 	"bytes"
 	"errors"
-	"io"
 	"log"
 	"net"
 	"time"
@@ -150,11 +149,38 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 			return err
 		}
 	}
-	// TODO
 	go func() {
-		_, _ = io.Copy(rc, c)
+		var bf [1024 * 2]byte
+		for {
+			if s.Deadline != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.Deadline) * time.Second)); err != nil {
+					return
+				}
+			}
+			i, err := rc.Read(bf[:])
+			if err != nil {
+				return
+			}
+			if _, err := c.Write(bf[0:i]); err != nil {
+				return
+			}
+		}
 	}()
-	_, _ = io.Copy(c, rc)
+	var bf [1024 * 2]byte
+	for {
+		if s.Deadline != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.Deadline) * time.Second)); err != nil {
+				return nil
+			}
+		}
+		i, err := c.Read(bf[:])
+		if err != nil {
+			return nil
+		}
+		if _, err := rc.Write(bf[0:i]); err != nil {
+			return nil
+		}
+	}
 	return nil
 }
 

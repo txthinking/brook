@@ -4,12 +4,50 @@ import (
 	"errors"
 	"os"
 	"os/exec"
-	"regexp"
+	"strings"
 )
 
-// GetNetworkInterfaces returns interface list
-func GetNetworkInterfaces() ([]string, error) {
-	return []string{}, nil
+// GetNetworkInterface returns default interface dev name.
+func GetNetworkInterface() (string, error) {
+	return "", nil
+}
+
+// GetDefaultGateway returns default gateway.
+func GetDefaultGateway() (string, error) {
+	c := exec.Command("sh", "-c", "ip route | grep default | awk '{print $3}'")
+	out, err := c.CombinedOutput()
+	if err != nil {
+		return "", errors.New(string(out) + err.Error())
+	}
+	return strings.TrimSpace(string(out)), nil
+}
+
+// GetDNSServers used to get DNS servers.
+func GetDNSServers() ([]string, error) {
+	c := exec.Command("sh", "-c", "cat /etc/resolv.conf | grep -Pv \"^#\" | grep nameserver | awk '{print $2}'")
+	out, err := c.CombinedOutput()
+	if err != nil {
+		return nil, errors.New(string(out) + err.Error())
+	}
+	if strings.TrimSpace(string(out)) == "" {
+		return []string{}, nil
+	}
+	return strings.Split(strings.TrimSpace(string(out)), "\n"), nil
+}
+
+// SetDNSServers used to set system DNS servers.
+func SetDNSServers(servers []string) error {
+	f, err := os.OpenFile("/etc/resolv.conf", os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	for _, v := range servers {
+		if _, err := f.WriteString("nameserver " + v + "\n"); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func TurnOnSystemProxy(pac string) error {
@@ -18,36 +56,4 @@ func TurnOnSystemProxy(pac string) error {
 
 func TurnOffSystemProxy() error {
 	return nil
-}
-
-// SetDNSServer used to set system DNS server
-func SetDNSServer(server string) error {
-	f, err := os.OpenFile("/etc/resolv.conf", os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	_, err = f.WriteString("nameserver " + server)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// GetDefaultGateway returns default gateway
-func GetDefaultGateway() (string, error) {
-	c := exec.Command("ip", "route")
-	out, err := c.CombinedOutput()
-	if err != nil {
-		return "", errors.New(string(out) + err.Error())
-	}
-	r, err := regexp.Compile(`default.*?(\d+.\d+\.\d+\.\d+)`)
-	if err != nil {
-		return "", err
-	}
-	ss := r.FindStringSubmatch(string(out))
-	if len(ss) == 0 {
-		return "", errors.New("Can not find default gateway")
-	}
-	return ss[1], nil
 }
