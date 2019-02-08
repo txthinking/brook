@@ -11,5 +11,5 @@ import (
 func QR(server, password string) {
 	s := server + " " + password
 	s = "brook://" + url.PathEscape(s)
-	qrterminal.Generate(s, qrterminal.H, os.Stdout)
+	qrterminal.GenerateHalfBlock(s, qrterminal.L, os.Stdout)
 }
