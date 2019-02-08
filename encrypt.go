@@ -13,7 +13,7 @@ import (
 	"github.com/txthinking/x"
 )
 
-// IncrementNonce loves your compute to use Litter Endian
+// IncrementNonce loves your compute to use Little Endian
 func IncrementNonce(n []byte) []byte {
 	i := int(binary.LittleEndian.Uint16(n))
 	i += 1
