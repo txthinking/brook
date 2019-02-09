@@ -1,3 +1,17 @@
+// Copyright (c) 2016-present Cloud <cloud@txthinking.com>
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of version 3 of the GNU General Public
+// License as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.If not, see <https://www.gnu.org/licenses/>.
+
 package sysproxy
 
 import (
@@ -106,7 +120,7 @@ func GetDNSServers() ([]string, error) {
 	return l, nil
 }
 
-// SetDNSServers used to set system DNS server
+// SetDNSServers used to set system DNS server.
 func SetDNSServers(servers []string) error {
 	s, err := GetNetworkInterface()
 	if err != nil {
@@ -161,7 +175,7 @@ func TurnOnSystemProxy(pac string) error {
 	return nil
 }
 
-// TurnOffSystemProxy used to disable system pac proxy
+// TurnOffSystemProxy used to disable system pac proxy.
 func TurnOffSystemProxy() error {
 	c := exec.Command("chcp", "65001")
 	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}

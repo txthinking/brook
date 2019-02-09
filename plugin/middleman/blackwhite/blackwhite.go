@@ -1,3 +1,17 @@
+// Copyright (c) 2016-present Cloud <cloud@txthinking.com>
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of version 3 of the GNU General Public
+// License as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.If not, see <https://www.gnu.org/licenses/>.
+
 package blackwhite
 
 import (
@@ -16,7 +30,7 @@ import (
 
 var Dial x.Dialer = x.DefaultDial
 
-// BlackWhite is a middleman
+// BlackWhite is a middleman.
 type BlackWhite struct {
 	Mode         string // mode is white or black
 	Domains      map[string]byte
@@ -28,7 +42,7 @@ type BlackWhite struct {
 	WhiteDNS     string
 }
 
-// NewBlackWhite returns a BlackWhite
+// NewBlackWhite returns a BlackWhite.
 func NewBlackWhite(mode, domainURL, cidrURL, blackDNS, whiteDNS string, timeout, deadline int) (*BlackWhite, error) {
 	ds := make(map[string]byte)
 	ns := make([]*net.IPNet, 0)
@@ -75,7 +89,7 @@ func NewBlackWhite(mode, domainURL, cidrURL, blackDNS, whiteDNS string, timeout,
 	}, nil
 }
 
-// Has domain or IP
+// Has domain or IP.
 func (b *BlackWhite) Has(host string) bool {
 	ip := net.ParseIP(host)
 	if ip != nil {
@@ -101,7 +115,7 @@ func (b *BlackWhite) Has(host string) bool {
 	return false
 }
 
-// TCPHandle handles tcp request
+// TCPHandle handles tcp request.
 func (b *BlackWhite) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) (bool, error) {
 	if r.Cmd == socks5.CmdConnect {
 		h, _, err := net.SplitHostPort(r.Address())
@@ -125,7 +139,7 @@ func (b *BlackWhite) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Reque
 	return false, socks5.ErrUnsupportCmd
 }
 
-// UDPHandle handles udp packet
+// UDPHandle handles udp packet.
 func (b *BlackWhite) UDPHandle(s *socks5.Server, ca *net.UDPAddr, d *socks5.Datagram) (bool, error) {
 	if d.Address() == b.BlackDNS {
 		done, err := b.DNSHandle(s, ca, d)
@@ -149,7 +163,7 @@ func (b *BlackWhite) UDPHandle(s *socks5.Server, ca *net.UDPAddr, d *socks5.Data
 	return true, nil
 }
 
-// DNSHandle handles DNS query
+// DNSHandle handles DNS query.
 func (b *BlackWhite) DNSHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) (bool, error) {
 	bye := func() {
 		v, ok := s.TCPUDPAssociate.Get(addr.String())
@@ -233,7 +247,7 @@ func (b *BlackWhite) DNSHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Da
 	return true, nil
 }
 
-// Handle handles http proxy request, if the domain is in the white list
+// Handle handles http proxy request, if the domain is in the white list.
 func (b *BlackWhite) Handle(method, addr string, request []byte, conn *net.TCPConn) (handled bool, err error) {
 	h, _, err := net.SplitHostPort(addr)
 	if err != nil {

@@ -1,3 +1,17 @@
+// Copyright (c) 2016-present Cloud <cloud@txthinking.com>
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of version 3 of the GNU General Public
+// License as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.If not, see <https://www.gnu.org/licenses/>.
+
 package brook
 
 import (
@@ -13,7 +27,7 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// Tproxy
+// Tproxy.
 type Tproxy struct {
 	TCPAddr       *net.TCPAddr
 	UDPAddr       *net.UDPAddr
@@ -28,7 +42,7 @@ type Tproxy struct {
 	UDPDeadline   int
 }
 
-// NewTproxy
+// NewTproxy.
 func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Tproxy, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
@@ -61,7 +75,7 @@ func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadli
 	return s, nil
 }
 
-// Run server
+// Run server.
 func (s *Tproxy) ListenAndServe() error {
 	errch := make(chan error)
 	go func() {
@@ -73,7 +87,7 @@ func (s *Tproxy) ListenAndServe() error {
 	return <-errch
 }
 
-// RunTCPServer starts tcp server
+// RunTCPServer starts tcp server.
 func (s *Tproxy) RunTCPServer() error {
 	var err error
 	s.TCPListen, err = tproxy.ListenTCP("tcp", s.TCPAddr)
@@ -108,7 +122,7 @@ func (s *Tproxy) RunTCPServer() error {
 	return nil
 }
 
-// RunUDPServer starts udp server
+// RunUDPServer starts udp server.
 func (s *Tproxy) RunUDPServer() error {
 	var err error
 	s.UDPConn, err = tproxy.ListenUDP("udp", s.UDPAddr)
@@ -135,7 +149,7 @@ func (s *Tproxy) RunUDPServer() error {
 	return nil
 }
 
-// Shutdown server
+// Shutdown server.
 func (s *Tproxy) Shutdown() error {
 	var err, err1 error
 	if s.TCPListen != nil {
@@ -150,7 +164,7 @@ func (s *Tproxy) Shutdown() error {
 	return err1
 }
 
-// TCPHandle handle request
+// TCPHandle handles request.
 func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 	tmp, err := tproxy.DialTCP("tcp", s.RemoteTCPAddr.String())
 	if err != nil {

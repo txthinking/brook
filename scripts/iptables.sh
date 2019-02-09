@@ -14,6 +14,11 @@ sudo iptables -t mangle -A PREROUTING -d 172.16.0.0/12 -j RETURN
 sudo iptables -t mangle -A PREROUTING -d 192.168.0.0/16 -j RETURN
 sudo iptables -t mangle -A PREROUTING -d 224.0.0.0/4 -j RETURN
 sudo iptables -t mangle -A PREROUTING -d 240.0.0.0/4 -j RETURN
+#sudo iptables -t mangle -A PREROUTING -d ::/128 -j RETURN
+#sudo iptables -t mangle -A PREROUTING -d ::1/128 -j RETURN
+#sudo iptables -t mangle -A PREROUTING -d fc00::/7 -j RETURN
+#sudo iptables -t mangle -A PREROUTING -d fe80::/10 -j RETURN
+#sudo iptables -t mangle -A PREROUTING -d ff00::/8 -j RETURN
 sudo iptables -t mangle -A PREROUTING -d BROOK_SERVER_IP -j RETURN
 
 sudo iptables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1

@@ -1,3 +1,17 @@
+// Copyright (c) 2016-present Cloud <cloud@txthinking.com>
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of version 3 of the GNU General Public
+// License as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.If not, see <https://www.gnu.org/licenses/>.
+
 package brook
 
 import (
@@ -11,7 +25,7 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// Socks5Server is the client of raw socks5 protocol
+// Socks5Server is raw socks5 server.
 type Socks5Server struct {
 	Server          *socks5.Server
 	Socks5Middleman plugin.Socks5Middleman
@@ -25,7 +39,7 @@ type Socks5Server struct {
 	Cache           *cache.Cache
 }
 
-// NewSocks5Server returns a new Socks5Server
+// NewSocks5Server returns a new Socks5Server.
 func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Socks5Server, error) {
 	s5, err := socks5.NewClassicServer(addr, ip, userName, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
@@ -43,18 +57,17 @@ func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadlin
 	return x, nil
 }
 
-// SetSocks5Middleman sets socks5middleman plugin
+// SetSocks5Middleman sets socks5middleman plugin.
 func (x *Socks5Server) SetSocks5Middleman(m plugin.Socks5Middleman) {
 	x.Socks5Middleman = m
 }
 
-// ListenAndServe will let client start to listen and serve, sm can be nil
+// ListenAndServe will let client start to listen and serve.
 func (x *Socks5Server) ListenAndServe() error {
 	return x.Server.Run(nil)
 }
 
-// ListenAndForward will let client start a proxy to listen and forward to another socks5,
-// sm can be nil
+// ListenAndForward will let client start a proxy to listen and forward to another socks5.
 func (x *Socks5Server) ListenAndForward(addr, username, password string) error {
 	x.ForwardAddress = addr
 	x.ForwardUserName = username
@@ -62,7 +75,7 @@ func (x *Socks5Server) ListenAndForward(addr, username, password string) error {
 	return x.Server.Run(x)
 }
 
-// TCPHandle handles tcp request
+// TCPHandle handles tcp request.
 func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
 	if x.Socks5Middleman != nil {
 		done, err := x.Socks5Middleman.TCPHandle(s, c, r)
@@ -172,7 +185,7 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 	return ErrorReply(r, c, socks5.ErrUnsupportCmd)
 }
 
-// UDPHandle handles udp request
+// UDPHandle handles udp request.
 func (x *Socks5Server) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {
 	if x.Socks5Middleman != nil {
 		if done, err := x.Socks5Middleman.UDPHandle(s, addr, d); err != nil || done {
@@ -267,7 +280,7 @@ func (x *Socks5Server) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.
 	return nil
 }
 
-// Shutdown used to stop the client
+// Shutdown used to stop the client.
 func (x *Socks5Server) Shutdown() error {
 	return x.Server.Stop()
 }

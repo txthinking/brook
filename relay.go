@@ -1,3 +1,17 @@
+// Copyright (c) 2016-present Cloud <cloud@txthinking.com>
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of version 3 of the GNU General Public
+// License as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.If not, see <https://www.gnu.org/licenses/>.
+
 package brook
 
 import (
@@ -9,7 +23,7 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// Relay is stream relay server
+// Relay is relay server.
 type Relay struct {
 	TCPAddr       *net.TCPAddr
 	UDPAddr       *net.UDPAddr
@@ -23,7 +37,7 @@ type Relay struct {
 	UDPDeadline   int
 }
 
-// NewRelay
+// NewRelay returns a Relay.
 func NewRelay(addr, remote string, tcpTimeout, tcpDeadline, udpDeadline int) (*Relay, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
@@ -55,7 +69,7 @@ func NewRelay(addr, remote string, tcpTimeout, tcpDeadline, udpDeadline int) (*R
 	return s, nil
 }
 
-// Run server
+// Run server.
 func (s *Relay) ListenAndServe() error {
 	errch := make(chan error)
 	go func() {
@@ -67,7 +81,7 @@ func (s *Relay) ListenAndServe() error {
 	return <-errch
 }
 
-// RunTCPServer starts tcp server
+// RunTCPServer starts tcp server.
 func (s *Relay) RunTCPServer() error {
 	var err error
 	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
@@ -102,7 +116,7 @@ func (s *Relay) RunTCPServer() error {
 	return nil
 }
 
-// RunUDPServer starts udp server
+// RunUDPServer starts udp server.
 func (s *Relay) RunUDPServer() error {
 	var err error
 	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
@@ -126,7 +140,7 @@ func (s *Relay) RunUDPServer() error {
 	return nil
 }
 
-// Shutdown server
+// Shutdown server.
 func (s *Relay) Shutdown() error {
 	var err, err1 error
 	if s.TCPListen != nil {
@@ -141,7 +155,7 @@ func (s *Relay) Shutdown() error {
 	return err1
 }
 
-// TCPHandle handle request
+// TCPHandle handles request.
 func (s *Relay) TCPHandle(c *net.TCPConn) error {
 	tmp, err := Dial.Dial("tcp", s.RemoteTCPAddr.String())
 	if err != nil {
@@ -195,7 +209,7 @@ func (s *Relay) TCPHandle(c *net.TCPConn) error {
 	return nil
 }
 
-// UDPHandle handle packet
+// UDPHandle handles packet.
 func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	send := func(ue *socks5.UDPExchange, data []byte) error {
 		_, err := ue.RemoteConn.Write(data)

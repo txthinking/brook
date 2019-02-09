@@ -1,3 +1,17 @@
+// Copyright (c) 2016-present Cloud <cloud@txthinking.com>
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of version 3 of the GNU General Public
+// License as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.If not, see <https://www.gnu.org/licenses/>.
+
 package brook
 
 import (
@@ -16,7 +30,7 @@ import (
 	xx "github.com/txthinking/x"
 )
 
-// SSClient
+// SSClient.
 type SSClient struct {
 	Server          *socks5.Server
 	RemoteAddr      string
@@ -29,7 +43,7 @@ type SSClient struct {
 	HTTPMiddleman   plugin.HTTPMiddleman
 }
 
-// NewSSClient returns a new SSClient
+// NewSSClient returns a new SSClient.
 func NewSSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*SSClient, error) {
 	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
@@ -46,23 +60,22 @@ func NewSSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 	return x, nil
 }
 
-// SetSocks5Middleman sets socks5middleman plugin
+// SetSocks5Middleman sets socks5middleman plugin.
 func (x *SSClient) SetSocks5Middleman(m plugin.Socks5Middleman) {
 	x.Socks5Middleman = m
 }
 
-// SetHTTPMiddleman sets httpmiddleman plugin
+// SetHTTPMiddleman sets httpmiddleman plugin.
 func (x *SSClient) SetHTTPMiddleman(m plugin.HTTPMiddleman) {
 	x.HTTPMiddleman = m
 }
 
-// ListenAndServe will let client start a socks5 proxy
-// sm can be nil
+// ListenAndServe will let client start a socks5 proxy.
 func (x *SSClient) ListenAndServe() error {
 	return x.Server.Run(x)
 }
 
-// TCPHandle handles tcp request
+// TCPHandle handles tcp request.
 func (x *SSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
 	if x.Socks5Middleman != nil {
 		done, err := x.Socks5Middleman.TCPHandle(s, c, r)
@@ -175,7 +188,7 @@ func (x *SSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 	return socks5.ErrUnsupportCmd
 }
 
-// UDPHandle handles udp request
+// UDPHandle handles udp request.
 func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {
 	if x.Socks5Middleman != nil {
 		if done, err := x.Socks5Middleman.UDPHandle(s, addr, d); err != nil || done {
@@ -269,8 +282,7 @@ func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 	return nil
 }
 
-// ListenAndServeHTTP will let client start a http proxy
-// m can be nil
+// ListenAndServeHTTP will let client start a http proxy.
 func (x *SSClient) ListenAndServeHTTP() error {
 	var err error
 	x.TCPListen, err = net.ListenTCP("tcp", x.Server.TCPAddr)
@@ -304,7 +316,7 @@ func (x *SSClient) ListenAndServeHTTP() error {
 	}
 }
 
-// HTTPHandle handle http request
+// HTTPHandle handles http request.
 func (x *SSClient) HTTPHandle(c *net.TCPConn) error {
 	b := make([]byte, 0, 1024)
 	for {
@@ -428,7 +440,7 @@ func (x *SSClient) HTTPHandle(c *net.TCPConn) error {
 	return nil
 }
 
-// WrapChiperConn make a chiper conn
+// WrapChiperConn makes a chiper conn.
 func (x *SSClient) WrapCipherConn(conn *net.TCPConn) (*CipherConn, error) {
 	iv := make([]byte, aes.BlockSize)
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
@@ -440,12 +452,12 @@ func (x *SSClient) WrapCipherConn(conn *net.TCPConn) (*CipherConn, error) {
 	return NewCipherConn(conn, x.Password, iv)
 }
 
-// Encrypt data
+// Encrypt data.
 func (x *SSClient) Encrypt(rawdata []byte) ([]byte, error) {
 	return xx.AESCFBEncrypt(rawdata, x.Password)
 }
 
-// Decrypt data
+// Decrypt data.
 func (x *SSClient) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
 	var bb []byte
 	bb, err = xx.AESCFBDecrypt(cd, x.Password)
@@ -499,7 +511,7 @@ func (x *SSClient) Decrypt(cd []byte) (a byte, addr, port, data []byte, err erro
 	return
 }
 
-// Shutdown used to stop the client
+// Shutdown used to stop the client.
 func (x *SSClient) Shutdown() error {
 	return x.Server.Stop()
 }

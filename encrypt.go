@@ -1,3 +1,17 @@
+// Copyright (c) 2016-present Cloud <cloud@txthinking.com>
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of version 3 of the GNU General Public
+// License as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.If not, see <https://www.gnu.org/licenses/>.
+
 package brook
 
 import (
@@ -13,7 +27,7 @@ import (
 	"github.com/txthinking/x"
 )
 
-// IncrementNonce loves your compute to use Little Endian
+// IncrementNonce loves your compute to use Little Endian.
 func IncrementNonce(n []byte) []byte {
 	i := int(binary.LittleEndian.Uint16(n))
 	i += 1
@@ -22,7 +36,7 @@ func IncrementNonce(n []byte) []byte {
 	return n
 }
 
-// ReadFrom
+// ReadFrom.
 func ReadFrom(c *net.TCPConn, k, n []byte, hasTime bool) ([]byte, []byte, error) {
 	b := make([]byte, 18)
 	if _, err := io.ReadFull(c, b); err != nil {
@@ -59,7 +73,7 @@ func ReadFrom(c *net.TCPConn, k, n []byte, hasTime bool) ([]byte, []byte, error)
 	return d, n, nil
 }
 
-// WriteTo
+// WriteTo.
 func WriteTo(c *net.TCPConn, d, k, n []byte, needTime bool) ([]byte, error) {
 	if needTime {
 		d = append(bytes.NewBufferString(strconv.Itoa(int(time.Now().Unix()))).Bytes(), d...)
@@ -88,17 +102,17 @@ func WriteTo(c *net.TCPConn, d, k, n []byte, needTime bool) ([]byte, error) {
 	return n, nil
 }
 
-// PrepareKey
+// PrepareKey.
 func PrepareKey(p []byte) ([]byte, []byte, error) {
 	return x.HkdfSha256RandomSalt(p, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}, 12)
 }
 
-// GetKey
+// GetKey.
 func GetKey(p, n []byte) ([]byte, error) {
 	return x.HkdfSha256WithSalt(p, n, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b})
 }
 
-// Encrypt data
+// Encrypt data.
 func Encrypt(p, b []byte) ([]byte, error) {
 	b = append(bytes.NewBufferString(strconv.Itoa(int(time.Now().Unix()))).Bytes(), b...)
 	k, n, err := PrepareKey(p)
@@ -113,7 +127,7 @@ func Encrypt(p, b []byte) ([]byte, error) {
 	return b, nil
 }
 
-// Decrypt data
+// Decrypt data.
 func Decrypt(p, b []byte) (a byte, addr, port, data []byte, err error) {
 	err = errors.New("Data length error")
 	if len(b) <= 12+16 {
