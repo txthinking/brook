@@ -78,7 +78,7 @@ func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline,
 	if err != nil {
 		return nil, err
 	}
-	t := gotun2socks.New(f, addr, []string{"8.8.8.8"}, true, true)
+	t := gotun2socks.New(f, addr, []string{"8.8.8.8"}, false, true)
 	return &VPN{
 		Client:             c,
 		Tunnel:             tl,

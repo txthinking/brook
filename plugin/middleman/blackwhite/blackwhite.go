@@ -133,10 +133,7 @@ func (b *BlackWhite) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Reque
 		}
 		return true, nil
 	}
-	if r.Cmd == socks5.CmdUDP {
-		return false, nil
-	}
-	return false, socks5.ErrUnsupportCmd
+	return false, nil
 }
 
 // UDPHandle handles udp packet.
