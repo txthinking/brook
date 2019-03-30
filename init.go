@@ -21,7 +21,10 @@ import (
 
 var Dial x.Dialer = x.DefaultDial
 
+var Debug bool = false
+
 // EnableDebug.
 func EnableDebug() {
 	socks5.Debug = true
+	Debug = true
 }

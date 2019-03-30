@@ -16,6 +16,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -33,7 +34,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20190205"
+	app.Version = "20190401"
 	app.Usage = "A Cross-Platform Proxy/VPN Software"
 	app.Author = "Cloud"
 	app.Email = "cloud@txthinking.com"
@@ -638,6 +639,28 @@ func main() {
 					}
 				}()
 				return <-errch
+			},
+		},
+		cli.Command{
+			Name:  "link",
+			Usage: "Print brook link",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "server, s",
+					Usage: "Server address, like: 1.2.3.4:1080",
+				},
+				cli.StringFlag{
+					Name:  "password, p",
+					Usage: "Server password",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "link")
+					return nil
+				}
+				fmt.Println(brook.Link(c.String("server"), c.String("password")))
+				return nil
 			},
 		},
 		cli.Command{

@@ -147,6 +147,9 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 		return err
 	}
 	address := socks5.ToAddress(b[0], b[1:len(b)-2], b[len(b)-2:])
+	if Debug {
+		log.Println("Dial TCP", address)
+	}
 	tmp, err := Dial.Dial("tcp", address)
 	if err != nil {
 		return err
@@ -229,6 +232,9 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return send(ue, data)
 	}
 	address := socks5.ToAddress(a, h, p)
+	if Debug {
+		log.Println("Dial UDP", address)
+	}
 
 	c, err := Dial.Dial("udp", address)
 	if err != nil {
