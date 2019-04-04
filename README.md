@@ -11,6 +11,7 @@
 ### v20190401
 
 * Brook iOS/Android GUI: Support Brook link.
+* Add [TCP-Only](https://github.com/txthinking/brook/wiki/Mode-in-Brook-GUI-client) mode, help you capture HTTP(s) protocol
 
 ---
 
@@ -35,7 +36,7 @@
 ## What is Brook
 
 Brook is a cross-platform proxy/vpn software.<br/>
-Brook's goal is to keep it simple, stupid and not detectable.
+Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
 ## Download
 
@@ -105,6 +106,7 @@ COMMANDS:
      socks5        Run as raw socks5 server
      relay         Run as relay mode
      relays        Run as multiple relays mode
+     link          Print brook link
      qr            Print brook server QR code
      socks5tohttp  Convert socks5 to http proxy
      systemproxy   Set system proxy with pac url, or remove, only works on MacOS/Windows
