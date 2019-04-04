@@ -11,7 +11,7 @@
 ### v20190401
 
 * Brook iOS/Android GUI: Support Brook link.
-* Add [TCP-Only](https://github.com/txthinking/brook/wiki/Mode-in-Brook-GUI-client) mode, help you capture HTTP(s) protocol
+* Add [TCP-Only](https://github.com/txthinking/brook/wiki/Mode-in-Brook-GUI-client) mode, help you capture HTTP(s) protocol on mobile
 
 ---
 
