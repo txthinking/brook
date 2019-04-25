@@ -304,6 +304,11 @@ func main() {
 					Name:  "password, p",
 					Usage: "Server password",
 				},
+				cli.StringFlag{
+					Name:  "dns, d",
+					Value: "8.8.8.8",
+					Usage: "DNS Server, like: 8.8.8.8",
+				},
 				cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
@@ -353,7 +358,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"))
+				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"))
 			},
 		},
 		cli.Command{

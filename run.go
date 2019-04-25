@@ -123,8 +123,8 @@ func RunSystemProxy(remove bool, pac string) error {
 }
 
 // RunVPN used to make a new VPN and start.
-func RunVPN(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) error {
-	v, err := NewVPN(address, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime, tunDevice, tunIP, tunGateway, tunMask)
+func RunVPN(address, server, password, dns string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) error {
+	v, err := NewVPN(address, server, password, dns, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime, tunDevice, tunIP, tunGateway, tunMask)
 	if err != nil {
 		return err
 	}

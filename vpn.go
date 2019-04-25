@@ -39,7 +39,7 @@ type VPN struct {
 }
 
 // NewVPN.
-func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*VPN, error) {
+func NewVPN(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*VPN, error) {
 	ds, err := sysproxy.GetDNSServers()
 	if err != nil {
 		return nil, err
@@ -70,15 +70,16 @@ func NewVPN(addr, server, password string, tcpTimeout, tcpDeadline, udpDeadline,
 	if err != nil {
 		return nil, err
 	}
-	tl, err := NewTunnel("127.0.0.1:53", "8.8.8.8:53", server, password, tcpTimeout, tcpDeadline, udpDeadline)
+	dnsserver := net.JoinHostPort(dns, "53")
+	tl, err := NewTunnel("127.0.0.1:53", dnsserver, server, password, tcpTimeout, tcpDeadline, udpDeadline)
 	if err != nil {
 		return nil, err
 	}
-	f, err := tun.OpenTunDevice(tunDevice, tunIP, tunGateway, tunMask, []string{"8.8.8.8"})
+	f, err := tun.OpenTunDevice(tunDevice, tunIP, tunGateway, tunMask, []string{dns})
 	if err != nil {
 		return nil, err
 	}
-	t := gotun2socks.New(f, addr, []string{"8.8.8.8"}, false, true)
+	t := gotun2socks.New(f, addr, []string{dns}, false, true)
 	return &VPN{
 		Client:             c,
 		Tunnel:             tl,
