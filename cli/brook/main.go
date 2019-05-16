@@ -305,7 +305,7 @@ func main() {
 					Usage: "Server password",
 				},
 				cli.StringFlag{
-					Name:  "dns, d",
+					Name:  "dns",
 					Value: "8.8.8.8",
 					Usage: "DNS Server, like: 8.8.8.8",
 				},
