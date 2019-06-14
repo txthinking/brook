@@ -15,6 +15,7 @@
 package main
 
 import (
+	"strconv"
 	"errors"
 	"fmt"
 	"log"
@@ -604,7 +605,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringSliceFlag{
 					Name:  "listenremote, l",
-					Usage: "listen address and server address, like '0.0.0.0:1080 1.2.3.4:1080'",
+					Usage: "listen address and server address, like '0.0.0.0:1080 1.2.3.4:1080' it also support port range such as '0.0.0.0:1080-1090 1.2.3.4:1080-1090'",
 				},
 				cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -634,13 +635,40 @@ func main() {
 				go func() {
 					for _, v := range c.StringSlice("listenremote") {
 						ss := strings.Split(v, " ")
-						if len(ss) != 2 {
+						l := strings.Split(ss[0], ":")
+						localHost := l[0]
+						lPortsRange := strings.Split(l[1], "-")
+						lPortStart,_ :=strconv.Atoi(lPortsRange[0])
+						localPorts := []int{lPortStart}
+						if len(lPortsRange)>1{
+							lPortEnd,_ :=strconv.Atoi(lPortsRange[1])
+							for i:=lPortStart+1;i<=lPortEnd;i++{
+								localPorts = append(localPorts,i)
+							}
+						}
+						r := strings.Split(ss[1], ":")
+						remoteHost := r[0]
+						rPortsRange := strings.Split(r[1], "-")
+						rPortStart,_ :=strconv.Atoi(rPortsRange[0])
+						remotePorts := []int{rPortStart}
+						if len(rPortsRange)>1{
+							rPortEnd,_ :=strconv.Atoi(rPortsRange[1])
+							for i:=rPortStart+1;i<=rPortEnd;i++{
+								remotePorts = append(remotePorts,i)
+							}
+						}
+						if len(ss) != 2 || len(localPorts) != len(remotePorts){
 							errch <- errors.New("Invalid listenremote")
 							return
 						}
-						go func() {
-							errch <- brook.RunRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
-						}()
+						for i:=0;i<len(localPorts);i++{
+							lServer := localHost+":"+strconv.Itoa(localPorts[i])
+							rServer := remoteHost+":"+strconv.Itoa(remotePorts[i])
+							go func() {
+								errch <- brook.RunRelay(lServer,rServer , c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+							}()
+						}
+
 					}
 				}()
 				return <-errch
