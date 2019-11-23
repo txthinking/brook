@@ -23,5 +23,5 @@ import (
 )
 
 func TestGetNetworkService(t *testing.T) {
-	log.Println(GetNetworkInterface())
+	log.Println(TurnOffSystemProxy())
 }

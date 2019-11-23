@@ -22,7 +22,7 @@ import (
 
 // GetNetworkInterface returns default interface name, not dev name.
 func GetNetworkInterface() (string, error) {
-	c := exec.Command("sh", "-c", "networksetup -listnetworkserviceorder | grep $(route -n get default | grep interface | awk '{print $2}') | awk 'BEGIN {FS=\",\"}; {print $1}' | awk 'BEGIN {FS=\": \"}; {print $2}'")
+	c := exec.Command("sh", "-c", "networksetup -listnetworkserviceorder | grep -B 1 $(route -n get default | grep interface | awk '{print $2}') | head -n 1 | sed 's/.*) //'")
 	out, err := c.CombinedOutput()
 	if err != nil {
 		return "", errors.New(string(out) + err.Error())
