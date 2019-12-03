@@ -134,6 +134,9 @@ func Decrypt(p, b []byte) (a byte, addr, port, data []byte, err error) {
 		return
 	}
 	k, err := GetKey(p, b[0:12])
+	if err != nil {
+		return
+	}
 	bb, err := x.AESGCMDecrypt(b[12:], k, b[0:12])
 	if err != nil {
 		return
