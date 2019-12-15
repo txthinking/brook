@@ -234,8 +234,6 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 				<-x.TLSConnCapacity
 			}
 		}()
-		log.Println(rc.LocalAddr(), "opened", "want to", r.Address())
-		defer log.Println(rc.LocalAddr(), "closed")
 		// deer as horse
 		cd, err := EncryptLength(x.Password, []byte{0x00})
 		if err != nil {
@@ -272,8 +270,6 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 		}
 
 		go func() {
-			log.Println(rc.LocalAddr(), "go opened")
-			defer log.Println(rc.LocalAddr(), "go closed")
 			n := make([]byte, 12)
 			if _, err := io.ReadFull(rc, n); err != nil {
 				return
@@ -581,8 +577,6 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 			<-x.TLSConnCapacity
 		}
 	}()
-	log.Println("http", rc.LocalAddr(), "opened", "want to", addr)
-	defer log.Println("http", rc.LocalAddr(), "closed")
 	// deer as horse
 	cd, err := EncryptLength(x.Password, []byte{0x00})
 	if err != nil {
@@ -627,8 +621,6 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 	}
 
 	go func() {
-		log.Println("http", rc.LocalAddr(), "go opened")
-		defer log.Println("http", rc.LocalAddr(), "go closed")
 		n := make([]byte, 12)
 		if _, err := io.ReadFull(rc, n); err != nil {
 			return
