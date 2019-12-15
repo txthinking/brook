@@ -12,12 +12,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-// +build !linux
-
 package brook
 
-import "errors"
+import (
+	"log"
+	"testing"
+)
 
-func RunTproxy(address, server, password string, tcpTimeout, tcpDeadline, udpDeadline int) error {
-	return errors.New("Only works on Linux")
+func TestTest(t *testing.T) {
+	s, err := NewWSClient(":1080", "127.0.0.1", "wss://blueeye.app", "hello", 60, 0, 60, 60)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	c, err := s.DialWebsocket("104.18.58.234:443")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	c.Close()
 }

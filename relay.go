@@ -255,11 +255,9 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			}
 			n, err := ue.RemoteConn.Read(b[:])
 			if err != nil {
-				log.Println(err)
 				break
 			}
 			if _, err := s.UDPConn.WriteToUDP(b[0:n], ue.ClientAddr); err != nil {
-				log.Println(err)
 				break
 			}
 		}

@@ -19,12 +19,15 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"net/http"
 	_ "net/http/pprof"
 
 	"github.com/txthinking/brook"
+	"github.com/txthinking/brook/sysproxy"
 	"github.com/urfave/cli"
 )
 
@@ -34,47 +37,49 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20190601"
+	app.Version = "20200101"
 	app.Usage = "A Cross-Platform Proxy/VPN Software"
-	app.Author = "Cloud"
-	app.Email = "cloud@txthinking.com"
 	app.Flags = []cli.Flag{
-		cli.BoolFlag{
-			Name:        "debug, d",
+		&cli.BoolFlag{
+			Name:        "debug",
+			Aliases:     []string{"d"},
 			Usage:       "Enable debug",
 			Destination: &debug,
 		},
-		cli.StringFlag{
-			Name:        "listen, l",
+		&cli.StringFlag{
+			Name:        "listen",
+			Aliases:     []string{"l"},
 			Usage:       "Listen address for debug",
 			Value:       ":6060",
 			Destination: &debugAddress,
 		},
 	}
-	app.Commands = []cli.Command{
-		cli.Command{
+	app.Commands = []*cli.Command{
+		&cli.Command{
 			Name:  "server",
 			Usage: "Run as server mode",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Server listen address, like: 0.0.0.0:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Server listen address, like: 0.0.0.0:1080",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
@@ -88,28 +93,39 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "servers",
 			Usage: "Run as multiple servers mode",
 			Flags: []cli.Flag{
-				cli.StringSliceFlag{
-					Name:  "listenpassword, l",
-					Usage: "server and password, like '0.0.0.0:1080 password'",
+				&cli.StringSliceFlag{
+					Name:    "listenpassword",
+					Aliases: []string{"l"},
+					Usage:   "server and password, like '0.0.0.0:1080 password'",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
@@ -123,63 +139,77 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				errch := make(chan error)
-				go func() {
-					for _, v := range c.StringSlice("listenpassword") {
-						ss := strings.Split(v, " ")
-						if len(ss) != 2 {
-							errch <- errors.New("Invalid listenpassword")
-							return
-						}
-						go func() {
-							errch <- brook.RunServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
-						}()
+				l := make([]*brook.Server, 0)
+				for _, v := range c.StringSlice("listenpassword") {
+					ss := strings.Split(v, " ")
+					if len(ss) != 2 {
+						return errors.New("Invalid listenpassword")
 					}
-				}()
-				return <-errch
+					s, err := brook.NewServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+					if err != nil {
+						return err
+					}
+					l = append(l, s)
+				}
+				for _, v := range l {
+					go func() {
+						log.Println(v.ListenAndServe())
+					}()
+				}
+				sigs := make(chan os.Signal, 1)
+				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+				<-sigs
+				for _, v := range l {
+					v.Shutdown()
+				}
+				return nil
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "client",
 			Usage: "Run as client mode",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address, like: 127.0.0.1:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address, like: 127.0.0.1:1080",
 				},
-				cli.StringFlag{
-					Name:  "ip, i",
-					Usage: "Client IP address, like: 127.0.0.1",
+				&cli.StringFlag{
+					Name:    "ip",
+					Aliases: []string{"i"},
+					Usage:   "Client IP address, like: 127.0.0.1",
 				},
-				cli.StringFlag{
-					Name:  "server, s",
-					Usage: "Server address, like: 1.2.3.4:1080",
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: 1.2.3.4:1080",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpSessionTime",
 					Value: 60,
 					Usage: "udp session time (s), in most cases need this",
 				},
-				cli.BoolFlag{
+				&cli.BoolFlag{
 					Name:  "http",
 					Usage: "If true, client start a http(s) proxy. default socks5",
 				},
@@ -192,43 +222,185 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				if c.Bool("http") {
-					return brook.RunClientAsHTTP(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				s, err := brook.NewClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				if err != nil {
+					return err
 				}
-				return brook.RunClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				if c.Bool("http") {
+					return s.ListenAndServeHTTP()
+				}
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
-			Name:  "tunnel",
-			Usage: "Run as tunnel mode on client-site",
+		&cli.Command{
+			Name:  "wsserver",
+			Usage: "Run as websocket server mode",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address, like: 127.0.0.1:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Server listen address, like: 0.0.0.0:1080",
 				},
-				cli.StringFlag{
-					Name:  "to, t",
-					Usage: "Tunnel to where, like: 8.8.8.8:53",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
-				cli.StringFlag{
-					Name:  "server, s",
-					Usage: "Server address, like: 1.2.3.4:1080",
+				&cli.StringFlag{
+					Name:  "domain",
+					Usage: "If domain is specified, the domain must have been resolved to the external IP, listen will be ignored, 80 and 443 will be used",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
-				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
+					Name:  "udpDeadline",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if (c.String("listen") == "" && c.String("domain") == "") || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "wsserver")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), c.String("domain"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
+			},
+		},
+		&cli.Command{
+			Name:  "wsclient",
+			Usage: "Run as websocket client mode",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address, like: 127.0.0.1:1080",
+				},
+				&cli.StringFlag{
+					Name:    "ip",
+					Aliases: []string{"i"},
+					Usage:   "Client IP address, like: 127.0.0.1",
+				},
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 60,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				&cli.IntFlag{
+					Name:  "tcpDeadline",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpDeadline",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpSessionTime",
+					Value: 60,
+					Usage: "udp session time (s), in most cases need this",
+				},
+				&cli.BoolFlag{
+					Name:  "http",
+					Usage: "If true, client start a http(s) proxy. default socks5",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" || c.String("ip") == "" || c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "client")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				s, err := brook.NewWSClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				if c.Bool("http") {
+					return s.ListenAndServeHTTP()
+				}
+				return s.ListenAndServe()
+			},
+		},
+		&cli.Command{
+			Name:  "tunnel",
+			Usage: "Run as tunnel mode on client-site",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address, like: 127.0.0.1:1080",
+				},
+				&cli.StringFlag{
+					Name:    "to",
+					Aliases: []string{"t"},
+					Usage:   "Tunnel to where, like: 8.8.8.8:53",
+				},
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: 1.2.3.4:1080",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 60,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				&cli.IntFlag{
+					Name:  "tcpDeadline",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
@@ -242,36 +414,49 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunTunnel(c.String("listen"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewTunnel(c.String("listen"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "tproxy",
 			Usage: "Run as tproxy mode on client-site, transparent proxy, only works on Linux",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address, like: 127.0.0.1:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address, like: 127.0.0.1:1080",
 				},
-				cli.StringFlag{
-					Name:  "server, s",
-					Usage: "Server address, like: 1.2.3.4:1080",
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: 1.2.3.4:1080",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
@@ -285,66 +470,79 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "vpn",
 			Usage: "Run as VPN mode on client-site",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address, must use 127.0.0.1, like: 127.0.0.1:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address, must use 127.0.0.1, like: 127.0.0.1:1080",
 				},
-				cli.StringFlag{
-					Name:  "server, s",
-					Usage: "Server address, like: 1.2.3.4:1080",
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: 1.2.3.4:1080",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:  "dns",
 					Value: "8.8.8.8",
 					Usage: "DNS Server, like: 8.8.8.8",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpSessionTime",
 					Value: 60,
 					Usage: "udp session time (s), in most cases need this",
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:  "tunDevice",
 					Usage: "tun name",
 					Value: "tun0",
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:  "tunIP",
 					Usage: "tun IP",
 					Value: "10.9.9.2",
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:  "tunGateway",
 					Usage: "tun gateway",
 					Value: "10.9.9.1",
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:  "tunMask",
 					Usage: "tun mask",
 					Value: "255.255.255.0",
@@ -358,32 +556,46 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunVPN(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"))
+				s, err := brook.NewVPN(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					fmt.Println("Ctrl-C to quit")
+					log.Println(s.ListenAndServe())
+				}()
+				sigs := make(chan os.Signal, 1)
+				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+				<-sigs
+				fmt.Println("Quitting...")
+				return s.Shutdown()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "ssserver",
 			Usage: "Run as shadowsocks server mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Server listen address, like: 0.0.0.0:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Server listen address, like: 0.0.0.0:1080",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
@@ -397,28 +609,39 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunSSServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewSSServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "ssservers",
 			Usage: "Run as shadowsocks multiple servers mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
-				cli.StringSliceFlag{
-					Name:  "listenpassword, l",
-					Usage: "server address and password, like '0.0.0.0:1080 password'",
+				&cli.StringSliceFlag{
+					Name:    "listenpassword",
+					Aliases: []string{"l"},
+					Usage:   "server address and password, like '0.0.0.0:1080 password'",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
@@ -432,63 +655,77 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				errch := make(chan error)
-				go func() {
-					for _, v := range c.StringSlice("listenpassword") {
-						ss := strings.Split(v, " ")
-						if len(ss) != 2 {
-							errch <- errors.New("Invalid listenpassword")
-							return
-						}
-						go func() {
-							errch <- brook.RunSSServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
-						}()
+				l := make([]*brook.SSServer, 0)
+				for _, v := range c.StringSlice("listenpassword") {
+					ss := strings.Split(v, " ")
+					if len(ss) != 2 {
+						return errors.New("Invalid listenpassword")
 					}
-				}()
-				return <-errch
+					s, err := brook.NewSSServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+					if err != nil {
+						return err
+					}
+					l = append(l, s)
+				}
+				for _, v := range l {
+					go func() {
+						log.Println(v.ListenAndServe())
+					}()
+				}
+				sigs := make(chan os.Signal, 1)
+				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+				<-sigs
+				for _, v := range l {
+					v.Shutdown()
+				}
+				return nil
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "ssclient",
 			Usage: "Run as shadowsocks client mode, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address, like: 127.0.0.1:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address, like: 127.0.0.1:1080",
 				},
-				cli.StringFlag{
-					Name:  "ip, i",
-					Usage: "Client IP address, like: 127.0.0.1",
+				&cli.StringFlag{
+					Name:    "ip",
+					Aliases: []string{"i"},
+					Usage:   "Client IP address, like: 127.0.0.1",
 				},
-				cli.StringFlag{
-					Name:  "server, s",
-					Usage: "Server address, like: 1.2.3.4:1080",
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: 1.2.3.4:1080",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpSessionTime",
 					Value: 60,
 					Usage: "udp session time (s), in most cases need this",
 				},
-				cli.BoolFlag{
+				&cli.BoolFlag{
 					Name:  "http",
 					Usage: "If true, client start a http(s) proxy. default socks5",
 				},
@@ -501,48 +738,60 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				if c.Bool("http") {
-					return brook.RunSSClientAsHTTP(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				s, err := brook.NewSSClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				if err != nil {
+					return err
 				}
-				return brook.RunSSClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				if c.Bool("http") {
+					return s.ListenAndServeHTTP()
+				}
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "socks5",
 			Usage: "Run as raw socks5 server",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address, like: 127.0.0.1:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address, like: 127.0.0.1:1080",
 				},
-				cli.StringFlag{
-					Name:  "ip, i",
-					Usage: "Client IP address, like: 127.0.0.1",
+				&cli.StringFlag{
+					Name:    "ip",
+					Aliases: []string{"i"},
+					Usage:   "Client IP address, like: 127.0.0.1",
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:  "username",
 					Usage: "User name, optional",
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:  "password",
 					Usage: "Password, optional",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpSessionTime",
 					Value: 60,
 					Usage: "udp session time (s), in most cases need this",
@@ -556,32 +805,44 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunSocks5Server(c.String("listen"), c.String("ip"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				s, err := brook.NewSocks5Server(c.String("listen"), c.String("ip"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "relay",
 			Usage: "Run as relay mode",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Relay server address: 0.0.0.0:1080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Relay server address: 0.0.0.0:1080",
 				},
-				cli.StringFlag{
-					Name:  "remote, r",
-					Usage: "Server address, like: 1.2.3.4:1080",
+				&cli.StringFlag{
+					Name:    "remote",
+					Aliases: []string{"r"},
+					Usage:   "Server address, like: 1.2.3.4:1080",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
@@ -595,28 +856,39 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunRelay(c.String("listen"), c.String("remote"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewRelay(c.String("listen"), c.String("remote"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "relays",
 			Usage: "Run as multiple relays mode",
 			Flags: []cli.Flag{
-				cli.StringSliceFlag{
-					Name:  "listenremote, l",
-					Usage: "listen address and server address, like '0.0.0.0:1080 1.2.3.4:1080'",
+				&cli.StringSliceFlag{
+					Name:    "listenremote",
+					Aliases: []string{"l"},
+					Usage:   "listen address and server address, like '0.0.0.0:1080 1.2.3.4:1080'",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
@@ -630,33 +902,45 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				errch := make(chan error)
-				go func() {
-					for _, v := range c.StringSlice("listenremote") {
-						ss := strings.Split(v, " ")
-						if len(ss) != 2 {
-							errch <- errors.New("Invalid listenremote")
-							return
-						}
-						go func() {
-							errch <- brook.RunRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
-						}()
+				l := make([]*brook.Relay, 0)
+				for _, v := range c.StringSlice("listenremote") {
+					ss := strings.Split(v, " ")
+					if len(ss) != 2 {
+						return errors.New("Invalid listenremote")
 					}
-				}()
-				return <-errch
+					s, err := brook.NewRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+					if err != nil {
+						return err
+					}
+					l = append(l, s)
+				}
+				for _, v := range l {
+					go func() {
+						log.Println(v.ListenAndServe())
+					}()
+				}
+				sigs := make(chan os.Signal, 1)
+				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+				<-sigs
+				for _, v := range l {
+					v.Shutdown()
+				}
+				return nil
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "link",
 			Usage: "Print brook link",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "server, s",
-					Usage: "Server address, like: 1.2.3.4:1080",
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -668,17 +952,19 @@ func main() {
 				return nil
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "qr",
 			Usage: "Print brook server QR code",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "server, s",
-					Usage: "Server address, like: 1.2.3.4:1080",
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
 				},
-				cli.StringFlag{
-					Name:  "password, p",
-					Usage: "Server password",
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -690,24 +976,26 @@ func main() {
 				return nil
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "socks5tohttp",
 			Usage: "Convert socks5 to http proxy",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "listen, l",
-					Usage: "Client listen address: like: 127.0.0.1:8080",
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address: like: 127.0.0.1:8080",
 				},
-				cli.StringFlag{
-					Name:  "socks5, s",
-					Usage: "Socks5 address",
+				&cli.StringFlag{
+					Name:    "socks5",
+					Aliases: []string{"s"},
+					Usage:   "Socks5 address",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "timeout",
 					Value: 60,
 					Usage: "connection tcp keepalive timeout (s)",
 				},
-				cli.IntFlag{
+				&cli.IntFlag{
 					Name:  "deadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
@@ -721,20 +1009,32 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				return brook.RunSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.Int("timeout"), c.Int("deadline"))
+				s, err := brook.NewSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.Int("timeout"), c.Int("deadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
 			},
 		},
-		cli.Command{
+		&cli.Command{
 			Name:  "systemproxy",
 			Usage: "Set system proxy with pac url, or remove, only works on MacOS/Windows",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "url, u",
-					Usage: "Pac address: like: http://127.0.0.1/pac",
+				&cli.StringFlag{
+					Name:    "url",
+					Aliases: []string{"u"},
+					Usage:   "Pac address: like: http://127.0.0.1/pac",
 				},
-				cli.BoolFlag{
-					Name:  "remove, r",
-					Usage: "Remove pac url from system proxy",
+				&cli.BoolFlag{
+					Name:    "remove",
+					Aliases: []string{"r"},
+					Usage:   "Remove pac url from system proxy",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -742,7 +1042,16 @@ func main() {
 					cli.ShowCommandHelp(c, "systemproxy")
 					return nil
 				}
-				return brook.RunSystemProxy(c.Bool("remove"), c.String("url"))
+				if c.Bool("remove") {
+					if err := sysproxy.TurnOffSystemProxy(); err != nil {
+						return err
+					}
+					return nil
+				}
+				if err := sysproxy.TurnOnSystemProxy(c.String("url")); err != nil {
+					return err
+				}
+				return nil
 			},
 		},
 	}

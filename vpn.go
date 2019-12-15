@@ -16,12 +16,8 @@ package brook
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/txthinking/brook/sysproxy"
 	"github.com/txthinking/gotun2socks"
@@ -109,24 +105,11 @@ func (v *VPN) ListenAndServe() error {
 	go func() {
 		v.Tun.Run()
 	}()
-	go func() {
-		sigs := make(chan os.Signal, 1)
-		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGQUIT)
-		<-sigs
-		errch <- nil
-	}()
-	fmt.Println("Ctrl-C to quit")
-
-	err := <-errch
-	if err := v.Shutdown(); err != nil {
-		return err
-	}
-	return err
+	return <-errch
 }
 
 // Shutdown stops VPN.
 func (v *VPN) Shutdown() error {
-	fmt.Println("Quitting...")
 	if err := sysproxy.SetDNSServers(v.OriginalDNSServers); err != nil {
 		log.Println(err)
 	}
