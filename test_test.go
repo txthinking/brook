@@ -15,20 +15,8 @@
 package brook
 
 import (
-	"log"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
-	s, err := NewWSClient(":1080", "127.0.0.1", "wss://blueeye.app", "hello", 60, 0, 60, 60)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	c, err := s.DialWebsocket("104.18.58.234:443")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	c.Close()
 }
