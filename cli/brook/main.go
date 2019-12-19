@@ -39,6 +39,13 @@ func main() {
 	app.Name = "Brook"
 	app.Version = "20200101"
 	app.Usage = "A Cross-Platform Proxy/VPN Software"
+	app.Authors = []*cli.Author{
+		{
+			Name:  "Cloud",
+			Email: "cloud@txthinking.com",
+		},
+	}
+	app.Copyright = "https://github.com/txthinking/brook"
 	app.Flags = []cli.Flag{
 		&cli.BoolFlag{
 			Name:        "debug",
@@ -344,7 +351,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("ip") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "client")
+					cli.ShowCommandHelp(c, "wsclient")
 					return nil
 				}
 				if debug {
@@ -1024,7 +1031,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "systemproxy",
-			Usage: "Set system proxy with pac url, or remove, only works on MacOS/Windows",
+			Usage: "Set system proxy with pac url, or remove, only works on macOS/Windows",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "url",
