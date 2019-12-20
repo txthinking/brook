@@ -188,7 +188,7 @@ $ brook wsclient -l 127.0.0.1:1080 -i 127.0.0.1 -s wss://txthinking.com:443 -p p
 
 ### GUI Client
 
-See [wiki](https://github.com/txthinking/brook/wiki)
+See [download](https://github.com/txthinking/brook#download)
 
 #### Tunnel
 
@@ -206,6 +206,8 @@ See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy
 ```
 # Run as VPN to proxy all TCP/UDP. [ROOT privileges required].
 $ sudo brook vpn -l 127.0.0.1:1080 -s server_address:port -p password
+
+# Must exit by Ctrl+C
 ```
 
 **See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-VPN-on-Linux,-macOS-and-Windows%3F) for more tutorials**
