@@ -10,7 +10,7 @@
 
 ### v20200101
 
-- **Please uninstall or delete the old GUI client first**
+- **🔊 Please uninstall or delete the old GUI client first❗️**
 - Add Brook WebSocket mode, with or without TLS. If with TLS, Brook will automatically request/issue certificate for your domain.
 - GUI Client supports QR scanning
 - GUI Client supports custom rules
