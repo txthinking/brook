@@ -37,7 +37,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20200101"
+	app.Version = "20200102"
 	app.Usage = "A Cross-Platform Proxy/VPN Software"
 	app.Authors = []*cli.Author{
 		{
@@ -159,9 +159,9 @@ func main() {
 					l = append(l, s)
 				}
 				for _, v := range l {
-					go func() {
+					go func(v *brook.Server) {
 						log.Println(v.ListenAndServe())
-					}()
+					}(v)
 				}
 				sigs := make(chan os.Signal, 1)
 				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -675,9 +675,9 @@ func main() {
 					l = append(l, s)
 				}
 				for _, v := range l {
-					go func() {
+					go func(v *brook.SSServer) {
 						log.Println(v.ListenAndServe())
-					}()
+					}(v)
 				}
 				sigs := make(chan os.Signal, 1)
 				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -922,9 +922,9 @@ func main() {
 					l = append(l, s)
 				}
 				for _, v := range l {
-					go func() {
+					go func(v *brook.Relay) {
 						log.Println(v.ListenAndServe())
-					}()
+					}(v)
 				}
 				sigs := make(chan os.Signal, 1)
 				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)

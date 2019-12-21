@@ -14,3 +14,7 @@ brook_linux_mips64
 brook_linux_mips64le
 brook_linux_ppc64
 brook_linux_ppc64le
+brook_linux_mips64_softfloat
+brook_linux_mips64le_softfloat
+brook_linux_mips_softfloat
+brook_linux_mipsle_softfloat
