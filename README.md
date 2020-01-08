@@ -266,7 +266,7 @@ $ brook ssclient -l 127.0.0.1:8080 -i 127.0.0.1 -s server_address:port -p passwo
 
 Please read [CONTRIBUTING.md](https://github.com/txthinking/brook/blob/master/.github/CONTRIBUTING.md) first
 
-## Financial Contributors
+## Financial Contributors [Experimental]
 
 Become a financial contributor and help us sustain our community. \[[Contribute](https://opencollective.com/brook/contribute)]
 
