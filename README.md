@@ -5,7 +5,7 @@
 [![Telegram Channel](https://img.shields.io/badge/Telegram%20Channel-brookchannel-blue.svg)](https://t.me/brookchannel)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Wiki](https://img.shields.io/badge/docs-wiki-yello.svg)](https://github.com/txthinking/brook/wiki)
-❤️[![Financial Contributors on Open Collective](https://opencollective.com/brook/all/badge.svg?label=financial+contributors)](https://opencollective.com/brook)
+[![Financial Contributors on Open Collective](https://opencollective.com/brook/all/badge.svg?label=financial+contributors)](https://opencollective.com/brook)
 
 <p align="center">
     <img style="float:right;" src="https://storage.googleapis.com/txthinking-file/_/brook.png" alt="Brook"/>
