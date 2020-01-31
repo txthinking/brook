@@ -5,7 +5,6 @@
 [![Telegram Channel](https://img.shields.io/badge/Telegram%20Channel-brookchannel-blue.svg)](https://t.me/brookchannel)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Wiki](https://img.shields.io/badge/docs-wiki-yellow.svg)](https://github.com/txthinking/brook/wiki)
-[![Financial Contributors on Open Collective](https://opencollective.com/brook/all/badge.svg?label=financial+contributors)](https://opencollective.com/brook)
 
 <p align="center">
     <img style="float:right;" src="https://storage.googleapis.com/txthinking-file/_/brook.png" alt="Brook"/>
@@ -269,29 +268,6 @@ $ brook ssclient -l 127.0.0.1:8080 -i 127.0.0.1 -s server_address:port -p passwo
 ## Contributing
 
 Please read [CONTRIBUTING.md](https://github.com/txthinking/brook/blob/master/.github/CONTRIBUTING.md) first
-
-## Financial Contributors [Experimental]
-
-Become a financial contributor and help us sustain our community. \[[Contribute](https://opencollective.com/brook/contribute)]
-
-#### Individuals
-
-<a href="https://opencollective.com/brook"><img src="https://opencollective.com/brook/individuals.svg?width=890"></a>
-
-#### Organizations
-
-Support this project with your organization. Your logo will show up here with a link to your website. \[[Contribute](https://opencollective.com/brook/contribute)]
-
-<a href="https://opencollective.com/brook/organization/0/website"><img src="https://opencollective.com/brook/organization/0/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/1/website"><img src="https://opencollective.com/brook/organization/1/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/2/website"><img src="https://opencollective.com/brook/organization/2/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/3/website"><img src="https://opencollective.com/brook/organization/3/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/4/website"><img src="https://opencollective.com/brook/organization/4/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/5/website"><img src="https://opencollective.com/brook/organization/5/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/6/website"><img src="https://opencollective.com/brook/organization/6/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/7/website"><img src="https://opencollective.com/brook/organization/7/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/8/website"><img src="https://opencollective.com/brook/organization/8/avatar.svg"></a>
-<a href="https://opencollective.com/brook/organization/9/website"><img src="https://opencollective.com/brook/organization/9/avatar.svg"></a>
 
 ## License
 
