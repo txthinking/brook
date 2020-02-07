@@ -16,14 +16,14 @@ package plugin
 
 // ClientAuthman is used to provide extra authentication mechanism.
 type ClientAuthman interface {
-	// GetToken is used for client to prepare extra data.
+	// GetToken is used for client to prepare token.
 	GetToken() ([]byte, error)
 }
 
 // ServerAuthman is used to provide extra authentication mechanism
 type ServerAuthman interface {
-	// VerfiyToken is used for server to verify extra data.
-	VerfiyToken(extra []byte, network, dst string) (Internet, error)
+	// VerifyToken is used for server to verify token.
+	VerifyToken(token []byte, network, dst string) (Internet, error)
 }
 
 type Internet interface {
