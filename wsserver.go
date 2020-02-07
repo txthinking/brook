@@ -194,7 +194,7 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 		if err != nil {
 			return err
 		}
-		ai, err = s.ServerAuthman.VerfiyToken(b, "tcp", address)
+		ai, err = s.ServerAuthman.VerifyToken(b, "tcp", address)
 		if err != nil {
 			return err
 		}
@@ -317,7 +317,7 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 		address := socks5.ToAddress(a, h, p)
 		if s.ServerAuthman != nil {
 			l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
-			ai, err = s.ServerAuthman.VerfiyToken(data[len(data)-2-l:len(data)-2], "udp", address)
+			ai, err = s.ServerAuthman.VerifyToken(data[len(data)-2-l:len(data)-2], "udp", address)
 			if err != nil {
 				return err
 			}
