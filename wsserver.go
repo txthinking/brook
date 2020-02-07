@@ -333,7 +333,7 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 			}
 			if s.ServerAuthman != nil && a == socks5.ATYPDomain {
 				if err := ai.DNSQuery(string(h)); err != nil {
-					c.Close()
+					conn.Close()
 					return err
 				}
 			}
