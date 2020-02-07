@@ -199,7 +199,7 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, address...)
 	rawaddr = append(rawaddr, port...)
-	n, err = WriteTo(rc, rawaddr, k, n, true)
+	n, _, err = WriteTo(rc, rawaddr, k, n, true)
 	if err != nil {
 		return err
 	}
@@ -242,7 +242,7 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 		if err != nil {
 			return nil
 		}
-		n, err = WriteTo(rc, b[0:i], k, n, false)
+		n, _, err = WriteTo(rc, b[0:i], k, n, false)
 		if err != nil {
 			return nil
 		}
