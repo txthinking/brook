@@ -36,7 +36,7 @@ type Tproxy struct {
 	Password      []byte
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
-	UDPExchanges  *cache.Cache
+	Cache         *cache.Cache
 	TCPDeadline   int
 	TCPTimeout    int
 	UDPDeadline   int
@@ -67,7 +67,7 @@ func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadli
 		UDPAddr:       uaddr,
 		RemoteTCPAddr: rtaddr,
 		RemoteUDPAddr: ruaddr,
-		UDPExchanges:  cs,
+		Cache:         cs,
 		TCPTimeout:    tcpTimeout,
 		TCPDeadline:   tcpDeadline,
 		UDPDeadline:   udpDeadline,
@@ -250,7 +250,7 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 	return nil
 }
 
-type UDPExchange struct {
+type TproxyUDPExchange struct {
 	RemoteConn *net.UDPConn
 	LocalConn  *net.UDPConn
 }
@@ -266,7 +266,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	rawaddr = append(rawaddr, port...)
 	b = append(rawaddr, b...)
 
-	send := func(ue *UDPExchange, data []byte) error {
+	send := func(ue *TproxyUDPExchange, data []byte) error {
 		cd, err := Encrypt(s.Password, data)
 		if err != nil {
 			return err
@@ -278,10 +278,10 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
-	var ue *UDPExchange
-	iue, ok := s.UDPExchanges.Get(addr.String())
+	var ue *TproxyUDPExchange
+	iue, ok := s.Cache.Get(addr.String())
 	if ok {
-		ue = iue.(*UDPExchange)
+		ue = iue.(*TproxyUDPExchange)
 		return send(ue, b)
 	}
 
@@ -297,7 +297,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		rc.Close()
 		return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 	}
-	ue = &UDPExchange{
+	ue = &TproxyUDPExchange{
 		RemoteConn: rc,
 		LocalConn:  c,
 	}
@@ -306,10 +306,10 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		ue.LocalConn.Close()
 		return err
 	}
-	s.UDPExchanges.Set(ue.LocalConn.RemoteAddr().String(), ue, cache.DefaultExpiration)
-	go func(ue *UDPExchange) {
+	s.Cache.Set(ue.LocalConn.RemoteAddr().String(), ue, cache.DefaultExpiration)
+	go func(ue *TproxyUDPExchange) {
 		defer func() {
-			s.UDPExchanges.Delete(ue.LocalConn.RemoteAddr().String())
+			s.Cache.Delete(ue.LocalConn.RemoteAddr().String())
 			ue.RemoteConn.Close()
 			ue.LocalConn.Close()
 		}()

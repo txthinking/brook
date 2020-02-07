@@ -21,6 +21,7 @@ import (
 	"crypto/sha1"
 	"crypto/tls"
 	"encoding/base64"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"io"
@@ -49,6 +50,8 @@ type WSClient struct {
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
 	TLSConnCapacity chan struct{}
+	Cache           *cache.Cache
+	ClientAuthman   plugin.ClientAuthman
 }
 
 // NewWSClient.
@@ -61,6 +64,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 	if err != nil {
 		return nil, err
 	}
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	x := &WSClient{
 		RemoteAddr:  u.Host,
 		Server:      s5,
@@ -68,6 +72,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 		TCPTimeout:  tcpTimeout,
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
+		Cache:       cs,
 	}
 	if u.Scheme == "wss" {
 		h, _, err := net.SplitHostPort(u.Host)
@@ -87,6 +92,11 @@ func (x *WSClient) SetSocks5Middleman(m plugin.Socks5Middleman) {
 // SetHTTPMiddleman sets httpmiddleman plugin.
 func (x *WSClient) SetHTTPMiddleman(m plugin.HTTPMiddleman) {
 	x.HTTPMiddleman = m
+}
+
+// SetClientAuthman sets authman plugin.
+func (x *WSClient) SetClientAuthman(m plugin.ClientAuthman) {
+	x.ClientAuthman = m
 }
 
 // ListenAndServe will let client start a socks5 proxy.
@@ -255,9 +265,20 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 		rawaddr = append(rawaddr, r.Atyp)
 		rawaddr = append(rawaddr, r.DstAddr...)
 		rawaddr = append(rawaddr, r.DstPort...)
-		n, err = WriteTo(rc, rawaddr, k, n, true)
+		n, _, err = WriteTo(rc, rawaddr, k, n, true)
 		if err != nil {
 			return ErrorReply(r, c, err)
+		}
+
+		if x.ClientAuthman != nil {
+			b, err := x.ClientAuthman.GetToken()
+			if err != nil {
+				return ErrorReply(r, c, err)
+			}
+			n, _, err = WriteTo(rc, b, k, n, false)
+			if err != nil {
+				return ErrorReply(r, c, err)
+			}
 		}
 
 		a, address, port, err := socks5.ParseAddress(rc.LocalAddr().String())
@@ -307,7 +328,7 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 			if err != nil {
 				return nil
 			}
-			n, err = WriteTo(rc, b[0:i], k, n, false)
+			n, _, err = WriteTo(rc, b[0:i], k, n, false)
 			if err != nil {
 				return nil
 			}
@@ -335,7 +356,7 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 	return socks5.ErrUnsupportCmd
 }
 
-type WSUDPExchange struct {
+type WSClientUDPExchange struct {
 	ClientAddr *net.UDPAddr
 	RemoteConn net.Conn
 }
@@ -348,7 +369,17 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		}
 	}
 
-	send := func(ue *WSUDPExchange, data []byte) error {
+	send := func(ue *WSClientUDPExchange, data []byte) error {
+		if x.ClientAuthman != nil {
+			b, err := x.ClientAuthman.GetToken()
+			if err != nil {
+				return err
+			}
+			data = append(data, b...)
+			bb := make([]byte, 2)
+			binary.BigEndian.PutUint16(bb, uint16(len(b)))
+			data = append(data, bb...)
+		}
 		cd, err := EncryptLength(x.Password, data)
 		if err != nil {
 			return err
@@ -366,10 +397,10 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		return nil
 	}
 
-	var ue *WSUDPExchange
-	iue, ok := s.UDPExchanges.Get(addr.String())
+	var ue *WSClientUDPExchange
+	iue, ok := x.Cache.Get(addr.String())
 	if ok {
-		ue = iue.(*WSUDPExchange)
+		ue = iue.(*WSClientUDPExchange)
 		return send(ue, d.Bytes()[3:])
 	}
 
@@ -424,7 +455,7 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		return err
 	}
 
-	ue = &WSUDPExchange{
+	ue = &WSClientUDPExchange{
 		ClientAddr: addr,
 		RemoteConn: rc,
 	}
@@ -441,15 +472,15 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		}
 		return err
 	}
-	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
-	go func(ue *WSUDPExchange) {
+	x.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
+	go func(ue *WSClientUDPExchange) {
 		defer func() {
 			v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
 			if ok {
 				ch := v.(chan byte)
 				ch <- 0x00
 			}
-			s.UDPExchanges.Delete(ue.ClientAddr.String())
+			x.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
 			if x.TLSConnCapacity != nil {
 				<-x.TLSConnCapacity
@@ -602,9 +633,20 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, h...)
 	rawaddr = append(rawaddr, p...)
-	n, err = WriteTo(rc, rawaddr, k, n, true)
+	n, _, err = WriteTo(rc, rawaddr, k, n, true)
 	if err != nil {
 		return err
+	}
+
+	if x.ClientAuthman != nil {
+		b, err := x.ClientAuthman.GetToken()
+		if err != nil {
+			return err
+		}
+		n, _, err = WriteTo(rc, b, k, n, false)
+		if err != nil {
+			return err
+		}
 	}
 
 	if method == "CONNECT" {
@@ -614,7 +656,7 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 		}
 	}
 	if method != "CONNECT" {
-		n, err = WriteTo(rc, b, k, n, false)
+		n, _, err = WriteTo(rc, b, k, n, false)
 		if err != nil {
 			return err
 		}
@@ -658,7 +700,7 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 		if err != nil {
 			return nil
 		}
-		n, err = WriteTo(rc, bf[0:i], k, n, false)
+		n, _, err = WriteTo(rc, bf[0:i], k, n, false)
 		if err != nil {
 			return nil
 		}

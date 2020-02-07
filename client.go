@@ -16,6 +16,7 @@ package brook
 
 import (
 	"bytes"
+	"encoding/binary"
 	"errors"
 	"io"
 	"log"
@@ -39,6 +40,8 @@ type Client struct {
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
+	ClientAuthman   plugin.ClientAuthman
+	Cache           *cache.Cache
 }
 
 // NewClient returns a new Client.
@@ -47,6 +50,7 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 	if err != nil {
 		return nil, err
 	}
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	x := &Client{
 		RemoteAddr:  server,
 		Server:      s5,
@@ -54,6 +58,7 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 		TCPTimeout:  tcpTimeout,
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
+		Cache:       cs,
 	}
 	return x, nil
 }
@@ -66,6 +71,11 @@ func (x *Client) SetSocks5Middleman(m plugin.Socks5Middleman) {
 // SetHTTPMiddleman sets httpmiddleman plugin.
 func (x *Client) SetHTTPMiddleman(m plugin.HTTPMiddleman) {
 	x.HTTPMiddleman = m
+}
+
+// SetClientAuthman sets authman plugin.
+func (x *Client) SetClientAuthman(m plugin.ClientAuthman) {
+	x.ClientAuthman = m
 }
 
 // ListenAndServe will let client start a socks5 proxy.
@@ -118,9 +128,20 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		rawaddr = append(rawaddr, r.Atyp)
 		rawaddr = append(rawaddr, r.DstAddr...)
 		rawaddr = append(rawaddr, r.DstPort...)
-		n, err = WriteTo(rc, rawaddr, k, n, true)
+		n, _, err = WriteTo(rc, rawaddr, k, n, true)
 		if err != nil {
 			return ErrorReply(r, c, err)
+		}
+
+		if x.ClientAuthman != nil {
+			b, err := x.ClientAuthman.GetToken()
+			if err != nil {
+				return ErrorReply(r, c, err)
+			}
+			n, _, err = WriteTo(rc, b, k, n, false)
+			if err != nil {
+				return ErrorReply(r, c, err)
+			}
 		}
 
 		a, address, port, err := socks5.ParseAddress(rc.LocalAddr().String())
@@ -170,7 +191,7 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 			if err != nil {
 				return nil
 			}
-			n, err = WriteTo(rc, b[0:i], k, n, false)
+			n, _, err = WriteTo(rc, b[0:i], k, n, false)
 			if err != nil {
 				return nil
 			}
@@ -207,6 +228,16 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
+		if x.ClientAuthman != nil {
+			b, err := x.ClientAuthman.GetToken()
+			if err != nil {
+				return err
+			}
+			data = append(data, b...)
+			bb := make([]byte, 2)
+			binary.BigEndian.PutUint16(bb, uint16(len(b)))
+			data = append(data, bb...)
+		}
 		cd, err := Encrypt(x.Password, data)
 		if err != nil {
 			return err
@@ -219,7 +250,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 
 	var ue *socks5.UDPExchange
-	iue, ok := s.UDPExchanges.Get(addr.String())
+	iue, ok := x.Cache.Get(addr.String())
 	if ok {
 		ue = iue.(*socks5.UDPExchange)
 		return send(ue, d.Bytes()[3:])
@@ -250,7 +281,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		ue.RemoteConn.Close()
 		return err
 	}
-	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
+	x.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
 	go func(ue *socks5.UDPExchange) {
 		defer func() {
 			v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
@@ -258,7 +289,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 				ch := v.(chan byte)
 				ch <- 0x00
 			}
-			s.UDPExchanges.Delete(ue.ClientAddr.String())
+			x.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
 		}()
 		var b [65536]byte
@@ -398,9 +429,20 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, h...)
 	rawaddr = append(rawaddr, p...)
-	n, err = WriteTo(rc, rawaddr, k, n, true)
+	n, _, err = WriteTo(rc, rawaddr, k, n, true)
 	if err != nil {
 		return err
+	}
+
+	if x.ClientAuthman != nil {
+		b, err := x.ClientAuthman.GetToken()
+		if err != nil {
+			return err
+		}
+		n, _, err = WriteTo(rc, b, k, n, false)
+		if err != nil {
+			return err
+		}
 	}
 
 	if method == "CONNECT" {
@@ -410,7 +452,7 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 		}
 	}
 	if method != "CONNECT" {
-		n, err = WriteTo(rc, b, k, n, false)
+		n, _, err = WriteTo(rc, b, k, n, false)
 		if err != nil {
 			return err
 		}
@@ -454,7 +496,7 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 		if err != nil {
 			return nil
 		}
-		n, err = WriteTo(rc, bf[0:i], k, n, false)
+		n, _, err = WriteTo(rc, bf[0:i], k, n, false)
 		if err != nil {
 			return nil
 		}

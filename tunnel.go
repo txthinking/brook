@@ -34,7 +34,7 @@ type Tunnel struct {
 	Password      []byte
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
-	UDPExchanges  *cache.Cache
+	Cache         *cache.Cache
 	TCPDeadline   int
 	TCPTimeout    int
 	UDPDeadline   int
@@ -66,7 +66,7 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, tcpDeadline, udpDe
 		UDPAddr:       uaddr,
 		RemoteTCPAddr: rtaddr,
 		RemoteUDPAddr: ruaddr,
-		UDPExchanges:  cs,
+		Cache:         cs,
 		TCPTimeout:    tcpTimeout,
 		TCPDeadline:   tcpDeadline,
 		UDPDeadline:   udpDeadline,
@@ -195,7 +195,7 @@ func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
 	rawaddr = append(rawaddr, a)
 	rawaddr = append(rawaddr, address...)
 	rawaddr = append(rawaddr, port...)
-	n, err = WriteTo(rc, rawaddr, k, n, true)
+	n, _, err = WriteTo(rc, rawaddr, k, n, true)
 	if err != nil {
 		return err
 	}
@@ -238,7 +238,7 @@ func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
 		if err != nil {
 			return nil
 		}
-		n, err = WriteTo(rc, b[0:i], k, n, false)
+		n, _, err = WriteTo(rc, b[0:i], k, n, false)
 		if err != nil {
 			return nil
 		}
@@ -271,7 +271,7 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 
 	var ue *socks5.UDPExchange
-	iue, ok := s.UDPExchanges.Get(addr.String())
+	iue, ok := s.Cache.Get(addr.String())
 	if ok {
 		ue = iue.(*socks5.UDPExchange)
 		return send(ue, b)
@@ -290,10 +290,10 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		ue.RemoteConn.Close()
 		return err
 	}
-	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
+	s.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
 	go func(ue *socks5.UDPExchange) {
 		defer func() {
-			s.UDPExchanges.Delete(ue.ClientAddr.String())
+			s.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
 		}()
 		var b [65536]byte

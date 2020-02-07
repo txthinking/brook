@@ -41,6 +41,7 @@ type SSClient struct {
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
+	Cache           *cache.Cache
 }
 
 // NewSSClient returns a new SSClient.
@@ -49,6 +50,7 @@ func NewSSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 	if err != nil {
 		return nil, err
 	}
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	x := &SSClient{
 		RemoteAddr:  server,
 		Server:      s5,
@@ -56,6 +58,7 @@ func NewSSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 		TCPTimeout:  tcpTimeout,
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
+		Cache:       cs,
 	}
 	return x, nil
 }
@@ -209,7 +212,7 @@ func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 	}
 
 	var ue *socks5.UDPExchange
-	iue, ok := s.UDPExchanges.Get(addr.String())
+	iue, ok := x.Cache.Get(addr.String())
 	if ok {
 		ue = iue.(*socks5.UDPExchange)
 		return send(ue, d.Bytes()[3:])
@@ -238,7 +241,7 @@ func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		ue.RemoteConn.Close()
 		return err
 	}
-	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
+	x.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
 	go func(ue *socks5.UDPExchange) {
 		defer func() {
 			v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
@@ -246,7 +249,7 @@ func (x *SSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 				ch := v.(chan byte)
 				ch <- 0x00
 			}
-			s.UDPExchanges.Delete(ue.ClientAddr.String())
+			x.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
 		}()
 		var b [65536]byte

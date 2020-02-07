@@ -74,7 +74,7 @@ func ReadFrom(c net.Conn, k, n []byte, hasTime bool) ([]byte, []byte, error) {
 }
 
 // WriteTo.
-func WriteTo(c net.Conn, d, k, n []byte, needTime bool) ([]byte, error) {
+func WriteTo(c net.Conn, d, k, n []byte, needTime bool) ([]byte, int, error) {
 	if needTime {
 		d = append(bytes.NewBufferString(strconv.Itoa(int(time.Now().Unix()))).Bytes(), d...)
 	}
@@ -85,21 +85,23 @@ func WriteTo(c net.Conn, d, k, n []byte, needTime bool) ([]byte, error) {
 	n = IncrementNonce(n)
 	b, err := x.AESGCMEncrypt(bb, k, n)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	if _, err := c.Write(b); err != nil {
-		return nil, err
+	var l int
+	if l, err = c.Write(b); err != nil {
+		return nil, 0, err
 	}
 
 	n = IncrementNonce(n)
 	b, err = x.AESGCMEncrypt(d, k, n)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	if _, err := c.Write(b); err != nil {
-		return nil, err
+	var l1 int
+	if l1, err = c.Write(b); err != nil {
+		return nil, 0, err
 	}
-	return n, nil
+	return n, l + l1, nil
 }
 
 // PrepareKey.

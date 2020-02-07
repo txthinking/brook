@@ -30,15 +30,15 @@ import (
 
 // SSServer.
 type SSServer struct {
-	Password     []byte
-	TCPAddr      *net.TCPAddr
-	UDPAddr      *net.UDPAddr
-	TCPListen    *net.TCPListener
-	UDPConn      *net.UDPConn
-	UDPExchanges *cache.Cache
-	TCPDeadline  int
-	TCPTimeout   int
-	UDPDeadline  int
+	Password    []byte
+	TCPAddr     *net.TCPAddr
+	UDPAddr     *net.UDPAddr
+	TCPListen   *net.TCPListener
+	UDPConn     *net.UDPConn
+	Cache       *cache.Cache
+	TCPDeadline int
+	TCPTimeout  int
+	UDPDeadline int
 }
 
 // NewSSServer.
@@ -53,13 +53,13 @@ func NewSSServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	s := &SSServer{
-		Password:     MakeSSKey(password),
-		TCPAddr:      taddr,
-		UDPAddr:      uaddr,
-		UDPExchanges: cs,
-		TCPTimeout:   tcpTimeout,
-		TCPDeadline:  tcpDeadline,
-		UDPDeadline:  udpDeadline,
+		Password:    MakeSSKey(password),
+		TCPAddr:     taddr,
+		UDPAddr:     uaddr,
+		Cache:       cs,
+		TCPTimeout:  tcpTimeout,
+		TCPDeadline: tcpDeadline,
+		UDPDeadline: udpDeadline,
 	}
 	return s, nil
 }
@@ -257,7 +257,7 @@ func (s *SSServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 
 	var ue *socks5.UDPExchange
-	iue, ok := s.UDPExchanges.Get(addr.String())
+	iue, ok := s.Cache.Get(addr.String())
 	if ok {
 		ue = iue.(*socks5.UDPExchange)
 		return send(ue, data)
@@ -280,10 +280,10 @@ func (s *SSServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		ue.RemoteConn.Close()
 		return err
 	}
-	s.UDPExchanges.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
+	s.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
 	go func(ue *socks5.UDPExchange) {
 		defer func() {
-			s.UDPExchanges.Delete(ue.ClientAddr.String())
+			s.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
 		}()
 		var b [65536]byte
