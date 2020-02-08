@@ -196,6 +196,7 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 		if err != nil {
 			return err
 		}
+		defer ai.Close()
 	}
 
 	if Debug {
@@ -307,6 +308,18 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 		if err != nil {
 			return err
 		}
+		if rc != nil {
+			i, err := rc.Write(data)
+			if err != nil {
+				return nil
+			}
+			if ai != nil {
+				if err := ai.UDPEgress(i); err != nil {
+					return err
+				}
+			}
+			continue
+		}
 		address := socks5.ToAddress(a, h, p)
 		if s.ServerAuthman != nil {
 			l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
@@ -314,73 +327,17 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 			if err != nil {
 				return err
 			}
+			defer ai.Close()
 			data = data[0 : len(data)-2-l]
 		}
-		if rc == nil {
-			if Debug {
-				log.Println("Dial UDP", address)
-			}
-			conn, err := Dial.Dial("udp", address)
-			if err != nil {
-				return err
-			}
-			rc = conn.(*net.UDPConn)
-			go func() {
-				defer rc.Close()
-				var b [65536]byte
-				for {
-					if s.UDPDeadline != 0 {
-						if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
-							break
-						}
-					}
-					n, err := rc.Read(b[:])
-					if err != nil {
-						break
-					}
-					a, addr, port, err := socks5.ParseAddress(c.RemoteAddr().String()) // fake
-					if err != nil {
-						log.Println(err)
-						break
-					}
-					d := make([]byte, 0, 7)
-					d = append(d, a)
-					d = append(d, addr...)
-					d = append(d, port...)
-					d = append(d, b[0:n]...)
-					cd, err := EncryptLength(s.Password, d)
-					if err != nil {
-						log.Println(err)
-						break
-					}
-					i, err := c.Write(cd)
-					if err != nil {
-						break
-					}
-					if ai != nil {
-						if err := ai.UDPEgress(i); err != nil {
-							log.Println(err)
-							break
-						}
-					}
-					cd, err = Encrypt(s.Password, d)
-					if err != nil {
-						log.Println(err)
-						break
-					}
-					i, err = c.Write(cd)
-					if err != nil {
-						break
-					}
-					if ai != nil {
-						if err := ai.UDPEgress(i); err != nil {
-							log.Println(err)
-							break
-						}
-					}
-				}
-			}()
+		if Debug {
+			log.Println("Dial UDP", address)
 		}
+		conn, err := Dial.Dial("udp", address)
+		if err != nil {
+			return err
+		}
+		rc = conn.(*net.UDPConn)
 		i, err := rc.Write(data)
 		if err != nil {
 			return nil
@@ -390,6 +347,61 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 				return err
 			}
 		}
+		go func() {
+			defer rc.Close()
+			var b [65536]byte
+			for {
+				if s.UDPDeadline != 0 {
+					if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+						break
+					}
+				}
+				n, err := rc.Read(b[:])
+				if err != nil {
+					break
+				}
+				a, addr, port, err := socks5.ParseAddress(c.RemoteAddr().String()) // fake
+				if err != nil {
+					log.Println(err)
+					break
+				}
+				d := make([]byte, 0, 7)
+				d = append(d, a)
+				d = append(d, addr...)
+				d = append(d, port...)
+				d = append(d, b[0:n]...)
+				cd, err := EncryptLength(s.Password, d)
+				if err != nil {
+					log.Println(err)
+					break
+				}
+				i, err := c.Write(cd)
+				if err != nil {
+					break
+				}
+				if ai != nil {
+					if err := ai.UDPEgress(i); err != nil {
+						log.Println(err)
+						break
+					}
+				}
+				cd, err = Encrypt(s.Password, d)
+				if err != nil {
+					log.Println(err)
+					break
+				}
+				i, err = c.Write(cd)
+				if err != nil {
+					break
+				}
+				if ai != nil {
+					if err := ai.UDPEgress(i); err != nil {
+						log.Println(err)
+						break
+					}
+				}
+			}
+		}()
 	}
 	return nil
 }

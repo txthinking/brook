@@ -29,4 +29,5 @@ type ServerAuthman interface {
 type Internet interface {
 	TCPEgress(int) error
 	UDPEgress(int) error
+	Close() error
 }

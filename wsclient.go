@@ -370,16 +370,6 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 	}
 
 	send := func(ue *WSClientUDPExchange, data []byte) error {
-		if x.ClientAuthman != nil {
-			b, err := x.ClientAuthman.GetToken()
-			if err != nil {
-				return err
-			}
-			data = append(data, b...)
-			bb := make([]byte, 2)
-			binary.BigEndian.PutUint16(bb, uint16(len(b)))
-			data = append(data, bb...)
-		}
 		cd, err := EncryptLength(x.Password, data)
 		if err != nil {
 			return err
@@ -404,6 +394,27 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		return send(ue, d.Bytes()[3:])
 	}
 
+	data := d.Bytes()[3:]
+	if x.ClientAuthman != nil {
+		b, err := x.ClientAuthman.GetToken()
+		if err != nil {
+			v, ok := s.TCPUDPAssociate.Get(addr.String())
+			if ok {
+				ch := v.(chan byte)
+				ch <- 0x00
+				s.TCPUDPAssociate.Delete(addr.String())
+			}
+			if x.TLSConnCapacity != nil {
+				<-x.TLSConnCapacity
+			}
+			return err
+		}
+		data = append(data, b...)
+		bb := make([]byte, 2)
+		binary.BigEndian.PutUint16(bb, uint16(len(b)))
+		data = append(data, bb...)
+	}
+
 	rc, err := x.DialWebsocket()
 	if err != nil {
 		v, ok := s.TCPUDPAssociate.Get(addr.String())
@@ -411,6 +422,9 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			ch := v.(chan byte)
 			ch <- 0x00
 			s.TCPUDPAssociate.Delete(addr.String())
+		}
+		if x.TLSConnCapacity != nil {
+			<-x.TLSConnCapacity
 		}
 		return err
 	}
@@ -459,7 +473,7 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		ClientAddr: addr,
 		RemoteConn: rc,
 	}
-	if err := send(ue, d.Bytes()[3:]); err != nil {
+	if err := send(ue, data); err != nil {
 		v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
 		if ok {
 			ch := v.(chan byte)

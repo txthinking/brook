@@ -166,6 +166,7 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 		if err != nil {
 			return err
 		}
+		defer ai.Close()
 	}
 
 	if Debug {
@@ -276,16 +277,6 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
-	address := socks5.ToAddress(a, h, p)
-	var ai plugin.Internet
-	if s.ServerAuthman != nil {
-		l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
-		ai, err = s.ServerAuthman.VerifyToken(data[len(data)-2-l:len(data)-2], "udp", address)
-		if err != nil {
-			return err
-		}
-		data = data[0 : len(data)-2-l]
-	}
 	var ue *ServerUDPExchange
 	iue, ok := s.Cache.Get(addr.String())
 	if ok {
@@ -293,6 +284,16 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return send(ue, data)
 	}
 
+	address := socks5.ToAddress(a, h, p)
+	var ai plugin.Internet
+	if s.ServerAuthman != nil {
+		l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
+		ai, err = s.ServerAuthman.VerifyToken(data[len(data)-l-2:len(data)-2], "udp", address)
+		if err != nil {
+			return err
+		}
+		data = data[0 : len(data)-l-2]
+	}
 	if Debug {
 		log.Println("Dial UDP", address)
 	}
@@ -308,6 +309,7 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	if err := send(ue, data); err != nil {
 		ue.RemoteConn.Close()
+		ue.Internet.Close()
 		return err
 	}
 	s.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
@@ -315,6 +317,7 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		defer func() {
 			s.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
+			ue.Internet.Close()
 		}()
 		var b [65536]byte
 		for {

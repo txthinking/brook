@@ -228,16 +228,6 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
-		if x.ClientAuthman != nil {
-			b, err := x.ClientAuthman.GetToken()
-			if err != nil {
-				return err
-			}
-			data = append(data, b...)
-			bb := make([]byte, 2)
-			binary.BigEndian.PutUint16(bb, uint16(len(b)))
-			data = append(data, bb...)
-		}
 		cd, err := Encrypt(x.Password, data)
 		if err != nil {
 			return err
@@ -256,6 +246,24 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		return send(ue, d.Bytes()[3:])
 	}
 
+	data := d.Bytes()[3:]
+	if x.ClientAuthman != nil {
+		b, err := x.ClientAuthman.GetToken()
+		if err != nil {
+			v, ok := s.TCPUDPAssociate.Get(addr.String())
+			if ok {
+				ch := v.(chan byte)
+				ch <- 0x00
+				s.TCPUDPAssociate.Delete(addr.String())
+			}
+			return err
+		}
+		data = append(data, b...)
+		bb := make([]byte, 2)
+		binary.BigEndian.PutUint16(bb, uint16(len(b)))
+		data = append(data, bb...)
+	}
+
 	c, err := Dial.Dial("udp", x.RemoteAddr)
 	if err != nil {
 		v, ok := s.TCPUDPAssociate.Get(addr.String())
@@ -271,7 +279,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		ClientAddr: addr,
 		RemoteConn: rc,
 	}
-	if err := send(ue, d.Bytes()[3:]); err != nil {
+	if err := send(ue, data); err != nil {
 		v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
 		if ok {
 			ch := v.(chan byte)
