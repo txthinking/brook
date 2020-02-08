@@ -184,8 +184,6 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 	if err != nil {
 		return err
 	}
-	a := b[0]
-	h := b[1 : len(b)-2]
 	address := socks5.ToAddress(b[0], b[1:len(b)-2], b[len(b)-2:])
 
 	var ai plugin.Internet
@@ -209,11 +207,6 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 	}
 	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
-	if s.ServerAuthman != nil && a == socks5.ATYPDomain {
-		if err := ai.DNSQuery(string(h)); err != nil {
-			return err
-		}
-	}
 	if s.TCPTimeout != 0 {
 		if err := rc.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
 			return err
@@ -330,12 +323,6 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 			conn, err := Dial.Dial("udp", address)
 			if err != nil {
 				return err
-			}
-			if s.ServerAuthman != nil && a == socks5.ATYPDomain {
-				if err := ai.DNSQuery(string(h)); err != nil {
-					conn.Close()
-					return err
-				}
 			}
 			rc = conn.(*net.UDPConn)
 			go func() {

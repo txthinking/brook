@@ -154,8 +154,6 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
-	a := b[0]
-	h := b[1 : len(b)-2]
 	address := socks5.ToAddress(b[0], b[1:len(b)-2], b[len(b)-2:])
 
 	var ai plugin.Internet
@@ -179,11 +177,6 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 	}
 	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
-	if s.ServerAuthman != nil && a == socks5.ATYPDomain {
-		if err := ai.DNSQuery(string(h)); err != nil {
-			return err
-		}
-	}
 	if s.TCPTimeout != 0 {
 		if err := rc.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
 			return err
@@ -306,12 +299,6 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	c, err := Dial.Dial("udp", address)
 	if err != nil {
 		return err
-	}
-	if s.ServerAuthman != nil && a == socks5.ATYPDomain {
-		if err := ai.DNSQuery(string(h)); err != nil {
-			c.Close()
-			return err
-		}
 	}
 	rc := c.(*net.UDPConn)
 	ue = &ServerUDPExchange{
