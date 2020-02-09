@@ -21,6 +21,7 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
@@ -46,6 +47,9 @@ func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadlin
 		return nil, err
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	if err := limits.Raise(); err != nil {
+		log.Println("Try to raise system limits, got", err)
+	}
 	x := &Socks5Server{
 		Server:         s5,
 		TCPTimeout:     tcpTimeout,

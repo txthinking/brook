@@ -19,6 +19,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/sysproxy"
 	"github.com/txthinking/gotun2socks"
 	"github.com/txthinking/gotun2socks/tun"
@@ -76,6 +77,9 @@ func NewVPN(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDead
 		return nil, err
 	}
 	t := gotun2socks.New(f, addr, []string{dns}, false, true)
+	if err := limits.Raise(); err != nil {
+		log.Println("Try to raise system limits, got", err)
+	}
 	return &VPN{
 		Client:             c,
 		Tunnel:             tl,

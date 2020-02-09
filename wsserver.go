@@ -26,6 +26,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 	"github.com/urfave/negroni"
@@ -54,6 +55,9 @@ func NewWSServer(addr, password, domain string, tcpTimeout, tcpDeadline, udpDead
 		if err != nil {
 			return nil, err
 		}
+	}
+	if err := limits.Raise(); err != nil {
+		log.Println("Try to raise system limits, got", err)
 	}
 	s := &WSServer{
 		Password:    []byte(password),

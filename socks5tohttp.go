@@ -21,23 +21,33 @@ import (
 	"net"
 	"time"
 
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/x"
 	"golang.org/x/net/proxy"
 )
 
 type Socks5ToHTTP struct {
-	Addr          *net.TCPAddr
-	Socks5Address string
-	Dial          proxy.Dialer
-	Timeout       int
-	Deadline      int
-	Listen        *net.TCPListener
-	HTTPMiddleman plugin.HTTPMiddleman
+	Addr           *net.TCPAddr
+	Socks5Address  string
+	Socks5Username string
+	Socks5Password string
+	Dial           proxy.Dialer
+	Timeout        int
+	Deadline       int
+	Listen         *net.TCPListener
+	HTTPMiddleman  plugin.HTTPMiddleman
 }
 
-func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToHTTP, error) {
-	dial, err := proxy.SOCKS5("tcp", socks5addr, nil, &net.Dialer{
+func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, timeout, deadline int) (*Socks5ToHTTP, error) {
+	var auth *proxy.Auth
+	if socks5username != "" || socks5password != "" {
+		auth = &proxy.Auth{
+			User:     socks5username,
+			Password: socks5password,
+		}
+	}
+	dial, err := proxy.SOCKS5("tcp", socks5addr, auth, &net.Dialer{
 		Timeout:   time.Duration(deadline) * time.Second,
 		KeepAlive: time.Duration(timeout) * time.Second,
 	})
@@ -48,12 +58,17 @@ func NewSocks5ToHTTP(addr, socks5addr string, timeout, deadline int) (*Socks5ToH
 	if err != nil {
 		return nil, err
 	}
+	if err := limits.Raise(); err != nil {
+		log.Println("Try to raise system limits, got", err)
+	}
 	return &Socks5ToHTTP{
-		Addr:          ta,
-		Socks5Address: socks5addr,
-		Dial:          dial,
-		Timeout:       timeout,
-		Deadline:      deadline,
+		Addr:           ta,
+		Socks5Address:  socks5addr,
+		Socks5Username: socks5username,
+		Socks5Password: socks5password,
+		Dial:           dial,
+		Timeout:        timeout,
+		Deadline:       deadline,
 	}, nil
 }
 

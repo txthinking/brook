@@ -24,6 +24,7 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/socks5"
 	"github.com/txthinking/x"
 )
@@ -52,6 +53,9 @@ func NewSSServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int
 		return nil, err
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	if err := limits.Raise(); err != nil {
+		log.Println("Try to raise system limits, got", err)
+	}
 	s := &SSServer{
 		Password:    MakeSSKey(password),
 		TCPAddr:     taddr,

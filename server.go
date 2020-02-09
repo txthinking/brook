@@ -22,6 +22,7 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 )
@@ -51,6 +52,9 @@ func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) 
 		return nil, err
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	if err := limits.Raise(); err != nil {
+		log.Println("Try to raise system limits, got", err)
+	}
 	s := &Server{
 		Password:    []byte(password),
 		TCPAddr:     taddr,

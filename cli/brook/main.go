@@ -997,6 +997,14 @@ func main() {
 					Aliases: []string{"s"},
 					Usage:   "Socks5 address",
 				},
+				&cli.StringFlag{
+					Name:  "socks5username",
+					Usage: "Socks5 username",
+				},
+				&cli.StringFlag{
+					Name:  "socks5password",
+					Usage: "Socks5 password",
+				},
 				&cli.IntFlag{
 					Name:  "timeout",
 					Value: 60,
@@ -1016,7 +1024,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.Int("timeout"), c.Int("deadline"))
+				s, err := brook.NewSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.Int("timeout"), c.Int("deadline"))
 				if err != nil {
 					return err
 				}
