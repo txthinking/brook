@@ -134,10 +134,7 @@ func (b *CountryOnly) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Requ
 // UDPHandle handles udp packet.
 func (b *CountryOnly) UDPHandle(s *socks5.Server, ca *net.UDPAddr, d *socks5.Datagram) (bool, error) {
 	if d.Address() == b.InboundDNS {
-		done, err := b.DNSHandle(s, ca, d)
-		if err != nil || done {
-			return done, err
-		}
+		return b.DNSHandle(s, ca, d)
 	}
 	h, _, err := net.SplitHostPort(d.Address())
 	if err != nil {
@@ -154,81 +151,68 @@ func (b *CountryOnly) UDPHandle(s *socks5.Server, ca *net.UDPAddr, d *socks5.Dat
 
 // DNSHandle handles DNS query.
 func (b *CountryOnly) DNSHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) (bool, error) {
-	bye := func() {
-		v, ok := s.TCPUDPAssociate.Get(addr.String())
-		if ok {
-			ch := v.(chan byte)
-			ch <- 0x00
-			s.TCPUDPAssociate.Delete(addr.String())
-		}
-	}
 	m := &dns.Msg{}
 	if err := m.Unpack(d.Data); err != nil {
-		bye()
-		return true, err
+		return false, err
 	}
-	todo := false
+	has := false
 	for _, v := range m.Question {
 		if len(v.Name) > 0 && b.Has(v.Name[0:len(v.Name)-1]) {
-			todo = true
+			has = true
 			break
 		}
 	}
-	if !todo {
+	if has {
 		return false, nil
 	}
 
 	conn, err := Dial.Dial("udp", b.CountryDNS)
 	if err != nil {
-		bye()
-		return true, err
+		return false, err
 	}
 	defer conn.Close()
 	co := &dns.Conn{Conn: conn}
 	if err := co.WriteMsg(m); err != nil {
-		bye()
-		return true, err
+		return false, err
 	}
 	m1, err := co.ReadMsg()
 	if err != nil {
-		bye()
-		return true, err
+		return false, err
 	}
 	if m1.MsgHdr.Truncated {
 		conn, err := Dial.Dial("tcp", b.CountryDNS)
 		if err != nil {
-			bye()
-			return true, err
+			return false, err
 		}
 		defer conn.Close()
 		co := &dns.Conn{Conn: conn}
 		if err := co.WriteMsg(m); err != nil {
-			bye()
-			return true, err
+			return false, err
 		}
 		m1, err = co.ReadMsg()
 		if err != nil {
-			bye()
-			return true, err
+			return false, err
 		}
 	}
 	m1b, err := m1.Pack()
 	if err != nil {
-		bye()
-		return true, err
+		return false, err
 	}
 
 	a, ad, port, err := socks5.ParseAddress(addr.String())
 	if err != nil {
-		bye()
-		return true, err
+		return false, err
 	}
 	d = socks5.NewDatagram(a, ad, port, m1b)
 	if _, err := s.UDPConn.WriteToUDP(d.Bytes(), addr); err != nil {
-		bye()
-		return true, err
+		return false, err
 	}
-	bye()
+	v, ok := s.TCPUDPAssociate.Get(addr.String())
+	if ok {
+		ch := v.(chan byte)
+		ch <- 0x00
+		s.TCPUDPAssociate.Delete(addr.String())
+	}
 	return true, nil
 }
 
@@ -244,29 +228,29 @@ func (b *CountryOnly) Handle(method, addr string, request []byte, conn *net.TCPC
 
 	tmp, err := Dial.Dial("tcp", addr)
 	if err != nil {
-		return true, err
+		return false, err
 	}
 	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if b.Timeout != 0 {
 		if err := rc.SetKeepAlivePeriod(time.Duration(b.Timeout) * time.Second); err != nil {
-			return true, err
+			return false, err
 		}
 	}
 	if b.Deadline != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(b.Deadline) * time.Second)); err != nil {
-			return true, err
+			return false, err
 		}
 	}
 	if method == "CONNECT" {
 		_, err := conn.Write([]byte("HTTP/1.1 200 Connection established\r\n\r\n"))
 		if err != nil {
-			return true, err
+			return false, err
 		}
 	}
 	if method != "CONNECT" {
 		if _, err := rc.Write(request); err != nil {
-			return true, err
+			return false, err
 		}
 	}
 	go func() {

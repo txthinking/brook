@@ -91,14 +91,11 @@ func (x *Client) ListenAndServe() error {
 func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
 	if x.Socks5Middleman != nil {
 		done, err := x.Socks5Middleman.TCPHandle(s, c, r)
-		if err != nil {
-			if done {
-				return err
-			}
-			return ErrorReply(r, c, err)
-		}
 		if done {
-			return nil
+			return err
+		}
+		if err != nil {
+			return ErrorReply(r, c, err)
 		}
 	}
 
@@ -128,11 +125,11 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 			return ErrorReply(r, c, err)
 		}
 
-		rawaddr := make([]byte, 0, 7)
-		rawaddr = append(rawaddr, r.Atyp)
-		rawaddr = append(rawaddr, r.DstAddr...)
-		rawaddr = append(rawaddr, r.DstPort...)
-		n, _, err = WriteTo(rc, rawaddr, k, n, true)
+		ra := make([]byte, 0, 7)
+		ra = append(ra, r.Atyp)
+		ra = append(ra, r.DstAddr...)
+		ra = append(ra, r.DstPort...)
+		n, _, err = WriteTo(rc, ra, k, n, true)
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
@@ -226,12 +223,32 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 // UDPHandle handles udp request.
 func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {
 	if x.Socks5Middleman != nil {
-		if done, err := x.Socks5Middleman.UDPHandle(s, addr, d); err != nil || done {
+		done, err := x.Socks5Middleman.UDPHandle(s, addr, d)
+		if done {
+			return err
+		}
+		if err != nil {
+			v, ok := s.TCPUDPAssociate.Get(addr.String())
+			if ok {
+				ch := v.(chan byte)
+				ch <- 0x00
+				s.TCPUDPAssociate.Delete(addr.String())
+			}
 			return err
 		}
 	}
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
+		if x.ClientAuthman != nil {
+			b, err := x.ClientAuthman.GetToken()
+			if err != nil {
+				return err
+			}
+			data = append(data, b...)
+			bb := make([]byte, 2)
+			binary.BigEndian.PutUint16(bb, uint16(len(b)))
+			data = append(data, bb...)
+		}
 		cd, err := Encrypt(x.Password, data)
 		if err != nil {
 			return err
@@ -250,24 +267,6 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		return send(ue, d.Bytes()[3:])
 	}
 
-	data := d.Bytes()[3:]
-	if x.ClientAuthman != nil {
-		b, err := x.ClientAuthman.GetToken()
-		if err != nil {
-			v, ok := s.TCPUDPAssociate.Get(addr.String())
-			if ok {
-				ch := v.(chan byte)
-				ch <- 0x00
-				s.TCPUDPAssociate.Delete(addr.String())
-			}
-			return err
-		}
-		data = append(data, b...)
-		bb := make([]byte, 2)
-		binary.BigEndian.PutUint16(bb, uint16(len(b)))
-		data = append(data, bb...)
-	}
-
 	c, err := Dial.Dial("udp", x.RemoteAddr)
 	if err != nil {
 		v, ok := s.TCPUDPAssociate.Get(addr.String())
@@ -283,7 +282,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		ClientAddr: addr,
 		RemoteConn: rc,
 	}
-	if err := send(ue, data); err != nil {
+	if err := send(ue, d.Bytes()[3:]); err != nil {
 		v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
 		if ok {
 			ch := v.(chan byte)
@@ -300,6 +299,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 			if ok {
 				ch := v.(chan byte)
 				ch <- 0x00
+				s.TCPUDPAssociate.Delete(ue.ClientAddr.String())
 			}
 			x.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
@@ -403,7 +403,11 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	}
 
 	if x.HTTPMiddleman != nil {
-		if done, err := x.HTTPMiddleman.Handle(method, addr, b, c); err != nil || done {
+		done, err := x.HTTPMiddleman.Handle(method, addr, b, c)
+		if done {
+			return err
+		}
+		if err != nil {
 			return err
 		}
 	}
@@ -437,11 +441,11 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
-	rawaddr := make([]byte, 0, 7)
-	rawaddr = append(rawaddr, a)
-	rawaddr = append(rawaddr, h...)
-	rawaddr = append(rawaddr, p...)
-	n, _, err = WriteTo(rc, rawaddr, k, n, true)
+	ra := make([]byte, 0, 7)
+	ra = append(ra, a)
+	ra = append(ra, h...)
+	ra = append(ra, p...)
+	n, _, err = WriteTo(rc, ra, k, n, true)
 	if err != nil {
 		return err
 	}

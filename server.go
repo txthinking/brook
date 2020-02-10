@@ -269,6 +269,10 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return err
 	}
 	send := func(ue *ServerUDPExchange, data []byte) error {
+		if s.ServerAuthman != nil {
+			l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
+			data = data[0 : len(data)-l-2]
+		}
 		i, err := ue.RemoteConn.Write(data)
 		if err != nil {
 			return err
@@ -296,7 +300,6 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		if err != nil {
 			return err
 		}
-		data = data[0 : len(data)-l-2]
 	}
 	if Debug {
 		log.Println("Dial UDP", address)

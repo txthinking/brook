@@ -63,29 +63,29 @@ func (t *TCPOnly) UDPHandle(s *socks5.Server, ca *net.UDPAddr, d *socks5.Datagra
 func (t *TCPOnly) Handle(method, addr string, request []byte, conn *net.TCPConn) (handled bool, err error) {
 	tmp, err := Dial.Dial("tcp", addr)
 	if err != nil {
-		return true, err
+		return false, err
 	}
 	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if t.Timeout != 0 {
 		if err := rc.SetKeepAlivePeriod(time.Duration(t.Timeout) * time.Second); err != nil {
-			return true, err
+			return false, err
 		}
 	}
 	if t.Deadline != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(t.Deadline) * time.Second)); err != nil {
-			return true, err
+			return false, err
 		}
 	}
 	if method == "CONNECT" {
 		_, err := conn.Write([]byte("HTTP/1.1 200 Connection established\r\n\r\n"))
 		if err != nil {
-			return true, err
+			return false, err
 		}
 	}
 	if method != "CONNECT" {
 		if _, err := rc.Write(request); err != nil {
-			return true, err
+			return false, err
 		}
 	}
 	go func() {

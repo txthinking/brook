@@ -313,6 +313,8 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 			return err
 		}
 		if rc != nil {
+			l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
+			data = data[0 : len(data)-2-l]
 			i, err := rc.Write(data)
 			if err != nil {
 				return nil

@@ -195,11 +195,11 @@ func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
-	rawaddr := make([]byte, 0, 7)
-	rawaddr = append(rawaddr, a)
-	rawaddr = append(rawaddr, address...)
-	rawaddr = append(rawaddr, port...)
-	n, _, err = WriteTo(rc, rawaddr, k, n, true)
+	ra := make([]byte, 0, 7)
+	ra = append(ra, a)
+	ra = append(ra, address...)
+	ra = append(ra, port...)
+	n, _, err = WriteTo(rc, ra, k, n, true)
 	if err != nil {
 		return err
 	}
@@ -256,11 +256,11 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	if err != nil {
 		return err
 	}
-	rawaddr := make([]byte, 0, 7)
-	rawaddr = append(rawaddr, a)
-	rawaddr = append(rawaddr, address...)
-	rawaddr = append(rawaddr, port...)
-	b = append(rawaddr, b...)
+	ra := make([]byte, 0, 7)
+	ra = append(ra, a)
+	ra = append(ra, address...)
+	ra = append(ra, port...)
+	b = append(ra, b...)
 
 	send := func(ue *socks5.UDPExchange, data []byte) error {
 		cd, err := Encrypt(s.Password, data)

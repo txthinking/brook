@@ -146,7 +146,11 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 	}
 
 	if s.HTTPMiddleman != nil {
-		if done, err := s.HTTPMiddleman.Handle(method, addr, b, c); err != nil || done {
+		done, err := s.HTTPMiddleman.Handle(method, addr, b, c)
+		if done {
+			return err
+		}
+		if err != nil {
 			return err
 		}
 	}
