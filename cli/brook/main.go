@@ -174,7 +174,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "client",
-			Usage: "Run as client mode",
+			Usage: "Run as client with brook server",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -302,7 +302,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "wsclient",
-			Usage: "Run as websocket client mode",
+			Usage: "Run as websocket client with brook wsserver",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -375,7 +375,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tunnel",
-			Usage: "Run as tunnel mode on client-site",
+			Usage: "Run as tunnel with brook server on client-site",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -435,13 +435,13 @@ func main() {
 			},
 		},
 		&cli.Command{
-			Name:  "tproxy",
-			Usage: "Run as tproxy mode on client-site, transparent proxy, only works on Linux",
+			Name:  "dns",
+			Usage: "Run DNS server with brook server",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Client listen address, like: 127.0.0.1:1080",
+					Usage:   "Client listen address, like: 127.0.0.1:53",
 				},
 				&cli.StringFlag{
 					Name:    "server",
@@ -452,6 +452,85 @@ func main() {
 					Name:    "password",
 					Aliases: []string{"p"},
 					Usage:   "Server password",
+				},
+				&cli.StringFlag{
+					Name:  "defaultDNSServer",
+					Usage: "Default DNS server",
+					Value: "8.8.8.8:53",
+				},
+				&cli.StringFlag{
+					Name:  "listDNSServer",
+					Usage: "DNS server for resolving domain in list",
+					Value: "223.5.5.5:53",
+				},
+				&cli.StringFlag{
+					Name:  "list",
+					Usage: "https://, http:// or file://",
+					Value: "https://blackwhite.txthinking.com/white.list",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 60,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				&cli.IntFlag{
+					Name:  "tcpDeadline",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpDeadline",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "dns")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("defaultDNSServer"), c.String("listDNSServer"), c.String("list"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
+			},
+		},
+		&cli.Command{
+			Name:  "tproxy",
+			Usage: "Run as tproxy mode on client-site, transparent proxy, only works on Linux",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Client listen address, like: :1080",
+				},
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Server address, like: 1.2.3.4:1080",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
+				},
+				&cli.BoolFlag{
+					Name:  "letBrookDoAllForMe",
+					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F",
+				},
+				&cli.BoolFlag{
+					Name:  "clearBrookDidForMe",
+					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -481,10 +560,39 @@ func main() {
 				if err != nil {
 					return err
 				}
+				if c.Bool("clearBrookDidForMe") {
+					if err := s.ClearAutoScripts(); err != nil {
+						return err
+					}
+					return nil
+				}
+				var dns *brook.DNS
+				if c.Bool("letBrookDoAllForMe") {
+					if err := s.RunAutoScripts(); err != nil {
+						return err
+					}
+					dns, err = brook.NewDNS(":53", c.String("server"), c.String("password"), "8.8.8.8:53", "223.5.5.5:53", "https://blackwhite.txthinking.com/white.list", c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+					if err != nil {
+						return err
+					}
+					go func() {
+						if err := dns.ListenAndServe(); err != nil {
+							log.Println(err)
+						}
+					}()
+				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs
+					if c.Bool("letBrookDoAllForMe") {
+						if err := s.ClearAutoScripts(); err != nil {
+							log.Println(err)
+						}
+					}
+					if dns != nil {
+						dns.Shutdown()
+					}
 					s.Shutdown()
 				}()
 				return s.ListenAndServe()

@@ -15,34 +15,41 @@
 package brook
 
 import (
+	"bytes"
 	"io"
+	"io/ioutil"
 	"log"
 	"net"
+	"net/http"
+	"strings"
 	"time"
 
+	"github.com/miekg/dns"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/socks5"
 )
 
-// Tunnel.
-type Tunnel struct {
-	TCPAddr       *net.TCPAddr
-	UDPAddr       *net.UDPAddr
-	ToAddr        string
-	RemoteTCPAddr *net.TCPAddr
-	RemoteUDPAddr *net.UDPAddr
-	Password      []byte
-	TCPListen     *net.TCPListener
-	UDPConn       *net.UDPConn
-	Cache         *cache.Cache
-	TCPDeadline   int
-	TCPTimeout    int
-	UDPDeadline   int
+// DNS.
+type DNS struct {
+	TCPAddr          *net.TCPAddr
+	UDPAddr          *net.UDPAddr
+	RemoteTCPAddr    *net.TCPAddr
+	RemoteUDPAddr    *net.UDPAddr
+	Password         []byte
+	Domains          map[string]byte
+	DefaultDNSServer string
+	ListDNSServer    string
+	TCPListen        *net.TCPListener
+	UDPConn          *net.UDPConn
+	Cache            *cache.Cache
+	TCPDeadline      int
+	TCPTimeout       int
+	UDPDeadline      int
 }
 
-// NewTunnel.
-func NewTunnel(addr, to, remote, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Tunnel, error) {
+// NewDNS.
+func NewDNS(addr, server, password, defaultDNSServer, listDNSServer, list string, tcpTimeout, tcpDeadline, udpDeadline int) (*DNS, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -51,35 +58,45 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, tcpDeadline, udpDe
 	if err != nil {
 		return nil, err
 	}
-	rtaddr, err := net.ResolveTCPAddr("tcp", remote)
+	rtaddr, err := net.ResolveTCPAddr("tcp", server)
 	if err != nil {
 		return nil, err
 	}
-	ruaddr, err := net.ResolveUDPAddr("udp", remote)
+	ruaddr, err := net.ResolveUDPAddr("udp", server)
 	if err != nil {
 		return nil, err
+	}
+	ds := make(map[string]byte)
+	ss, err := readList(list)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range ss {
+		ds[v] = 0
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
-	s := &Tunnel{
-		ToAddr:        to,
-		Password:      []byte(password),
-		TCPAddr:       taddr,
-		UDPAddr:       uaddr,
-		RemoteTCPAddr: rtaddr,
-		RemoteUDPAddr: ruaddr,
-		Cache:         cs,
-		TCPTimeout:    tcpTimeout,
-		TCPDeadline:   tcpDeadline,
-		UDPDeadline:   udpDeadline,
+	s := &DNS{
+		TCPAddr:          taddr,
+		UDPAddr:          uaddr,
+		RemoteTCPAddr:    rtaddr,
+		RemoteUDPAddr:    ruaddr,
+		Password:         []byte(password),
+		Domains:          ds,
+		Cache:            cs,
+		DefaultDNSServer: defaultDNSServer,
+		ListDNSServer:    listDNSServer,
+		TCPTimeout:       tcpTimeout,
+		TCPDeadline:      tcpDeadline,
+		UDPDeadline:      udpDeadline,
 	}
 	return s, nil
 }
 
 // Run server.
-func (s *Tunnel) ListenAndServe() error {
+func (s *DNS) ListenAndServe() error {
 	errch := make(chan error)
 	go func() {
 		errch <- s.RunTCPServer()
@@ -91,7 +108,7 @@ func (s *Tunnel) ListenAndServe() error {
 }
 
 // RunTCPServer starts tcp server.
-func (s *Tunnel) RunTCPServer() error {
+func (s *DNS) RunTCPServer() error {
 	var err error
 	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
 	if err != nil {
@@ -126,7 +143,7 @@ func (s *Tunnel) RunTCPServer() error {
 }
 
 // RunUDPServer starts udp server.
-func (s *Tunnel) RunUDPServer() error {
+func (s *DNS) RunUDPServer() error {
 	var err error
 	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
 	if err != nil {
@@ -150,7 +167,7 @@ func (s *Tunnel) RunUDPServer() error {
 }
 
 // Shutdown server.
-func (s *Tunnel) Shutdown() error {
+func (s *DNS) Shutdown() error {
 	var err, err1 error
 	if s.TCPListen != nil {
 		err = s.TCPListen.Close()
@@ -165,7 +182,7 @@ func (s *Tunnel) Shutdown() error {
 }
 
 // TCPHandle handles request.
-func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
+func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	tmp, err := Dial.Dial("tcp", s.RemoteTCPAddr.String())
 	if err != nil {
 		return err
@@ -191,7 +208,7 @@ func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
 		return err
 	}
 
-	a, address, port, err := socks5.ParseAddress(s.ToAddr)
+	a, address, port, err := socks5.ParseAddress(s.DefaultDNSServer)
 	if err != nil {
 		return err
 	}
@@ -251,8 +268,58 @@ func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
 }
 
 // UDPHandle handles packet.
-func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
-	a, address, port, err := socks5.ParseAddress(s.ToAddr)
+func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
+	m := &dns.Msg{}
+	if err := m.Unpack(b); err != nil {
+		return err
+	}
+	has := false
+	for _, v := range m.Question {
+		if len(v.Name) > 0 && s.Has(v.Name[0:len(v.Name)-1]) {
+			has = true
+			break
+		}
+	}
+	if has {
+		conn, err := Dial.Dial("udp", s.ListDNSServer)
+		if err != nil {
+			return err
+		}
+		defer conn.Close()
+		co := &dns.Conn{Conn: conn}
+		if err := co.WriteMsg(m); err != nil {
+			return err
+		}
+		m1, err := co.ReadMsg()
+		if err != nil {
+			return err
+		}
+		if m1.MsgHdr.Truncated {
+			conn, err := Dial.Dial("tcp", s.ListDNSServer)
+			if err != nil {
+				return err
+			}
+			defer conn.Close()
+			co := &dns.Conn{Conn: conn}
+			if err := co.WriteMsg(m); err != nil {
+				return err
+			}
+			m1, err = co.ReadMsg()
+			if err != nil {
+				return err
+			}
+		}
+		m1b, err := m1.Pack()
+		if err != nil {
+			return err
+		}
+		if _, err := s.UDPConn.WriteToUDP(m1b, addr); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	a, address, port, err := socks5.ParseAddress(s.DefaultDNSServer)
 	if err != nil {
 		return err
 	}
@@ -322,4 +389,50 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		}
 	}(ue)
 	return nil
+}
+
+func (s *DNS) Has(host string) bool {
+	ss := strings.Split(host, ".")
+	var s1 string
+	for i := len(ss) - 1; i >= 0; i-- {
+		if s1 == "" {
+			s1 = ss[i]
+		} else {
+			s1 = ss[i] + "." + s1
+		}
+		if _, ok := s.Domains[s1]; ok {
+			return true
+		}
+	}
+	return false
+}
+
+func readList(url string) ([]string, error) {
+	var data []byte
+	var err error
+	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
+		c := &http.Client{
+			Timeout: 9 * time.Second,
+		}
+		r, err := c.Get(url)
+		if err != nil {
+			return nil, err
+		}
+		defer r.Body.Close()
+		data, err = ioutil.ReadAll(r.Body)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if strings.HasPrefix(url, "file://") {
+		data, err = ioutil.ReadFile(url)
+		if err != nil {
+			return nil, err
+		}
+	}
+	data = bytes.TrimSpace(data)
+	data = bytes.Replace(data, []byte{0x20}, []byte{}, -1)
+	data = bytes.Replace(data, []byte{0x0d, 0x0a}, []byte{0x0a}, -1)
+	ss := strings.Split(string(data), "\n")
+	return ss, nil
 }

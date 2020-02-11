@@ -355,7 +355,7 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 		}
 		go func() {
 			defer rc.Close()
-			var b [65536]byte
+			var b [65535]byte
 			for {
 				if s.UDPDeadline != 0 {
 					if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {

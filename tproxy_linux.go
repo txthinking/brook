@@ -15,11 +15,17 @@
 package brook
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net"
+	"net/http"
+	"os/exec"
+	"strconv"
+	"strings"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
@@ -79,6 +85,129 @@ func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadli
 	return s, nil
 }
 
+func (s *Tproxy) RunAutoScripts() error {
+	hc := &http.Client{
+		Timeout: 9 * time.Second,
+	}
+	r, err := hc.Get("https://blackwhite.txthinking.com/white_cidr.list")
+	if err != nil {
+		return err
+	}
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+	r.Body.Close()
+	data = bytes.TrimSpace(data)
+	data = bytes.Replace(data, []byte{0x20}, []byte{}, -1)
+	data = bytes.Replace(data, []byte{0x0d, 0x0a}, []byte{0x0a}, -1)
+	cidrl := strings.Split(string(data), "\n")
+
+	c := exec.Command("sh", "-c", "ip rule add fwmark 1 lookup 100")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "ip route add local 0.0.0.0/0 dev lo table 100")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "echo 1 > /proc/sys/net/ipv4/ip_forward")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "echo 1 > /proc/sys/net/ipv6/conf/all/forwarding")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "modprobe xt_socket")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "modprobe xt_TPROXY")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 0.0.0.0/8 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 10.0.0.0/8 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 127.0.0.0/8 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 169.254.0.0/16 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 172.16.0.0/12 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 192.168.0.0/16 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 224.0.0.0/4 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 240.0.0.0/4 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	for _, v := range cidrl {
+		c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d "+v+" -j RETURN")
+		if out, err := c.CombinedOutput(); err != nil {
+			return errors.New(string(out) + err.Error())
+		}
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d "+s.RemoteTCPAddr.IP.String()+" -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.TCPAddr.Port))
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.TCPAddr.Port))
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	return nil
+}
+
+func (s *Tproxy) ClearAutoScripts() error {
+	c := exec.Command("sh", "-c", "ip rule del fwmark 1 lookup 100")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "ip route del local 0.0.0.0/0 dev lo table 100")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -F")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("sh", "-c", "iptables -t mangle -X")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	return nil
+}
+
 // Run server.
 func (s *Tproxy) ListenAndServe() error {
 	errch := make(chan error)
@@ -135,7 +264,7 @@ func (s *Tproxy) RunUDPServer() error {
 	}
 	defer s.UDPConn.Close()
 	for {
-		b := make([]byte, 65536)
+		b := make([]byte, 65535)
 		n, saddr, daddr, err := tproxy.ReadFromUDP(s.UDPConn, b)
 		if err != nil {
 			return err
@@ -317,7 +446,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			ue.RemoteConn.Close()
 			ue.LocalConn.Close()
 		}()
-		var b [65536]byte
+		var b [65535]byte
 		for {
 			if s.UDPDeadline != 0 {
 				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {

@@ -29,9 +29,9 @@ func Raise() error {
 	if runtime.GOOS == "darwin" && l.Cur < 10240 {
 		l.Cur = 10240
 	}
-	if runtime.GOOS != "darwin" && l.Cur < 65535 {
-		if l.Max < 65535 {
-			l.Max = 65535 // with CAP_SYS_RESOURCE capability
+	if runtime.GOOS != "darwin" && l.Cur < 60000 {
+		if l.Max < 60000 {
+			l.Max = 60000 // with CAP_SYS_RESOURCE capability
 		}
 		l.Cur = l.Max
 	}

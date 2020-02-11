@@ -43,6 +43,14 @@ func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadli
 	return nil, errors.New("Only support Linux")
 }
 
+func (s *Tproxy) RunAutoScripts() error {
+	return nil
+}
+
+func (s *Tproxy) ClearAutoScripts() error {
+	return nil
+}
+
 // Run server.
 func (s *Tproxy) ListenAndServe() error {
 	return nil
