@@ -189,6 +189,7 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 		return err
 	}
 	address := socks5.ToAddress(b[0], b[1:len(b)-2], b[len(b)-2:])
+	a := b[0]
 
 	var ai plugin.Internet
 	if s.ServerAuthman != nil {
@@ -196,7 +197,7 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 		if err != nil {
 			return err
 		}
-		ai, err = s.ServerAuthman.VerifyToken(b, "tcp", address)
+		ai, err = s.ServerAuthman.VerifyToken(b, "tcp", a, address, nil)
 		if err != nil {
 			return err
 		}
@@ -329,7 +330,7 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 		address := socks5.ToAddress(a, h, p)
 		if s.ServerAuthman != nil {
 			l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
-			ai, err = s.ServerAuthman.VerifyToken(data[len(data)-2-l:len(data)-2], "udp", address)
+			ai, err = s.ServerAuthman.VerifyToken(data[len(data)-2-l:len(data)-2], "udp", a, address, data[0:len(data)-2-l])
 			if err != nil {
 				return err
 			}

@@ -23,7 +23,7 @@ type ClientAuthman interface {
 // ServerAuthman is used to provide extra authentication mechanism
 type ServerAuthman interface {
 	// VerifyToken is used for server to verify token.
-	VerifyToken(token []byte, network, dst string) (Internet, error)
+	VerifyToken(token []byte, network string, a byte, dst string, b []byte) (Internet, error)
 }
 
 type Internet interface {

@@ -529,7 +529,7 @@ func main() {
 					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F",
 				},
 				&cli.BoolFlag{
-					Name:  "clearBrookDidForMe",
+					Name:  "cleanBrookDidForMe",
 					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F",
 				},
 				&cli.IntFlag{
@@ -560,7 +560,7 @@ func main() {
 				if err != nil {
 					return err
 				}
-				if c.Bool("clearBrookDidForMe") {
+				if c.Bool("cleanBrookDidForMe") {
 					if err := s.ClearAutoScripts(); err != nil {
 						return err
 					}

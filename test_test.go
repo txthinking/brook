@@ -15,31 +15,8 @@
 package brook
 
 import (
-	"bytes"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"strings"
 	"testing"
-	"time"
 )
 
 func TestTest(t *testing.T) {
-	hc := &http.Client{
-		Timeout: 9 * time.Second,
-	}
-	r, err := hc.Get("https://blackwhite.txthinking.com/white_cidr.list")
-	if err != nil {
-		// return err
-	}
-	defer r.Body.Close()
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		// return err
-	}
-	data = bytes.TrimSpace(data)
-	data = bytes.Replace(data, []byte{0x20}, []byte{}, -1)
-	data = bytes.Replace(data, []byte{0x0d, 0x0a}, []byte{0x0a}, -1)
-	cidrlist := strings.Split(string(data), "\n")
-	log.Println(":" + cidrlist[len(cidrlist)-1] + ":")
 }
