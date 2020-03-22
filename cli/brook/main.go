@@ -1177,6 +1177,62 @@ func main() {
 				return nil
 			},
 		},
+		&cli.Command{
+			Name:  "pac",
+			Usage: "Create PAC server or PAC file",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "proxy",
+					Aliases: []string{"p"},
+					Usage:   "Proxy, like: 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' [required]",
+				},
+				&cli.StringFlag{
+					Name:    "mode",
+					Aliases: []string{"m"},
+					Usage:   "white/black/global",
+				},
+				&cli.StringFlag{
+					Name:    "domainURL",
+					Aliases: []string{"d"},
+					Usage:   "domain list url, http(s):// or local file path",
+				},
+				&cli.StringFlag{
+					Name:    "cidrURL",
+					Aliases: []string{"c"},
+					Usage:   "CIDR list url, http(s):// or local file path",
+				},
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "PAC server address, like: 127.0.0.1:1980. When you want to create PAC server",
+				},
+				&cli.StringFlag{
+					Name:    "file",
+					Aliases: []string{"f"},
+					Usage:   "File path. When you want to create PAC file",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("mode") != "global" && c.String("mode") != "white" && c.String("mode") != "black" {
+					cli.ShowCommandHelp(c, "pac")
+					return nil
+				}
+				p := brook.NewPAC(c.String("listen"), c.String("file"), c.String("proxy"), c.String("mode"), c.String("domainURL"), c.String("cidrURL"))
+				if c.String("listen") != "" {
+					go func() {
+						sigs := make(chan os.Signal, 1)
+						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+						<-sigs
+						p.Shutdown()
+					}()
+					return p.ListenAndServe()
+				}
+				if c.String("file") != "" {
+					return p.WriteToFile()
+				}
+				return p.WriteToStdout()
+			},
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
