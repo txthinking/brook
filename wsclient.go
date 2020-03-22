@@ -34,7 +34,6 @@ import (
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
-	xx "github.com/txthinking/x"
 )
 
 // WSClient.
@@ -442,6 +441,7 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			if x.TLSConnCapacity != nil {
 				<-x.TLSConnCapacity
 			}
+			rc.Close()
 			return err
 		}
 	}
@@ -457,6 +457,7 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		if x.TLSConnCapacity != nil {
 			<-x.TLSConnCapacity
 		}
+		rc.Close()
 		return err
 	}
 	if _, err := rc.Write(cd); err != nil {
@@ -469,6 +470,7 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		if x.TLSConnCapacity != nil {
 			<-x.TLSConnCapacity
 		}
+		rc.Close()
 		return err
 	}
 
@@ -604,7 +606,7 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = xx.GetAddressFromURL(aoru)
+		addr, err = GetAddressFromURL(aoru)
 		if err != nil {
 			return err
 		}

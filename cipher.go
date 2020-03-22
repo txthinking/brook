@@ -21,7 +21,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/txthinking/x"
+	"github.com/txthinking/encrypt"
 )
 
 // CipherConn is the encrypted connection.
@@ -36,7 +36,7 @@ func NewCipherConn(c net.Conn, key []byte, iv []byte) (*CipherConn, error) {
 	if len(iv) != aes.BlockSize {
 		return nil, errors.New("Invalid IV length")
 	}
-	block, err := aes.NewCipher(x.AESMake256Key(key))
+	block, err := aes.NewCipher(encrypt.AESMake256Key(key))
 	if err != nil {
 		return nil, err
 	}

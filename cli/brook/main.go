@@ -512,7 +512,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Client listen address, like: :1080",
+					Usage:   "Client listen address, don't contain IP, just like: :1080",
 				},
 				&cli.StringFlag{
 					Name:    "server",

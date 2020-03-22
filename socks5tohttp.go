@@ -23,7 +23,6 @@ import (
 
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
-	"github.com/txthinking/x"
 	"golang.org/x/net/proxy"
 )
 
@@ -139,7 +138,7 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = x.GetAddressFromURL(address)
+		addr, err = GetAddressFromURL(address)
 		if err != nil {
 			return err
 		}

@@ -27,7 +27,6 @@ import (
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
-	xx "github.com/txthinking/x"
 )
 
 // Client.
@@ -396,7 +395,7 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = xx.GetAddressFromURL(aoru)
+		addr, err = GetAddressFromURL(aoru)
 		if err != nil {
 			return err
 		}

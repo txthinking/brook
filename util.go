@@ -16,6 +16,7 @@ package brook
 
 import (
 	"net"
+	"net/url"
 
 	"github.com/txthinking/socks5"
 )
@@ -31,4 +32,15 @@ func ErrorReply(r *socks5.Request, c *net.TCPConn, e error) error {
 		return err
 	}
 	return e
+}
+
+func GetAddressFromURL(s string) (string, error) {
+	u, err := url.Parse(s)
+	if err != nil {
+		return "", err
+	}
+	if _, _, err := net.SplitHostPort(u.Host); err == nil {
+		return u.Host, nil
+	}
+	return net.JoinHostPort(u.Host, "80"), nil
 }

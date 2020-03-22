@@ -18,19 +18,19 @@ import (
 	"os"
 
 	"github.com/mdp/qrterminal"
-	"github.com/txthinking/x"
+	"github.com/txthinking/encrypt"
 )
 
 // Link
 func Link(server, password string) string {
 	s := server + " " + password
-	s = "brook://" + x.URIEscape(s)
+	s = "brook://" + encrypt.URIEscape(s)
 	return s
 }
 
 // QR generate and print QR code.
 func QR(server, password string) {
 	s := server + " " + password
-	s = "brook://" + x.URIEscape(s)
+	s = "brook://" + encrypt.URIEscape(s)
 	qrterminal.GenerateHalfBlock(s, qrterminal.L, os.Stdout)
 }

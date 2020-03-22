@@ -27,8 +27,8 @@ import (
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
+	"github.com/txthinking/encrypt"
 	"github.com/txthinking/socks5"
-	xx "github.com/txthinking/x"
 )
 
 // SSClient.
@@ -361,7 +361,7 @@ func (x *SSClient) HTTPHandle(c *net.TCPConn) error {
 	}
 	if method != "CONNECT" {
 		var err error
-		addr, err = xx.GetAddressFromURL(aoru)
+		addr, err = GetAddressFromURL(aoru)
 		if err != nil {
 			return err
 		}
@@ -475,13 +475,13 @@ func (x *SSClient) WrapCipherConn(conn *net.TCPConn) (*CipherConn, error) {
 
 // Encrypt data.
 func (x *SSClient) Encrypt(rawdata []byte) ([]byte, error) {
-	return xx.AESCFBEncrypt(rawdata, x.Password)
+	return encrypt.AESCFBEncrypt(rawdata, x.Password)
 }
 
 // Decrypt data.
 func (x *SSClient) Decrypt(cd []byte) (a byte, addr, port, data []byte, err error) {
 	var bb []byte
-	bb, err = xx.AESCFBDecrypt(cd, x.Password)
+	bb, err = encrypt.AESCFBDecrypt(cd, x.Password)
 	if err != nil {
 		return
 	}
