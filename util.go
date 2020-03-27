@@ -28,7 +28,7 @@ func ErrorReply(r *socks5.Request, c *net.TCPConn, e error) error {
 	} else {
 		p = socks5.NewReply(socks5.RepConnectionRefused, socks5.ATYPIPv6, net.IPv6zero, []byte{0x00, 0x00})
 	}
-	if err := p.WriteTo(c); err != nil {
+	if _, err := p.WriteTo(c); err != nil {
 		return err
 	}
 	return e

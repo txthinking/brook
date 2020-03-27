@@ -68,7 +68,7 @@ func (x *Socks5Server) SetSocks5Middleman(m plugin.Socks5Middleman) {
 
 // ListenAndServe will let client start to listen and serve.
 func (x *Socks5Server) ListenAndServe() error {
-	return x.Server.Run(nil)
+	return x.Server.ListenAndServe(nil)
 }
 
 // ListenAndForward will let client start a proxy to listen and forward to another socks5.
@@ -76,7 +76,7 @@ func (x *Socks5Server) ListenAndForward(addr, username, password string) error {
 	x.ForwardAddress = addr
 	x.ForwardUserName = username
 	x.ForwardPassword = password
-	return x.Server.Run(x)
+	return x.Server.ListenAndServe(x)
 }
 
 // TCPHandle handles tcp request.
@@ -123,7 +123,7 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 		rp.Atyp = a
 		rp.BndAddr = address
 		rp.BndPort = port
-		if err := rp.WriteTo(c); err != nil {
+		if _, err := rp.WriteTo(c); err != nil {
 			return err
 		}
 		go func() {
@@ -301,5 +301,5 @@ func (x *Socks5Server) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.
 
 // Shutdown used to stop the client.
 func (x *Socks5Server) Shutdown() error {
-	return x.Server.Stop()
+	return x.Server.Shutdown()
 }

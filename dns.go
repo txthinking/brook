@@ -27,6 +27,7 @@ import (
 	"github.com/miekg/dns"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
+	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
 )
 
@@ -46,6 +47,7 @@ type DNS struct {
 	TCPDeadline      int
 	TCPTimeout       int
 	UDPDeadline      int
+	RunnerGroup      *runnergroup.RunnerGroup
 }
 
 // NewDNS.
@@ -91,20 +93,36 @@ func NewDNS(addr, server, password, defaultDNSServer, listDNSServer, list string
 		TCPTimeout:       tcpTimeout,
 		TCPDeadline:      tcpDeadline,
 		UDPDeadline:      udpDeadline,
+		RunnerGroup:      runnergroup.New(),
 	}
 	return s, nil
 }
 
 // Run server.
 func (s *DNS) ListenAndServe() error {
-	errch := make(chan error)
-	go func() {
-		errch <- s.RunTCPServer()
-	}()
-	go func() {
-		errch <- s.RunUDPServer()
-	}()
-	return <-errch
+	s.RunnerGroup.Add(&runnergroup.Runner{
+		Start: func() error {
+			return s.RunTCPServer()
+		},
+		Stop: func() error {
+			if s.TCPListen != nil {
+				return s.TCPListen.Close()
+			}
+			return nil
+		},
+	})
+	s.RunnerGroup.Add(&runnergroup.Runner{
+		Start: func() error {
+			return s.RunUDPServer()
+		},
+		Stop: func() error {
+			if s.UDPConn != nil {
+				return s.UDPConn.Close()
+			}
+			return nil
+		},
+	})
+	return s.RunnerGroup.Wait()
 }
 
 // RunTCPServer starts tcp server.
@@ -168,17 +186,7 @@ func (s *DNS) RunUDPServer() error {
 
 // Shutdown server.
 func (s *DNS) Shutdown() error {
-	var err, err1 error
-	if s.TCPListen != nil {
-		err = s.TCPListen.Close()
-	}
-	if s.UDPConn != nil {
-		err1 = s.UDPConn.Close()
-	}
-	if err != nil {
-		return err
-	}
-	return err1
+	return s.RunnerGroup.Done()
 }
 
 // TCPHandle handles request.

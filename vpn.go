@@ -23,6 +23,7 @@ import (
 	"github.com/txthinking/brook/sysproxy"
 	"github.com/txthinking/gotun2socks"
 	"github.com/txthinking/gotun2socks/tun"
+	"github.com/txthinking/runnergroup"
 )
 
 // VPN.
@@ -33,6 +34,7 @@ type VPN struct {
 	ServerIP           string
 	TunGateway         string
 	OriginalDNSServers []string
+	RunnerGroup        *runnergroup.RunnerGroup
 }
 
 // NewVPN.
@@ -87,6 +89,7 @@ func NewVPN(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDead
 		ServerIP:           s,
 		TunGateway:         tunGateway,
 		OriginalDNSServers: ds,
+		RunnerGroup:        runnergroup.New(),
 	}, nil
 }
 
@@ -99,17 +102,33 @@ func (v *VPN) ListenAndServe() error {
 		return err
 	}
 
-	errch := make(chan error)
-	go func() {
-		errch <- v.Client.ListenAndServe()
-	}()
-	go func() {
-		errch <- v.Tunnel.ListenAndServe()
-	}()
-	go func() {
-		v.Tun.Run()
-	}()
-	return <-errch
+	v.RunnerGroup.Add(&runnergroup.Runner{
+		Start: func() error {
+			return v.Client.ListenAndServe()
+		},
+		Stop: func() error {
+			return v.Client.Shutdown()
+		},
+	})
+	v.RunnerGroup.Add(&runnergroup.Runner{
+		Start: func() error {
+			return v.Tunnel.ListenAndServe()
+		},
+		Stop: func() error {
+			return v.Tunnel.Shutdown()
+		},
+	})
+	v.RunnerGroup.Add(&runnergroup.Runner{
+		Start: func() error {
+			v.Tun.Run()
+			return nil
+		},
+		Stop: func() error {
+			v.Tun.Stop()
+			return nil
+		},
+	})
+	return v.RunnerGroup.Wait()
 }
 
 // Shutdown stops VPN.
@@ -120,18 +139,5 @@ func (v *VPN) Shutdown() error {
 	if err := v.DeleteRoutes(); err != nil {
 		log.Println(err)
 	}
-	if v.Client != nil {
-		if err := v.Client.Shutdown(); err != nil {
-			log.Println(err)
-		}
-	}
-	if v.Tunnel != nil {
-		if err := v.Tunnel.Shutdown(); err != nil {
-			log.Println(err)
-		}
-	}
-	if v.Tun != nil {
-		// v.Tun.Stop()
-	}
-	return nil
+	return v.RunnerGroup.Done()
 }

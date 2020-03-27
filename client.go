@@ -83,7 +83,7 @@ func (x *Client) SetClientAuthman(m plugin.ClientAuthman) {
 
 // ListenAndServe will let client start a socks5 proxy.
 func (x *Client) ListenAndServe() error {
-	return x.Server.Run(x)
+	return x.Server.ListenAndServe(x)
 }
 
 // TCPHandle handles tcp request.
@@ -149,7 +149,7 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 			return ErrorReply(r, c, err)
 		}
 		rp := socks5.NewReply(socks5.RepSuccess, a, address, port)
-		if err := rp.WriteTo(c); err != nil {
+		if _, err := rp.WriteTo(c); err != nil {
 			return err
 		}
 
@@ -521,5 +521,14 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 
 // Shutdown used to stop the client.
 func (x *Client) Shutdown() error {
-	return x.Server.Stop()
+	var e error
+	if x.TCPListen != nil {
+		if err := x.TCPListen.Close(); err != nil {
+			e = err
+		}
+	}
+	if err := x.Server.Shutdown(); err != nil {
+		e = err
+	}
+	return e
 }

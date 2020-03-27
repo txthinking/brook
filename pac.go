@@ -187,10 +187,6 @@ func readURL(url string) ([]byte, error) {
 }
 
 var tpl = `
-//
-// https://github.com/txthinking/pac
-//
-
 var proxy="{{.proxy}}";
 
 var mode = "{{.mode}}";
