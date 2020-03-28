@@ -10,21 +10,6 @@
     <img style="float:right;" src="https://storage.googleapis.com/txthinking/_/brook.png" alt="Brook"/>
 </p>
 
----
-
-### v20200201
-
-- **🔊 Please uninstall or delete the old GUI client first❗️**
-- Add Brook WebSocket mode, with or without TLS. If with TLS, Brook will automatically request/issue certificate for your domain.
-- GUI Client supports QR scanning
-- GUI Client supports custom rules
-- macOS Client renamed to Brook.pkg (Because many users don't know that needed to copy or drag from dmg)
-- Windows Client renamed to Brook.msi
-- develop branch is deleted, PR to master and keep master stable
-- Keep it simple, stupid
-
----
-
 ### Table of Contents
 
 - [What is Brook](#what-is-brook)
@@ -54,13 +39,13 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 install CLI using nami on Linux/BSD/macOS
 
 ```
-nami install github.com/txthinking/joker
+nami install github.com/txthinking/brook
 ```
 
 or install CLI on Archlinux
 
 ```
-sudo pacman -S brook
+pacman -S brook
 ```
 
 or install GUI on macOS
