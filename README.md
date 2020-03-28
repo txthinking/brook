@@ -54,7 +54,7 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 install CLI using nami on Linux/BSD/macOS
 
 ```
-$ nami install github.com/txthinking/joker
+nami install github.com/txthinking/joker
 ```
 
 or install CLI on Archlinux
