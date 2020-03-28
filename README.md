@@ -10,6 +10,13 @@
     <img style="float:right;" src="https://storage.googleapis.com/txthinking/_/brook.png" alt="Brook"/>
 </p>
 
+---
+
+* Telegram Group: https://t.me/brookgroup join to chat in English, Chinese. etc
+* Telegram Channel: https://t.me/brookchannel join to receive important update
+
+---
+
 ### Table of Contents
 
 - [What is Brook](#what-is-brook)
