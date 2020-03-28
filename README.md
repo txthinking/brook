@@ -12,7 +12,7 @@
 
 ---
 
-* Telegram Group: https://t.me/brookgroup join to chat in English, Chinese. etc
+* Telegram Group: https://t.me/brookgroup join to chat in English, Chinese, etc and help each other
 * Telegram Channel: https://t.me/brookchannel join to receive important update
 
 ---
