@@ -25,7 +25,6 @@
 - [**Client**](#client)
 - [WSServer](#wsserver)
 - [WSClient](#wsclient)
-- [**GUI Client**](#gui-client)
 - [Tunnel](#tunnel)
 - [Tproxy](#tproxy)
 - [VPN](#vpn)
@@ -134,6 +133,8 @@ $ brook client -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p password
 $ brook client -l 127.0.0.1:8080 -i 127.0.0.1 -s server_address:port -p password --http
 ```
 
+download GUI client from [releases](https://github.com/txthinking/brook/releases)
+
 ### WSServer
 
 ```
@@ -160,10 +161,6 @@ $ brook wsclient -l 127.0.0.1:1080 -i 127.0.0.1 -s ws://1.2.3.4:5 -p password
 # Run as brook wsclient, connect brook wsserver with tls
 $ brook wsclient -l 127.0.0.1:1080 -i 127.0.0.1 -s wss://txthinking.com:443 -p password
 ```
-
-### GUI Client
-
-See [download](https://github.com/txthinking/brook#download)
 
 #### Tunnel
 
