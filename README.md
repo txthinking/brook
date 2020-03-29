@@ -54,6 +54,12 @@ or install CLI on Archlinux
 pacman -S brook
 ```
 
+or install CLI using go get
+
+```
+go get github.com/txthinking/brook/cli/brook
+```
+
 or install GUI on macOS
 
 ```
@@ -129,7 +135,7 @@ $ brook client -l 127.0.0.1:1080 -i 127.0.0.1 -s server_address:port -p password
 ```
 
 ```
-# Run as brook client, start a http(s) proxy http(s)://127.0.0.1:8080
+# Run as brook client, start a http proxy http://127.0.0.1:8080
 $ brook client -l 127.0.0.1:8080 -i 127.0.0.1 -s server_address:port -p password --http
 ```
 
