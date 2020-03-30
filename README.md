@@ -60,15 +60,17 @@ or install CLI using go get
 go get github.com/txthinking/brook/cli/brook
 ```
 
+or download CLI from [releases](https://github.com/txthinking/brook/releases)
+
 or install GUI on macOS
 
 ```
 brew cask install brook
 ```
 
-or download CLI or GUI from [releases](https://github.com/txthinking/brook/releases)
+or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200201/Brook.pkg), [Windows](https://github.com/txthinking/brook/releases/download/v20200201/Brook.msi), [Android](https://github.com/txthinking/brook/releases/download/v20200201/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
-> CLI contains server and client, GUI only contains client
+> CLI contains server and client, GUI only contains client. iOS client only supports non-China AppStore.
 
 ## Brook
 
