@@ -27,10 +27,11 @@ type PAC struct {
 	DomainData []byte
 	CidrData   []byte
 	HTTPServer *http.Server
+	Body       []byte
 }
 
 func NewPAC(addr, file, proxy, mode, domainURL, cidrURL string) *PAC {
-	return &PAC{
+	p := &PAC{
 		Addr:      addr,
 		File:      file,
 		Proxy:     proxy,
@@ -38,6 +39,17 @@ func NewPAC(addr, file, proxy, mode, domainURL, cidrURL string) *PAC {
 		DomainURL: domainURL,
 		CidrURL:   cidrURL,
 	}
+	mux := http.NewServeMux()
+	mux.Handle("/", p)
+	p.HTTPServer = &http.Server{
+		Addr:           p.Addr,
+		ReadTimeout:    5 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		IdleTimeout:    120 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+		Handler:        mux,
+	}
+	return p
 }
 
 func (p *PAC) MakeBody() (io.Reader, error) {
@@ -110,25 +122,19 @@ func (p *PAC) MakeBody() (io.Reader, error) {
 	return b1, nil
 }
 
+func (p *PAC) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-ns-proxy-autoconfig")
+	w.Write(p.Body)
+}
+
 func (p *PAC) ListenAndServe() error {
 	r, err := p.MakeBody()
 	if err != nil {
 		return err
 	}
-	b, err := ioutil.ReadAll(r)
+	p.Body, err = ioutil.ReadAll(r)
 	if err != nil {
 		return err
-	}
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/x-ns-proxy-autoconfig")
-		w.Write(b)
-	})
-	p.HTTPServer = &http.Server{
-		Addr:           p.Addr,
-		ReadTimeout:    5 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		IdleTimeout:    120 * time.Second,
-		MaxHeaderBytes: 1 << 20,
 	}
 	return p.HTTPServer.ListenAndServe()
 }
