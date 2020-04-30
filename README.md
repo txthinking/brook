@@ -14,7 +14,7 @@
 
 ---
 
-v20200501
+**v20200501**
 
 * CLI: Add `$ brook dns`
 * CLI: Add `$ brook pac`
@@ -24,8 +24,8 @@ Some useful tutorial resources
 
 * Slides: https://talks.txthinking.com
 * Youtube: https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A
-* Telegram Group: https://t.me/brookgroup join to chat in English, Chinese, etc and help each other
-* Telegram Channel: https://t.me/brookchannel join to receive important update
+* Telegram Group: https://t.me/brookgroup
+* Telegram Channel: https://t.me/brookchannel
 
 ---
 
@@ -72,15 +72,15 @@ or install CLI on Archlinux
 pacman -S brook
 ```
 
-or download CLI from [releases](https://github.com/txthinking/brook/releases)
+**or download CLI from [releases](https://github.com/txthinking/brook/releases)**
 
-or install GUI on macOS
+install GUI on macOS
 
 ```
 brew cask install brook
 ```
 
-or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200201/Brook.pkg), [Windows](https://github.com/txthinking/brook/releases/download/v20200201/Brook.msi), [Android](https://github.com/txthinking/brook/releases/download/v20200201/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+**or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200201/Brook.pkg), [Windows](https://github.com/txthinking/brook/releases/download/v20200201/Brook.msi), [Android](https://github.com/txthinking/brook/releases/download/v20200201/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)**
 
 > CLI contains server and client, GUI only contains client. iOS client only supports non-China AppStore.
 
@@ -167,7 +167,7 @@ $ brook tunnel -s server_address:port -p password -l listen_address:port -t tunn
 $ brook dns -s server_address:port -p password -l listen_address:port
 ```
 
-> More parameters: $ brook tunnel -h
+> More parameters: $ brook dns -h
 
 ### Transparent Proxy
 
@@ -232,7 +232,7 @@ $ brook qr -s ws://wsserver_address:port -p password
 $ brook qr -s wss://wsserver_domain:port -p password
 ```
 
-> More parameters: $ brook link -h
+> More parameters: $ brook qr -h
 
 ### Relay
 
@@ -252,7 +252,7 @@ $ brook socks5 -l listen_address:port -i server_ip
 
 > More parameters: $ brook socks5 -h
 
-### Convert socks5 proxy to http proxy
+### Socks5 to http
 
 ```
 # Convert socks5 proxy to http proxy
@@ -305,7 +305,7 @@ $ brook ssclient -s ssserver_address:port -p password -l listen_address:port -i 
 
 ### How to
 
-Some useful tutorial resources:
+Some useful tutorial resources
 
 * https://github.com/txthinking/brook/wiki
 * https://github.com/txthinking/brook/issues
