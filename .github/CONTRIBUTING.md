@@ -5,7 +5,7 @@
 1. Don't use any package manager
 1. Single function better than multiple functions
 1. Single file better than multiple files
-1. Single diretory better than multiple multiple directories
+1. Single diretory better than multiple directories
 1. Prefer struct and function to be exported.
 1. Keep it simple, stupid
 1. Please create PR on `master` branch

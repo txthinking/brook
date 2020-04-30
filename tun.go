@@ -28,8 +28,8 @@ import (
 	"github.com/txthinking/runnergroup"
 )
 
-// VPN.
-type VPN struct {
+// Tun.
+type Tun struct {
 	Client             *Client
 	Tunnel             *Tunnel
 	Tun                *gotun2socks.Tun2Socks
@@ -39,8 +39,8 @@ type VPN struct {
 	RunnerGroup        *runnergroup.RunnerGroup
 }
 
-// NewVPN.
-func NewVPN(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*VPN, error) {
+// NewTun.
+func NewTun(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*Tun, error) {
 	ds, err := sysproxy.GetDNSServers()
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func NewVPN(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDead
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
-	return &VPN{
+	return &Tun{
 		Client:             c,
 		Tunnel:             tl,
 		Tun:                t,
@@ -95,8 +95,8 @@ func NewVPN(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDead
 	}, nil
 }
 
-// ListenAndServe starts to run VPN.
-func (v *VPN) ListenAndServe() error {
+// ListenAndServe starts to run Tun.
+func (v *Tun) ListenAndServe() error {
 	if err := sysproxy.SetDNSServers([]string{"127.0.0.1"}); err != nil {
 		return err
 	}
@@ -133,8 +133,8 @@ func (v *VPN) ListenAndServe() error {
 	return v.RunnerGroup.Wait()
 }
 
-// Shutdown stops VPN.
-func (v *VPN) Shutdown() error {
+// Shutdown stops Tun.
+func (v *Tun) Shutdown() error {
 	if err := sysproxy.SetDNSServers(v.OriginalDNSServers); err != nil {
 		log.Println(err)
 	}

@@ -69,9 +69,12 @@ func NewDNS(addr, server, password, defaultDNSServer, listDNSServer, list string
 		return nil, err
 	}
 	ds := make(map[string]byte)
-	ss, err := readList(list)
-	if err != nil {
-		return nil, err
+	ss := make([]string, 0)
+	if list != "" {
+		ss, err = readList(list)
+		if err != nil {
+			return nil, err
+		}
 	}
 	for _, v := range ss {
 		ds[v] = 0
@@ -432,11 +435,9 @@ func readList(url string) ([]string, error) {
 			return nil, err
 		}
 	}
-	if strings.HasPrefix(url, "file://") {
-		data, err = ioutil.ReadFile(url)
-		if err != nil {
-			return nil, err
-		}
+	data, err = ioutil.ReadFile(url)
+	if err != nil {
+		return nil, err
 	}
 	data = bytes.TrimSpace(data)
 	data = bytes.Replace(data, []byte{0x20}, []byte{}, -1)

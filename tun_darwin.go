@@ -17,25 +17,17 @@ package brook
 import (
 	"errors"
 	"os/exec"
-	"syscall"
 
 	"github.com/txthinking/brook/sysproxy"
 )
 
 // AddRoutes adds routes.
-func (v *VPN) AddRoutes() error {
-	c := exec.Command("chcp", "65001")
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+func (v *Tun) AddRoutes() error {
+	c := exec.Command("route", "add", "-net", "0.0.0.0", v.TunGateway, "-netmask", "128.0.0.0")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	c = exec.Command("route", "add", "0.0.0.0", "mask", "128.0.0.0", v.TunGateway)
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("route", "add", "128.0.0.0", "mask", "128.0.0.0", v.TunGateway)
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	c = exec.Command("route", "add", "-net", "128.0.0.0", v.TunGateway, "-netmask", "128.0.0.0")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
@@ -43,7 +35,7 @@ func (v *VPN) AddRoutes() error {
 	if err != nil {
 		return err
 	}
-	c = exec.Command("route", "add", v.ServerIP, "mask", "255.255.255.255", gw, "metric", "1")
+	c = exec.Command("route", "add", "-host", v.ServerIP, gw, "-netmask", "255.255.255.255")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
@@ -51,19 +43,12 @@ func (v *VPN) AddRoutes() error {
 }
 
 // DeleteRoutes deletes routes.
-func (v *VPN) DeleteRoutes() error {
-	c := exec.Command("chcp", "65001")
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+func (v *Tun) DeleteRoutes() error {
+	c := exec.Command("route", "delete", "-net", "0.0.0.0", v.TunGateway, "-netmask", "128.0.0.0")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	c = exec.Command("route", "delete", "0.0.0.0", "mask", "128.0.0.0", v.TunGateway)
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("route", "delete", "128.0.0.0", "mask", "128.0.0.0", v.TunGateway)
-	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	c = exec.Command("route", "delete", "-net", "128.0.0.0", v.TunGateway, "-netmask", "128.0.0.0")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
@@ -71,7 +56,7 @@ func (v *VPN) DeleteRoutes() error {
 	if err != nil {
 		return err
 	}
-	c = exec.Command("route", "delete", v.ServerIP, "mask", "255.255.255.255", gw, "metric", "1")
+	c = exec.Command("route", "delete", "-host", v.ServerIP, gw, "-netmask", "255.255.255.255")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}

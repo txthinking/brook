@@ -23,8 +23,8 @@ import (
 	"github.com/txthinking/runnergroup"
 )
 
-// VPN.
-type VPN struct {
+// Tun.
+type Tun struct {
 	Client             *Client
 	Tunnel             *Tunnel
 	Tun                *gotun2socks.Tun2Socks
@@ -34,17 +34,17 @@ type VPN struct {
 	RunnerGroup        *runnergroup.RunnerGroup
 }
 
-// NewVPN.
-func NewVPN(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*VPN, error) {
+// NewTun.
+func NewTun(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*Tun, error) {
 	return nil, errors.New("Unsupport your OS yet")
 }
 
-// ListenAndServe starts to run VPN.
-func (v *VPN) ListenAndServe() error {
+// ListenAndServe starts to run Tun.
+func (v *Tun) ListenAndServe() error {
 	return nil
 }
 
-// Shutdown stops VPN.
-func (v *VPN) Shutdown() error {
+// Shutdown stops Tun.
+func (v *Tun) Shutdown() error {
 	return nil
 }

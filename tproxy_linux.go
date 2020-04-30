@@ -92,7 +92,7 @@ func (s *Tproxy) RunAutoScripts() error {
 	hc := &http.Client{
 		Timeout: 9 * time.Second,
 	}
-	r, err := hc.Get("https://blackwhite.txthinking.com/white_cidr.list")
+	r, err := hc.Get("https://txthinking.github.io/blackwhite/white_cidr.list")
 	if err != nil {
 		return err
 	}

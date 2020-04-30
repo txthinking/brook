@@ -7,35 +7,11 @@ assignees: ''
 
 ---
 
-### Prerequisites
+### You may find solutions from the following resources:
 
-* [ ] Did you check the [wiki](https://github.com/txthinking/brook/wiki)?
-* [ ] Did you search in [issues](https://github.com/txthinking/brook/issues)?
-* [ ] Are you running the latest version?
-* [ ] I will write this according to this template.
-* [ ] I will write this in English.
+* https://github.com/txthinking/brook/wiki
+* https://github.com/txthinking/brook/issues
+* https://talks.txthinking.com
+* https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A
 
-### Environment
-
-* Brook Version:
-* Server Operating System:
-* Server Operating System Version:
-* Server Operation System Language:
-* Client Operating System:
-* Client Operating System Version:
-* Client Operation System Language:
-
-### Expected Behavior
-
-### Current Behavior
-
-### Steps to Reproduce
-
-1.
-2.
-3.
-
-### Detailed Description
-
-### Possible Solution
-
+### Please describe step by step any commands and operations you have performed:
