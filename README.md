@@ -171,7 +171,7 @@ $ brook dns -s server_address:port -p password -l listen_address:port
 
 ### Transparent Proxy
 
-See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F)
+See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux)
 
 ### Tun
 
@@ -307,12 +307,14 @@ $ brook ssclient -s ssserver_address:port -p password -l listen_address:port -i 
 
 Some useful tutorial resources
 
-* https://github.com/txthinking/brook/wiki
-* https://github.com/txthinking/brook/issues
-* https://talks.txthinking.com
-* https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A
-* https://t.me/brookgroup
-* https://t.me/brookchannel
+* Brook Wiki: https://github.com/txthinking/brook/wiki
+* Brook Issues: https://github.com/txthinking/brook/issues
+* Slides: https://talks.txthinking.com
+* Youtube: https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A
+* Telegram Group: https://t.me/brookgroup
+* Telegram Channel: https://t.me/brookchannel
+* Nami: https://github.com/txthinking/nami
+* Joker: https://github.com/txthinking/joker
 
 ## Contributing
 
