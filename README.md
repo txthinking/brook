@@ -80,7 +80,7 @@ install GUI on macOS
 brew cask install brook
 ```
 
-**or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200201/Brook.pkg), [Windows](https://github.com/txthinking/brook/releases/download/v20200201/Brook.msi), [Android](https://github.com/txthinking/brook/releases/download/v20200201/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)**
+**or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200501/Brook.pkg), [Windows](https://github.com/txthinking/brook/releases/download/v20200501/Brook.msi), [Android](https://github.com/txthinking/brook/releases/download/v20200501/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)**
 
 > CLI contains server and client, GUI only contains client. iOS client only supports non-China AppStore.
 
