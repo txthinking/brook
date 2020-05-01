@@ -335,7 +335,9 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	if err := send(ue, data); err != nil {
 		ue.RemoteConn.Close()
-		ue.Internet.Close()
+		if ue.Internet != nil {
+			ue.Internet.Close()
+		}
 		return err
 	}
 	s.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
@@ -343,7 +345,9 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		defer func() {
 			s.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
-			ue.Internet.Close()
+			if ue.Internet != nil {
+				ue.Internet.Close()
+			}
 		}()
 		var b [65535]byte
 		for {
