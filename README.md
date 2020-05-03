@@ -100,26 +100,26 @@ AUTHOR:
    Cloud <cloud@txthinking.com>
 
 COMMANDS:
-   server        Run as brook server
+   server        Run as brook server, both TCP and UDP
    servers       Run as multiple brook servers
-   client        Run as brook client, with brook server, to start a socks5 proxy or a http proxy
-   tunnel        Run as tunnel, with brook server
-   dns           Run as DNS server, with brook server
-   tproxy        Run as transparent proxy, with brook server, only works on Linux
-   tun           Run as tun, with brook server
-   wsserver      Run as brook wsserver, it will start a standard http server and websocket server
-   wsclient      Run as brook wsclient, with brook wsserver, to start a socks5 proxy or a http proxy
+   client        Run as brook client, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> $ brook client <-> $ brook server <-> dst], [works with $ brook server]
+   tunnel        Run as tunnel, both TCP and UDP, this means access [listen address] is equal to [to address], [src <-> listen address <-> $ brook server <-> to address], [works with $ brook server]
+   dns           Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook server <-> default dns server] or [src <-> $ brook dns <-> list dns server], [works with $ brook server]
+   tproxy        Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]
+   tun           Run as tun, both TCP and UDP, [src <-> $ brook tun <-> $ brook server <-> dst], [works with $ brook server]
+   wsserver      Run as brook wsserver, both TCP and UDP, it will start a standard http(s) server and websocket server
+   wsclient      Run as brook wsclient, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> $ brook wsclient <-> $ brook wsserver <-> dst], [works with $ brook wsserver]
    link          Print brook link
    qr            Print brook server QR code
-   relay         Run as standalone relay
+   relay         Run as standalone relay, both TCP and UDP, this means access [listen address] is equal to access [to address], [src <-> listen address <-> to address]
    relays        Run as multiple standalone relays
-   socks5        Run as standalone standard socks5 server
-   socks5tohttp  Convert socks5 to http proxy
+   socks5        Run as standalone standard socks5 server, both TCP and UDP
+   socks5tohttp  Convert socks5 to http proxy, [src <-> listen address(http proxy) <-> socks5 address <-> dst]
    pac           Run as PAC server or save PAC to file
    systemproxy   Set system proxy with pac url, or remove, only works on macOS/Windows
-   ssserver      Run as shadowsocks server, fixed method is aes-256-cfb
+   ssserver      Run as shadowsocks server, both TCP and UDP, fixed method is aes-256-cfb
    ssservers     Run as shadowsocks multiple servers, fixed method is aes-256-cfb
-   ssclient      Run as shadowsocks client, with shadowsocks server, to start a socks5 proxy or a http proxy, fixed method is aes-256-cfb
+   ssclient      Run as shadowsocks client, both TCP and UDP, to start a socks5 proxy or a http proxy, fixed method is aes-256-cfb, [src <-> $ brook ssclient <-> $ brook ssserver <-> dst], [works with $ brook ssserver]
    howto         Print some useful tutorial resources
    help, h       Shows a list of commands or help for one command
 

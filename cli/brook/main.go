@@ -64,7 +64,7 @@ func main() {
 	app.Commands = []*cli.Command{
 		&cli.Command{
 			Name:  "server",
-			Usage: "Run as brook server",
+			Usage: "Run as brook server, both TCP and UDP",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -174,7 +174,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "client",
-			Usage: "Run as brook client, with brook server, to start a socks5 proxy or a http proxy",
+			Usage: "Run as brook client, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> $ brook client <-> $ brook server <-> dst], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -247,7 +247,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tunnel",
-			Usage: "Run as tunnel, with brook server",
+			Usage: "Run as tunnel, both TCP and UDP, this means access [listen address] is equal to [to address], [src <-> listen address <-> $ brook server <-> to address], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -308,7 +308,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "dns",
-			Usage: "Run as DNS server, with brook server",
+			Usage: "Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook server <-> default dns server] or [src <-> $ brook dns <-> list dns server], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -379,7 +379,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tproxy",
-			Usage: "Run as transparent proxy, with brook server, only works on Linux",
+			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -472,7 +472,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tun",
-			Usage: "Run as tun, with brook server",
+			Usage: "Run as tun, both TCP and UDP, [src <-> $ brook tun <-> $ brook server <-> dst], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -560,7 +560,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "wsserver",
-			Usage: "Run as brook wsserver, it will start a standard http server and websocket server",
+			Usage: "Run as brook wsserver, both TCP and UDP, it will start a standard http(s) server and websocket server",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -615,7 +615,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "wsclient",
-			Usage: "Run as brook wsclient, with brook wsserver, to start a socks5 proxy or a http proxy",
+			Usage: "Run as brook wsclient, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> $ brook wsclient <-> $ brook wsserver <-> dst], [works with $ brook wsserver]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "wsserver",
@@ -693,7 +693,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support brook server and brook wsserver address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
+					Usage:   "Support $ brook server and $ brook wsserver address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -717,7 +717,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support brook server and brook wsserver address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
+					Usage:   "Support $ brook server and $ brook wsserver address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -736,7 +736,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "relay",
-			Usage: "Run as standalone relay",
+			Usage: "Run as standalone relay, both TCP and UDP, this means access [listen address] is equal to access [to address], [src <-> listen address <-> to address]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -744,9 +744,9 @@ func main() {
 					Usage:   "Listen address: 0.0.0.0:1080",
 				},
 				&cli.StringFlag{
-					Name:    "remote",
-					Aliases: []string{"r"},
-					Usage:   "Remote address your want to relay to, like: 1.2.3.4:1080",
+					Name:    "to",
+					Aliases: []string{"t"},
+					Usage:   "Address which relay to, like: 1.2.3.4:1080",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -765,14 +765,14 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("remote") == "" {
+				if c.String("listen") == "" || c.String("to") == "" {
 					cli.ShowCommandHelp(c, "relay")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewRelay(c.String("listen"), c.String("remote"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewRelay(c.String("listen"), c.String("to"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}
@@ -790,9 +790,9 @@ func main() {
 			Usage: "Run as multiple standalone relays",
 			Flags: []cli.Flag{
 				&cli.StringSliceFlag{
-					Name:    "listenremote",
+					Name:    "listento",
 					Aliases: []string{"l"},
-					Usage:   "Listen address and remote address, like '0.0.0.0:1080 1.2.3.4:1080'",
+					Usage:   "Listen address and relay to address, like '0.0.0.0:1080 1.2.3.4:1080'",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -811,7 +811,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("listenremote")) == 0 {
+				if len(c.StringSlice("listento")) == 0 {
 					cli.ShowCommandHelp(c, "relays")
 					return nil
 				}
@@ -819,10 +819,10 @@ func main() {
 					enableDebug()
 				}
 				l := make([]*brook.Relay, 0)
-				for _, v := range c.StringSlice("listenremote") {
+				for _, v := range c.StringSlice("listento") {
 					ss := strings.Split(v, " ")
 					if len(ss) != 2 {
-						return errors.New("Invalid listenremote")
+						return errors.New("Invalid listento")
 					}
 					s, err := brook.NewRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 					if err != nil {
@@ -846,7 +846,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "socks5",
-			Usage: "Run as standalone standard socks5 server",
+			Usage: "Run as standalone standard socks5 server, both TCP and UDP",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -910,7 +910,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "socks5tohttp",
-			Usage: "Convert socks5 to http proxy",
+			Usage: "Convert socks5 to http proxy, [src <-> listen address(http proxy) <-> socks5 address <-> dst]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "socks5",
@@ -1053,7 +1053,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "ssserver",
-			Usage: "Run as shadowsocks server, fixed method is aes-256-cfb",
+			Usage: "Run as shadowsocks server, both TCP and UDP, fixed method is aes-256-cfb",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -1165,7 +1165,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "ssclient",
-			Usage: "Run as shadowsocks client, with shadowsocks server, to start a socks5 proxy or a http proxy, fixed method is aes-256-cfb",
+			Usage: "Run as shadowsocks client, both TCP and UDP, to start a socks5 proxy or a http proxy, fixed method is aes-256-cfb, [src <-> $ brook ssclient <-> $ brook ssserver <-> dst], [works with $ brook ssserver]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "ssserver",

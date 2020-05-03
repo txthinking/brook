@@ -14,4 +14,4 @@ assignees: ''
 * https://talks.txthinking.com
 * https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A
 
-### Please describe step by step any commands and operations you have performed and any environment:
+### Please describe step by step any commands and operations you have performed, environment and version:
