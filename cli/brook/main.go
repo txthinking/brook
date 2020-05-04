@@ -641,6 +641,10 @@ func main() {
 					Name:  "http",
 					Usage: "If true, client start a http proxy, otherwise start a socks5 proxy",
 				},
+				&cli.StringFlag{
+					Name:  "serverAddress",
+					Usage: "Only if the host:port in wsserver parameter is not real destination",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
@@ -673,6 +677,9 @@ func main() {
 				s, err := brook.NewWSClient(c.String("listen"), c.String("ip"), c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
 				if err != nil {
 					return err
+				}
+				if c.String("serverAddress") != "" {
+					s.RemoteAddress = c.String("serverAddress")
 				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
