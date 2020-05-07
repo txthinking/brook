@@ -551,7 +551,7 @@ func main() {
 				if err != nil {
 					return err
 				}
-				c.LetBrookDoAllForMe = c.Bool("letBrookDoAllForMe")
+				s.LetBrookDoAllForMe = c.Bool("letBrookDoAllForMe")
 				go func() {
 					fmt.Println("Ctrl-C to quit")
 					log.Println(s.ListenAndServe())
