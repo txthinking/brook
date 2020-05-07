@@ -396,14 +396,6 @@ func main() {
 					Aliases: []string{"l"},
 					Usage:   "Listen address, DO NOT contain IP, just like: :1080",
 				},
-				&cli.BoolFlag{
-					Name:  "letBrookDoAllForMe",
-					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F",
-				},
-				&cli.BoolFlag{
-					Name:  "cleanBrookDidForMe",
-					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux%3F",
-				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
@@ -418,6 +410,14 @@ func main() {
 					Name:  "udpDeadline",
 					Value: 60,
 					Usage: "connection deadline time (s)",
+				},
+				&cli.BoolFlag{
+					Name:  "letBrookDoAllForMe",
+					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux",
+				},
+				&cli.BoolFlag{
+					Name:  "cleanBrookDidForMe",
+					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -487,7 +487,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address, MUST contain 127.0.0.1, like: 127.0.0.1:1080",
+					Usage:   "Listen address, MUST contain IP, like: 127.0.0.1:1080",
 				},
 				&cli.StringFlag{
 					Name:  "dns",
@@ -534,6 +534,10 @@ func main() {
 					Usage: "tun mask",
 					Value: "255.255.255.0",
 				},
+				&cli.BoolFlag{
+					Name:  "letBrookDoAllForMe",
+					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-tun-on-Linux,-macOS-and-Windows",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
@@ -547,6 +551,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				c.LetBrookDoAllForMe = c.Bool("letBrookDoAllForMe")
 				go func() {
 					fmt.Println("Ctrl-C to quit")
 					log.Println(s.ListenAndServe())
