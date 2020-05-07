@@ -114,7 +114,7 @@ func (v *Tun) ListenAndServe() error {
 	if v.LetBrookDoAllForMe {
 		ds, err := sysproxy.GetDNSServers()
 		if err != nil {
-			return nil, err
+			return err
 		}
 		v.OriginalDNSServers = ds
 
