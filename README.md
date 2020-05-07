@@ -18,6 +18,7 @@
 
 * CLI: Add `$ brook dns`
 * CLI: Add `$ brook pac`
+* CLI: Rename `$ brook vpn` to `$ brook tun`
 * GUI: Support multiple servers
 
 Some useful tutorial resources
