@@ -49,9 +49,9 @@ type WSClient struct {
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
-	TLSConnCapacity chan struct{}
 	Cache           *cache.Cache
 	ClientAuthman   plugin.ClientAuthman
+	Path            string
 }
 
 // NewWSClient.
@@ -68,6 +68,10 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
+	path := u.Path
+	if path == "" {
+		path = "/ws"
+	}
 	x := &WSClient{
 		RemoteAddr:  u.Host,
 		Server:      s5,
@@ -76,6 +80,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
 		Cache:       cs,
+		Path:        path,
 	}
 	if u.Scheme == "wss" {
 		h, _, err := net.SplitHostPort(u.Host)
@@ -108,35 +113,23 @@ func (x *WSClient) ListenAndServe() error {
 }
 
 func (x *WSClient) DialWebsocket() (net.Conn, error) {
-	if x.TLSConnCapacity != nil {
-		x.TLSConnCapacity <- struct{}{}
-	}
 	a := x.RemoteAddr
 	if x.RemoteAddress != "" {
 		a = x.RemoteAddress
 	}
 	c, err := Dial.Dial("tcp", a)
 	if err != nil {
-		if x.TLSConnCapacity != nil {
-			<-x.TLSConnCapacity
-		}
 		return nil, err
 	}
 	if x.TCPTimeout != 0 {
 		if err := c.(*net.TCPConn).SetKeepAlivePeriod(time.Duration(x.TCPTimeout) * time.Second); err != nil {
 			c.Close()
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
-			}
 			return nil, err
 		}
 	}
 	if x.TCPDeadline != 0 {
 		if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
 			c.Close()
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
-			}
 			return nil, err
 		}
 	}
@@ -144,16 +137,10 @@ func (x *WSClient) DialWebsocket() (net.Conn, error) {
 		tc := tls.Client(c, x.TLSConfig)
 		if err := tc.Handshake(); err != nil {
 			tc.Close()
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
-			}
 			return nil, err
 		}
 		if err := tc.VerifyHostname(x.TLSConfig.ServerName); err != nil {
 			tc.Close()
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
-			}
 			return nil, err
 		}
 		c = tc
@@ -161,14 +148,11 @@ func (x *WSClient) DialWebsocket() (net.Conn, error) {
 	p := make([]byte, 16)
 	if _, err := io.ReadFull(rand.Reader, p); err != nil {
 		c.Close()
-		if x.TLSConnCapacity != nil {
-			<-x.TLSConnCapacity
-		}
 		return nil, err
 	}
 	k := base64.StdEncoding.EncodeToString(p)
 	b := make([]byte, 0)
-	b = append(b, []byte("GET /ws HTTP/1.1\r\n")...)
+	b = append(b, []byte("GET "+x.Path+" HTTP/1.1\r\n")...)
 	b = append(b, []byte(fmt.Sprintf("Host: %s\r\n", x.RemoteAddr))...)
 	b = append(b, []byte("Upgrade: websocket\r\n")...)
 	b = append(b, []byte("Connection: Upgrade\r\n")...)
@@ -176,9 +160,6 @@ func (x *WSClient) DialWebsocket() (net.Conn, error) {
 	b = append(b, []byte("Sec-WebSocket-Version: 13\r\n\r\n")...)
 	if _, err := c.Write(b); err != nil {
 		c.Close()
-		if x.TLSConnCapacity != nil {
-			<-x.TLSConnCapacity
-		}
 		return nil, err
 	}
 	r := bufio.NewReader(c)
@@ -186,9 +167,6 @@ func (x *WSClient) DialWebsocket() (net.Conn, error) {
 		b, err = r.ReadBytes('\n')
 		if err != nil {
 			c.Close()
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
-			}
 			return nil, err
 		}
 		b = bytes.TrimSpace(b)
@@ -198,9 +176,6 @@ func (x *WSClient) DialWebsocket() (net.Conn, error) {
 		if bytes.HasPrefix(b, []byte("HTTP/1.1 ")) {
 			if !bytes.Contains(b, []byte("101")) {
 				c.Close()
-				if x.TLSConnCapacity != nil {
-					<-x.TLSConnCapacity
-				}
 				return nil, errors.New(string(b))
 			}
 		}
@@ -211,9 +186,6 @@ func (x *WSClient) DialWebsocket() (net.Conn, error) {
 			ak := base64.StdEncoding.EncodeToString(h.Sum(nil))
 			if string(b[len("Sec-WebSocket-Accept: "):]) != ak {
 				c.Close()
-				if x.TLSConnCapacity != nil {
-					<-x.TLSConnCapacity
-				}
 				return nil, errors.New(string(b))
 			}
 		}
@@ -240,9 +212,6 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 		}
 		defer func() {
 			rc.Close()
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
-			}
 		}()
 		// deer as horse
 		cd, err := EncryptLength(x.Password, []byte{0x00})
@@ -375,9 +344,6 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 				ch <- 0x00
 				s.TCPUDPAssociate.Delete(addr.String())
 			}
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
-			}
 			return err
 		}
 	}
@@ -425,9 +391,6 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			ch <- 0x00
 			s.TCPUDPAssociate.Delete(addr.String())
 		}
-		if x.TLSConnCapacity != nil {
-			<-x.TLSConnCapacity
-		}
 		return err
 	}
 	if x.UDPDeadline != 0 {
@@ -437,9 +400,6 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 				ch := v.(chan byte)
 				ch <- 0x00
 				s.TCPUDPAssociate.Delete(addr.String())
-			}
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
 			}
 			rc.Close()
 			return err
@@ -454,9 +414,6 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			ch <- 0x00
 			s.TCPUDPAssociate.Delete(addr.String())
 		}
-		if x.TLSConnCapacity != nil {
-			<-x.TLSConnCapacity
-		}
 		rc.Close()
 		return err
 	}
@@ -466,9 +423,6 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			ch := v.(chan byte)
 			ch <- 0x00
 			s.TCPUDPAssociate.Delete(addr.String())
-		}
-		if x.TLSConnCapacity != nil {
-			<-x.TLSConnCapacity
 		}
 		rc.Close()
 		return err
@@ -486,9 +440,6 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			s.TCPUDPAssociate.Delete(ue.ClientAddr.String())
 		}
 		ue.RemoteConn.Close()
-		if x.TLSConnCapacity != nil {
-			<-x.TLSConnCapacity
-		}
 		return err
 	}
 	x.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
@@ -502,9 +453,6 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			}
 			x.Cache.Delete(ue.ClientAddr.String())
 			ue.RemoteConn.Close()
-			if x.TLSConnCapacity != nil {
-				<-x.TLSConnCapacity
-			}
 		}()
 		for {
 			if s.UDPDeadline != 0 {
@@ -628,9 +576,6 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 	}
 	defer func() {
 		rc.Close()
-		if x.TLSConnCapacity != nil {
-			<-x.TLSConnCapacity
-		}
 	}()
 	// deer as horse
 	cd, err := EncryptLength(x.Password, []byte{0x00})

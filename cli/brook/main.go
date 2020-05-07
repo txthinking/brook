@@ -38,7 +38,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
 	app.Version = "20200502"
-	app.Usage = "A Cross-Platform Proxy/VPN Software"
+	app.Usage = "A cross-platform strong encryption and not detectable proxy"
 	app.Authors = []*cli.Author{
 		{
 			Name:  "Cloud",
@@ -576,6 +576,11 @@ func main() {
 					Name:  "domain",
 					Usage: "If domain is specified, the domain must have been resolved to the external IP, listen will be ignored, 80 and 443 ports will be used, TLS certificate will be automatically issued",
 				},
+				&cli.StringFlag{
+					Name:  "path",
+					Usage: "URL path",
+					Value: "/ws",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 60,
@@ -600,7 +605,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), c.String("domain"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), c.String("domain"), c.String("path"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}
@@ -620,7 +625,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "wsserver",
 					Aliases: []string{"s"},
-					Usage:   "Brook wsserver address, like: ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
+					Usage:   "Brook wsserver address, like: ws://1.2.3.4:80, wss://google.com:443, if no path then use /ws default or with path ws://1.2.3.4:80/ws, Do not omit the port under any circumstances",
 				},
 				&cli.StringFlag{
 					Name:    "password",

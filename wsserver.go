@@ -44,10 +44,11 @@ type WSServer struct {
 	TCPTimeout    int
 	UDPDeadline   int
 	ServerAuthman plugin.ServerAuthman
+	Path          string
 }
 
 // NewWSServer.
-func NewWSServer(addr, password, domain string, tcpTimeout, tcpDeadline, udpDeadline int) (*WSServer, error) {
+func NewWSServer(addr, password, domain, path string, tcpTimeout, tcpDeadline, udpDeadline int) (*WSServer, error) {
 	var taddr *net.TCPAddr
 	var err error
 	if domain == "" {
@@ -66,6 +67,7 @@ func NewWSServer(addr, password, domain string, tcpTimeout, tcpDeadline, udpDead
 		TCPTimeout:  tcpTimeout,
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
+		Path:        path,
 	}
 	return s, nil
 }
@@ -82,7 +84,7 @@ func (s *WSServer) ListenAndServe() error {
 		w.WriteHeader(404)
 		return
 	})
-	r.Methods("GET").Path("/ws").Handler(s)
+	r.Methods("GET").Path(s.Path).Handler(s)
 
 	n := negroni.New()
 	n.Use(negroni.NewRecovery())
@@ -126,7 +128,7 @@ func (s *WSServer) ListenAndServe() error {
 		c := &http.Client{
 			Timeout: 10 * time.Second,
 		}
-		_, _ = c.Get("https://" + s.Domain + "/ws")
+		_, _ = c.Get("https://" + s.Domain + s.Path)
 	}()
 	return s.HTTPSServer.ListenAndServeTLS("", "")
 }
