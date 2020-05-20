@@ -151,11 +151,7 @@ func (v *Tun) ListenAndServe() error {
 			return v.Fd.Close()
 		},
 	})
-	return v.RunnerGroup.Wait()
-}
-
-// Shutdown stops Tun.
-func (v *Tun) Shutdown() error {
+	err := v.RunnerGroup.Wait()
 	if v.LetBrookDoAllForMe {
 		if err := sysproxy.SetDNSServers(v.OriginalDNSServers); err != nil {
 			log.Println(err)
@@ -164,5 +160,10 @@ func (v *Tun) Shutdown() error {
 			log.Println(err)
 		}
 	}
+	return err
+}
+
+// Shutdown stops Tun.
+func (v *Tun) Shutdown() error {
 	return v.RunnerGroup.Done()
 }

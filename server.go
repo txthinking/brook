@@ -192,9 +192,7 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 		defer ai.Close()
 	}
 
-	if Debug {
-		log.Println("Dial TCP", address)
-	}
+	debug("dial tcp", address)
 	tmp, err := Dial.Dial("tcp", address)
 	if err != nil {
 		return err
@@ -320,9 +318,7 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			return err
 		}
 	}
-	if Debug {
-		log.Println("Dial UDP", address)
-	}
+	debug("dial udp", address)
 	c, err := Dial.Dial("udp", address)
 	if err != nil {
 		return err

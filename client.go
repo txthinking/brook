@@ -99,6 +99,7 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 	}
 
 	if r.Cmd == socks5.CmdConnect {
+		debug("dial tcp", r.Address())
 		tmp, err := Dial.Dial("tcp", x.RemoteAddr)
 		if err != nil {
 			return ErrorReply(r, c, err)
@@ -266,6 +267,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		return send(ue, d.Bytes()[3:])
 	}
 
+	debug("dial udp", d.Address())
 	c, err := Dial.Dial("udp", x.RemoteAddr)
 	if err != nil {
 		v, ok := s.TCPUDPAssociate.Get(addr.String())
@@ -400,6 +402,7 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 			return err
 		}
 	}
+	debug("dial http", addr)
 
 	if x.HTTPMiddleman != nil {
 		done, err := x.HTTPMiddleman.Handle(method, addr, b, c)

@@ -46,10 +46,7 @@ func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, ti
 			Password: socks5password,
 		}
 	}
-	dial, err := proxy.SOCKS5("tcp", socks5addr, auth, &net.Dialer{
-		Timeout:   time.Duration(deadline) * time.Second,
-		KeepAlive: time.Duration(timeout) * time.Second,
-	})
+	dial, err := proxy.SOCKS5("tcp", socks5addr, auth, Dial)
 	if err != nil {
 		return nil, err
 	}
@@ -154,9 +151,7 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 		}
 	}
 
-	if Debug {
-		log.Println("Dial TCP", addr)
-	}
+	debug("dial http", addr)
 	tmp, err := s.Dial.Dial("tcp", addr)
 	if err != nil {
 		return err

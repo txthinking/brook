@@ -16,6 +16,7 @@ package brook
 
 import (
 	"bytes"
+	"encoding/binary"
 	"io"
 	"io/ioutil"
 	"log"
@@ -194,6 +195,81 @@ func (s *DNS) Shutdown() error {
 
 // TCPHandle handles request.
 func (s *DNS) TCPHandle(c *net.TCPConn) error {
+	co := &dns.Conn{Conn: c}
+	m, err := co.ReadMsg()
+	if err != nil {
+		return err
+	}
+	has := false
+	for _, v := range m.Question {
+		debug("dns query", "udp", v.Qtype, v.Name)
+		if len(v.Name) > 0 && s.Has(v.Name[0:len(v.Name)-1]) {
+			has = true
+			break
+		}
+	}
+	mb, err := m.Pack()
+	if err != nil {
+		return err
+	}
+	lb := make([]byte, 2)
+	binary.BigEndian.PutUint16(lb, uint16(len(mb)))
+	mb = append(lb, mb...)
+	if has {
+		debug("in list", "tcp", m.Question[0].Name)
+		tmp, err := Dial.Dial("tcp", s.ListDNSServer)
+		if err != nil {
+			return err
+		}
+		rc := tmp.(*net.TCPConn)
+		defer rc.Close()
+		if s.TCPTimeout != 0 {
+			if err := rc.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
+				return err
+			}
+		}
+		if s.TCPDeadline != 0 {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				return err
+			}
+		}
+		if _, err := rc.Write(mb); err != nil {
+			return err
+		}
+		go func() {
+			var bf [1024 * 2]byte
+			for {
+				if s.TCPDeadline != 0 {
+					if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+						return
+					}
+				}
+				i, err := rc.Read(bf[:])
+				if err != nil {
+					return
+				}
+				if _, err := c.Write(bf[0:i]); err != nil {
+					return
+				}
+			}
+		}()
+		var bf [1024 * 2]byte
+		for {
+			if s.TCPDeadline != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+					return nil
+				}
+			}
+			i, err := c.Read(bf[:])
+			if err != nil {
+				return nil
+			}
+			if _, err := rc.Write(bf[0:i]); err != nil {
+				return nil
+			}
+		}
+		return nil
+	}
 	tmp, err := Dial.Dial("tcp", s.RemoteTCPAddr.String())
 	if err != nil {
 		return err
@@ -228,6 +304,10 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	ra = append(ra, address...)
 	ra = append(ra, port...)
 	n, _, err = WriteTo(rc, ra, k, n, true)
+	if err != nil {
+		return err
+	}
+	n, _, err = WriteTo(rc, mb, k, n, false)
 	if err != nil {
 		return err
 	}
@@ -286,12 +366,14 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	has := false
 	for _, v := range m.Question {
+		debug("dns query", "udp", v.Qtype, v.Name)
 		if len(v.Name) > 0 && s.Has(v.Name[0:len(v.Name)-1]) {
 			has = true
 			break
 		}
 	}
 	if has {
+		debug("in list", "udp", m.Question[0].Name)
 		conn, err := Dial.Dial("udp", s.ListDNSServer)
 		if err != nil {
 			return err
@@ -304,21 +386,6 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		m1, err := co.ReadMsg()
 		if err != nil {
 			return err
-		}
-		if m1.MsgHdr.Truncated {
-			conn, err := Dial.Dial("tcp", s.ListDNSServer)
-			if err != nil {
-				return err
-			}
-			defer conn.Close()
-			co := &dns.Conn{Conn: conn}
-			if err := co.WriteMsg(m); err != nil {
-				return err
-			}
-			m1, err = co.ReadMsg()
-			if err != nil {
-				return err
-			}
 		}
 		m1b, err := m1.Pack()
 		if err != nil {
@@ -435,9 +502,11 @@ func readList(url string) ([]string, error) {
 			return nil, err
 		}
 	}
-	data, err = ioutil.ReadFile(url)
-	if err != nil {
-		return nil, err
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+		data, err = ioutil.ReadFile(url)
+		if err != nil {
+			return nil, err
+		}
 	}
 	data = bytes.TrimSpace(data)
 	data = bytes.Replace(data, []byte{0x20}, []byte{}, -1)

@@ -206,9 +206,7 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 		defer ai.Close()
 	}
 
-	if Debug {
-		log.Println("Dial TCP", address)
-	}
+	debug("dial tcp", address)
 	tmp, err := Dial.Dial("tcp", address)
 	if err != nil {
 		return err
@@ -339,9 +337,7 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 			defer ai.Close()
 			data = data[0 : len(data)-2-l]
 		}
-		if Debug {
-			log.Println("Dial UDP", address)
-		}
+		debug("dial udp", address)
 		conn, err := Dial.Dial("udp", address)
 		if err != nil {
 			return err

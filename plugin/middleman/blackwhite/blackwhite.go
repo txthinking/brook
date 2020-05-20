@@ -117,6 +117,7 @@ func (b *BlackWhite) Has(host string) bool {
 
 // TCPHandle handles tcp request.
 func (b *BlackWhite) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) (bool, error) {
+	// TODO dns
 	if r.Cmd == socks5.CmdConnect {
 		h, _, err := net.SplitHostPort(r.Address())
 		if err != nil {
@@ -191,6 +192,7 @@ func (b *BlackWhite) DNSHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Da
 	if err != nil {
 		return false, err
 	}
+	// TODO rm
 	if m1.MsgHdr.Truncated {
 		conn, err := Dial.Dial("tcp", b.WhiteDNS)
 		if err != nil {

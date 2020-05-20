@@ -15,6 +15,7 @@
 package brook
 
 import (
+	"log"
 	"net"
 	"net/url"
 
@@ -43,4 +44,10 @@ func GetAddressFromURL(s string) (string, error) {
 		return u.Host, nil
 	}
 	return net.JoinHostPort(u.Host, "80"), nil
+}
+
+func debug(v ...interface{}) {
+	if Debug {
+		log.Println(v...)
+	}
 }

@@ -327,7 +327,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "defaultDNSServer",
-					Usage: "Default DNS server",
+					Usage: "DNS server for resolving domains NOT in list",
 					Value: "8.8.8.8:53",
 				},
 				&cli.StringFlag{
@@ -553,13 +553,11 @@ func main() {
 				}
 				s.LetBrookDoAllForMe = c.Bool("letBrookDoAllForMe")
 				go func() {
-					fmt.Println("Ctrl-C to quit")
 					log.Println(s.ListenAndServe())
 				}()
 				sigs := make(chan os.Signal, 1)
 				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 				<-sigs
-				fmt.Println("Quitting...")
 				return s.Shutdown()
 			},
 		},
@@ -925,7 +923,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "socks5",
 					Aliases: []string{"s"},
-					Usage:   "Socks5 server address",
+					Usage:   "Socks5 server address, like: 127.0.0.1:1080",
 				},
 				&cli.StringFlag{
 					Name:  "socks5username",
@@ -960,6 +958,75 @@ func main() {
 					enableDebug()
 				}
 				s, err := brook.NewSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.Int("timeout"), c.Int("deadline"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
+			},
+		},
+		&cli.Command{
+			Name:  "hijackhttps",
+			Usage: "Hijack domains and assume is TCP/TLS/443. Requesting these domains from anywhere in the system will be hijacked . [src <-> $ brook hijackhttps <-> socks5 server] or [src <-> direct]",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "socks5",
+					Aliases: []string{"s"},
+					Usage:   "Socks5 server address, like: 127.0.0.1:1080",
+				},
+				&cli.StringFlag{
+					Name:  "socks5username",
+					Usage: "Socks5 username, optional",
+				},
+				&cli.StringFlag{
+					Name:  "socks5password",
+					Usage: "Socks5 password, optional",
+				},
+				&cli.StringFlag{
+					Name:  "loopbackip",
+					Usage: "127.0.0.1 or ::1, will create a DNS server with it, and listen TCP 443 on it",
+					Value: "127.0.0.1",
+				},
+				&cli.StringFlag{
+					Name:  "defaultDNSServer",
+					Usage: "DNS server for resolving domains NOT in list",
+					Value: "8.8.8.8:53",
+				},
+				&cli.StringFlag{
+					Name:  "list",
+					Usage: "Only domains in list will be hijacked. https://, http:// or local file path",
+					Value: "https://txthinking.github.io/blackwhite/black.list",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 60,
+					Usage: "connection tcp keepalive timeout (s)",
+				},
+				&cli.IntFlag{
+					Name:  "tcpDeadline",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpDeadline",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("socks5") == "" {
+					cli.ShowCommandHelp(c, "hijackhttps")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				s, err := brook.NewHijackHTTPS(c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.String("loopbackip"), c.String("defaultDNSServer"), c.String("list"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}
@@ -1175,7 +1242,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "ssclient",
-			Usage: "Run as shadowsocks client, both TCP and UDP, to start a socks5 proxy or a http proxy, fixed method is aes-256-cfb, [src <-> $ brook ssclient <-> $ brook ssserver <-> dst], [works with $ brook ssserver]",
+			Usage: "Run as shadowsocks client, both TCP and UDP, to start socks5 or http proxy, method is aes-256-cfb, [src <-> $ brook ssclient <-> $ brook ssserver <-> dst], [works with $ brook ssserver]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "ssserver",
