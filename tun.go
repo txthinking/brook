@@ -18,17 +18,13 @@ package brook
 
 import (
 	"errors"
-	"io"
 	"log"
 	"net"
-	"strconv"
-	"time"
 
-	"github.com/eycorsican/go-tun2socks/core"
-	"github.com/eycorsican/go-tun2socks/proxy/socks"
-	"github.com/eycorsican/go-tun2socks/tun"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/sysproxy"
+	"github.com/txthinking/gotun2socks"
+	"github.com/txthinking/gotun2socks/tun"
 	"github.com/txthinking/runnergroup"
 )
 
@@ -36,76 +32,61 @@ import (
 type Tun struct {
 	Client             *Client
 	Tunnel             *Tunnel
-	ListenIP           string
+	Tun                *gotun2socks.Tun2Socks
 	ServerIP           string
 	TunGateway         string
 	OriginalDNSServers []string
 	RunnerGroup        *runnergroup.RunnerGroup
-	LwipWriter         io.Writer
-	Fd                 io.ReadWriteCloser
 	LetBrookDoAllForMe bool
 }
 
 // NewTun.
 func NewTun(addr, server, password, dns string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int, tunDevice, tunIP, tunGateway, tunMask string) (*Tun, error) {
-	h, p, err := net.SplitHostPort(addr)
+	h, _, err := net.SplitHostPort(addr)
 	if err != nil {
 		return nil, err
 	}
-	if h == "" {
-		return nil, errors.New("Listen address must contain IP")
+	if h != "127.0.0.1" {
+		return nil, errors.New("Must listen on 127.0.0.1")
 	}
-	listenIP := h
-	listenPort, err := strconv.ParseInt(p, 10, 64)
+	h, p, err := net.SplitHostPort(server)
 	if err != nil {
 		return nil, err
 	}
-	h1, p1, err := net.SplitHostPort(server)
-	if err != nil {
-		return nil, err
-	}
-	l, err := net.LookupIP(h1)
+	l, err := net.LookupIP(h)
 	if err != nil {
 		return nil, err
 	}
 	if len(l) == 0 {
 		return nil, errors.New("Can not find server IP")
 	}
-	serverIP := l[0].String()
-	server = net.JoinHostPort(serverIP, p1)
+	s := l[0].String()
+	server = net.JoinHostPort(s, p)
 
-	c, err := NewClient(addr, listenIP, server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+	c, err := NewClient(addr, "127.0.0.1", server, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
 	if err != nil {
 		return nil, err
 	}
-	d, err := NewTunnel(net.JoinHostPort(listenIP, "53"), net.JoinHostPort(dns, "53"), server, password, tcpTimeout, tcpDeadline, udpDeadline)
+	dnsserver := net.JoinHostPort(dns, "53")
+	tl, err := NewTunnel("127.0.0.1:53", dnsserver, server, password, tcpTimeout, tcpDeadline, udpDeadline)
 	if err != nil {
 		return nil, err
 	}
-
-	fd, err := tun.OpenTunDevice(tunDevice, tunIP, tunGateway, tunMask, []string{dns}, false)
+	f, err := tun.OpenTunDevice(tunDevice, tunIP, tunGateway, tunMask, []string{dns})
 	if err != nil {
 		return nil, err
 	}
-	lw := core.NewLWIPStack().(io.Writer)
-	core.RegisterTCPConnHandler(socks.NewTCPHandler(listenIP, uint16(listenPort)))
-	core.RegisterUDPConnHandler(socks.NewUDPHandler(listenIP, uint16(listenPort), time.Duration(udpSessionTime)*time.Second))
-	core.RegisterOutputFn(func(data []byte) (int, error) {
-		return fd.Write(data)
-	})
-
+	t := gotun2socks.New(f, addr, []string{dns}, false, true)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
 	return &Tun{
 		Client:      c,
-		Tunnel:      d,
-		ListenIP:    listenIP,
-		ServerIP:    serverIP,
+		Tunnel:      tl,
+		Tun:         t,
+		ServerIP:    s,
 		TunGateway:  tunGateway,
 		RunnerGroup: runnergroup.New(),
-		LwipWriter:  lw,
-		Fd:          fd,
 	}, nil
 }
 
@@ -118,7 +99,7 @@ func (v *Tun) ListenAndServe() error {
 		}
 		v.OriginalDNSServers = ds
 
-		if err := sysproxy.SetDNSServers([]string{v.ListenIP}); err != nil {
+		if err := sysproxy.SetDNSServers([]string{"127.0.0.1"}); err != nil {
 			return err
 		}
 		if err := v.AddRoutes(); err != nil {
@@ -142,13 +123,17 @@ func (v *Tun) ListenAndServe() error {
 			return v.Tunnel.Shutdown()
 		},
 	})
+	ch := make(chan byte)
 	v.RunnerGroup.Add(&runnergroup.Runner{
 		Start: func() error {
-			_, err := io.CopyBuffer(v.LwipWriter, v.Fd, make([]byte, 1500))
-			return err
+			go v.Tun.Run()
+			<-ch
+			return nil
 		},
 		Stop: func() error {
-			return v.Fd.Close()
+			go v.Tun.Stop()
+			ch <- 0x00
+			return nil
 		},
 	})
 	err := v.RunnerGroup.Wait()
