@@ -379,6 +379,11 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			return err
 		}
 		defer conn.Close()
+		if s.UDPDeadline != 0 {
+			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+				return err
+			}
+		}
 		co := &dns.Conn{Conn: conn}
 		if err := co.WriteMsg(m); err != nil {
 			return err
@@ -429,6 +434,11 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	c, err := Dial.Dial("udp", s.RemoteUDPAddr.String())
 	if err != nil {
 		return err
+	}
+	if s.UDPDeadline != 0 {
+		if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+			return err
+		}
 	}
 	rc := c.(*net.UDPConn)
 	ue = &socks5.UDPExchange{

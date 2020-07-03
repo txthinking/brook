@@ -27,7 +27,6 @@ import (
 
 	"github.com/miekg/dns"
 	"github.com/txthinking/brook/limits"
-	"github.com/txthinking/brook/sysproxy"
 	"github.com/txthinking/runnergroup"
 	"golang.org/x/net/proxy"
 )
@@ -99,13 +98,13 @@ func NewHijackHTTPS(socks5addr, socks5username, socks5password, loopbackip, defa
 
 // Run server.
 func (s *HijackHTTPS) ListenAndServe() error {
-	l, err := sysproxy.GetDNSServers()
-	if err != nil {
-		return err
-	}
-	if err := sysproxy.SetDNSServers([]string{s.LoopBackIP}); err != nil {
-		return err
-	}
+	// l, err := sysproxy.GetDNSServers()
+	// if err != nil {
+	// 	return err
+	// }
+	// if err := sysproxy.SetDNSServers([]string{s.LoopBackIP}); err != nil {
+	// 	return err
+	// }
 	s.RunnerGroup.Add(&runnergroup.Runner{
 		Start: func() error {
 			return s.RunUDPDNSServer()
@@ -141,10 +140,10 @@ func (s *HijackHTTPS) ListenAndServe() error {
 			return nil
 		},
 	})
-	err = s.RunnerGroup.Wait()
-	if err := sysproxy.SetDNSServers(l); err != nil {
-		log.Println(err)
-	}
+	err := s.RunnerGroup.Wait()
+	// if err := sysproxy.SetDNSServers(l); err != nil {
+	// 	log.Println(err)
+	// }
 	return err
 }
 
@@ -184,7 +183,7 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 				}
 			}
 		}
-		if has {
+		if !has {
 			debug("dns hijack", r.Question[0].Name)
 			m := &dns.Msg{}
 			m.SetReply(r)
@@ -202,6 +201,18 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 			return
 		}
 		defer conn.Close()
+		if network == "tcp" && s.TCPDeadline != 0 {
+			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				log.Println(err)
+				return
+			}
+		}
+		if network == "udp" && s.UDPDeadline != 0 {
+			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+				log.Println(err)
+				return
+			}
+		}
 		co := &dns.Conn{Conn: conn}
 		if err := co.WriteMsg(r); err != nil {
 			log.Println(err)
@@ -218,7 +229,7 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 
 func (s *HijackHTTPS) RunHTTPSServer() error {
 	var err error
-	s.HTTPSServer, err = net.Listen("tcp", ":443")
+	s.HTTPSServer, err = net.Listen("tcp", net.JoinHostPort(s.LoopBackIP, "443"))
 	if err != nil {
 		return err
 	}
@@ -229,6 +240,18 @@ func (s *HijackHTTPS) RunHTTPSServer() error {
 		}
 		go func(c net.Conn) {
 			defer c.Close()
+			if s.TCPTimeout != 0 {
+				if err := c.(*net.TCPConn).SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
+					log.Println(err)
+					return
+				}
+			}
+			if s.TCPDeadline != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+					log.Println(err)
+					return
+				}
+			}
 			if err := s.HTTPSHandle(c); err != nil {
 				log.Println(err)
 				return

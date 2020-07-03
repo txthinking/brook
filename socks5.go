@@ -103,6 +103,7 @@ func (x *Socks5Server) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Req
 	if r.Cmd == socks5.CmdUDP {
 		// TODO If client's udp address is not 0, then prepare a local udp address
 		if r.Atyp == socks5.ATYPIPv4 || r.Atyp == socks5.ATYPDomain {
+			r.Atyp = socks5.ATYPIPv4
 			r.DstAddr = net.IPv4zero
 		} else {
 			r.DstAddr = net.IPv6zero
