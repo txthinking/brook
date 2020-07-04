@@ -27,7 +27,6 @@ import (
 	_ "net/http/pprof"
 
 	"github.com/txthinking/brook"
-	"github.com/txthinking/brook/sysproxy"
 	"github.com/urfave/cli"
 )
 
@@ -472,93 +471,10 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tun",
-			Usage: "Run as tun, both TCP and UDP, [src <-> $ brook tun <-> $ brook server <-> dst], [works with $ brook server]",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "server",
-					Aliases: []string{"s"},
-					Usage:   "Brook server address, like: 1.2.3.4:1080",
-				},
-				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "Brook server password",
-				},
-				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
-					Usage:   "Listen address, MUST contain IP, like: 127.0.0.1:1080",
-				},
-				&cli.StringFlag{
-					Name:  "dns",
-					Value: "8.8.8.8",
-					Usage: "DNS Server, like: 8.8.8.8",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpDeadline",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpSessionTime",
-					Value: 60,
-					Usage: "udp session time (s), in most cases need this",
-				},
-				&cli.StringFlag{
-					Name:  "tunDevice",
-					Usage: "tun name",
-					Value: "tun0",
-				},
-				&cli.StringFlag{
-					Name:  "tunIP",
-					Usage: "tun IP",
-					Value: "10.9.9.2",
-				},
-				&cli.StringFlag{
-					Name:  "tunGateway",
-					Usage: "tun gateway",
-					Value: "10.9.9.1",
-				},
-				&cli.StringFlag{
-					Name:  "tunMask",
-					Usage: "tun mask",
-					Value: "255.255.255.0",
-				},
-				&cli.BoolFlag{
-					Name:  "letBrookDoAllForMe",
-					Usage: "See more: https://github.com/txthinking/brook/wiki/How-to-run-tun-on-Linux,-macOS-and-Windows",
-				},
-			},
+			Usage: "tun",
+			Flags: []cli.Flag{},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "tun")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				s, err := brook.NewTun(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"), c.String("tunDevice"), c.String("tunIP"), c.String("tunGateway"), c.String("tunMask"))
-				if err != nil {
-					return err
-				}
-				s.LetBrookDoAllForMe = c.Bool("letBrookDoAllForMe")
-				go func() {
-					log.Println(s.ListenAndServe())
-				}()
-				sigs := make(chan os.Signal, 1)
-				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-				<-sigs
-				return s.Shutdown()
+				return errors.New("Deprecated, please try https://github.com/txthinking/ipio")
 			},
 		},
 		&cli.Command{
@@ -988,7 +904,7 @@ func main() {
 					Usage: "Socks5 password, optional",
 				},
 				&cli.StringFlag{
-					Name:  "loopbackip",
+					Name:  "listendnsip",
 					Usage: "127.0.0.1 or ::1, will create a DNS server with it, and listen TCP 443 on it",
 					Value: "127.0.0.1",
 				},
@@ -1026,7 +942,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewHijackHTTPS(c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.String("loopbackip"), c.String("defaultDNSServer"), c.String("list"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewHijackHTTPS(c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.String("listendnsip"), c.String("defaultDNSServer"), c.String("list"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}
@@ -1094,38 +1010,6 @@ func main() {
 					p.Shutdown()
 				}()
 				return p.ListenAndServe()
-			},
-		},
-		&cli.Command{
-			Name:  "systemproxy",
-			Usage: "Set system proxy with pac url, or remove, only works on macOS/Windows",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "url",
-					Aliases: []string{"u"},
-					Usage:   "Pac address: like: http://127.0.0.1/pac",
-				},
-				&cli.BoolFlag{
-					Name:    "remove",
-					Aliases: []string{"r"},
-					Usage:   "Remove pac url from system proxy",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if !c.Bool("remove") && c.String("url") == "" {
-					cli.ShowCommandHelp(c, "systemproxy")
-					return nil
-				}
-				if c.Bool("remove") {
-					if err := sysproxy.TurnOffSystemProxy(); err != nil {
-						return err
-					}
-					return nil
-				}
-				if err := sysproxy.TurnOnSystemProxy(c.String("url")); err != nil {
-					return err
-				}
-				return nil
 			},
 		},
 		&cli.Command{
@@ -1331,6 +1215,7 @@ func main() {
 				fmt.Println("")
 				fmt.Println("Nami:", "https://github.com/txthinking/nami")
 				fmt.Println("Joker:", "https://github.com/txthinking/joker")
+				fmt.Println("Ipio:", "https://github.com/txthinking/ipio")
 				fmt.Println("")
 				return nil
 			},

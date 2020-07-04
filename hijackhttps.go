@@ -34,7 +34,7 @@ import (
 // HijackHTTPS.
 type HijackHTTPS struct {
 	Dial         proxy.Dialer
-	LoopBackIP   string
+	ListenDNSIP  string
 	DefaultDNS   string
 	Domains      map[string]byte
 	UDPDNSServer *dns.Server
@@ -47,7 +47,7 @@ type HijackHTTPS struct {
 }
 
 // NewHijackHTTPS.
-func NewHijackHTTPS(socks5addr, socks5username, socks5password, loopbackip, defaultDNS, list string, tcpTimeout, tcpDeadline, udpDeadline int) (*HijackHTTPS, error) {
+func NewHijackHTTPS(socks5addr, socks5username, socks5password, listendnsip, defaultDNS, list string, tcpTimeout, tcpDeadline, udpDeadline int) (*HijackHTTPS, error) {
 	ds := make(map[string]byte)
 	if list != "" {
 		ss, err := readList(list)
@@ -85,7 +85,7 @@ func NewHijackHTTPS(socks5addr, socks5username, socks5password, loopbackip, defa
 	}
 	s := &HijackHTTPS{
 		Dial:        dial,
-		LoopBackIP:  loopbackip,
+		ListenDNSIP: listendnsip,
 		DefaultDNS:  defaultDNS,
 		Domains:     ds,
 		TCPTimeout:  tcpTimeout,
@@ -98,13 +98,6 @@ func NewHijackHTTPS(socks5addr, socks5username, socks5password, loopbackip, defa
 
 // Run server.
 func (s *HijackHTTPS) ListenAndServe() error {
-	// l, err := sysproxy.GetDNSServers()
-	// if err != nil {
-	// 	return err
-	// }
-	// if err := sysproxy.SetDNSServers([]string{s.LoopBackIP}); err != nil {
-	// 	return err
-	// }
 	s.RunnerGroup.Add(&runnergroup.Runner{
 		Start: func() error {
 			return s.RunUDPDNSServer()
@@ -141,15 +134,12 @@ func (s *HijackHTTPS) ListenAndServe() error {
 		},
 	})
 	err := s.RunnerGroup.Wait()
-	// if err := sysproxy.SetDNSServers(l); err != nil {
-	// 	log.Println(err)
-	// }
 	return err
 }
 
 func (s *HijackHTTPS) RunUDPDNSServer() error {
 	s.UDPDNSServer = &dns.Server{
-		Addr:         net.JoinHostPort(s.LoopBackIP, "53"),
+		Addr:         net.JoinHostPort(s.ListenDNSIP, "53"),
 		Net:          "udp",
 		ReadTimeout:  time.Duration(s.UDPDeadline) * time.Second,
 		WriteTimeout: time.Duration(s.UDPDeadline) * time.Second,
@@ -160,7 +150,7 @@ func (s *HijackHTTPS) RunUDPDNSServer() error {
 
 func (s *HijackHTTPS) RunTCPDNSServer() error {
 	s.TCPDNSServer = &dns.Server{
-		Addr:         net.JoinHostPort(s.LoopBackIP, "53"),
+		Addr:         net.JoinHostPort(s.ListenDNSIP, "53"),
 		Net:          "tcp",
 		ReadTimeout:  time.Duration(s.TCPTimeout) * time.Second,
 		WriteTimeout: time.Duration(s.TCPTimeout) * time.Second,
@@ -190,7 +180,7 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 			m.Authoritative = true
 			m.Answer = append(m.Answer, &dns.A{
 				Hdr: dns.RR_Header{Name: m.Question[0].Name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
-				A:   net.ParseIP(s.LoopBackIP),
+				A:   net.ParseIP(s.ListenDNSIP),
 			})
 			w.WriteMsg(m)
 			return
@@ -229,7 +219,7 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 
 func (s *HijackHTTPS) RunHTTPSServer() error {
 	var err error
-	s.HTTPSServer, err = net.Listen("tcp", net.JoinHostPort(s.LoopBackIP, "443"))
+	s.HTTPSServer, err = net.Listen("tcp", net.JoinHostPort(s.ListenDNSIP, "443"))
 	if err != nil {
 		return err
 	}
