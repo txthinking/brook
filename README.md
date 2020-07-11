@@ -35,7 +35,6 @@
 - [Tunnel](#tunnel)
 - [DNS Server](#dns-server)
 - [Transparent Proxy](#transparent-proxy)
-- [Tun](#tun)
 - [WebSocket Server](#websocket-server)
 - [WebSocket Client](#websocket-client)
 - [Link](#link)
@@ -168,19 +167,6 @@ $ brook dns -s server_address:port -p password -l listen_address:port
 ### Transparent Proxy
 
 See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux)
-
-### Tun
-
-```
-# Run as tun, connect to brook server, proxy all TCP/UDP. [ROOT privileges required].
-$ sudo brook tun -s server_address:port -p password -l 127.0.0.1:1080
-
-# Must exit by Ctrl+C
-```
-
-> More parameters: $ brook tun -h
-
-**See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-tun-on-Linux,-macOS-and-Windows) for more tutorials**
 
 ### WebSocket Server
 
