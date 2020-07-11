@@ -16,8 +16,13 @@
 
 **v20200701**
 
-* CLI: Add `$ brook hijackhttps`
-* GUI: Add tun
+* CLI:
+  * New subcommand `$ brook hijackhttps`
+  * Optimization
+* GUI:
+  * macOS: add tun
+  * Android: support IPv6
+  * Other minor changes
 
 ---
 
