@@ -14,19 +14,10 @@
 
 ---
 
-**v20200502**
+**v20200701**
 
-* CLI: Add `$ brook dns`
-* CLI: Add `$ brook pac`
-* CLI: Rename `$ brook vpn` to `$ brook tun`, still experimental
-* GUI: Support multiple servers
-
-Some useful tutorial resources
-
-* Slides: https://talks.txthinking.com
-* Youtube: https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A
-* Telegram Group: https://t.me/brookgroup
-* Telegram Channel: https://t.me/brookchannel
+* CLI: Add `$ brook hijackhttps`
+* GUI: Add tun
 
 ---
 
@@ -48,7 +39,6 @@ Some useful tutorial resources
 - [Socks5 Server](#socks5-server)
 - [Socks5 to HTTP](#socks5-to-http)
 - [PAC](#pac)
-- [System Proxy](#system-proxy)
 - [Shadowsocks](#shadowsocks)
 - [How to](#how-to)
 - [Contributing](#contributing)
@@ -81,7 +71,7 @@ install GUI on macOS
 brew cask install brook
 ```
 
-**or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200502/Brook.pkg), [Windows](https://github.com/txthinking/brook/releases/download/v20200502/Brook.msi), [Android](https://github.com/txthinking/brook/releases/download/v20200502/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)**
+**or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200701/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200701/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200701/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)**
 
 > CLI contains server and client, GUI only contains client. iOS client only supports non-China AppStore.
 
@@ -89,13 +79,13 @@ brew cask install brook
 
 ```
 NAME:
-   Brook - A Cross-Platform Proxy/VPN Software
+   Brook - A cross-platform strong encryption and not detectable proxy
 
 USAGE:
-   brook [global options] command [command options] [arguments...]
+   brook_darwin_amd64 [global options] command [command options] [arguments...]
 
 VERSION:
-   20200502
+   20200701
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
@@ -107,7 +97,7 @@ COMMANDS:
    tunnel        Run as tunnel, both TCP and UDP, this means access [listen address] is equal to [to address], [src <-> listen address <-> $ brook server <-> to address], [works with $ brook server]
    dns           Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook server <-> default dns server] or [src <-> $ brook dns <-> list dns server], [works with $ brook server]
    tproxy        Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]
-   tun           Run as tun, both TCP and UDP, [src <-> $ brook tun <-> $ brook server <-> dst], [works with $ brook server]
+   tun           tun
    wsserver      Run as brook wsserver, both TCP and UDP, it will start a standard http(s) server and websocket server
    wsclient      Run as brook wsclient, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> $ brook wsclient <-> $ brook wsserver <-> dst], [works with $ brook wsserver]
    link          Print brook link
@@ -116,11 +106,11 @@ COMMANDS:
    relays        Run as multiple standalone relays
    socks5        Run as standalone standard socks5 server, both TCP and UDP
    socks5tohttp  Convert socks5 to http proxy, [src <-> listen address(http proxy) <-> socks5 address <-> dst]
+   hijackhttps   Hijack domains and assume is TCP/TLS/443. Requesting these domains from anywhere in the system will be hijacked . [src <-> $ brook hijackhttps <-> socks5 server] or [src <-> direct]
    pac           Run as PAC server or save PAC to file
-   systemproxy   Set system proxy with pac url, or remove, only works on macOS/Windows
    ssserver      Run as shadowsocks server, both TCP and UDP, fixed method is aes-256-cfb
    ssservers     Run as shadowsocks multiple servers, fixed method is aes-256-cfb
-   ssclient      Run as shadowsocks client, both TCP and UDP, to start a socks5 proxy or a http proxy, fixed method is aes-256-cfb, [src <-> $ brook ssclient <-> $ brook ssserver <-> dst], [works with $ brook ssserver]
+   ssclient      Run as shadowsocks client, both TCP and UDP, to start socks5 or http proxy, method is aes-256-cfb, [src <-> $ brook ssclient <-> $ brook ssserver <-> dst], [works with $ brook ssserver]
    howto         Print some useful tutorial resources
    help, h       Shows a list of commands or help for one command
 
@@ -273,18 +263,6 @@ $ brook pac -f /path/to/file.pac
 ```
 
 > More parameters: $ brook pac -h
-
-### System Proxy
-
-```
-# Set system PAC proxy
-$ brook systemproxy -u pac_url
-
-# Clear system PAC proxy
-$ brook systemproxy -r
-```
-
-> More parameters: $ brook systemproxy -h
 
 ### Shadowsocks
 

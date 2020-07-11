@@ -36,7 +36,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20200502"
+	app.Version = "20200701"
 	app.Usage = "A cross-platform strong encryption and not detectable proxy"
 	app.Authors = []*cli.Author{
 		{
@@ -1215,7 +1215,6 @@ func main() {
 				fmt.Println("")
 				fmt.Println("Nami:", "https://github.com/txthinking/nami")
 				fmt.Println("Joker:", "https://github.com/txthinking/joker")
-				fmt.Println("Ipio:", "https://github.com/txthinking/ipio")
 				fmt.Println("")
 				return nil
 			},
