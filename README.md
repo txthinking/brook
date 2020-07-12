@@ -86,7 +86,7 @@ NAME:
    Brook - A cross-platform strong encryption and not detectable proxy
 
 USAGE:
-   brook_darwin_amd64 [global options] command [command options] [arguments...]
+   brook [global options] command [command options] [arguments...]
 
 VERSION:
    20200701
