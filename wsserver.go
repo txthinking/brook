@@ -26,6 +26,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
@@ -45,6 +46,7 @@ type WSServer struct {
 	UDPDeadline   int
 	ServerAuthman plugin.ServerAuthman
 	Path          string
+	UDPSrc        *cache.Cache
 }
 
 // NewWSServer.
@@ -57,6 +59,7 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, tcpDeadline, u
 			return nil, err
 		}
 	}
+	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -68,6 +71,7 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, tcpDeadline, u
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
 		Path:        path,
+		UDPSrc:      cs2,
 	}
 	return s, nil
 }
@@ -289,8 +293,9 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 
 // UDPHandle handles packet.
 func (s *WSServer) UDPHandle(c net.Conn) error {
-	var rc *net.UDPConn
-	var ai plugin.Internet
+	rcm := cache.New(cache.NoExpiration, cache.NoExpiration)
+	aim := cache.New(cache.NoExpiration, cache.NoExpiration)
+	src := c.RemoteAddr().String()
 	for {
 		if s.UDPDeadline != 0 {
 			if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
@@ -313,47 +318,82 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 		if err != nil {
 			return err
 		}
-		if rc != nil {
-			l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
-			data = data[0 : len(data)-2-l]
-			i, err := rc.Write(data)
+		dst := socks5.ToAddress(a, h, p)
+		any, ok := rcm.Get(src + dst)
+		if ok {
+			if s.ServerAuthman != nil {
+				l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
+				data = data[0 : len(data)-2-l]
+			}
+			i, err := any.(*net.UDPConn).Write(data)
 			if err != nil {
 				return nil
 			}
-			if ai != nil {
-				if err := ai.UDPEgress(i); err != nil {
+			any, ok = aim.Get(src + dst)
+			if ok {
+				if err := any.(plugin.Internet).UDPEgress(i); err != nil {
 					return err
 				}
 			}
 			continue
 		}
-		address := socks5.ToAddress(a, h, p)
+
+		var ai plugin.Internet
 		if s.ServerAuthman != nil {
 			l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
-			ai, err = s.ServerAuthman.VerifyToken(data[len(data)-2-l:len(data)-2], "udp", a, address, data[0:len(data)-2-l])
+			ai, err = s.ServerAuthman.VerifyToken(data[len(data)-2-l:len(data)-2], "udp", a, dst, data[0:len(data)-2-l])
 			if err != nil {
 				return err
 			}
-			defer ai.Close()
 			data = data[0 : len(data)-2-l]
 		}
-		debug("dial udp", address)
-		conn, err := Dial.Dial("udp", address)
+		debug("dial udp", dst)
+		var laddr *net.UDPAddr
+		any, ok = s.UDPSrc.Get(src + dst)
+		if ok {
+			laddr = any.(*net.UDPAddr)
+		}
+		raddr, err := net.ResolveUDPAddr("udp", dst)
 		if err != nil {
+			if ai != nil {
+				ai.Close()
+			}
 			return err
 		}
-		rc = conn.(*net.UDPConn)
+		rc, err := Dial.DialUDP("udp", laddr, raddr)
+		if err != nil {
+			if ai != nil {
+				ai.Close()
+			}
+			return err
+		}
+		if laddr == nil {
+			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+		}
 		i, err := rc.Write(data)
 		if err != nil {
+			if ai != nil {
+				ai.Close()
+			}
 			return nil
 		}
 		if ai != nil {
 			if err := ai.UDPEgress(i); err != nil {
+				ai.Close()
 				return err
 			}
+			aim.Set(src+dst, ai, -1)
 		}
-		go func() {
-			defer rc.Close()
+		rcm.Set(src+dst, rc, -1)
+		go func(src, dst string, ai plugin.Internet) {
+			defer func() {
+				rc.Close()
+				rcm.Delete(src + dst)
+				if ai != nil {
+					ai.Close()
+					aim.Delete(src + dst)
+				}
+			}()
 			var b [65535]byte
 			for {
 				if s.UDPDeadline != 0 {
@@ -406,7 +446,7 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 					}
 				}
 			}
-		}()
+		}(src, dst, ai)
 	}
 	return nil
 }

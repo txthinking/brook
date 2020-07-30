@@ -26,7 +26,6 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
-	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
@@ -34,25 +33,24 @@ import (
 
 // DNS.
 type DNS struct {
-	TCPAddr          *net.TCPAddr
-	UDPAddr          *net.UDPAddr
-	RemoteTCPAddr    *net.TCPAddr
-	RemoteUDPAddr    *net.UDPAddr
-	Password         []byte
-	Domains          map[string]byte
-	DefaultDNSServer string
-	ListDNSServer    string
-	TCPListen        *net.TCPListener
-	UDPConn          *net.UDPConn
-	Cache            *cache.Cache
-	TCPDeadline      int
-	TCPTimeout       int
-	UDPDeadline      int
-	RunnerGroup      *runnergroup.RunnerGroup
+	TCPAddr            *net.TCPAddr
+	UDPAddr            *net.UDPAddr
+	RemoteTCPAddr      *net.TCPAddr
+	RemoteUDPAddr      *net.UDPAddr
+	Password           []byte
+	BypassDomains      map[string]byte
+	DNSServer          string
+	DNSServerForBypass string
+	TCPListen          *net.TCPListener
+	UDPConn            *net.UDPConn
+	TCPDeadline        int
+	TCPTimeout         int
+	UDPDeadline        int
+	RunnerGroup        *runnergroup.RunnerGroup
 }
 
 // NewDNS.
-func NewDNS(addr, server, password, defaultDNSServer, listDNSServer, list string, tcpTimeout, tcpDeadline, udpDeadline int) (*DNS, error) {
+func NewDNS(addr, server, password, dnsServer, dnsServerForBypass, bypassList string, tcpTimeout, tcpDeadline, udpDeadline int) (*DNS, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -71,8 +69,8 @@ func NewDNS(addr, server, password, defaultDNSServer, listDNSServer, list string
 	}
 	ds := make(map[string]byte)
 	ss := make([]string, 0)
-	if list != "" {
-		ss, err = readList(list)
+	if bypassList != "" {
+		ss, err = readList(bypassList)
 		if err != nil {
 			return nil, err
 		}
@@ -80,24 +78,22 @@ func NewDNS(addr, server, password, defaultDNSServer, listDNSServer, list string
 	for _, v := range ss {
 		ds[v] = 0
 	}
-	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
 	s := &DNS{
-		TCPAddr:          taddr,
-		UDPAddr:          uaddr,
-		RemoteTCPAddr:    rtaddr,
-		RemoteUDPAddr:    ruaddr,
-		Password:         []byte(password),
-		Domains:          ds,
-		Cache:            cs,
-		DefaultDNSServer: defaultDNSServer,
-		ListDNSServer:    listDNSServer,
-		TCPTimeout:       tcpTimeout,
-		TCPDeadline:      tcpDeadline,
-		UDPDeadline:      udpDeadline,
-		RunnerGroup:      runnergroup.New(),
+		TCPAddr:            taddr,
+		UDPAddr:            uaddr,
+		RemoteTCPAddr:      rtaddr,
+		RemoteUDPAddr:      ruaddr,
+		Password:           []byte(password),
+		BypassDomains:      ds,
+		DNSServer:          dnsServer,
+		DNSServerForBypass: dnsServerForBypass,
+		TCPTimeout:         tcpTimeout,
+		TCPDeadline:        tcpDeadline,
+		UDPDeadline:        udpDeadline,
+		RunnerGroup:        runnergroup.New(),
 	}
 	return s, nil
 }
@@ -216,8 +212,8 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	binary.BigEndian.PutUint16(lb, uint16(len(mb)))
 	mb = append(lb, mb...)
 	if has {
-		debug("in list", "tcp", m.Question[0].Name)
-		tmp, err := Dial.Dial("tcp", s.ListDNSServer)
+		debug("in bypass list", "tcp", m.Question[0].Name)
+		tmp, err := Dial.Dial("tcp", s.DNSServerForBypass)
 		if err != nil {
 			return err
 		}
@@ -295,7 +291,7 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 		return err
 	}
 
-	a, address, port, err := socks5.ParseAddress(s.DefaultDNSServer)
+	a, address, port, err := socks5.ParseAddress(s.DNSServer)
 	if err != nil {
 		return err
 	}
@@ -373,8 +369,8 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		}
 	}
 	if has {
-		debug("in list", "udp", m.Question[0].Name)
-		conn, err := Dial.Dial("udp", s.ListDNSServer)
+		debug("in bypass list", "udp", m.Question[0].Name)
+		conn, err := Dial.Dial("udp", s.DNSServerForBypass)
 		if err != nil {
 			return err
 		}
@@ -402,7 +398,7 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
-	a, address, port, err := socks5.ParseAddress(s.DefaultDNSServer)
+	a, address, port, err := socks5.ParseAddress(s.DNSServer)
 	if err != nil {
 		return err
 	}
@@ -412,70 +408,35 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	ra = append(ra, port...)
 	b = append(ra, b...)
 
-	send := func(ue *socks5.UDPExchange, data []byte) error {
-		cd, err := Encrypt(s.Password, data)
-		if err != nil {
-			return err
-		}
-		_, err = ue.RemoteConn.Write(cd)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-
-	var ue *socks5.UDPExchange
-	iue, ok := s.Cache.Get(addr.String())
-	if ok {
-		ue = iue.(*socks5.UDPExchange)
-		return send(ue, b)
-	}
-
-	c, err := Dial.Dial("udp", s.RemoteUDPAddr.String())
+	rc, err := Dial.DialUDP("udp", nil, s.RemoteUDPAddr)
 	if err != nil {
 		return err
 	}
+	defer rc.Close()
 	if s.UDPDeadline != 0 {
-		if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
 			return err
 		}
 	}
-	rc := c.(*net.UDPConn)
-	ue = &socks5.UDPExchange{
-		ClientAddr: addr,
-		RemoteConn: rc,
-	}
-	if err := send(ue, b); err != nil {
-		ue.RemoteConn.Close()
+	cd, err := Encrypt(s.Password, b)
+	if err != nil {
 		return err
 	}
-	s.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
-	go func(ue *socks5.UDPExchange) {
-		defer func() {
-			s.Cache.Delete(ue.ClientAddr.String())
-			ue.RemoteConn.Close()
-		}()
-		var b [65535]byte
-		for {
-			if s.UDPDeadline != 0 {
-				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
-					break
-				}
-			}
-			n, err := ue.RemoteConn.Read(b[:])
-			if err != nil {
-				break
-			}
-			_, _, _, data, err := Decrypt(s.Password, b[0:n])
-			if err != nil {
-				log.Println(err)
-				break
-			}
-			if _, err := s.UDPConn.WriteToUDP(data, ue.ClientAddr); err != nil {
-				break
-			}
-		}
-	}(ue)
+	if _, err := rc.Write(cd); err != nil {
+		return err
+	}
+	var bb [65535]byte
+	n, err := rc.Read(bb[:])
+	if err != nil {
+		return err
+	}
+	_, _, _, data, err := Decrypt(s.Password, bb[0:n])
+	if err != nil {
+		return err
+	}
+	if _, err := s.UDPConn.WriteToUDP(data, addr); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -488,7 +449,7 @@ func (s *DNS) Has(host string) bool {
 		} else {
 			s1 = ss[i] + "." + s1
 		}
-		if _, ok := s.Domains[s1]; ok {
+		if _, ok := s.BypassDomains[s1]; ok {
 			return true
 		}
 	}

@@ -307,7 +307,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "dns",
-			Usage: "Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook server <-> default dns server] or [src <-> $ brook dns <-> list dns server], [works with $ brook server]",
+			Usage: "Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook server <-> dns server] or [src <-> $ brook dns <-> dns server for bypass], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -325,19 +325,19 @@ func main() {
 					Usage:   "Listen address, like: 127.0.0.1:53",
 				},
 				&cli.StringFlag{
-					Name:  "defaultDNSServer",
+					Name:  "dns",
 					Usage: "DNS server for resolving domains NOT in list",
 					Value: "8.8.8.8:53",
 				},
 				&cli.StringFlag{
-					Name:  "listDNSServer",
-					Usage: "DNS server for resolving domains in list",
+					Name:  "dnsForBypass",
+					Usage: "DNS server for resolving domains in bypass list",
 					Value: "223.5.5.5:53",
 				},
 				&cli.StringFlag{
-					Name:  "list",
+					Name:  "bypassList",
 					Usage: "https://, http:// or local file path",
-					Value: "https://txthinking.github.io/blackwhite/white.list",
+					Value: "https://txthinking.github.io/bypass/chinadomain.list",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -363,7 +363,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("defaultDNSServer"), c.String("listDNSServer"), c.String("list"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassList"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}
@@ -904,19 +904,19 @@ func main() {
 					Usage: "Socks5 password, optional",
 				},
 				&cli.StringFlag{
-					Name:  "listendnsip",
+					Name:  "listenIP",
 					Usage: "127.0.0.1 or ::1, will create a DNS server with it, and listen TCP 443 on it",
 					Value: "127.0.0.1",
 				},
 				&cli.StringFlag{
-					Name:  "defaultDNSServer",
-					Usage: "DNS server for resolving domains NOT in list",
-					Value: "8.8.8.8:53",
+					Name:  "dnsForBypass",
+					Usage: "DNS server for resolving domains in bypass list",
+					Value: "223.5.5.5:53",
 				},
 				&cli.StringFlag{
-					Name:  "list",
-					Usage: "Only domains in list will be hijacked. https://, http:// or local file path",
-					Value: "https://txthinking.github.io/blackwhite/black.list",
+					Name:  "bypassList",
+					Usage: "https://, http:// or local file path",
+					Value: "https://txthinking.github.io/bypass/chinadomain.list",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -942,7 +942,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewHijackHTTPS(c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.String("listendnsip"), c.String("defaultDNSServer"), c.String("list"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewHijackHTTPS(c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.String("listenIP"), c.String("dnsForBypass"), c.String("bypassList"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}
@@ -1010,192 +1010,6 @@ func main() {
 					p.Shutdown()
 				}()
 				return p.ListenAndServe()
-			},
-		},
-		&cli.Command{
-			Name:  "ssserver",
-			Usage: "Run as shadowsocks server, both TCP and UDP, fixed method is aes-256-cfb",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
-					Usage:   "Listen address, like: 0.0.0.0:1080",
-				},
-				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "Shadowsocks server password",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpDeadline",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "ssserver")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				s, err := brook.NewSSServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
-				if err != nil {
-					return err
-				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					s.Shutdown()
-				}()
-				fmt.Println("Warning, shadowsocks server may be able to be detected, recommend to use brook server or brook wsserver")
-				return s.ListenAndServe()
-			},
-		},
-		&cli.Command{
-			Name:  "ssservers",
-			Usage: "Run as shadowsocks multiple servers, fixed method is aes-256-cfb",
-			Flags: []cli.Flag{
-				&cli.StringSliceFlag{
-					Name:    "listenpassword",
-					Aliases: []string{"l"},
-					Usage:   "Listen address and password, like '0.0.0.0:1080 password'",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpDeadline",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("listenpassword")) == 0 {
-					cli.ShowCommandHelp(c, "ssservers")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				l := make([]*brook.SSServer, 0)
-				for _, v := range c.StringSlice("listenpassword") {
-					ss := strings.Split(v, " ")
-					if len(ss) != 2 {
-						return errors.New("Invalid listenpassword")
-					}
-					s, err := brook.NewSSServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
-					if err != nil {
-						return err
-					}
-					l = append(l, s)
-				}
-				for _, v := range l {
-					go func(v *brook.SSServer) {
-						log.Println(v.ListenAndServe())
-					}(v)
-				}
-				fmt.Println("Warning, shadowsocks server may be able to be detected, recommend to use brook server or brook wsserver")
-				sigs := make(chan os.Signal, 1)
-				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-				<-sigs
-				for _, v := range l {
-					v.Shutdown()
-				}
-				return nil
-			},
-		},
-		&cli.Command{
-			Name:  "ssclient",
-			Usage: "Run as shadowsocks client, both TCP and UDP, to start socks5 or http proxy, method is aes-256-cfb, [src <-> $ brook ssclient <-> $ brook ssserver <-> dst], [works with $ brook ssserver]",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "ssserver",
-					Aliases: []string{"s"},
-					Usage:   "Shadowsocks server address, like: 1.2.3.4:1080",
-				},
-				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "Shadowsocks server password",
-				},
-				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
-					Usage:   "Listen address, like: 127.0.0.1:1080",
-				},
-				&cli.StringFlag{
-					Name:    "ip",
-					Aliases: []string{"i"},
-					Usage:   "IP address for socks5 proxy, like: 127.0.0.1",
-				},
-				&cli.BoolFlag{
-					Name:  "http",
-					Usage: "If true, client start a http proxy, otherwise start a socks5 proxy",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpDeadline",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpSessionTime",
-					Value: 60,
-					Usage: "udp session time (s), in most cases need this",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || (!c.Bool("http") && c.String("ip") == "") || c.String("ssserver") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "ssclient")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				s, err := brook.NewSSClient(c.String("listen"), c.String("ip"), c.String("ssserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
-				if err != nil {
-					return err
-				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					s.Shutdown()
-				}()
-				fmt.Println("Warning, shadowsocks server may be able to be detected, recommend to use brook server or brook wsserver")
-				if c.Bool("http") {
-					return s.ListenAndServeHTTP()
-				}
-				return s.ListenAndServe()
 			},
 		},
 		&cli.Command{

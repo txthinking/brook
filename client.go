@@ -23,7 +23,6 @@ import (
 	"net"
 	"time"
 
-	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
@@ -41,7 +40,6 @@ type Client struct {
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
 	ClientAuthman   plugin.ClientAuthman
-	Cache           *cache.Cache
 }
 
 // NewClient returns a new Client.
@@ -50,7 +48,6 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 	if err != nil {
 		return nil, err
 	}
-	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -61,7 +58,6 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 		TCPTimeout:  tcpTimeout,
 		TCPDeadline: tcpDeadline,
 		UDPDeadline: udpDeadline,
-		Cache:       cs,
 	}
 	return x, nil
 }
@@ -204,17 +200,8 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		if err != nil {
 			return err
 		}
-		_, p, err := net.SplitHostPort(caddr.String())
-		if err != nil {
-			return err
-		}
-		if p == "0" {
-			time.Sleep(time.Duration(x.Server.UDPSessionTime) * time.Second)
-			return nil
-		}
-		ch := make(chan byte)
-		x.Server.TCPUDPAssociate.Set(caddr.String(), ch, cache.DefaultExpiration)
-		<-ch
+		// TODO
+		_ = caddr
 		return nil
 	}
 	return socks5.ErrUnsupportCmd
@@ -228,110 +215,117 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 			return err
 		}
 		if err != nil {
-			v, ok := s.TCPUDPAssociate.Get(addr.String())
-			if ok {
-				ch := v.(chan byte)
-				ch <- 0x00
-				s.TCPUDPAssociate.Delete(addr.String())
-			}
 			return err
 		}
 	}
 
+	src := addr.String()
+	// any, ok := s.AssociatedUDP.Get(src)
+	// if !ok {
+	// return fmt.Errorf("This udp address %s is not associated with tcp", src)
+	// }
+	// ch := any.(chan byte)
 	send := func(ue *socks5.UDPExchange, data []byte) error {
-		if x.ClientAuthman != nil {
-			b, err := x.ClientAuthman.GetToken()
+		select {
+		// case <-ch:
+		// 	return fmt.Errorf("This udp address %s is not associated with tcp", src)
+		default:
+			if x.ClientAuthman != nil {
+				b, err := x.ClientAuthman.GetToken()
+				if err != nil {
+					return err
+				}
+				data = append(data, b...)
+				bb := make([]byte, 2)
+				binary.BigEndian.PutUint16(bb, uint16(len(b)))
+				data = append(data, bb...)
+			}
+			cd, err := Encrypt(x.Password, data)
 			if err != nil {
 				return err
 			}
-			data = append(data, b...)
-			bb := make([]byte, 2)
-			binary.BigEndian.PutUint16(bb, uint16(len(b)))
-			data = append(data, bb...)
-		}
-		cd, err := Encrypt(x.Password, data)
-		if err != nil {
-			return err
-		}
-		_, err = ue.RemoteConn.Write(cd)
-		if err != nil {
-			return err
+			_, err = ue.RemoteConn.Write(cd)
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	}
 
+	dst := d.Address()
 	var ue *socks5.UDPExchange
-	iue, ok := x.Cache.Get(addr.String())
+	iue, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue = iue.(*socks5.UDPExchange)
 		return send(ue, d.Bytes()[3:])
 	}
 
-	debug("dial udp", d.Address())
-	c, err := Dial.Dial("udp", x.RemoteAddr)
+	debug("dial udp", dst)
+	var laddr *net.UDPAddr
+	any, ok := s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
+	raddr, err := net.ResolveUDPAddr("udp", x.RemoteAddr)
 	if err != nil {
-		v, ok := s.TCPUDPAssociate.Get(addr.String())
-		if ok {
-			ch := v.(chan byte)
-			ch <- 0x00
-			s.TCPUDPAssociate.Delete(addr.String())
-		}
 		return err
 	}
-	rc := c.(*net.UDPConn)
+	rc, err := Dial.DialUDP("udp", laddr, raddr)
+	if err != nil {
+		return err
+	}
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+	}
 	ue = &socks5.UDPExchange{
 		ClientAddr: addr,
 		RemoteConn: rc,
 	}
 	if err := send(ue, d.Bytes()[3:]); err != nil {
-		v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
-		if ok {
-			ch := v.(chan byte)
-			ch <- 0x00
-			s.TCPUDPAssociate.Delete(ue.ClientAddr.String())
-		}
 		ue.RemoteConn.Close()
 		return err
 	}
-	x.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
-	go func(ue *socks5.UDPExchange) {
+	s.UDPExchanges.Set(src+dst, ue, -1)
+	go func(ue *socks5.UDPExchange, dst string) {
 		defer func() {
-			v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
-			if ok {
-				ch := v.(chan byte)
-				ch <- 0x00
-				s.TCPUDPAssociate.Delete(ue.ClientAddr.String())
-			}
-			x.Cache.Delete(ue.ClientAddr.String())
+			s.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 			ue.RemoteConn.Close()
 		}()
 		var b [65535]byte
 		for {
-			if s.UDPDeadline != 0 {
-				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
-					break
+			select {
+			// case <-ch:
+			// 	if Debug {
+			// 		log.Printf("The tcp that udp address %s associated closed\n", ue.ClientAddr.String())
+			// 	}
+			// 	return
+			default:
+				if s.UDPDeadline != 0 {
+					if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+						return
+					}
+				}
+				n, err := ue.RemoteConn.Read(b[:])
+				if err != nil {
+					return
+				}
+				_, _, _, data, err := Decrypt(x.Password, b[0:n])
+				if err != nil {
+					log.Println(err)
+					return
+				}
+				a, addr, port, err := socks5.ParseAddress(ue.ClientAddr.String())
+				if err != nil {
+					log.Println(err)
+					return
+				}
+				d1 := socks5.NewDatagram(a, addr, port, data)
+				if _, err := s.UDPConn.WriteToUDP(d1.Bytes(), ue.ClientAddr); err != nil {
+					return
 				}
 			}
-			n, err := ue.RemoteConn.Read(b[:])
-			if err != nil {
-				break
-			}
-			_, _, _, data, err := Decrypt(x.Password, b[0:n])
-			if err != nil {
-				log.Println(err)
-				break
-			}
-			a, addr, port, err := socks5.ParseAddress(ue.ClientAddr.String())
-			if err != nil {
-				log.Println(err)
-				break
-			}
-			d1 := socks5.NewDatagram(a, addr, port, data)
-			if _, err := s.UDPConn.WriteToUDP(d1.Bytes(), ue.ClientAddr); err != nil {
-				break
-			}
 		}
-	}(ue)
+	}(ue, dst)
 	return nil
 }
 

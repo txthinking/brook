@@ -49,9 +49,9 @@ type WSClient struct {
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
-	Cache           *cache.Cache
 	ClientAuthman   plugin.ClientAuthman
 	Path            string
+	UDPExchanges    *cache.Cache
 }
 
 // NewWSClient.
@@ -64,7 +64,6 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 	if err != nil {
 		return nil, err
 	}
-	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -72,15 +71,16 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 	if path == "" {
 		path = "/ws"
 	}
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	x := &WSClient{
-		RemoteAddr:  u.Host,
-		Server:      s5,
-		Password:    []byte(password),
-		TCPTimeout:  tcpTimeout,
-		TCPDeadline: tcpDeadline,
-		UDPDeadline: udpDeadline,
-		Cache:       cs,
-		Path:        path,
+		RemoteAddr:   u.Host,
+		Server:       s5,
+		Password:     []byte(password),
+		TCPTimeout:   tcpTimeout,
+		TCPDeadline:  tcpDeadline,
+		UDPDeadline:  udpDeadline,
+		Path:         path,
+		UDPExchanges: cs,
 	}
 	if u.Scheme == "wss" {
 		h, _, err := net.SplitHostPort(u.Host)
@@ -112,12 +112,25 @@ func (x *WSClient) ListenAndServe() error {
 	return x.Server.ListenAndServe(x)
 }
 
-func (x *WSClient) DialWebsocket() (net.Conn, error) {
+func (x *WSClient) DialWebsocket(src string) (net.Conn, error) {
 	a := x.RemoteAddr
 	if x.RemoteAddress != "" {
 		a = x.RemoteAddress
 	}
-	c, err := Dial.Dial("tcp", a)
+	var laddr *net.TCPAddr
+	if src != "" {
+		var err error
+		laddr, err = net.ResolveTCPAddr("tcp", src)
+		if err != nil {
+			return nil, err
+		}
+	}
+	raddr, err := net.ResolveTCPAddr("tcp", a)
+	if err != nil {
+		return nil, err
+	}
+	var c net.Conn
+	c, err = Dial.DialTCP("tcp", laddr, raddr)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +220,7 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 
 	if r.Cmd == socks5.CmdConnect {
 		debug("dial tcp", r.Address())
-		rc, err := x.DialWebsocket()
+		rc, err := x.DialWebsocket("")
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
@@ -310,17 +323,8 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 		if err != nil {
 			return err
 		}
-		_, p, err := net.SplitHostPort(caddr.String())
-		if err != nil {
-			return err
-		}
-		if p == "0" {
-			time.Sleep(time.Duration(x.Server.UDPSessionTime) * time.Second)
-			return nil
-		}
-		ch := make(chan byte)
-		x.Server.TCPUDPAssociate.Set(caddr.String(), ch, cache.DefaultExpiration)
-		<-ch
+		// TODO
+		_ = caddr
 		return nil
 	}
 	return socks5.ErrUnsupportCmd
@@ -339,70 +343,80 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			return err
 		}
 		if err != nil {
-			v, ok := s.TCPUDPAssociate.Get(addr.String())
-			if ok {
-				ch := v.(chan byte)
-				ch <- 0x00
-				s.TCPUDPAssociate.Delete(addr.String())
-			}
 			return err
 		}
 	}
 
+	src := addr.String()
+	// any, ok := s.AssociatedUDP.Get(src)
+	// if !ok {
+	// return fmt.Errorf("This udp address %s is not associated with tcp", src)
+	// }
+	// ch := any.(chan byte)
 	send := func(ue *WSClientUDPExchange, data []byte) error {
-		if x.ClientAuthman != nil {
-			b, err := x.ClientAuthman.GetToken()
+		select {
+		// case <-ch:
+		// 	return fmt.Errorf("This udp address %s is not associated with tcp", src)
+		default:
+			if x.ClientAuthman != nil {
+				b, err := x.ClientAuthman.GetToken()
+				if err != nil {
+					return err
+				}
+				data = append(data, b...)
+				bb := make([]byte, 2)
+				binary.BigEndian.PutUint16(bb, uint16(len(b)))
+				data = append(data, bb...)
+			}
+			cd, err := EncryptLength(x.Password, data)
 			if err != nil {
 				return err
 			}
-			data = append(data, b...)
-			bb := make([]byte, 2)
-			binary.BigEndian.PutUint16(bb, uint16(len(b)))
-			data = append(data, bb...)
-		}
-		cd, err := EncryptLength(x.Password, data)
-		if err != nil {
-			return err
-		}
-		if _, err := ue.RemoteConn.Write(cd); err != nil {
-			return err
-		}
-		cd, err = Encrypt(x.Password, data)
-		if err != nil {
-			return err
-		}
-		if _, err := ue.RemoteConn.Write(cd); err != nil {
-			return err
+			if _, err := ue.RemoteConn.Write(cd); err != nil {
+				return err
+			}
+			cd, err = Encrypt(x.Password, data)
+			if err != nil {
+				return err
+			}
+			if _, err := ue.RemoteConn.Write(cd); err != nil {
+				return err
+			}
 		}
 		return nil
 	}
 
+	dst := d.Address()
 	var ue *WSClientUDPExchange
-	iue, ok := x.Cache.Get(addr.String())
+	iue, ok := x.UDPExchanges.Get(src + dst)
 	if ok {
 		ue = iue.(*WSClientUDPExchange)
 		return send(ue, d.Bytes()[3:])
 	}
 
-	debug("dial udp", d.Address())
-	rc, err := x.DialWebsocket()
+	debug("dial udp", dst)
+	var laddr *net.UDPAddr
+	any, ok := s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
+	var lsrc string
+	if laddr != nil {
+		lsrc = laddr.String()
+	}
+	rc, err := x.DialWebsocket(lsrc)
 	if err != nil {
-		v, ok := s.TCPUDPAssociate.Get(addr.String())
-		if ok {
-			ch := v.(chan byte)
-			ch <- 0x00
-			s.TCPUDPAssociate.Delete(addr.String())
-		}
 		return err
+	}
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, &net.UDPAddr{
+			IP:   rc.LocalAddr().(*net.TCPAddr).IP,
+			Port: rc.LocalAddr().(*net.TCPAddr).Port,
+			Zone: rc.LocalAddr().(*net.TCPAddr).Zone,
+		}, -1)
 	}
 	if x.UDPDeadline != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(x.UDPDeadline) * time.Second)); err != nil {
-			v, ok := s.TCPUDPAssociate.Get(addr.String())
-			if ok {
-				ch := v.(chan byte)
-				ch <- 0x00
-				s.TCPUDPAssociate.Delete(addr.String())
-			}
 			rc.Close()
 			return err
 		}
@@ -410,22 +424,10 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 	// deer as horse
 	cd, err := EncryptLength(x.Password, []byte{0x00, 0x00})
 	if err != nil {
-		v, ok := s.TCPUDPAssociate.Get(addr.String())
-		if ok {
-			ch := v.(chan byte)
-			ch <- 0x00
-			s.TCPUDPAssociate.Delete(addr.String())
-		}
 		rc.Close()
 		return err
 	}
 	if _, err := rc.Write(cd); err != nil {
-		v, ok := s.TCPUDPAssociate.Get(addr.String())
-		if ok {
-			ch := v.(chan byte)
-			ch <- 0x00
-			s.TCPUDPAssociate.Delete(addr.String())
-		}
 		rc.Close()
 		return err
 	}
@@ -435,62 +437,58 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		RemoteConn: rc,
 	}
 	if err := send(ue, d.Bytes()[3:]); err != nil {
-		v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
-		if ok {
-			ch := v.(chan byte)
-			ch <- 0x00
-			s.TCPUDPAssociate.Delete(ue.ClientAddr.String())
-		}
 		ue.RemoteConn.Close()
 		return err
 	}
-	x.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
-	go func(ue *WSClientUDPExchange) {
+	x.UDPExchanges.Set(src+dst, ue, -1)
+	go func(ue *WSClientUDPExchange, dst string) {
 		defer func() {
-			v, ok := s.TCPUDPAssociate.Get(ue.ClientAddr.String())
-			if ok {
-				ch := v.(chan byte)
-				ch <- 0x00
-				s.TCPUDPAssociate.Delete(ue.ClientAddr.String())
-			}
-			x.Cache.Delete(ue.ClientAddr.String())
+			x.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 			ue.RemoteConn.Close()
 		}()
 		for {
-			if s.UDPDeadline != 0 {
-				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+			select {
+			// case <-ch:
+			// 	if Debug {
+			// 		log.Printf("The tcp that udp address %s associated closed\n", ue.ClientAddr.String())
+			// 	}
+			// 	return
+			default:
+				if s.UDPDeadline != 0 {
+					if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+						break
+					}
+				}
+				b := make([]byte, 12+16+10+2)
+				if _, err := io.ReadFull(ue.RemoteConn, b); err != nil {
+					break
+				}
+				l, err := DecryptLength(x.Password, b)
+				if err != nil {
+					log.Println(err)
+					break
+				}
+				b = make([]byte, l)
+				if _, err := io.ReadFull(ue.RemoteConn, b); err != nil {
+					break
+				}
+				_, _, _, data, err := Decrypt(x.Password, b)
+				if err != nil {
+					log.Println(err)
+					break
+				}
+				a, addr, port, err := socks5.ParseAddress(ue.ClientAddr.String())
+				if err != nil {
+					log.Println(err)
+					break
+				}
+				d1 := socks5.NewDatagram(a, addr, port, data)
+				if _, err := s.UDPConn.WriteToUDP(d1.Bytes(), ue.ClientAddr); err != nil {
 					break
 				}
 			}
-			b := make([]byte, 12+16+10+2)
-			if _, err := io.ReadFull(ue.RemoteConn, b); err != nil {
-				break
-			}
-			l, err := DecryptLength(x.Password, b)
-			if err != nil {
-				log.Println(err)
-				break
-			}
-			b = make([]byte, l)
-			if _, err := io.ReadFull(ue.RemoteConn, b); err != nil {
-				break
-			}
-			_, _, _, data, err := Decrypt(x.Password, b)
-			if err != nil {
-				log.Println(err)
-				break
-			}
-			a, addr, port, err := socks5.ParseAddress(ue.ClientAddr.String())
-			if err != nil {
-				log.Println(err)
-				break
-			}
-			d1 := socks5.NewDatagram(a, addr, port, data)
-			if _, err := s.UDPConn.WriteToUDP(d1.Bytes(), ue.ClientAddr); err != nil {
-				break
-			}
 		}
-	}(ue)
+	}(ue, dst)
 	return nil
 }
 
@@ -572,7 +570,7 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 		}
 	}
 
-	rc, err := x.DialWebsocket()
+	rc, err := x.DialWebsocket("")
 	if err != nil {
 		return err
 	}

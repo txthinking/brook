@@ -15,8 +15,6 @@
 package brook
 
 import (
-	"log"
-
 	"github.com/txthinking/socks5"
 	"github.com/txthinking/x"
 )
@@ -32,5 +30,5 @@ func EnableDebug() {
 }
 
 func init() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	// log.SetFlags(log.LstdFlags | log.Lshortfile)
 }

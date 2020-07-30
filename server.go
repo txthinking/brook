@@ -35,12 +35,13 @@ type Server struct {
 	UDPAddr       *net.UDPAddr
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
-	Cache         *cache.Cache
+	UDPExchanges  *cache.Cache
 	TCPDeadline   int
 	TCPTimeout    int
 	UDPDeadline   int
 	ServerAuthman plugin.ServerAuthman
 	RunnerGroup   *runnergroup.RunnerGroup
+	UDPSrc        *cache.Cache
 }
 
 // NewServer.
@@ -54,18 +55,20 @@ func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) 
 		return nil, err
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
 	s := &Server{
-		Password:    []byte(password),
-		TCPAddr:     taddr,
-		UDPAddr:     uaddr,
-		Cache:       cs,
-		TCPTimeout:  tcpTimeout,
-		TCPDeadline: tcpDeadline,
-		UDPDeadline: udpDeadline,
-		RunnerGroup: runnergroup.New(),
+		Password:     []byte(password),
+		TCPAddr:      taddr,
+		UDPAddr:      uaddr,
+		UDPExchanges: cs,
+		TCPTimeout:   tcpTimeout,
+		TCPDeadline:  tcpDeadline,
+		UDPDeadline:  udpDeadline,
+		RunnerGroup:  runnergroup.New(),
+		UDPSrc:       cs2,
 	}
 	return s, nil
 }
@@ -281,6 +284,7 @@ type ServerUDPExchange struct {
 
 // UDPHandle handles packet.
 func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
+	src := addr.String()
 	a, h, p, data, err := Decrypt(s.Password, b)
 	if err != nil {
 		return err
@@ -302,28 +306,39 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
+	dst := socks5.ToAddress(a, h, p)
 	var ue *ServerUDPExchange
-	iue, ok := s.Cache.Get(addr.String())
+	iue, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue = iue.(*ServerUDPExchange)
 		return send(ue, data)
 	}
 
-	address := socks5.ToAddress(a, h, p)
 	var ai plugin.Internet
 	if s.ServerAuthman != nil {
 		l := int(binary.BigEndian.Uint16(data[len(data)-2:]))
-		ai, err = s.ServerAuthman.VerifyToken(data[len(data)-l-2:len(data)-2], "udp", a, address, data[0:len(data)-l-2])
+		ai, err = s.ServerAuthman.VerifyToken(data[len(data)-l-2:len(data)-2], "udp", a, dst, data[0:len(data)-l-2])
 		if err != nil {
 			return err
 		}
 	}
-	debug("dial udp", address)
-	c, err := Dial.Dial("udp", address)
+	debug("dial udp", dst)
+	var laddr *net.UDPAddr
+	any, ok := s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
+	raddr, err := net.ResolveUDPAddr("udp", dst)
 	if err != nil {
 		return err
 	}
-	rc := c.(*net.UDPConn)
+	rc, err := Dial.DialUDP("udp", laddr, raddr)
+	if err != nil {
+		return err
+	}
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+	}
 	ue = &ServerUDPExchange{
 		ClientAddr: addr,
 		RemoteConn: rc,
@@ -336,10 +351,10 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		}
 		return err
 	}
-	s.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
-	go func(ue *ServerUDPExchange) {
+	s.UDPExchanges.Set(src+dst, ue, cache.DefaultExpiration)
+	go func(ue *ServerUDPExchange, dst string) {
 		defer func() {
-			s.Cache.Delete(ue.ClientAddr.String())
+			s.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 			ue.RemoteConn.Close()
 			if ue.Internet != nil {
 				ue.Internet.Close()
@@ -382,7 +397,7 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 				}
 			}
 		}
-	}(ue)
+	}(ue, dst)
 	return nil
 }
 

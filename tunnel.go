@@ -36,11 +36,12 @@ type Tunnel struct {
 	Password      []byte
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
-	Cache         *cache.Cache
+	UDPExchanges  *cache.Cache
 	TCPDeadline   int
 	TCPTimeout    int
 	UDPDeadline   int
 	RunnerGroup   *runnergroup.RunnerGroup
+	UDPSrc        *cache.Cache
 }
 
 // NewTunnel.
@@ -62,6 +63,7 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, tcpDeadline, udpDe
 		return nil, err
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -72,11 +74,12 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, tcpDeadline, udpDe
 		UDPAddr:       uaddr,
 		RemoteTCPAddr: rtaddr,
 		RemoteUDPAddr: ruaddr,
-		Cache:         cs,
+		UDPExchanges:  cs,
 		TCPTimeout:    tcpTimeout,
 		TCPDeadline:   tcpDeadline,
 		UDPDeadline:   udpDeadline,
 		RunnerGroup:   runnergroup.New(),
+		UDPSrc:        cs2,
 	}
 	return s, nil
 }
@@ -260,6 +263,8 @@ func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
 
 // UDPHandle handles packet.
 func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
+	src := addr.String()
+
 	a, address, port, err := socks5.ParseAddress(s.ToAddr)
 	if err != nil {
 		return err
@@ -282,18 +287,26 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
+	dst := s.ToAddr
 	var ue *socks5.UDPExchange
-	iue, ok := s.Cache.Get(addr.String())
+	iue, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue = iue.(*socks5.UDPExchange)
 		return send(ue, b)
 	}
 
-	c, err := Dial.Dial("udp", s.RemoteUDPAddr.String())
+	var laddr *net.UDPAddr
+	any, ok := s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
+	rc, err := Dial.DialUDP("udp", laddr, s.RemoteUDPAddr)
 	if err != nil {
 		return err
 	}
-	rc := c.(*net.UDPConn)
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+	}
 	ue = &socks5.UDPExchange{
 		ClientAddr: addr,
 		RemoteConn: rc,
@@ -302,10 +315,10 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		ue.RemoteConn.Close()
 		return err
 	}
-	s.Cache.Set(ue.ClientAddr.String(), ue, cache.DefaultExpiration)
-	go func(ue *socks5.UDPExchange) {
+	s.UDPExchanges.Set(src+dst, ue, -1)
+	go func(ue *socks5.UDPExchange, dst string) {
 		defer func() {
-			s.Cache.Delete(ue.ClientAddr.String())
+			s.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 			ue.RemoteConn.Close()
 		}()
 		var b [65535]byte
@@ -328,6 +341,6 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 				break
 			}
 		}
-	}(ue)
+	}(ue, dst)
 	return nil
 }
