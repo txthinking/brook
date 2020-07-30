@@ -45,6 +45,7 @@ type Tproxy struct {
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
 	UDPExchanges  *cache.Cache
+	UDPSrc        *cache.Cache
 	TCPDeadline   int
 	TCPTimeout    int
 	UDPDeadline   int
@@ -70,6 +71,7 @@ func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadli
 		return nil, err
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -80,6 +82,7 @@ func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadli
 		RemoteTCPAddr: rtaddr,
 		RemoteUDPAddr: ruaddr,
 		UDPExchanges:  cs,
+		UDPSrc:        cs2,
 		TCPTimeout:    tcpTimeout,
 		TCPDeadline:   tcpDeadline,
 		UDPDeadline:   udpDeadline,
