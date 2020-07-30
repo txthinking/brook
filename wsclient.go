@@ -409,11 +409,11 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		return err
 	}
 	if laddr == nil {
-		s.UDPSrc.Set(src+dst, &net.UDPAddr{
-			IP:   rc.LocalAddr().(*net.TCPAddr).IP,
-			Port: rc.LocalAddr().(*net.TCPAddr).Port,
-			Zone: rc.LocalAddr().(*net.TCPAddr).Zone,
-		}, -1)
+		ua, err := net.ResolveUDPAddr("udp", rc.LocalAddr().String())
+		if err != nil {
+			return err
+		}
+		s.UDPSrc.Set(src+dst, ua, -1)
 	}
 	if x.UDPDeadline != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(x.UDPDeadline) * time.Second)); err != nil {

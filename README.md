@@ -43,7 +43,6 @@
 - [Socks5 Server](#socks5-server)
 - [Socks5 to HTTP](#socks5-to-http)
 - [PAC](#pac)
-- [Shadowsocks](#shadowsocks)
 - [How to](#how-to)
 - [Contributing](#contributing)
 - [License](#license)
@@ -220,7 +219,7 @@ $ brook qr -s wss://wsserver_domain:port -p password
 
 ```
 # Run as relay
-$ brook relay -l listen_address:port -r relay_to_address:port
+$ brook relay -l listen_address:port -t relay_to_address:port
 ```
 
 > More parameters: $ brook relay -h
@@ -254,24 +253,6 @@ $ brook pac -f /path/to/file.pac
 ```
 
 > More parameters: $ brook pac -h
-
-### Shadowsocks
-
-```
-# Run as shadowsocks server
-$ brook ssserver -l listen_address:port -p password
-```
-
-> More parameters: $ brook ssserver -h
-
-```
-# Run as shadowsocks client, connect to shadowsocks server, start a socks5 proxy server
-$ brook ssclient -s ssserver_address:port -p password -l listen_address:port -i socks5_server_ip
-```
-
-> More parameters: $ brook ssclient -h
-
-> Fixed method is aes-256-cfb
 
 ### How to
 
