@@ -456,35 +456,35 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			default:
 				if s.UDPDeadline != 0 {
 					if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
-						break
+						return
 					}
 				}
 				b := make([]byte, 12+16+10+2)
 				if _, err := io.ReadFull(ue.RemoteConn, b); err != nil {
-					break
+					return
 				}
 				l, err := DecryptLength(x.Password, b)
 				if err != nil {
 					log.Println(err)
-					break
+					return
 				}
 				b = make([]byte, l)
 				if _, err := io.ReadFull(ue.RemoteConn, b); err != nil {
-					break
+					return
 				}
 				_, _, _, data, err := Decrypt(x.Password, b)
 				if err != nil {
 					log.Println(err)
-					break
+					return
 				}
 				a, addr, port, err := socks5.ParseAddress(ue.ClientAddr.String())
 				if err != nil {
 					log.Println(err)
-					break
+					return
 				}
 				d1 := socks5.NewDatagram(a, addr, port, data)
 				if _, err := s.UDPConn.WriteToUDP(d1.Bytes(), ue.ClientAddr); err != nil {
-					break
+					return
 				}
 			}
 		}
