@@ -454,6 +454,10 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	}
 	rc, err := Dial.DialUDP("udp", laddr, s.RemoteUDPAddr)
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			// we dont choose lock, so ignore this error
+			return nil
+		}
 		return err
 	}
 	if !ok {
@@ -477,9 +481,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	s.UDPExchanges.Set(src+dst, ue, -1)
 	go func(ue *TproxyUDPExchange, dst string) {
 		defer func() {
-			s.UDPExchanges.Delete(ue.LocalConn.RemoteAddr().String() + dst)
 			ue.RemoteConn.Close()
 			ue.LocalConn.Close()
+			s.UDPExchanges.Delete(ue.LocalConn.RemoteAddr().String() + dst)
 		}()
 		var b [65535]byte
 		for {

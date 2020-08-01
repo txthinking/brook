@@ -19,6 +19,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"strings"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
@@ -334,6 +335,10 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	rc, err := Dial.DialUDP("udp", laddr, raddr)
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			// we dont choose lock, so ignore this error
+			return nil
+		}
 		return err
 	}
 	if laddr == nil {
@@ -354,8 +359,8 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	s.UDPExchanges.Set(src+dst, ue, cache.DefaultExpiration)
 	go func(ue *ServerUDPExchange, dst string) {
 		defer func() {
-			s.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 			ue.RemoteConn.Close()
+			s.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 			if ue.Internet != nil {
 				ue.Internet.Close()
 			}
