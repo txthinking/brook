@@ -14,15 +14,11 @@
 
 ---
 
-**v20200701**
+**v20200801**
 
-* CLI:
-  * New subcommand `$ brook hijackhttps`
-  * Optimization
-* GUI:
-  * macOS: add tun
-  * Android: support IPv6
-  * Other minor changes
+* Performance optimization
+* Some subcommand parameter changes
+* NAT: Symmetric (Need to upgrade both server and client)
 
 ---
 
@@ -74,7 +70,7 @@ install GUI on macOS
 brew cask install brook
 ```
 
-**or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200701/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200701/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200701/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)**
+**or download GUI: [macOS](https://github.com/txthinking/brook/releases/download/v20200801/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200801/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200801/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)**
 
 > CLI contains server and client, GUI only contains client. iOS client only supports non-China AppStore.
 
@@ -88,7 +84,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20200701
+   20200801
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
@@ -98,7 +94,7 @@ COMMANDS:
    servers       Run as multiple brook servers
    client        Run as brook client, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> $ brook client <-> $ brook server <-> dst], [works with $ brook server]
    tunnel        Run as tunnel, both TCP and UDP, this means access [listen address] is equal to [to address], [src <-> listen address <-> $ brook server <-> to address], [works with $ brook server]
-   dns           Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook server <-> default dns server] or [src <-> $ brook dns <-> list dns server], [works with $ brook server]
+   dns           Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook server <-> dns server] or [src <-> $ brook dns <-> dns server for bypass], [works with $ brook server]
    tproxy        Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]
    tun           tun
    wsserver      Run as brook wsserver, both TCP and UDP, it will start a standard http(s) server and websocket server
@@ -111,9 +107,6 @@ COMMANDS:
    socks5tohttp  Convert socks5 to http proxy, [src <-> listen address(http proxy) <-> socks5 address <-> dst]
    hijackhttps   Hijack domains and assume is TCP/TLS/443. Requesting these domains from anywhere in the system will be hijacked . [src <-> $ brook hijackhttps <-> socks5 server] or [src <-> direct]
    pac           Run as PAC server or save PAC to file
-   ssserver      Run as shadowsocks server, both TCP and UDP, fixed method is aes-256-cfb
-   ssservers     Run as shadowsocks multiple servers, fixed method is aes-256-cfb
-   ssclient      Run as shadowsocks client, both TCP and UDP, to start socks5 or http proxy, method is aes-256-cfb, [src <-> $ brook ssclient <-> $ brook ssserver <-> dst], [works with $ brook ssserver]
    howto         Print some useful tutorial resources
    help, h       Shows a list of commands or help for one command
 
