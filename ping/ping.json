@@ -1,5 +1,5 @@
 {
     "version": "v20200801",
-    "text": "",
-    "link": ""
+    "text": "Due to probabilistic connection failure on iOS 13.x, iOS client is temporarily removed",
+    "link": "https://github.com/txthinking/brook/issues/698"
 }
