@@ -77,16 +77,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -99,7 +94,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -123,16 +118,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -151,7 +141,7 @@ func main() {
 					if len(ss) != 2 {
 						return errors.New("Invalid listenpassword")
 					}
-					s, err := brook.NewServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+					s, err := brook.NewServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
 						return err
 					}
@@ -201,16 +191,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -223,7 +208,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -265,16 +250,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -287,7 +267,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewTunnel(c.String("listen"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewTunnel(c.String("listen"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -336,16 +316,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -358,7 +333,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassList"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassList"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -392,16 +367,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -422,7 +392,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -437,7 +407,7 @@ func main() {
 					if err := s.RunAutoScripts(); err != nil {
 						return err
 					}
-					dns, err = brook.NewDNS(":53", c.String("server"), c.String("password"), "8.8.8.8:53", "223.5.5.5:53", "https://txthinking.github.io/blackwhite/white.list", c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+					dns, err = brook.NewDNS(":53", c.String("server"), c.String("password"), "8.8.8.8:53", "223.5.5.5:53", "https://txthinking.github.io/blackwhite/white.list", c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
 						return err
 					}
@@ -497,16 +467,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -519,7 +484,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), c.String("domain"), c.String("path"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), c.String("domain"), c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -562,16 +527,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -584,7 +544,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewWSClient(c.String("listen"), c.String("ip"), c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewWSClient(c.String("listen"), c.String("ip"), c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -664,16 +624,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -686,7 +641,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewRelay(c.String("listen"), c.String("to"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewRelay(c.String("listen"), c.String("to"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -710,16 +665,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -738,7 +688,7 @@ func main() {
 					if len(ss) != 2 {
 						return errors.New("Invalid listento")
 					}
-					s, err := brook.NewRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+					s, err := brook.NewRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
 						return err
 					}
@@ -782,16 +732,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -804,7 +749,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewSocks5Server(c.String("listen"), c.String("ip"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewSocks5Server(c.String("listen"), c.String("ip"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -840,14 +785,9 @@ func main() {
 					Usage:   "Listen address: like: 127.0.0.1:8080",
 				},
 				&cli.IntFlag{
-					Name:  "timeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "deadline",
+					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "connection tcp timeout (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -858,7 +798,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.Int("timeout"), c.Int("deadline"))
+				s, err := brook.NewSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.Int("tcpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -905,16 +845,11 @@ func main() {
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
-					Value: 60,
-					Usage: "connection tcp keepalive timeout (s)",
-				},
-				&cli.IntFlag{
-					Name:  "tcpDeadline",
 					Value: 0,
 					Usage: "connection deadline time (s)",
 				},
 				&cli.IntFlag{
-					Name:  "udpDeadline",
+					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
@@ -927,7 +862,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewHijackHTTPS(c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.String("listenIP"), c.String("dnsForBypass"), c.String("bypassList"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
+				s, err := brook.NewHijackHTTPS(c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.String("listenIP"), c.String("dnsForBypass"), c.String("bypassList"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}

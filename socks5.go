@@ -27,8 +27,8 @@ type Socks5Server struct {
 }
 
 // NewSocks5Server returns a new Socks5Server.
-func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Socks5Server, error) {
-	s5, err := socks5.NewClassicServer(addr, ip, userName, password, tcpTimeout, tcpDeadline, udpDeadline)
+func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, udpTimeout int) (*Socks5Server, error) {
+	s5, err := socks5.NewClassicServer(addr, ip, userName, password, tcpTimeout, udpTimeout)
 	if err != nil {
 		return nil, err
 	}

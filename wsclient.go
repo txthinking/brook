@@ -45,8 +45,7 @@ type WSClient struct {
 	TLSConfig       *tls.Config
 	Password        []byte
 	TCPTimeout      int
-	TCPDeadline     int
-	UDPDeadline     int
+	UDPTimeout      int
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
@@ -56,8 +55,8 @@ type WSClient struct {
 }
 
 // NewWSClient.
-func NewWSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*WSClient, error) {
-	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, tcpDeadline, udpDeadline)
+func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int) (*WSClient, error) {
+	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, udpTimeout)
 	if err != nil {
 		return nil, err
 	}
@@ -78,8 +77,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udp
 		Server:       s5,
 		Password:     []byte(password),
 		TCPTimeout:   tcpTimeout,
-		TCPDeadline:  tcpDeadline,
-		UDPDeadline:  udpDeadline,
+		UDPTimeout:   udpTimeout,
 		Path:         path,
 		UDPExchanges: cs,
 	}
@@ -136,13 +134,7 @@ func (x *WSClient) DialWebsocket(src string) (net.Conn, error) {
 		return nil, err
 	}
 	if x.TCPTimeout != 0 {
-		if err := c.(*net.TCPConn).SetKeepAlivePeriod(time.Duration(x.TCPTimeout) * time.Second); err != nil {
-			c.Close()
-			return nil, err
-		}
-	}
-	if x.TCPDeadline != 0 {
-		if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+		if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 			c.Close()
 			return nil, err
 		}
@@ -286,8 +278,8 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 			}
 			var b []byte
 			for {
-				if x.TCPDeadline != 0 {
-					if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+				if x.TCPTimeout != 0 {
+					if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 						return
 					}
 				}
@@ -303,8 +295,8 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 
 		var b [1024 * 2]byte
 		for {
-			if x.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+			if x.TCPTimeout != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 					return nil
 				}
 			}
@@ -408,8 +400,8 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		}
 		s.UDPSrc.Set(src+dst, ua, -1)
 	}
-	if x.UDPDeadline != 0 {
-		if err := rc.SetDeadline(time.Now().Add(time.Duration(x.UDPDeadline) * time.Second)); err != nil {
+	if x.UDPTimeout != 0 {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(x.UDPTimeout) * time.Second)); err != nil {
 			rc.Close()
 			return err
 		}
@@ -440,8 +432,8 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 			x.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 		}()
 		for {
-			if s.UDPDeadline != 0 {
-				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+			if s.UDPTimeout != 0 {
+				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
@@ -492,13 +484,7 @@ func (x *WSClient) ListenAndServeHTTP() error {
 		go func(c *net.TCPConn) {
 			defer c.Close()
 			if x.TCPTimeout != 0 {
-				if err := c.SetKeepAlivePeriod(time.Duration(x.TCPTimeout) * time.Second); err != nil {
-					log.Println(err)
-					return
-				}
-			}
-			if x.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 					log.Println(err)
 					return
 				}
@@ -628,8 +614,8 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 		}
 		var b []byte
 		for {
-			if x.TCPDeadline != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+			if x.TCPTimeout != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
@@ -645,8 +631,8 @@ func (x *WSClient) HTTPHandle(c *net.TCPConn) error {
 
 	var bf [1024 * 2]byte
 	for {
-		if x.TCPDeadline != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+		if x.TCPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 				return nil
 			}
 		}

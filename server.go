@@ -37,16 +37,15 @@ type Server struct {
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
 	UDPExchanges  *cache.Cache
-	TCPDeadline   int
 	TCPTimeout    int
-	UDPDeadline   int
+	UDPTimeout    int
 	ServerAuthman plugin.ServerAuthman
 	RunnerGroup   *runnergroup.RunnerGroup
 	UDPSrc        *cache.Cache
 }
 
 // NewServer.
-func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Server, error) {
+func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -66,8 +65,7 @@ func NewServer(addr, password string, tcpTimeout, tcpDeadline, udpDeadline int) 
 		UDPAddr:      uaddr,
 		UDPExchanges: cs,
 		TCPTimeout:   tcpTimeout,
-		TCPDeadline:  tcpDeadline,
-		UDPDeadline:  udpDeadline,
+		UDPTimeout:   udpTimeout,
 		RunnerGroup:  runnergroup.New(),
 		UDPSrc:       cs2,
 	}
@@ -122,13 +120,7 @@ func (s *Server) RunTCPServer() error {
 		go func(c *net.TCPConn) {
 			defer c.Close()
 			if s.TCPTimeout != 0 {
-				if err := c.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
-					log.Println(err)
-					return
-				}
-			}
-			if s.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 					log.Println(err)
 					return
 				}
@@ -204,12 +196,7 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if s.TCPTimeout != 0 {
-		if err := rc.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
-			return err
-		}
-	}
-	if s.TCPDeadline != 0 {
-		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 			return err
 		}
 	}
@@ -232,8 +219,8 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 		}
 		var b [1024 * 2]byte
 		for {
-			if s.TCPDeadline != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+			if s.TCPTimeout != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
@@ -255,8 +242,8 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 	}()
 
 	for {
-		if s.TCPDeadline != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+		if s.TCPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 				return nil
 			}
 		}
@@ -367,8 +354,8 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		}()
 		var b [65535]byte
 		for {
-			if s.UDPDeadline != 0 {
-				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+			if s.UDPTimeout != 0 {
+				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 					break
 				}
 			}

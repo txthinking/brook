@@ -28,7 +28,3 @@ func EnableDebug() {
 	socks5.Debug = true
 	Debug = true
 }
-
-func init() {
-	// log.SetFlags(log.LstdFlags | log.Lshortfile)
-}

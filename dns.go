@@ -43,14 +43,13 @@ type DNS struct {
 	DNSServerForBypass string
 	TCPListen          *net.TCPListener
 	UDPConn            *net.UDPConn
-	TCPDeadline        int
 	TCPTimeout         int
-	UDPDeadline        int
+	UDPTimeout         int
 	RunnerGroup        *runnergroup.RunnerGroup
 }
 
 // NewDNS.
-func NewDNS(addr, server, password, dnsServer, dnsServerForBypass, bypassList string, tcpTimeout, tcpDeadline, udpDeadline int) (*DNS, error) {
+func NewDNS(addr, server, password, dnsServer, dnsServerForBypass, bypassList string, tcpTimeout, udpTimeout int) (*DNS, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -91,8 +90,7 @@ func NewDNS(addr, server, password, dnsServer, dnsServerForBypass, bypassList st
 		DNSServer:          dnsServer,
 		DNSServerForBypass: dnsServerForBypass,
 		TCPTimeout:         tcpTimeout,
-		TCPDeadline:        tcpDeadline,
-		UDPDeadline:        udpDeadline,
+		UDPTimeout:         udpTimeout,
 		RunnerGroup:        runnergroup.New(),
 	}
 	return s, nil
@@ -141,13 +139,7 @@ func (s *DNS) RunTCPServer() error {
 		go func(c *net.TCPConn) {
 			defer c.Close()
 			if s.TCPTimeout != 0 {
-				if err := c.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
-					log.Println(err)
-					return
-				}
-			}
-			if s.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 					log.Println(err)
 					return
 				}
@@ -220,12 +212,7 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 		rc := tmp.(*net.TCPConn)
 		defer rc.Close()
 		if s.TCPTimeout != 0 {
-			if err := rc.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
-				return err
-			}
-		}
-		if s.TCPDeadline != 0 {
-			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 				return err
 			}
 		}
@@ -235,8 +222,8 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 		go func() {
 			var bf [1024 * 2]byte
 			for {
-				if s.TCPDeadline != 0 {
-					if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				if s.TCPTimeout != 0 {
+					if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 						return
 					}
 				}
@@ -251,8 +238,8 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 		}()
 		var bf [1024 * 2]byte
 		for {
-			if s.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+			if s.TCPTimeout != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 					return nil
 				}
 			}
@@ -273,12 +260,7 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if s.TCPTimeout != 0 {
-		if err := rc.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
-			return err
-		}
-	}
-	if s.TCPDeadline != 0 {
-		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 			return err
 		}
 	}
@@ -320,8 +302,8 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 		}
 		var b []byte
 		for {
-			if s.TCPDeadline != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+			if s.TCPTimeout != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
@@ -337,8 +319,8 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 
 	var b [1024 * 2]byte
 	for {
-		if s.TCPDeadline != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+		if s.TCPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 				return nil
 			}
 		}
@@ -375,8 +357,8 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			return err
 		}
 		defer conn.Close()
-		if s.UDPDeadline != 0 {
-			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+		if s.UDPTimeout != 0 {
+			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 				return err
 			}
 		}
@@ -413,8 +395,8 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return err
 	}
 	defer rc.Close()
-	if s.UDPDeadline != 0 {
-		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+	if s.UDPTimeout != 0 {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 			return err
 		}
 	}

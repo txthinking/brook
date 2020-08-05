@@ -35,8 +35,7 @@ type Client struct {
 	RemoteAddr      string
 	Password        []byte
 	TCPTimeout      int
-	TCPDeadline     int
-	UDPDeadline     int
+	UDPTimeout      int
 	TCPListen       *net.TCPListener
 	Socks5Middleman plugin.Socks5Middleman
 	HTTPMiddleman   plugin.HTTPMiddleman
@@ -44,8 +43,8 @@ type Client struct {
 }
 
 // NewClient returns a new Client.
-func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Client, error) {
-	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, tcpDeadline, udpDeadline)
+func NewClient(addr, ip, server, password string, tcpTimeout, udpTimeout int) (*Client, error) {
+	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, udpTimeout)
 	if err != nil {
 		return nil, err
 	}
@@ -53,12 +52,11 @@ func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDe
 		log.Println("Try to raise system limits, got", err)
 	}
 	x := &Client{
-		RemoteAddr:  server,
-		Server:      s5,
-		Password:    []byte(password),
-		TCPTimeout:  tcpTimeout,
-		TCPDeadline: tcpDeadline,
-		UDPDeadline: udpDeadline,
+		RemoteAddr: server,
+		Server:     s5,
+		Password:   []byte(password),
+		TCPTimeout: tcpTimeout,
+		UDPTimeout: udpTimeout,
 	}
 	return x, nil
 }
@@ -104,12 +102,7 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		rc := tmp.(*net.TCPConn)
 		defer rc.Close()
 		if x.TCPTimeout != 0 {
-			if err := rc.SetKeepAlivePeriod(time.Duration(x.TCPTimeout) * time.Second); err != nil {
-				return ErrorReply(r, c, err)
-			}
-		}
-		if x.TCPDeadline != 0 {
-			if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 				return ErrorReply(r, c, err)
 			}
 		}
@@ -163,8 +156,8 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 			}
 			var b []byte
 			for {
-				if x.TCPDeadline != 0 {
-					if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+				if x.TCPTimeout != 0 {
+					if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 						return
 					}
 				}
@@ -180,8 +173,8 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 
 		var b [1024 * 2]byte
 		for {
-			if x.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+			if x.TCPTimeout != 0 {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 					return nil
 				}
 			}
@@ -286,8 +279,8 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		}()
 		var b [65535]byte
 		for {
-			if s.UDPDeadline != 0 {
-				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+			if s.UDPTimeout != 0 {
+				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
@@ -329,13 +322,7 @@ func (x *Client) ListenAndServeHTTP() error {
 		go func(c *net.TCPConn) {
 			defer c.Close()
 			if x.TCPTimeout != 0 {
-				if err := c.SetKeepAlivePeriod(time.Duration(x.TCPTimeout) * time.Second); err != nil {
-					log.Println(err)
-					return
-				}
-			}
-			if x.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 					log.Println(err)
 					return
 				}
@@ -400,12 +387,7 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if x.TCPTimeout != 0 {
-		if err := rc.SetKeepAlivePeriod(time.Duration(x.TCPTimeout) * time.Second); err != nil {
-			return err
-		}
-	}
-	if x.TCPDeadline != 0 {
-		if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 			return err
 		}
 	}
@@ -467,8 +449,8 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 		}
 		var b []byte
 		for {
-			if x.TCPDeadline != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+			if x.TCPTimeout != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
@@ -484,8 +466,8 @@ func (x *Client) HTTPHandle(c *net.TCPConn) error {
 
 	var bf [1024 * 2]byte
 	for {
-		if x.TCPDeadline != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPDeadline) * time.Second)); err != nil {
+		if x.TCPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 				return nil
 			}
 		}

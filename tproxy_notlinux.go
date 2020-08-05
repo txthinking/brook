@@ -18,28 +18,14 @@ package brook
 
 import (
 	"errors"
-	"net"
-
-	cache "github.com/patrickmn/go-cache"
 )
 
 // Tproxy.
 type Tproxy struct {
-	TCPAddr       *net.TCPAddr
-	UDPAddr       *net.UDPAddr
-	RemoteTCPAddr *net.TCPAddr
-	RemoteUDPAddr *net.UDPAddr
-	Password      []byte
-	TCPListen     *net.TCPListener
-	UDPConn       *net.UDPConn
-	Cache         *cache.Cache
-	TCPDeadline   int
-	TCPTimeout    int
-	UDPDeadline   int
 }
 
 // NewTproxy.
-func NewTproxy(addr, remote, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Tproxy, error) {
+func NewTproxy(addr, remote, password string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 	return nil, errors.New("Only support Linux")
 }
 

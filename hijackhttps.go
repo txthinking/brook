@@ -40,14 +40,13 @@ type HijackHTTPS struct {
 	UDPDNSServer       *dns.Server
 	TCPDNSServer       *dns.Server
 	HTTPSServer        net.Listener
-	TCPDeadline        int
 	TCPTimeout         int
-	UDPDeadline        int
+	UDPTimeout         int
 	RunnerGroup        *runnergroup.RunnerGroup
 }
 
 // NewHijackHTTPS.
-func NewHijackHTTPS(socks5addr, socks5username, socks5password, listenIP, dnsForBypass, bypassList string, tcpTimeout, tcpDeadline, udpDeadline int) (*HijackHTTPS, error) {
+func NewHijackHTTPS(socks5addr, socks5username, socks5password, listenIP, dnsForBypass, bypassList string, tcpTimeout, udpTimeout int) (*HijackHTTPS, error) {
 	ds := make(map[string]byte)
 	if bypassList != "" {
 		ss, err := readList(bypassList)
@@ -89,8 +88,7 @@ func NewHijackHTTPS(socks5addr, socks5username, socks5password, listenIP, dnsFor
 		DNSServerForBypass: dnsForBypass,
 		BypassDomains:      ds,
 		TCPTimeout:         tcpTimeout,
-		TCPDeadline:        tcpDeadline,
-		UDPDeadline:        udpDeadline,
+		UDPTimeout:         udpTimeout,
 		RunnerGroup:        runnergroup.New(),
 	}
 	return s, nil
@@ -141,8 +139,8 @@ func (s *HijackHTTPS) RunUDPDNSServer() error {
 	s.UDPDNSServer = &dns.Server{
 		Addr:         net.JoinHostPort(s.ListenIP, "53"),
 		Net:          "udp",
-		ReadTimeout:  time.Duration(s.UDPDeadline) * time.Second,
-		WriteTimeout: time.Duration(s.UDPDeadline) * time.Second,
+		ReadTimeout:  time.Duration(s.UDPTimeout) * time.Second,
+		WriteTimeout: time.Duration(s.UDPTimeout) * time.Second,
 	}
 	s.UDPDNSServer.Handler = s.DNSHandle("udp")
 	return s.UDPDNSServer.ListenAndServe()
@@ -191,14 +189,14 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 			return
 		}
 		defer conn.Close()
-		if network == "tcp" && s.TCPDeadline != 0 {
-			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+		if network == "tcp" && s.TCPTimeout != 0 {
+			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 				log.Println(err)
 				return
 			}
 		}
-		if network == "udp" && s.UDPDeadline != 0 {
-			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+		if network == "udp" && s.UDPTimeout != 0 {
+			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 				log.Println(err)
 				return
 			}
@@ -231,13 +229,7 @@ func (s *HijackHTTPS) RunHTTPSServer() error {
 		go func(c net.Conn) {
 			defer c.Close()
 			if s.TCPTimeout != 0 {
-				if err := c.(*net.TCPConn).SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
-					log.Println(err)
-					return
-				}
-			}
-			if s.TCPDeadline != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 					log.Println(err)
 					return
 				}
@@ -370,8 +362,8 @@ func (s *HijackHTTPS) HTTPSHandle(c net.Conn) error {
 	go func() {
 		var bf [1024 * 2]byte
 		for {
-			if s.TCPDeadline != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+			if s.TCPTimeout != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
@@ -386,8 +378,8 @@ func (s *HijackHTTPS) HTTPSHandle(c net.Conn) error {
 	}()
 	var bf [1024 * 2]byte
 	for {
-		if s.TCPDeadline != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+		if s.TCPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 				return nil
 			}
 		}

@@ -41,16 +41,15 @@ type WSServer struct {
 	TCPAddr       *net.TCPAddr
 	HTTPServer    *http.Server
 	HTTPSServer   *http.Server
-	TCPDeadline   int
 	TCPTimeout    int
-	UDPDeadline   int
+	UDPTimeout    int
 	ServerAuthman plugin.ServerAuthman
 	Path          string
 	UDPSrc        *cache.Cache
 }
 
 // NewWSServer.
-func NewWSServer(addr, password, domain, path string, tcpTimeout, tcpDeadline, udpDeadline int) (*WSServer, error) {
+func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int) (*WSServer, error) {
 	var taddr *net.TCPAddr
 	var err error
 	if domain == "" {
@@ -64,14 +63,13 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, tcpDeadline, u
 		log.Println("Try to raise system limits, got", err)
 	}
 	s := &WSServer{
-		Password:    []byte(password),
-		Domain:      domain,
-		TCPAddr:     taddr,
-		TCPTimeout:  tcpTimeout,
-		TCPDeadline: tcpDeadline,
-		UDPDeadline: udpDeadline,
-		Path:        path,
-		UDPSrc:      cs2,
+		Password:   []byte(password),
+		Domain:     domain,
+		TCPAddr:    taddr,
+		TCPTimeout: tcpTimeout,
+		UDPTimeout: udpTimeout,
+		Path:       path,
+		UDPSrc:     cs2,
 	}
 	return s, nil
 }
@@ -152,8 +150,8 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	c := conn.UnderlyingConn()
 	defer c.Close()
-	if s.TCPDeadline != 0 {
-		if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+	if s.TCPTimeout != 0 {
+		if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 			log.Println(err)
 			return
 		}
@@ -218,12 +216,7 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if s.TCPTimeout != 0 {
-		if err := rc.SetKeepAlivePeriod(time.Duration(s.TCPTimeout) * time.Second); err != nil {
-			return err
-		}
-	}
-	if s.TCPDeadline != 0 {
-		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 			return err
 		}
 	}
@@ -246,8 +239,8 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 		}
 		var b [1024 * 2]byte
 		for {
-			if s.TCPDeadline != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+			if s.TCPTimeout != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
@@ -269,8 +262,8 @@ func (s *WSServer) TCPHandle(c net.Conn) error {
 	}()
 
 	for {
-		if s.TCPDeadline != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPDeadline) * time.Second)); err != nil {
+		if s.TCPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 				return nil
 			}
 		}
@@ -297,8 +290,8 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 	aim := cache.New(cache.NoExpiration, cache.NoExpiration)
 	src := c.RemoteAddr().String()
 	for {
-		if s.UDPDeadline != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+		if s.UDPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 				return nil
 			}
 		}
@@ -396,8 +389,8 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 			}()
 			var b [65535]byte
 			for {
-				if s.UDPDeadline != 0 {
-					if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
+				if s.UDPTimeout != 0 {
+					if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 						break
 					}
 				}
