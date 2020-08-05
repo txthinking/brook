@@ -214,11 +214,6 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
-				&cli.IntFlag{
-					Name:  "udpSessionTime",
-					Value: 60,
-					Usage: "udp session time (s), in most cases need this",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || (!c.Bool("http") && c.String("ip") == "") || c.String("server") == "" || c.String("password") == "" {
@@ -228,7 +223,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				s, err := brook.NewClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}
@@ -580,11 +575,6 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
-				&cli.IntFlag{
-					Name:  "udpSessionTime",
-					Value: 60,
-					Usage: "udp session time (s), in most cases need this",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || (!c.Bool("http") && c.String("ip") == "") || c.String("wsserver") == "" || c.String("password") == "" {
@@ -594,7 +584,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewWSClient(c.String("listen"), c.String("ip"), c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				s, err := brook.NewWSClient(c.String("listen"), c.String("ip"), c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}
@@ -805,11 +795,6 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
-				&cli.IntFlag{
-					Name:  "udpSessionTime",
-					Value: 60,
-					Usage: "udp session time (s), in most cases need this",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("ip") == "" {
@@ -819,7 +804,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewSocks5Server(c.String("listen"), c.String("ip"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"), c.Int("udpSessionTime"))
+				s, err := brook.NewSocks5Server(c.String("listen"), c.String("ip"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("tcpDeadline"), c.Int("udpDeadline"))
 				if err != nil {
 					return err
 				}

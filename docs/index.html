@@ -14,6 +14,7 @@
             <a href="#/zh-cn/">中文</a>
         </nav>
         <div id="app"></div>
+        <script src="//cdn.jsdelivr.net/npm/docsify-edit-on-github"></script>
         <script>
             window.$docsify = {
                 name: 'Brook',
@@ -22,6 +23,10 @@
                 subMaxLevel: 2,
                 coverpage: true,
                 relativePath: true,
+                coverpage: ['/', '/zh-cn/'],
+                plugins: [
+                    EditOnGithubPlugin.create("https://github.com/txthinking/brook/blob/master/docs/", null, "Edit on Github")
+                ]
             }
         </script>
         <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>

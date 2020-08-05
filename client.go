@@ -44,8 +44,8 @@ type Client struct {
 }
 
 // NewClient returns a new Client.
-func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Client, error) {
-	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func NewClient(addr, ip, server, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Client, error) {
+	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, tcpDeadline, udpDeadline)
 	if err != nil {
 		return nil, err
 	}
@@ -197,12 +197,10 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {
-		caddr, err := r.UDP(c, x.Server.ServerAddr)
+		_, err := r.UDP(c, x.Server.ServerAddr)
 		if err != nil {
 			return err
 		}
-		// TODO
-		_ = caddr
 		return nil
 	}
 	return socks5.ErrUnsupportCmd
@@ -221,34 +219,24 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 
 	src := addr.String()
-	// any, ok := s.AssociatedUDP.Get(src)
-	// if !ok {
-	// return fmt.Errorf("This udp address %s is not associated with tcp", src)
-	// }
-	// ch := any.(chan byte)
 	send := func(ue *socks5.UDPExchange, data []byte) error {
-		select {
-		// case <-ch:
-		// 	return fmt.Errorf("This udp address %s is not associated with tcp", src)
-		default:
-			if x.ClientAuthman != nil {
-				b, err := x.ClientAuthman.GetToken()
-				if err != nil {
-					return err
-				}
-				data = append(data, b...)
-				bb := make([]byte, 2)
-				binary.BigEndian.PutUint16(bb, uint16(len(b)))
-				data = append(data, bb...)
-			}
-			cd, err := Encrypt(x.Password, data)
+		if x.ClientAuthman != nil {
+			b, err := x.ClientAuthman.GetToken()
 			if err != nil {
 				return err
 			}
-			_, err = ue.RemoteConn.Write(cd)
-			if err != nil {
-				return err
-			}
+			data = append(data, b...)
+			bb := make([]byte, 2)
+			binary.BigEndian.PutUint16(bb, uint16(len(b)))
+			data = append(data, bb...)
+		}
+		cd, err := Encrypt(x.Password, data)
+		if err != nil {
+			return err
+		}
+		_, err = ue.RemoteConn.Write(cd)
+		if err != nil {
+			return err
 		}
 		return nil
 	}
@@ -298,36 +286,28 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		}()
 		var b [65535]byte
 		for {
-			select {
-			// case <-ch:
-			// 	if Debug {
-			// 		log.Printf("The tcp that udp address %s associated closed\n", ue.ClientAddr.String())
-			// 	}
-			// 	return
-			default:
-				if s.UDPDeadline != 0 {
-					if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
-						return
-					}
-				}
-				n, err := ue.RemoteConn.Read(b[:])
-				if err != nil {
+			if s.UDPDeadline != 0 {
+				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPDeadline) * time.Second)); err != nil {
 					return
 				}
-				_, _, _, data, err := Decrypt(x.Password, b[0:n])
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				a, addr, port, err := socks5.ParseAddress(ue.ClientAddr.String())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				d1 := socks5.NewDatagram(a, addr, port, data)
-				if _, err := s.UDPConn.WriteToUDP(d1.Bytes(), ue.ClientAddr); err != nil {
-					return
-				}
+			}
+			n, err := ue.RemoteConn.Read(b[:])
+			if err != nil {
+				return
+			}
+			_, _, _, data, err := Decrypt(x.Password, b[0:n])
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			a, addr, port, err := socks5.ParseAddress(dst)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			d1 := socks5.NewDatagram(a, addr, port, data)
+			if _, err := s.UDPConn.WriteToUDP(d1.Bytes(), ue.ClientAddr); err != nil {
+				return
 			}
 		}
 	}(ue, dst)

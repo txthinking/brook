@@ -17,41 +17,26 @@ package brook
 import (
 	"log"
 
-	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/socks5"
 )
 
 // Socks5Server is raw socks5 server.
 type Socks5Server struct {
-	Server          *socks5.Server
-	TCPTimeout      int
-	TCPDeadline     int
-	UDPDeadline     int
-	UDPSessionTime  int
-	ForwardAddress  string
-	ForwardUserName string
-	ForwardPassword string
-	Cache           *cache.Cache
+	Server *socks5.Server
 }
 
 // NewSocks5Server returns a new Socks5Server.
-func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime int) (*Socks5Server, error) {
-	s5, err := socks5.NewClassicServer(addr, ip, userName, password, tcpTimeout, tcpDeadline, udpDeadline, udpSessionTime)
+func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, tcpDeadline, udpDeadline int) (*Socks5Server, error) {
+	s5, err := socks5.NewClassicServer(addr, ip, userName, password, tcpTimeout, tcpDeadline, udpDeadline)
 	if err != nil {
 		return nil, err
 	}
-	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
 	x := &Socks5Server{
-		Server:         s5,
-		TCPTimeout:     tcpTimeout,
-		TCPDeadline:    tcpDeadline,
-		UDPDeadline:    udpDeadline,
-		UDPSessionTime: udpSessionTime,
-		Cache:          cs,
+		Server: s5,
 	}
 	return x, nil
 }
