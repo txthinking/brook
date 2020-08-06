@@ -398,7 +398,7 @@ func (s *WSServer) UDPHandle(c net.Conn) error {
 				if err != nil {
 					break
 				}
-				a, addr, port, err := socks5.ParseAddress(dst) // fake
+				a, addr, port, err := socks5.ParseAddress(dst)
 				if err != nil {
 					log.Println(err)
 					break
