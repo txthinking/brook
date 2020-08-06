@@ -363,7 +363,7 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			if err != nil {
 				break
 			}
-			a, addr, port, err := socks5.ParseAddress(ue.ClientAddr.String())
+			a, addr, port, err := socks5.ParseAddress(dst)
 			if err != nil {
 				log.Println(err)
 				break
