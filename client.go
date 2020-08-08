@@ -27,7 +27,6 @@ import (
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
-	x1 "github.com/txthinking/x"
 )
 
 // Client.
@@ -146,8 +145,7 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		}
 
 		go func() {
-			var n = x1.BP12.Get().([]byte)
-			defer x1.BP12.Put(n)
+			n := make([]byte, 12)
 			if _, err := io.ReadFull(rc, n); err != nil {
 				return
 			}
@@ -173,15 +171,14 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 			}
 		}()
 
-		var b = x1.BP2048.Get().([]byte)
-		defer x1.BP2048.Put(b)
+		var b [1024 * 2]byte
 		for {
 			if x.TCPTimeout != 0 {
 				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 					return nil
 				}
 			}
-			i, err := c.Read(b)
+			i, err := c.Read(b[:])
 			if err != nil {
 				return nil
 			}
@@ -222,10 +219,9 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 				return err
 			}
 			data = append(data, b...)
-			var bb = x1.BP2.Get().([]byte)
+			bb := make([]byte, 2)
 			binary.BigEndian.PutUint16(bb, uint16(len(b)))
 			data = append(data, bb...)
-			x1.BP2.Put(bb)
 		}
 		cd, err := Encrypt(x.Password, data)
 		if err != nil {
@@ -281,15 +277,14 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 			ue.RemoteConn.Close()
 			s.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 		}()
-		var b = x1.BP65535.Get().([]byte)
-		defer x1.BP65535.Put(b)
+		var b [65535]byte
 		for {
 			if s.UDPTimeout != 0 {
 				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
 					return
 				}
 			}
-			n, err := ue.RemoteConn.Read(b)
+			n, err := ue.RemoteConn.Read(b[:])
 			if err != nil {
 				return
 			}

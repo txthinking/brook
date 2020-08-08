@@ -35,7 +35,6 @@ import (
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
-	x1 "github.com/txthinking/x"
 )
 
 // WSClient.
@@ -152,14 +151,12 @@ func (x *WSClient) DialWebsocket(src string) (net.Conn, error) {
 		}
 		c = tc
 	}
-	var p = x1.BP16.Get().([]byte)
+	p := make([]byte, 16)
 	if _, err := io.ReadFull(rand.Reader, p); err != nil {
-		x1.BP16.Put(p)
 		c.Close()
 		return nil, err
 	}
 	k := base64.StdEncoding.EncodeToString(p)
-	x1.BP16.Put(p)
 	b := make([]byte, 0)
 	b = append(b, []byte("GET "+x.Path+" HTTP/1.1\r\n")...)
 	b = append(b, []byte(fmt.Sprintf("Host: %s\r\n", x.RemoteAddr))...)
@@ -270,8 +267,7 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 		}
 
 		go func() {
-			var n = x1.BP12.Get().([]byte)
-			defer x1.BP12.Put(n)
+			n := make([]byte, 12)
 			if _, err := io.ReadFull(rc, n); err != nil {
 				return
 			}
@@ -297,15 +293,14 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 			}
 		}()
 
-		var b = x1.BP2048.Get().([]byte)
-		defer x1.BP2048.Put(b)
+		var b [1024 * 2]byte
 		for {
 			if x.TCPTimeout != 0 {
 				if err := c.SetDeadline(time.Now().Add(time.Duration(x.TCPTimeout) * time.Second)); err != nil {
 					return nil
 				}
 			}
-			i, err := c.Read(b)
+			i, err := c.Read(b[:])
 			if err != nil {
 				return nil
 			}
@@ -351,10 +346,9 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 				return err
 			}
 			data = append(data, b...)
-			var bb = x1.BP2.Get().([]byte)
+			bb := make([]byte, 2)
 			binary.BigEndian.PutUint16(bb, uint16(len(b)))
 			data = append(data, bb...)
-			x1.BP2.Put(bb)
 		}
 		cd, err := EncryptLength(x.Password, data)
 		if err != nil {
@@ -443,18 +437,15 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 					return
 				}
 			}
-			var b = x1.BP40.Get().([]byte)
+			b := make([]byte, 12+16+10+2)
 			if _, err := io.ReadFull(ue.RemoteConn, b); err != nil {
-				x1.BP40.Put(b)
 				return
 			}
 			l, err := DecryptLength(x.Password, b)
 			if err != nil {
-				x1.BP40.Put(b)
 				log.Println(err)
 				return
 			}
-			x1.BP40.Put(b)
 			b = make([]byte, l)
 			if _, err := io.ReadFull(ue.RemoteConn, b); err != nil {
 				return

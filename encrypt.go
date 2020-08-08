@@ -32,16 +32,7 @@ import (
 func IncrementNonce(n []byte) []byte {
 	i := int(binary.LittleEndian.Uint16(n))
 	i += 1
-	n[2] = 0
-	n[3] = 0
-	n[4] = 0
-	n[5] = 0
-	n[6] = 0
-	n[7] = 0
-	n[8] = 0
-	n[9] = 0
-	n[10] = 0
-	n[11] = 0
+	n = make([]byte, 12)
 	binary.LittleEndian.PutUint16(n, uint16(i))
 	return n
 }
