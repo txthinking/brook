@@ -402,20 +402,10 @@ func main() {
 					}
 					return nil
 				}
-				var dns *brook.DNS
 				if c.Bool("letBrookDoAllForMe") {
 					if err := s.RunAutoScripts(); err != nil {
 						return err
 					}
-					dns, err = brook.NewDNS(":53", c.String("server"), c.String("password"), "8.8.8.8:53", "223.5.5.5:53", "https://txthinking.github.io/blackwhite/white.list", c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					go func() {
-						if err := dns.ListenAndServe(); err != nil {
-							log.Println(err)
-						}
-					}()
 				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
@@ -425,9 +415,6 @@ func main() {
 						if err := s.ClearAutoScripts(); err != nil {
 							log.Println(err)
 						}
-					}
-					if dns != nil {
-						dns.Shutdown()
 					}
 					s.Shutdown()
 				}()

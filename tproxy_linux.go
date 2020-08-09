@@ -26,6 +26,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
@@ -49,6 +50,7 @@ type Tproxy struct {
 	TCPTimeout    int
 	UDPTimeout    int
 	RunnerGroup   *runnergroup.RunnerGroup
+	UDPLock       *sync.Mutex
 }
 
 // NewTproxy.
@@ -85,6 +87,7 @@ func NewTproxy(addr, remote, password string, tcpTimeout, udpTimeout int) (*Tpro
 		TCPTimeout:    tcpTimeout,
 		UDPTimeout:    udpTimeout,
 		RunnerGroup:   runnergroup.New(),
+		UDPLock:       &sync.Mutex{},
 	}
 	return s, nil
 }
@@ -424,14 +427,14 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		laddr = any.(*net.UDPAddr)
 	}
 	if laddr == nil {
-		if addr.IP.To4() == nil {
+		if addr.IP.To4() != nil {
 			laddr = &net.UDPAddr{
 				IP:   net.IPv4zero,
 				Port: 0,
 				Zone: addr.Zone,
 			}
 		}
-		if addr.IP.To4() != nil {
+		if addr.IP.To4() == nil {
 			laddr = &net.UDPAddr{
 				IP:   net.IPv6zero,
 				Port: 0,
@@ -439,7 +442,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			}
 		}
 	}
-	rc, err := Dial.DialUDP("udp", laddr, s.RemoteUDPAddr)
+	rc, err := tproxy.DialUDP("udp", laddr, s.RemoteUDPAddr)
 	if err != nil {
 		if strings.Contains(err.Error(), "address already in use") {
 			// we dont choose lock, so ignore this error
