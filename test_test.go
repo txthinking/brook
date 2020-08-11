@@ -15,11 +15,8 @@
 package brook
 
 import (
-	"log"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
-	k, n, _ := PrepareKey([]byte("111111111111111111111111111111111111111111111111"))
-	log.Println(len(k), len(n))
 }
