@@ -320,9 +320,8 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 	dst = append(dst, a)
 	dst = append(dst, h...)
 	dst = append(dst, p...)
-	sc, err := NewStreamClient(s.Password, dst, rc, s.TCPTimeout)
+	sc, err := NewStreamClient("tcp", s.Password, dst, rc, s.TCPTimeout)
 	if err != nil {
-		log.Println(c.LocalAddr().String())
 		return err
 	}
 	defer sc.Clean()
@@ -338,7 +337,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	any, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue := any.(*UDPExchange)
-		return ue.PacketClient.LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
+		return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
 	}
 	var laddr *net.UDPAddr
 	any, ok = s.UDPSrc.Get(src + dst)
@@ -393,9 +392,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		return err
 	}
 	ue := &UDPExchange{
-		Conn:         rc,
-		PacketClient: pc,
-		Dst:          dstb,
+		Conn: rc,
+		Any:  pc,
+		Dst:  dstb,
 	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
 	defer s.UDPExchanges.Delete(src + dst)
