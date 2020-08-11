@@ -15,7 +15,6 @@
 package brook
 
 import (
-	"io"
 	"log"
 	"net"
 	"strings"
@@ -27,13 +26,13 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-// Tunnel.
-type Tunnel struct {
+// Map.
+type Map struct {
 	TCPAddr       *net.TCPAddr
 	UDPAddr       *net.UDPAddr
-	ToAddr        string
-	RemoteTCPAddr *net.TCPAddr
-	RemoteUDPAddr *net.UDPAddr
+	RemoteAddress string
+	ServerTCPAddr *net.TCPAddr
+	ServerUDPAddr *net.UDPAddr
 	Password      []byte
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
@@ -44,13 +43,13 @@ type Tunnel struct {
 	UDPSrc        *cache.Cache
 }
 
-// NewTunnel.
-func NewTunnel(addr, to, remote, password string, tcpTimeout, udpTimeout int) (*Tunnel, error) {
-	taddr, err := net.ResolveTCPAddr("tcp", addr)
+// NewMap.
+func NewMap(from, to, remote, password string, tcpTimeout, udpTimeout int) (*Map, error) {
+	taddr, err := net.ResolveTCPAddr("tcp", from)
 	if err != nil {
 		return nil, err
 	}
-	uaddr, err := net.ResolveUDPAddr("udp", addr)
+	uaddr, err := net.ResolveUDPAddr("udp", from)
 	if err != nil {
 		return nil, err
 	}
@@ -67,13 +66,13 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, udpTimeout int) (*
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
-	s := &Tunnel{
-		ToAddr:        to,
+	s := &Map{
+		RemoteAddress: to,
 		Password:      []byte(password),
 		TCPAddr:       taddr,
 		UDPAddr:       uaddr,
-		RemoteTCPAddr: rtaddr,
-		RemoteUDPAddr: ruaddr,
+		ServerTCPAddr: rtaddr,
+		ServerUDPAddr: ruaddr,
 		UDPExchanges:  cs,
 		TCPTimeout:    tcpTimeout,
 		UDPTimeout:    udpTimeout,
@@ -84,7 +83,7 @@ func NewTunnel(addr, to, remote, password string, tcpTimeout, udpTimeout int) (*
 }
 
 // Run server.
-func (s *Tunnel) ListenAndServe() error {
+func (s *Map) ListenAndServe() error {
 	s.RunnerGroup.Add(&runnergroup.Runner{
 		Start: func() error {
 			return s.RunTCPServer()
@@ -111,7 +110,7 @@ func (s *Tunnel) ListenAndServe() error {
 }
 
 // RunTCPServer starts tcp server.
-func (s *Tunnel) RunTCPServer() error {
+func (s *Map) RunTCPServer() error {
 	var err error
 	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
 	if err != nil {
@@ -140,7 +139,7 @@ func (s *Tunnel) RunTCPServer() error {
 }
 
 // RunUDPServer starts udp server.
-func (s *Tunnel) RunUDPServer() error {
+func (s *Map) RunUDPServer() error {
 	var err error
 	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
 	if err != nil {
@@ -148,7 +147,7 @@ func (s *Tunnel) RunUDPServer() error {
 	}
 	defer s.UDPConn.Close()
 	for {
-		b := make([]byte, 65535)
+		b := make([]byte, 65507)
 		n, addr, err := s.UDPConn.ReadFromUDP(b)
 		if err != nil {
 			return err
@@ -164,131 +163,57 @@ func (s *Tunnel) RunUDPServer() error {
 }
 
 // Shutdown server.
-func (s *Tunnel) Shutdown() error {
+func (s *Map) Shutdown() error {
 	return s.RunnerGroup.Done()
 }
 
 // TCPHandle handles request.
-func (s *Tunnel) TCPHandle(c *net.TCPConn) error {
-	tmp, err := Dial.Dial("tcp", s.RemoteTCPAddr.String())
+func (s *Map) TCPHandle(c *net.TCPConn) error {
+	rc, err := Dial.Dial("tcp", s.ServerTCPAddr.String())
 	if err != nil {
 		return err
 	}
-	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if s.TCPTimeout != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 			return err
 		}
 	}
-
-	k, n, err := PrepareKey(s.Password)
+	a, h, p, err := socks5.ParseAddress(s.RemoteAddress)
 	if err != nil {
 		return err
 	}
-	if _, err := rc.Write(n); err != nil {
-		return err
-	}
-
-	a, address, port, err := socks5.ParseAddress(s.ToAddr)
+	dst := make([]byte, 0, 1+len(h)+2)
+	dst = append(dst, a)
+	dst = append(dst, h...)
+	dst = append(dst, p...)
+	sc, err := NewStreamClient("tcp", s.Password, dst, rc, s.TCPTimeout)
 	if err != nil {
 		return err
 	}
-	ra := make([]byte, 0, 7)
-	ra = append(ra, a)
-	ra = append(ra, address...)
-	ra = append(ra, port...)
-	n, _, err = WriteTo(rc, ra, k, n, true)
-	if err != nil {
-		return err
-	}
-
-	go func() {
-		n := make([]byte, 12)
-		if _, err := io.ReadFull(rc, n); err != nil {
-			return
-		}
-		k, err := GetKey(s.Password, n)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		var b []byte
-		for {
-			if s.TCPTimeout != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-					return
-				}
-			}
-			b, n, err = ReadFrom(rc, k, n, false)
-			if err != nil {
-				return
-			}
-			if _, err := c.Write(b); err != nil {
-				return
-			}
-		}
-	}()
-
-	var b [1024 * 2]byte
-	for {
-		if s.TCPTimeout != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-				return nil
-			}
-		}
-		i, err := c.Read(b[:])
-		if err != nil {
-			return nil
-		}
-		n, _, err = WriteTo(rc, b[0:i], k, n, false)
-		if err != nil {
-			return nil
-		}
+	defer sc.Clean()
+	if err := sc.Exchange(c); err != nil {
+		return nil
 	}
 	return nil
 }
 
 // UDPHandle handles packet.
-func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
+func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	src := addr.String()
-
-	a, address, port, err := socks5.ParseAddress(s.ToAddr)
-	if err != nil {
-		return err
-	}
-	ra := make([]byte, 0, 7)
-	ra = append(ra, a)
-	ra = append(ra, address...)
-	ra = append(ra, port...)
-	b = append(ra, b...)
-
-	send := func(ue *socks5.UDPExchange, data []byte) error {
-		cd, err := Encrypt(s.Password, data)
-		if err != nil {
-			return err
-		}
-		_, err = ue.RemoteConn.Write(cd)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-
-	dst := s.ToAddr
-	var ue *socks5.UDPExchange
-	iue, ok := s.UDPExchanges.Get(src + dst)
+	dst := s.RemoteAddress
+	any, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
-		ue = iue.(*socks5.UDPExchange)
-		return send(ue, b)
+		ue := any.(*UDPExchange)
+		return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
 	}
-
+	debug("dial udp", dst)
 	var laddr *net.UDPAddr
-	any, ok := s.UDPSrc.Get(src + dst)
+	any, ok = s.UDPSrc.Get(src + dst)
 	if ok {
 		laddr = any.(*net.UDPAddr)
 	}
-	rc, err := Dial.DialUDP("udp", laddr, s.RemoteUDPAddr)
+	rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
 	if err != nil {
 		if strings.Contains(err.Error(), "address already in use") {
 			// we dont choose lock, so ignore this error
@@ -296,43 +221,35 @@ func (s *Tunnel) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		}
 		return err
 	}
+	defer rc.Close()
 	if laddr == nil {
 		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 	}
-	ue = &socks5.UDPExchange{
-		ClientAddr: addr,
-		RemoteConn: rc,
-	}
-	if err := send(ue, b); err != nil {
-		ue.RemoteConn.Close()
+	a, h, p, err := socks5.ParseAddress(s.RemoteAddress)
+	if err != nil {
 		return err
 	}
+	dstb := make([]byte, 0, 1+len(h)+2)
+	dstb = append(dstb, a)
+	dstb = append(dstb, h...)
+	dstb = append(dstb, p...)
+	pc := NewPacketClient(s.Password)
+	defer pc.Clean()
+	if err := pc.LocalToServer(dstb, b, rc, s.UDPTimeout); err != nil {
+		return err
+	}
+	ue := &UDPExchange{
+		Conn: rc,
+		Any:  pc,
+		Dst:  dstb,
+	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
-	go func(ue *socks5.UDPExchange, dst string) {
-		defer func() {
-			ue.RemoteConn.Close()
-			s.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
-		}()
-		var b [65535]byte
-		for {
-			if s.UDPTimeout != 0 {
-				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
-					break
-				}
-			}
-			n, err := ue.RemoteConn.Read(b[:])
-			if err != nil {
-				break
-			}
-			_, _, _, data, err := Decrypt(s.Password, b[0:n])
-			if err != nil {
-				log.Println(err)
-				break
-			}
-			if _, err := s.UDPConn.WriteToUDP(data, ue.ClientAddr); err != nil {
-				break
-			}
-		}
-	}(ue, dst)
+	defer s.UDPExchanges.Delete(src + dst)
+	err = pc.ServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
+		return s.UDPConn.WriteToUDP(d, addr)
+	})
+	if err != nil {
+		return nil
+	}
 	return nil
 }

@@ -143,7 +143,7 @@ func (s *Relay) RunUDPServer() error {
 	}
 	defer s.UDPConn.Close()
 	for {
-		b := make([]byte, 65535)
+		b := make([]byte, 65507)
 		n, addr, err := s.UDPConn.ReadFromUDP(b)
 		if err != nil {
 			return err
@@ -261,7 +261,7 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			ue.RemoteConn.Close()
 			s.UDPExchanges.Delete(ue.ClientAddr.String() + dst)
 		}()
-		var b [65535]byte
+		var b [65507]byte
 		for {
 			if s.UDPTimeout != 0 {
 				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {

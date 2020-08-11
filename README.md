@@ -4,8 +4,7 @@
 [![Wiki](https://img.shields.io/badge/docs-wiki-yellow.svg)](https://github.com/txthinking/brook/wiki)
 [![Slides](https://img.shields.io/badge/Tutorial-Slides-blueviolet.svg)](https://talks.txthinking.com)
 [![Youtube](https://img.shields.io/badge/Tutorial-Youtube-red.svg)](https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A)
-[![Telegram Group](https://img.shields.io/badge/Telegram%20Group-brookgroup-blue.svg)](https://t.me/brookgroup)
-[![Telegram Channel](https://img.shields.io/badge/Telegram%20Channel-brookchannel-blue.svg)](https://t.me/brookchannel)
+[![Google Chat](https://img.shields.io/badge/Google-Chat-blue.svg)](https://docs.google.com/forms/d/e/1FAIpQLSd61-WE__WYiDee2UWjhDKNcb-A6KQW9xwzFkeYiAmQ3dpEcA/viewform)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 <p align="center">
@@ -255,8 +254,6 @@ Some useful tutorial resources
 * Brook Issues: https://github.com/txthinking/brook/issues
 * Slides: https://talks.txthinking.com
 * Youtube: https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A
-* Telegram Group: https://t.me/brookgroup
-* Telegram Channel: https://t.me/brookchannel
 * Nami: https://github.com/txthinking/nami
 * Joker: https://github.com/txthinking/joker
 

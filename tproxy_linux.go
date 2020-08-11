@@ -18,7 +18,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -26,7 +25,6 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
@@ -40,8 +38,8 @@ import (
 type Tproxy struct {
 	TCPAddr       *net.TCPAddr
 	UDPAddr       *net.UDPAddr
-	RemoteTCPAddr *net.TCPAddr
-	RemoteUDPAddr *net.UDPAddr
+	ServerTCPAddr *net.TCPAddr
+	ServerUDPAddr *net.UDPAddr
 	Password      []byte
 	TCPListen     *net.TCPListener
 	UDPConn       *net.UDPConn
@@ -50,11 +48,10 @@ type Tproxy struct {
 	TCPTimeout    int
 	UDPTimeout    int
 	RunnerGroup   *runnergroup.RunnerGroup
-	UDPLock       *sync.Mutex
 }
 
 // NewTproxy.
-func NewTproxy(addr, remote, password string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
+func NewTproxy(addr, server, password string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -63,11 +60,11 @@ func NewTproxy(addr, remote, password string, tcpTimeout, udpTimeout int) (*Tpro
 	if err != nil {
 		return nil, err
 	}
-	rtaddr, err := net.ResolveTCPAddr("tcp", remote)
+	rtaddr, err := net.ResolveTCPAddr("tcp", server)
 	if err != nil {
 		return nil, err
 	}
-	ruaddr, err := net.ResolveUDPAddr("udp", remote)
+	ruaddr, err := net.ResolveUDPAddr("udp", server)
 	if err != nil {
 		return nil, err
 	}
@@ -80,14 +77,13 @@ func NewTproxy(addr, remote, password string, tcpTimeout, udpTimeout int) (*Tpro
 		Password:      []byte(password),
 		TCPAddr:       taddr,
 		UDPAddr:       uaddr,
-		RemoteTCPAddr: rtaddr,
-		RemoteUDPAddr: ruaddr,
+		ServerTCPAddr: rtaddr,
+		ServerUDPAddr: ruaddr,
 		UDPExchanges:  cs,
 		UDPSrc:        cs2,
 		TCPTimeout:    tcpTimeout,
 		UDPTimeout:    udpTimeout,
 		RunnerGroup:   runnergroup.New(),
-		UDPLock:       &sync.Mutex{},
 	}
 	return s, nil
 }
@@ -172,7 +168,7 @@ func (s *Tproxy) RunAutoScripts() error {
 			return errors.New(string(out) + err.Error())
 		}
 	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d "+s.RemoteTCPAddr.IP.String()+" -j RETURN")
+	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d "+s.ServerTCPAddr.IP.String()+" -j RETURN")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
@@ -280,7 +276,7 @@ func (s *Tproxy) RunUDPServer() error {
 	}
 	defer s.UDPConn.Close()
 	for {
-		b := make([]byte, 65535)
+		b := make([]byte, 65507)
 		n, saddr, daddr, err := tproxy.ReadFromUDP(s.UDPConn, b)
 		if err != nil {
 			return err
@@ -305,11 +301,10 @@ func (s *Tproxy) Shutdown() error {
 
 // TCPHandle handles request.
 func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
-	tmp, err := tproxy.DialTCP("tcp", s.RemoteTCPAddr.String())
+	rc, err := tproxy.DialTCP("tcp", s.ServerTCPAddr.String())
 	if err != nil {
 		return err
 	}
-	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if s.TCPTimeout != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
@@ -317,112 +312,36 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 		}
 	}
 
-	k, n, err := PrepareKey(s.Password)
+	a, h, p, err := socks5.ParseAddress(c.LocalAddr().String())
 	if err != nil {
 		return err
 	}
-	if _, err := rc.Write(n); err != nil {
-		return err
-	}
-
-	a, address, port, err := socks5.ParseAddress(c.LocalAddr().String())
+	dst := make([]byte, 0, 1+len(h)+2)
+	dst = append(dst, a)
+	dst = append(dst, h...)
+	dst = append(dst, p...)
+	sc, err := NewStreamClient(s.Password, dst, rc, s.TCPTimeout)
 	if err != nil {
+		log.Println(c.LocalAddr().String())
 		return err
 	}
-	ra := make([]byte, 0, 7)
-	ra = append(ra, a)
-	ra = append(ra, address...)
-	ra = append(ra, port...)
-	n, _, err = WriteTo(rc, ra, k, n, true)
-	if err != nil {
-		return err
-	}
-
-	go func() {
-		n := make([]byte, 12)
-		if _, err := io.ReadFull(rc, n); err != nil {
-			return
-		}
-		k, err := GetKey(s.Password, n)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		var b []byte
-		for {
-			if s.TCPTimeout != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-					return
-				}
-			}
-			b, n, err = ReadFrom(rc, k, n, false)
-			if err != nil {
-				return
-			}
-			if _, err := c.Write(b); err != nil {
-				return
-			}
-		}
-	}()
-
-	var b [1024 * 2]byte
-	for {
-		if s.TCPTimeout != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-				return nil
-			}
-		}
-		i, err := c.Read(b[:])
-		if err != nil {
-			return nil
-		}
-		n, _, err = WriteTo(rc, b[0:i], k, n, false)
-		if err != nil {
-			return nil
-		}
+	defer sc.Clean()
+	if err := sc.Exchange(c); err != nil {
+		return nil
 	}
 	return nil
-}
-
-type TproxyUDPExchange struct {
-	RemoteConn *net.UDPConn
-	LocalConn  *net.UDPConn
 }
 
 func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	src := addr.String()
 	dst := daddr.String()
-	a, address, port, err := socks5.ParseAddress(dst)
-	if err != nil {
-		return err
-	}
-	ra := make([]byte, 0, 7)
-	ra = append(ra, a)
-	ra = append(ra, address...)
-	ra = append(ra, port...)
-	b = append(ra, b...)
-
-	send := func(ue *TproxyUDPExchange, data []byte) error {
-		cd, err := Encrypt(s.Password, data)
-		if err != nil {
-			return err
-		}
-		_, err = ue.RemoteConn.Write(cd)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-
-	var ue *TproxyUDPExchange
-	iue, ok := s.UDPExchanges.Get(src + dst)
+	any, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
-		ue = iue.(*TproxyUDPExchange)
-		return send(ue, b)
+		ue := any.(*UDPExchange)
+		return ue.PacketClient.LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
 	}
-
 	var laddr *net.UDPAddr
-	any, ok := s.UDPSrc.Get(src + dst)
+	any, ok = s.UDPSrc.Get(src + dst)
 	if ok {
 		laddr = any.(*net.UDPAddr)
 	}
@@ -442,7 +361,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			}
 		}
 	}
-	rc, err := tproxy.DialUDP("udp", laddr, s.RemoteUDPAddr)
+	rc, err := tproxy.DialUDP("udp", laddr, s.ServerUDPAddr)
 	if err != nil {
 		if strings.Contains(err.Error(), "address already in use") {
 			// we dont choose lock, so ignore this error
@@ -450,50 +369,41 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 		return err
 	}
+	defer rc.Close()
 	if !ok {
 		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 	}
-
 	c, err := tproxy.DialUDP("udp", daddr, addr)
 	if err != nil {
-		rc.Close()
 		return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 	}
-	ue = &TproxyUDPExchange{
-		RemoteConn: rc,
-		LocalConn:  c,
-	}
-	if err := send(ue, b); err != nil {
-		ue.RemoteConn.Close()
-		ue.LocalConn.Close()
+	defer c.Close()
+
+	a, h, p, err := socks5.ParseAddress(dst)
+	if err != nil {
 		return err
 	}
+	dstb := make([]byte, 0, 1+len(h)+2)
+	dstb = append(dstb, a)
+	dstb = append(dstb, h...)
+	dstb = append(dstb, p...)
+	pc := NewPacketClient(s.Password)
+	defer pc.Clean()
+	if err := pc.LocalToServer(dstb, b, rc, s.UDPTimeout); err != nil {
+		return err
+	}
+	ue := &UDPExchange{
+		Conn:         rc,
+		PacketClient: pc,
+		Dst:          dstb,
+	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
-	go func(ue *TproxyUDPExchange, dst string) {
-		defer func() {
-			ue.RemoteConn.Close()
-			ue.LocalConn.Close()
-			s.UDPExchanges.Delete(ue.LocalConn.RemoteAddr().String() + dst)
-		}()
-		var b [65535]byte
-		for {
-			if s.UDPTimeout != 0 {
-				if err := ue.RemoteConn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
-					break
-				}
-			}
-			n, err := ue.RemoteConn.Read(b[:])
-			if err != nil {
-				break
-			}
-			_, _, _, data, err := Decrypt(s.Password, b[0:n])
-			if err != nil {
-				break
-			}
-			if _, err := ue.LocalConn.Write(data); err != nil {
-				break
-			}
-		}
-	}(ue, dst)
+	defer s.UDPExchanges.Delete(src + dst)
+	err = pc.ServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
+		return c.Write(d)
+	})
+	if err != nil {
+		return nil
+	}
 	return nil
 }

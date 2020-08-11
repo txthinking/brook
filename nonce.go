@@ -14,12 +14,10 @@
 
 package brook
 
-import (
-	"log"
-	"testing"
-)
+import "encoding/binary"
 
-func TestTest(t *testing.T) {
-	k, n, _ := PrepareKey([]byte("111111111111111111111111111111111111111111111111"))
-	log.Println(len(k), len(n))
+func NextNonce(b []byte) {
+	i := binary.LittleEndian.Uint64(b[:8])
+	i += 1
+	binary.LittleEndian.PutUint64(b[:8], i)
 }

@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"strings"
@@ -68,7 +69,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address, like: 0.0.0.0:1080",
+					Usage:   "Listen address, like: ':1080'",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -163,7 +164,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "client",
-			Usage: "Run as brook client, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> $ brook client <-> $ brook server <-> dst], [works with $ brook server]",
+			Usage: "Run as brook client, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> socks5 <-> $ brook client <-> $ brook server <-> dst], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -176,18 +177,9 @@ func main() {
 					Usage:   "Brook server password",
 				},
 				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
-					Usage:   "Listen address, like: 127.0.0.1:1080",
-				},
-				&cli.StringFlag{
-					Name:    "ip",
-					Aliases: []string{"i"},
-					Usage:   "IP address for socks5 proxy, like: 127.0.0.1",
-				},
-				&cli.BoolFlag{
-					Name:  "http",
-					Usage: "If true, client start a http proxy, otherwise start a socks5 proxy",
+					Name:    "socks5",
+					Aliases: []string{"s5"},
+					Usage:   "Socks5 server which will be created, like: 127.0.0.1:1080",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -201,14 +193,21 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || (!c.Bool("http") && c.String("ip") == "") || c.String("server") == "" || c.String("password") == "" {
+				if c.String("socks5") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "client")
 					return nil
+				}
+				h, p, err := net.SplitHostPort(c.String("socks5"))
+				if err != nil {
+					return err
+				}
+				if h == "" {
+					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewClient(c.String("listen"), c.String("ip"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewClient(":"+p, h, c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -218,20 +217,17 @@ func main() {
 					<-sigs
 					s.Shutdown()
 				}()
-				if c.Bool("http") {
-					return s.ListenAndServeHTTP()
-				}
 				return s.ListenAndServe()
 			},
 		},
 		&cli.Command{
-			Name:  "tunnel",
-			Usage: "Run as tunnel, both TCP and UDP, this means access [listen address] is equal to [to address], [src <-> listen address <-> $ brook server <-> to address], [works with $ brook server]",
+			Name:  "map",
+			Usage: "Run as mapping, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook server <-> to address], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Brook server address, like: 1.2.3.4:1080",
+					Usage:   "Brook server address, like: 1.2.3.4:9999",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -239,14 +235,14 @@ func main() {
 					Usage:   "Brook server password",
 				},
 				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
-					Usage:   "Listen address, like: 127.0.0.1:1080",
+					Name:    "from",
+					Aliases: []string{"f"},
+					Usage:   "Listen address, like: 127.0.0.1:83",
 				},
 				&cli.StringFlag{
 					Name:    "to",
 					Aliases: []string{"t"},
-					Usage:   "Tunnel to where, like: 8.8.8.8:53",
+					Usage:   "Map to where, like: 8.8.8.8:53",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -261,13 +257,13 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("to") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "tunnel")
+					cli.ShowCommandHelp(c, "map")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewTunnel(c.String("listen"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewMap(c.String("from"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -363,7 +359,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address, DO NOT contain IP, just like: :1080",
+					Usage:   "Listen address, DO NOT contain IP, just like: ':1080'",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -388,6 +384,13 @@ func main() {
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "tproxy")
 					return nil
+				}
+				h, _, err := net.SplitHostPort(c.String("listen"))
+				if err != nil {
+					return err
+				}
+				if h != "" {
+					return errors.New("listen does not require IP, just pass it like ':port'")
 				}
 				if debug {
 					enableDebug()
@@ -422,21 +425,13 @@ func main() {
 			},
 		},
 		&cli.Command{
-			Name:  "tun",
-			Usage: "tun",
-			Flags: []cli.Flag{},
-			Action: func(c *cli.Context) error {
-				return errors.New("Deprecated, please try https://github.com/txthinking/ipio")
-			},
-		},
-		&cli.Command{
 			Name:  "wsserver",
 			Usage: "Run as brook wsserver, both TCP and UDP, it will start a standard http(s) server and websocket server",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address, like: 0.0.0.0:1080",
+					Usage:   "Listen address, like: ':80'",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -486,12 +481,12 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "wsclient",
-			Usage: "Run as brook wsclient, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> $ brook wsclient <-> $ brook wsserver <-> dst], [works with $ brook wsserver]",
+			Usage: "Run as brook wsclient, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> socks5 <-> $ brook wsclient <-> $ brook wsserver <-> dst], [works with $ brook wsserver]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "wsserver",
 					Aliases: []string{"s"},
-					Usage:   "Brook wsserver address, like: ws://1.2.3.4:80, wss://google.com:443, if no path then use /ws default or with path ws://1.2.3.4:80/ws, Do not omit the port under any circumstances",
+					Usage:   "Brook wsserver address, like: ws://1.2.3.4:80, wss://google.com:443/ws, if no path then /ws will be used. Do not omit the port under any circumstances",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -499,18 +494,9 @@ func main() {
 					Usage:   "Brook wsserver password",
 				},
 				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
-					Usage:   "Listen address, like: 127.0.0.1:1080",
-				},
-				&cli.StringFlag{
-					Name:    "ip",
-					Aliases: []string{"i"},
-					Usage:   "IP address for socks5 proxy, like: 127.0.0.1",
-				},
-				&cli.BoolFlag{
-					Name:  "http",
-					Usage: "If true, client start a http proxy, otherwise start a socks5 proxy",
+					Name:    "socks5",
+					Aliases: []string{"s5"},
+					Usage:   "Socks5 server which will be created, like: 127.0.0.1:1080",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -524,14 +510,21 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || (!c.Bool("http") && c.String("ip") == "") || c.String("wsserver") == "" || c.String("password") == "" {
+				if c.String("socks5") == "" || c.String("wsserver") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "wsclient")
 					return nil
+				}
+				h, p, err := net.SplitHostPort(c.String("socks5"))
+				if err != nil {
+					return err
+				}
+				if h == "" {
+					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewWSClient(c.String("listen"), c.String("ip"), c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewWSClient(":"+p, h, c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -541,9 +534,6 @@ func main() {
 					<-sigs
 					s.Shutdown()
 				}()
-				if c.Bool("http") {
-					return s.ListenAndServeHTTP()
-				}
 				return s.ListenAndServe()
 			},
 		},
@@ -554,7 +544,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support $ brook server and $ brook wsserver address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
+					Usage:   "Support $ brook server and $ brook wsserver address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443/ws. Do not omit the port under any circumstances",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -602,7 +592,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address: 0.0.0.0:1080",
+					Usage:   "Listen address: like ':1080'",
 				},
 				&cli.StringFlag{
 					Name:    "to",
@@ -700,14 +690,9 @@ func main() {
 			Usage: "Run as standalone standard socks5 server, both TCP and UDP",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
-					Usage:   "Listen address, like: 0.0.0.0:1080",
-				},
-				&cli.StringFlag{
-					Name:    "ip",
-					Aliases: []string{"i"},
-					Usage:   "IP address, like: 1.2.3.4. Why need this? Because listen address may be different from the public address your want",
+					Name:    "socks5",
+					Aliases: []string{"s5"},
+					Usage:   "Socks5 server which will be created, like: 1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:  "username",
@@ -729,14 +714,21 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("ip") == "" {
+				if c.String("socks5") == "" {
 					cli.ShowCommandHelp(c, "socks5")
 					return nil
+				}
+				h, p, err := net.SplitHostPort(c.String("socks5"))
+				if err != nil {
+					return err
+				}
+				if h == "" {
+					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use public IP or lan IP or other, we can not decide for you")
 				}
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewSocks5Server(c.String("listen"), c.String("ip"), c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewSocks5Server(":"+p, h, c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -755,7 +747,7 @@ func main() {
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "socks5",
-					Aliases: []string{"s"},
+					Aliases: []string{"s5"},
 					Usage:   "Socks5 server address, like: 127.0.0.1:1080",
 				},
 				&cli.StringFlag{
@@ -769,7 +761,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address: like: 127.0.0.1:8080",
+					Usage:   "HTTP proxy which will be create: like: 127.0.0.1:8080",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -817,7 +809,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "listenIP",
-					Usage: "127.0.0.1 or ::1, will create a DNS server with it, and listen TCP 443 on it",
+					Usage: "127.0.0.1 or ::1, will create a DNS server(udp 53 port) with it, and listen tcp 443 port on it",
 					Value: "127.0.0.1",
 				},
 				&cli.StringFlag{
@@ -925,14 +917,11 @@ func main() {
 			Action: func(c *cli.Context) error {
 				fmt.Println("")
 				fmt.Println("Brook Github:", "https://github.com/txthinking/brook")
-				fmt.Println("Brook Wiki:", "https://github.com/txthinking/brook/wiki")
+				fmt.Println("Brook Docs:", "https://txthinking.github.com/brook")
 				fmt.Println("Brook Issues:", "https://github.com/txthinking/brook/issues")
 				fmt.Println("")
 				fmt.Println("Slides:", "https://talks.txthinking.com")
 				fmt.Println("Youtube:", "https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A")
-				fmt.Println("")
-				fmt.Println("Telegram Group:", "https://t.me/brookgroup")
-				fmt.Println("Telegram Channel:", "https://t.me/brookchannel")
 				fmt.Println("")
 				fmt.Println("Nami:", "https://github.com/txthinking/nami")
 				fmt.Println("Joker:", "https://github.com/txthinking/joker")

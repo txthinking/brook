@@ -17,7 +17,6 @@ package brook
 import (
 	"bytes"
 	"encoding/binary"
-	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -26,6 +25,7 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
+	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
@@ -35,17 +35,19 @@ import (
 type DNS struct {
 	TCPAddr            *net.TCPAddr
 	UDPAddr            *net.UDPAddr
-	RemoteTCPAddr      *net.TCPAddr
-	RemoteUDPAddr      *net.UDPAddr
+	ServerTCPAddr      *net.TCPAddr
+	ServerUDPAddr      *net.UDPAddr
 	Password           []byte
 	BypassDomains      map[string]byte
 	DNSServer          string
 	DNSServerForBypass string
 	TCPListen          *net.TCPListener
 	UDPConn            *net.UDPConn
+	UDPExchanges       *cache.Cache
 	TCPTimeout         int
 	UDPTimeout         int
 	RunnerGroup        *runnergroup.RunnerGroup
+	UDPSrc             *cache.Cache
 }
 
 // NewDNS.
@@ -80,11 +82,14 @@ func NewDNS(addr, server, password, dnsServer, dnsServerForBypass, bypassList st
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	s := &DNS{
 		TCPAddr:            taddr,
 		UDPAddr:            uaddr,
-		RemoteTCPAddr:      rtaddr,
-		RemoteUDPAddr:      ruaddr,
+		ServerTCPAddr:      rtaddr,
+		ServerUDPAddr:      ruaddr,
+		UDPExchanges:       cs,
 		Password:           []byte(password),
 		BypassDomains:      ds,
 		DNSServer:          dnsServer,
@@ -92,6 +97,7 @@ func NewDNS(addr, server, password, dnsServer, dnsServerForBypass, bypassList st
 		TCPTimeout:         tcpTimeout,
 		UDPTimeout:         udpTimeout,
 		RunnerGroup:        runnergroup.New(),
+		UDPSrc:             cs2,
 	}
 	return s, nil
 }
@@ -161,7 +167,7 @@ func (s *DNS) RunUDPServer() error {
 	}
 	defer s.UDPConn.Close()
 	for {
-		b := make([]byte, 65535)
+		b := make([]byte, 65507)
 		n, addr, err := s.UDPConn.ReadFromUDP(b)
 		if err != nil {
 			return err
@@ -205,11 +211,10 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	mb = append(lb, mb...)
 	if has {
 		debug("in bypass list", "tcp", m.Question[0].Name)
-		tmp, err := Dial.Dial("tcp", s.DNSServerForBypass)
+		rc, err := Dial.Dial("tcp", s.DNSServerForBypass)
 		if err != nil {
 			return err
 		}
-		rc := tmp.(*net.TCPConn)
 		defer rc.Close()
 		if s.TCPTimeout != 0 {
 			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
@@ -253,85 +258,35 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 		}
 		return nil
 	}
-	tmp, err := Dial.Dial("tcp", s.RemoteTCPAddr.String())
+	rc, err := Dial.Dial("tcp", s.ServerTCPAddr.String())
 	if err != nil {
 		return err
 	}
-	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if s.TCPTimeout != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
 			return err
 		}
 	}
-
-	k, n, err := PrepareKey(s.Password)
+	a, h, p, err := socks5.ParseAddress(s.DNSServer)
 	if err != nil {
 		return err
 	}
-	if _, err := rc.Write(n); err != nil {
-		return err
-	}
-
-	a, address, port, err := socks5.ParseAddress(s.DNSServer)
+	dst := make([]byte, 0, 1+len(h)+2+len(mb))
+	dst = append(dst, a)
+	dst = append(dst, h...)
+	dst = append(dst, p...)
+	sc, err := NewStreamClient("tcp", s.Password, dst, rc, s.TCPTimeout)
 	if err != nil {
 		return err
 	}
-	ra := make([]byte, 0, 7)
-	ra = append(ra, a)
-	ra = append(ra, address...)
-	ra = append(ra, port...)
-	n, _, err = WriteTo(rc, ra, k, n, true)
-	if err != nil {
+	defer sc.Clean()
+	i := copy(sc.wb[2+16:], mb)
+	if err := sc.writeTCPPacket(i); err != nil {
 		return err
 	}
-	n, _, err = WriteTo(rc, mb, k, n, false)
-	if err != nil {
-		return err
-	}
-
-	go func() {
-		n := make([]byte, 12)
-		if _, err := io.ReadFull(rc, n); err != nil {
-			return
-		}
-		k, err := GetKey(s.Password, n)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		var b []byte
-		for {
-			if s.TCPTimeout != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-					return
-				}
-			}
-			b, n, err = ReadFrom(rc, k, n, false)
-			if err != nil {
-				return
-			}
-			if _, err := c.Write(b); err != nil {
-				return
-			}
-		}
-	}()
-
-	var b [1024 * 2]byte
-	for {
-		if s.TCPTimeout != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-				return nil
-			}
-		}
-		i, err := c.Read(b[:])
-		if err != nil {
-			return nil
-		}
-		n, _, err = WriteTo(rc, b[0:i], k, n, false)
-		if err != nil {
-			return nil
-		}
+	if err := sc.Exchange(c); err != nil {
+		return nil
 	}
 	return nil
 }
@@ -380,44 +335,56 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
-	a, address, port, err := socks5.ParseAddress(s.DNSServer)
-	if err != nil {
-		return err
+	src := addr.String()
+	dst := s.DNSServer
+	any, ok := s.UDPExchanges.Get(src + dst)
+	if ok {
+		ue := any.(*UDPExchange)
+		return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
 	}
-	ra := make([]byte, 0, 7)
-	ra = append(ra, a)
-	ra = append(ra, address...)
-	ra = append(ra, port...)
-	b = append(ra, b...)
-
-	rc, err := Dial.DialUDP("udp", nil, s.RemoteUDPAddr)
+	debug("dial udp", dst)
+	var laddr *net.UDPAddr
+	any, ok = s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
+	rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			// we dont choose lock, so ignore this error
+			return nil
+		}
 		return err
 	}
 	defer rc.Close()
-	if s.UDPTimeout != 0 {
-		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
-			return err
-		}
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 	}
-	cd, err := Encrypt(s.Password, b)
+	a, h, p, err := socks5.ParseAddress(s.DNSServer)
 	if err != nil {
 		return err
 	}
-	if _, err := rc.Write(cd); err != nil {
+	dstb := make([]byte, 0, 1+len(h)+2)
+	dstb = append(dstb, a)
+	dstb = append(dstb, h...)
+	dstb = append(dstb, p...)
+	pc := NewPacketClient(s.Password)
+	defer pc.Clean()
+	if err := pc.LocalToServer(dstb, b, rc, s.UDPTimeout); err != nil {
 		return err
 	}
-	var bb [65535]byte
-	n, err := rc.Read(bb[:])
+	ue := &UDPExchange{
+		Conn: rc,
+		Any:  pc,
+		Dst:  dstb,
+	}
+	s.UDPExchanges.Set(src+dst, ue, -1)
+	defer s.UDPExchanges.Delete(src + dst)
+	err = pc.ServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
+		return s.UDPConn.WriteToUDP(d, addr)
+	})
 	if err != nil {
-		return err
-	}
-	_, _, _, data, err := Decrypt(s.Password, bb[0:n])
-	if err != nil {
-		return err
-	}
-	if _, err := s.UDPConn.WriteToUDP(data, addr); err != nil {
-		return err
+		return nil
 	}
 	return nil
 }
