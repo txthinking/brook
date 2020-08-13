@@ -281,8 +281,8 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 		return err
 	}
 	defer sc.Clean()
-	i := copy(sc.wb[2+16:], mb)
-	if err := sc.writeTCPPacket(i); err != nil {
+	i := copy(sc.WB[2+16:], mb)
+	if err := sc.Write(i); err != nil {
 		return err
 	}
 	if err := sc.Exchange(c); err != nil {
@@ -380,7 +380,7 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
 	defer s.UDPExchanges.Delete(src + dst)
-	err = pc.ServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
+	err = pc.RunServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
 		return s.UDPConn.WriteToUDP(d, addr)
 	})
 	if err != nil {

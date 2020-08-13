@@ -245,7 +245,7 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
 	defer s.UDPExchanges.Delete(src + dst)
-	err = pc.ServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
+	err = pc.RunServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
 		return s.UDPConn.WriteToUDP(d, addr)
 	})
 	if err != nil {

@@ -161,13 +161,13 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer ss.Clean()
-	if ss.network == "tcp" {
+	if ss.Network == "tcp" {
 		if err := s.TCPHandle(ss, dst); err != nil {
 			log.Println(err)
 		}
 	}
-	if ss.network == "udp" {
-		ss.timeout = s.UDPTimeout
+	if ss.Network == "udp" {
+		ss.Timeout = s.UDPTimeout
 		if err := s.UDPHandle(ss, c.RemoteAddr().String(), dst); err != nil {
 			log.Println(err)
 		}

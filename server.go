@@ -15,6 +15,7 @@
 package brook
 
 import (
+	"io"
 	"log"
 	"net"
 	"strings"
@@ -176,7 +177,7 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 // UDPHandle handles packet.
 func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	src := addr.String()
-	dstb, d, err := PacketClientToRemote(s.Password, b)
+	dstb, d, w, err := PacketClientToRemote(s.Password, b)
 	if err != nil {
 		return err
 	}
@@ -184,7 +185,7 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	any, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue := any.(*UDPExchange)
-		if _, err := ue.Conn.Write(d); err != nil {
+		if _, err := ue.Any.(io.Writer).Write(d); err != nil {
 			return err
 		}
 		return nil
@@ -212,19 +213,20 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	if laddr == nil {
 		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 	}
-	if _, err := rc.Write(d); err != nil {
+	wer := w(rc.Write)
+	if _, err := wer.Write(d); err != nil {
 		return err
 	}
 	ue := &UDPExchange{
-		Conn: rc,
+		Any: wer,
 	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
 	defer s.UDPExchanges.Delete(src + dst)
 	ps := NewPacketServer(s.Password)
 	defer ps.Clean()
-	err = ps.RemoteToClient(rc, s.UDPTimeout, dstb, func(b []byte) (int, error) {
+	err = ps.RemoteToClient(rc, s.UDPTimeout, dstb, w(func(b []byte) (int, error) {
 		return s.UDPConn.WriteToUDP(b, addr)
-	})
+	}))
 	if err != nil {
 		return err
 	}

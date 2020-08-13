@@ -30,15 +30,17 @@ import (
 )
 
 type StreamClient struct {
-	server  net.Conn
-	cn      []byte
-	ca      cipher.AEAD
-	sn      []byte
-	sa      cipher.AEAD
-	rb      []byte
-	wb      []byte
-	timeout int
-	network string
+	Server        net.Conn
+	cn            []byte
+	ca            cipher.AEAD
+	sn            []byte
+	sa            cipher.AEAD
+	RB            []byte
+	WB            []byte
+	Timeout       int
+	Network       string
+	RemoteAddress net.Addr
+	Cache         []byte
 }
 
 func NewStreamClient(network string, password, dst []byte, server net.Conn, timeout int) (*StreamClient, error) {
@@ -50,7 +52,7 @@ func NewStreamClient(network string, password, dst []byte, server net.Conn, time
 			return nil, err
 		}
 	}
-	c := &StreamClient{network: network, server: server, timeout: timeout}
+	c := &StreamClient{Network: network, Server: server, Timeout: timeout, Cache: make([]byte, 0)}
 
 	c.cn = x.BP12.Get().([]byte)
 	if _, err := io.ReadFull(rand.Reader, c.cn); err != nil {
@@ -63,7 +65,7 @@ func NewStreamClient(network string, password, dst []byte, server net.Conn, time
 		x.BP32.Put(ck)
 		return nil, err
 	}
-	if _, err := c.server.Write(c.cn); err != nil {
+	if _, err := c.Server.Write(c.cn); err != nil {
 		x.BP12.Put(c.cn)
 		x.BP32.Put(ck)
 		return nil, err
@@ -81,33 +83,33 @@ func NewStreamClient(network string, password, dst []byte, server net.Conn, time
 		return nil, err
 	}
 
-	c.wb = x.BP2048.Get().([]byte)
+	c.WB = x.BP2048.Get().([]byte)
 	i := time.Now().Unix()
-	if c.network == "tcp" && i%2 != 0 {
+	if c.Network == "tcp" && i%2 != 0 {
 		i += 1
 	}
-	if c.network == "udp" && i%2 != 1 {
+	if c.Network == "udp" && i%2 != 1 {
 		i += 1
 	}
-	binary.BigEndian.PutUint32(c.wb[2+16:2+16+4], uint32(i))
-	copy(c.wb[2+16+4:2+16+4+len(dst)], dst)
-	if err := c.writeTCPPacket(4 + len(dst)); err != nil {
+	binary.BigEndian.PutUint32(c.WB[2+16:2+16+4], uint32(i))
+	copy(c.WB[2+16+4:2+16+4+len(dst)], dst)
+	if err := c.Write(4 + len(dst)); err != nil {
 		x.BP12.Put(c.cn)
-		x.BP2048.Put(c.wb)
+		x.BP2048.Put(c.WB)
 		return nil, err
 	}
 
 	c.sn = x.BP12.Get().([]byte)
-	if _, err := io.ReadFull(c.server, c.sn); err != nil {
+	if _, err := io.ReadFull(c.Server, c.sn); err != nil {
 		x.BP12.Put(c.cn)
-		x.BP2048.Put(c.wb)
+		x.BP2048.Put(c.WB)
 		x.BP12.Put(c.sn)
 		return nil, err
 	}
 	sk := x.BP32.Get().([]byte)
 	if _, err := io.ReadFull(hkdf.New(sha256.New, password, c.sn, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), sk); err != nil {
 		x.BP12.Put(c.cn)
-		x.BP2048.Put(c.wb)
+		x.BP2048.Put(c.WB)
 		x.BP12.Put(c.sn)
 		x.BP32.Put(sk)
 		return nil, err
@@ -115,7 +117,7 @@ func NewStreamClient(network string, password, dst []byte, server net.Conn, time
 	sb, err := aes.NewCipher(sk)
 	if err != nil {
 		x.BP12.Put(c.cn)
-		x.BP2048.Put(c.wb)
+		x.BP2048.Put(c.WB)
 		x.BP12.Put(c.sn)
 		x.BP32.Put(sk)
 		return nil, err
@@ -124,82 +126,92 @@ func NewStreamClient(network string, password, dst []byte, server net.Conn, time
 	c.sa, err = cipher.NewGCM(sb)
 	if err != nil {
 		x.BP12.Put(c.cn)
-		x.BP2048.Put(c.wb)
+		x.BP2048.Put(c.WB)
 		x.BP12.Put(c.sn)
 		return nil, err
 	}
 
-	if c.network == "tcp" {
-		c.rb = x.BP2048.Get().([]byte)
+	if c.Network == "tcp" {
+		c.RB = x.BP2048.Get().([]byte)
 	}
-	if c.network == "udp" {
-		x.BP2048.Put(c.wb)
-		c.wb = x.BP65507.Get().([]byte)
-		c.rb = x.BP65507.Get().([]byte)
+	if c.Network == "udp" {
+		x.BP2048.Put(c.WB)
+		c.WB = x.BP65507.Get().([]byte)
+		c.RB = x.BP65507.Get().([]byte)
 	}
 
+	return StreamClientInit(c)
+}
+
+var StreamClientInit func(*StreamClient) (*StreamClient, error) = func(c *StreamClient) (*StreamClient, error) {
+	if c.Timeout != 0 {
+		if err := c.Server.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
+			c.Clean()
+			return nil, err
+		}
+	}
 	return c, nil
 }
 
 func (c *StreamClient) Exchange(local net.Conn) error {
 	go func() {
 		for {
-			if c.timeout != 0 {
-				if err := local.SetDeadline(time.Now().Add(time.Duration(c.timeout) * time.Second)); err != nil {
+			if c.Timeout != 0 {
+				if err := local.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
 					return
 				}
 			}
-			l, err := local.Read(c.wb[2+16 : len(c.wb)-16])
+			l, err := local.Read(c.WB[2+16 : len(c.WB)-16])
 			if err != nil {
 				return
 			}
-			if err := c.writeTCPPacket(l); err != nil {
+			if err := c.Write(l); err != nil {
 				return
 			}
 		}
 	}()
 	for {
-		if c.timeout != 0 {
-			if err := c.server.SetDeadline(time.Now().Add(time.Duration(c.timeout) * time.Second)); err != nil {
+		if c.Timeout != 0 {
+			if err := c.Server.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
 				return err
 			}
 		}
-		l, err := c.readTCPPacket()
+		l, err := c.Read()
 		if err != nil {
 			return err
 		}
-		if _, err := local.Write(c.rb[2+16 : 2+16+l]); err != nil {
+		if _, err := local.Write(c.RB[2+16 : 2+16+l]); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *StreamClient) writeTCPPacket(l int) error {
-	binary.BigEndian.PutUint16(c.wb[:2], uint16(l))
-	c.ca.Seal(c.wb[:0], c.cn, c.wb[:2], nil)
+func (c *StreamClient) Write(l int) error {
+	binary.BigEndian.PutUint16(c.WB[:2], uint16(l))
+	c.ca.Seal(c.WB[:0], c.cn, c.WB[:2], nil)
 	NextNonce(c.cn)
-	c.ca.Seal(c.wb[:2+16], c.cn, c.wb[2+16:2+16+l], nil)
-	if _, err := c.server.Write(c.wb[:2+16+l+16]); err != nil {
+	c.ca.Seal(c.WB[:2+16], c.cn, c.WB[2+16:2+16+l], nil)
+	if _, err := c.Server.Write(c.WB[:2+16+l+16]); err != nil {
 		return err
 	}
 	NextNonce(c.cn)
 	return nil
 }
 
-func (c *StreamClient) readTCPPacket() (int, error) {
-	if _, err := io.ReadFull(c.server, c.rb[:2+16]); err != nil {
+func (c *StreamClient) Read() (int, error) {
+	if _, err := io.ReadFull(c.Server, c.RB[:2+16]); err != nil {
 		return 0, err
 	}
-	if _, err := c.sa.Open(c.rb[:0], c.sn, c.rb[:2+16], nil); err != nil {
+	if _, err := c.sa.Open(c.RB[:0], c.sn, c.RB[:2+16], nil); err != nil {
 		return 0, err
 	}
-	l := int(binary.BigEndian.Uint16(c.rb[:2]))
-	if _, err := io.ReadFull(c.server, c.rb[2+16:2+16+l+16]); err != nil {
+	l := int(binary.BigEndian.Uint16(c.RB[:2]))
+	if _, err := io.ReadFull(c.Server, c.RB[2+16:2+16+l+16]); err != nil {
 		return 0, err
 	}
 	NextNonce(c.sn)
-	if _, err := c.sa.Open(c.rb[:2+16], c.sn, c.rb[2+16:2+16+l+16], nil); err != nil {
+	if _, err := c.sa.Open(c.RB[:2+16], c.sn, c.RB[2+16:2+16+l+16], nil); err != nil {
 		return 0, err
 	}
 	NextNonce(c.sn)
@@ -209,12 +221,12 @@ func (c *StreamClient) readTCPPacket() (int, error) {
 func (c *StreamClient) Clean() {
 	x.BP12.Put(c.cn)
 	x.BP12.Put(c.sn)
-	if c.network == "tcp" {
-		x.BP2048.Put(c.wb)
-		x.BP2048.Put(c.rb)
+	if c.Network == "tcp" {
+		x.BP2048.Put(c.WB)
+		x.BP2048.Put(c.RB)
 	}
-	if c.network == "udp" {
-		x.BP65507.Put(c.wb)
-		x.BP65507.Put(c.rb)
+	if c.Network == "udp" {
+		x.BP65507.Put(c.WB)
+		x.BP65507.Put(c.RB)
 	}
 }

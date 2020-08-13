@@ -156,7 +156,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
 	defer s.UDPExchanges.Delete(src + dst)
-	err = pc.ServerToLocal(rc, s.UDPTimeout, func(dst, b []byte) (int, error) {
+	err = pc.RunServerToLocal(rc, s.UDPTimeout, func(dst, b []byte) (int, error) {
 		d.Data = b
 		return s.UDPConn.WriteToUDP(d.Bytes(), addr)
 	})

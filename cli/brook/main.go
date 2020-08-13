@@ -177,9 +177,8 @@ func main() {
 					Usage:   "Brook server password",
 				},
 				&cli.StringFlag{
-					Name:    "socks5",
-					Aliases: []string{"s5"},
-					Usage:   "Socks5 server which will be created, like: 127.0.0.1:1080",
+					Name:  "socks5",
+					Usage: "Socks5 server which will be created, like: 127.0.0.1:1080",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -494,9 +493,8 @@ func main() {
 					Usage:   "Brook wsserver password",
 				},
 				&cli.StringFlag{
-					Name:    "socks5",
-					Aliases: []string{"s5"},
-					Usage:   "Socks5 server which will be created, like: 127.0.0.1:1080",
+					Name:  "socks5",
+					Usage: "Socks5 server which will be created, like: 127.0.0.1:1080",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -690,9 +688,8 @@ func main() {
 			Usage: "Run as standalone standard socks5 server, both TCP and UDP",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:    "socks5",
-					Aliases: []string{"s5"},
-					Usage:   "Socks5 server which will be created, like: 1.2.3.4:1080",
+					Name:  "socks5",
+					Usage: "Socks5 server which will be created, like: 1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:  "username",
@@ -747,7 +744,7 @@ func main() {
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "socks5",
-					Aliases: []string{"s5"},
+					Aliases: []string{"s"},
 					Usage:   "Socks5 server address, like: 127.0.0.1:1080",
 				},
 				&cli.StringFlag{
@@ -917,7 +914,7 @@ func main() {
 			Action: func(c *cli.Context) error {
 				fmt.Println("")
 				fmt.Println("Brook Github:", "https://github.com/txthinking/brook")
-				fmt.Println("Brook Docs:", "https://txthinking.github.com/brook")
+				fmt.Println("Brook Docs:", "https://txthinking.github.io/brook")
 				fmt.Println("Brook Issues:", "https://github.com/txthinking/brook/issues")
 				fmt.Println("")
 				fmt.Println("Slides:", "https://talks.txthinking.com")
