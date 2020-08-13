@@ -165,7 +165,7 @@ func (c *StreamClient) Exchange(local net.Conn) error {
 			if err != nil {
 				return
 			}
-			if err := c.Write(l); err != nil {
+			if err := c.WriteL(l); err != nil {
 				return
 			}
 		}
@@ -176,7 +176,7 @@ func (c *StreamClient) Exchange(local net.Conn) error {
 				return err
 			}
 		}
-		l, err := c.Read()
+		l, err := c.ReadL()
 		if err != nil {
 			return err
 		}
@@ -187,7 +187,7 @@ func (c *StreamClient) Exchange(local net.Conn) error {
 	return nil
 }
 
-func (c *StreamClient) Write(l int) error {
+func (c *StreamClient) WriteL(l int) error {
 	binary.BigEndian.PutUint16(c.WB[:2], uint16(l))
 	c.ca.Seal(c.WB[:0], c.cn, c.WB[:2], nil)
 	NextNonce(c.cn)
@@ -199,7 +199,7 @@ func (c *StreamClient) Write(l int) error {
 	return nil
 }
 
-func (c *StreamClient) Read() (int, error) {
+func (c *StreamClient) ReadL() (int, error) {
 	if _, err := io.ReadFull(c.Server, c.RB[:2+16]); err != nil {
 		return 0, err
 	}
