@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"github.com/txthinking/brook/limits"
-	"github.com/txthinking/brook/plugin"
 	"golang.org/x/net/proxy"
 )
 
@@ -34,7 +33,6 @@ type Socks5ToHTTP struct {
 	Dial           proxy.Dialer
 	TCPTimeout     int
 	Listen         *net.TCPListener
-	HTTPMiddleman  plugin.HTTPMiddleman
 }
 
 func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, tcpTimeout int) (*Socks5ToHTTP, error) {
@@ -64,11 +62,6 @@ func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, tc
 		Dial:           dial,
 		TCPTimeout:     tcpTimeout,
 	}, nil
-}
-
-// SetHTTPMiddleman sets httpmiddleman plugin.
-func (s *Socks5ToHTTP) SetHTTPMiddleman(m plugin.HTTPMiddleman) {
-	s.HTTPMiddleman = m
 }
 
 func (s *Socks5ToHTTP) ListenAndServe() error {
@@ -128,16 +121,6 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 	if method != "CONNECT" {
 		var err error
 		addr, err = GetAddressFromURL(address)
-		if err != nil {
-			return err
-		}
-	}
-
-	if s.HTTPMiddleman != nil {
-		done, err := s.HTTPMiddleman.Handle(method, addr, b, c)
-		if done {
-			return err
-		}
 		if err != nil {
 			return err
 		}
