@@ -282,7 +282,7 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	}
 	defer sc.Clean()
 	i := copy(sc.WB[2+16:], mb)
-	if err := sc.Write(i); err != nil {
+	if err := sc.WriteL(i); err != nil {
 		return err
 	}
 	if err := sc.Exchange(c); err != nil {

@@ -93,7 +93,7 @@ func NewStreamClient(network string, password, dst []byte, server net.Conn, time
 	}
 	binary.BigEndian.PutUint32(c.WB[2+16:2+16+4], uint32(i))
 	copy(c.WB[2+16+4:2+16+4+len(dst)], dst)
-	if err := c.Write(4 + len(dst)); err != nil {
+	if err := c.WriteL(4 + len(dst)); err != nil {
 		x.BP12.Put(c.cn)
 		x.BP2048.Put(c.WB)
 		return nil, err
