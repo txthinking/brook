@@ -228,7 +228,7 @@ func (s *StreamServer) Read() (int, error) {
 }
 
 func (s *StreamServer) Clean() {
-	x.BP2048.Put(s.RB)
+	x.BP12.Put(s.cn)
 	x.BP12.Put(s.sn)
 	if s.Network == "tcp" {
 		x.BP2048.Put(s.WB)
