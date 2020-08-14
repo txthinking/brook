@@ -182,15 +182,15 @@ func (s *StreamServer) Exchange(remote net.Conn) error {
 	for {
 		if s.Timeout != 0 {
 			if err := s.Client.SetDeadline(time.Now().Add(time.Duration(s.Timeout) * time.Second)); err != nil {
-				return err
+				return nil
 			}
 		}
 		l, err := s.Read()
 		if err != nil {
-			return err
+			return nil
 		}
 		if _, err := remote.Write(s.RB[2+16 : 2+16+l]); err != nil {
-			return err
+			return nil
 		}
 	}
 	return nil

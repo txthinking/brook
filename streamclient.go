@@ -173,15 +173,15 @@ func (c *StreamClient) Exchange(local net.Conn) error {
 	for {
 		if c.Timeout != 0 {
 			if err := c.Server.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
-				return err
+				return nil
 			}
 		}
 		l, err := c.ReadL()
 		if err != nil {
-			return err
+			return nil
 		}
 		if _, err := local.Write(c.RB[2+16 : 2+16+l]); err != nil {
-			return err
+			return nil
 		}
 	}
 	return nil
