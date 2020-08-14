@@ -27,7 +27,6 @@ import (
 	"github.com/gorilla/websocket"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
-	"github.com/txthinking/brook/plugin"
 	"github.com/txthinking/socks5"
 	"github.com/urfave/negroni"
 	"golang.org/x/crypto/acme/autocert"
@@ -35,16 +34,15 @@ import (
 
 // WSServer.
 type WSServer struct {
-	Password      []byte
-	Domain        string
-	TCPAddr       *net.TCPAddr
-	HTTPServer    *http.Server
-	HTTPSServer   *http.Server
-	TCPTimeout    int
-	UDPTimeout    int
-	ServerAuthman plugin.ServerAuthman
-	Path          string
-	UDPSrc        *cache.Cache
+	Password    []byte
+	Domain      string
+	TCPAddr     *net.TCPAddr
+	HTTPServer  *http.Server
+	HTTPSServer *http.Server
+	TCPTimeout  int
+	UDPTimeout  int
+	Path        string
+	UDPSrc      *cache.Cache
 }
 
 // NewWSServer.
@@ -71,11 +69,6 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 		UDPSrc:     cs2,
 	}
 	return s, nil
-}
-
-// SetServerAuthman sets authman plugin.
-func (s *WSServer) SetServerAuthman(m plugin.ServerAuthman) {
-	s.ServerAuthman = m
 }
 
 // Run server.
