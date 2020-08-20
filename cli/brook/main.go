@@ -588,8 +588,8 @@ func main() {
 			Usage: "Run as standalone relay, both TCP and UDP, this means access [listen address] is equal to access [to address], [src <-> listen address <-> to address]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
+					Name:    "from",
+					Aliases: []string{"f"},
 					Usage:   "Listen address: like ':1080'",
 				},
 				&cli.StringFlag{
@@ -609,14 +609,14 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("to") == "" {
+				if c.String("from") == "" || c.String("to") == "" {
 					cli.ShowCommandHelp(c, "relay")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewRelay(c.String("listen"), c.String("to"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewRelay(c.String("from"), c.String("to"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -634,9 +634,8 @@ func main() {
 			Usage: "Run as multiple standalone relays",
 			Flags: []cli.Flag{
 				&cli.StringSliceFlag{
-					Name:    "listento",
-					Aliases: []string{"l"},
-					Usage:   "Listen address and relay to address, like '0.0.0.0:1080 1.2.3.4:1080'",
+					Name:  "fromto",
+					Usage: "Listen address and relay to address, like '0.0.0.0:1080 1.2.3.4:1080'",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -650,7 +649,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("listento")) == 0 {
+				if len(c.StringSlice("fromto")) == 0 {
 					cli.ShowCommandHelp(c, "relays")
 					return nil
 				}
@@ -658,10 +657,10 @@ func main() {
 					enableDebug()
 				}
 				l := make([]*brook.Relay, 0)
-				for _, v := range c.StringSlice("listento") {
+				for _, v := range c.StringSlice("fromto") {
 					ss := strings.Split(v, " ")
 					if len(ss) != 2 {
-						return errors.New("Invalid listento")
+						return errors.New("Invalid fromto")
 					}
 					s, err := brook.NewRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
