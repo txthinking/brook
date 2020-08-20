@@ -175,7 +175,7 @@ $ brook dns -s server_address:port -p password -l 127.0.0.1:5353
 
 ### Transparent Proxy
 
-See [wiki](https://github.com/txthinking/brook/wiki/How-to-run-transparent-proxy-on-Linux)
+See [Docs](https://txthinking.github.io/brook/#/brook-tproxy)
 
 ### WebSocket Server
 
