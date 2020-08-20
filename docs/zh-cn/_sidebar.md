@@ -44,9 +44,17 @@
 
     * [$ brook hijackhttps](brook-hijackhttps.md)
 
+* Brook Link
+
+    * [Brook Link](brook-link.md)
+
 * PAC
 
     * [$ brook pac](brook-pac.md)
+
+* IPv6
+
+    * [IPv6](ipv6.md)
 
 * Resources
 
