@@ -16,6 +16,7 @@
 **v20200901**
 
 - **❗️Breaking change, you should upgrade both server and client**
+- New [Docs](https://txthinking.github.io/brook/)
 
 ---
 
