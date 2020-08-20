@@ -62,13 +62,13 @@ Install on Archlinux
 pacman -S brook
 ```
 
-Download from [releases](https://github.com/txthinking/brook/releases)**
+Download from [releases](https://github.com/txthinking/brook/releases)
 
 ```
 # For example, on linux amd64
 
-$ sudo curl -L https://github.com/txthinking/brook/releases/download/v20200901/brook_linux_amd64 -o /usr/bin/brook
-$ sudo chmod +x /usr/bin/brook
+$ curl -L https://github.com/txthinking/brook/releases/download/v20200901/brook_linux_amd64 -o /usr/bin/brook
+$ chmod +x /usr/bin/brook
 ```
 
 ### Install GUI
@@ -81,9 +81,9 @@ Install via brew
 brew cask install brook
 ```
 
-Download from [releases](https://github.com/txthinking/brook/releases)**
+Download from [releases](https://github.com/txthinking/brook/releases)
 
-[macOS](https://github.com/txthinking/brook/releases/download/v20200801/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200801/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200801/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)**
+[macOS](https://github.com/txthinking/brook/releases/download/v20200901/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200901/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200901/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 ## Brook
 

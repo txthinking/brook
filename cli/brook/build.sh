@@ -11,7 +11,6 @@ GOOS=darwin GOARCH=386 go build                      -ldflags="-w -s" -o _/brook
 GOOS=darwin GOARCH=amd64 go build                    -ldflags="-w -s" -o _/brook_darwin_amd64 .
 GOOS=freebsd GOARCH=386 go build                     -ldflags="-w -s" -o _/brook_freebsd_386 .
 GOOS=freebsd GOARCH=amd64 go build                   -ldflags="-w -s" -o _/brook_freebsd_amd64 .
-GOOS=linux GOARCH=amd64 go build                     -ldflags="-w -s" -o _/brook .
 GOOS=linux GOARCH=amd64 go build                     -ldflags="-w -s" -o _/brook_linux_amd64 .
 GOOS=linux GOARCH=386 go build                       -ldflags="-w -s" -o _/brook_linux_386 .
 GOOS=linux GOARCH=arm64 go build                     -ldflags="-w -s" -o _/brook_linux_arm64 .

@@ -6,6 +6,6 @@
 > Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
 [GitHub](https://github.com/txthinking/brook)
-[Get Started](#get-started)
+[Get Started](#install-via-curl)
 
 ![color](#ffffff)
