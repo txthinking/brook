@@ -44,12 +44,6 @@ Install via [nami](https://github.com/txthinking/nami)
 nami install github.com/txthinking/brook
 ```
 
-Install on Archlinux
-
-```
-pacman -S brook
-```
-
 ### Install GUI
 
 > The GUI file has only client function
