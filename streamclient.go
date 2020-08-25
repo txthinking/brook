@@ -157,30 +157,30 @@ func (c *StreamClient) Exchange(local net.Conn) error {
 	go func() {
 		for {
 			if c.Timeout != 0 {
-				if err := local.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
+				if err := c.Server.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
 					return
 				}
 			}
-			l, err := local.Read(c.WB[2+16 : len(c.WB)-16])
+			l, err := c.ReadL()
 			if err != nil {
 				return
 			}
-			if err := c.WriteL(l); err != nil {
+			if _, err := local.Write(c.RB[2+16 : 2+16+l]); err != nil {
 				return
 			}
 		}
 	}()
 	for {
 		if c.Timeout != 0 {
-			if err := c.Server.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
+			if err := local.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
 				return nil
 			}
 		}
-		l, err := c.ReadL()
+		l, err := local.Read(c.WB[2+16 : len(c.WB)-16])
 		if err != nil {
 			return nil
 		}
-		if _, err := local.Write(c.RB[2+16 : 2+16+l]); err != nil {
+		if err := c.WriteL(l); err != nil {
 			return nil
 		}
 	}
