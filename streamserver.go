@@ -84,6 +84,7 @@ func NewStreamServer(password []byte, client net.Conn, timeout int) (*StreamServ
 	if time.Now().Unix()-i > 60 {
 		x.BP12.Put(s.cn)
 		x.BP2048.Put(s.RB)
+		WaitReadErr(s.Client)
 		return nil, nil, errors.New("Expired request")
 	}
 	if i%2 == 0 {
@@ -213,6 +214,7 @@ func (s *StreamServer) Read() (int, error) {
 		return 0, err
 	}
 	if _, err := s.ca.Open(s.RB[:0], s.cn, s.RB[:2+16], nil); err != nil {
+		WaitReadErr(s.Client)
 		return 0, err
 	}
 	l := int(binary.BigEndian.Uint16(s.RB[:2]))
