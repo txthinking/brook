@@ -542,7 +542,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support $ brook server and $ brook wsserver address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443/ws. Do not omit the port under any circumstances",
+					Usage:   "Support $ brook server, $ brook wsserver and socks5 server, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443/ws, socks5://1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:    "password",
