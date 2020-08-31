@@ -1,5 +1,5 @@
 {
-    "version": "v20200901",
+    "version": "v20200909",
     "text": "v20200901 has breaking change, you should upgrade both of server and client",
     "link": "https://github.com/txthinking/brook"
 }

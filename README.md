@@ -18,6 +18,11 @@
 - **❗️Breaking change, you should upgrade both server and client**
 - New [Docs](https://txthinking.github.io/brook/)
 
+
+**v20200909**
+
+- Import server list from URL. [ref here](https://txthinking.github.io/brook/#/brook-link) and [here](https://gist.githubusercontent.com/txthinking/7ecdb282982e14cc95714141c0ce2581/raw/350363229d1ce123b87b7cb0789e459969620cb3/brooklink.list)
+
 ---
 
 ## What is Brook
@@ -56,7 +61,7 @@ Install via brew
 brew cask install brook
 ```
 
-## Brook
+## Usage
 
 [Docs](https://txthinking.github.io/brook/)
 
