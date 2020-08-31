@@ -549,13 +549,18 @@ func main() {
 					Aliases: []string{"p"},
 					Usage:   "Server password",
 				},
+				&cli.StringFlag{
+					Name:    "username",
+					Aliases: []string{"u"},
+					Usage:   "Server username",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("server") == "" || c.String("password") == "" {
+				if c.String("server") == "" {
 					cli.ShowCommandHelp(c, "link")
 					return nil
 				}
-				fmt.Println(brook.Link(c.String("server"), c.String("password")))
+				fmt.Println(brook.Link(c.String("server"), c.String("password"), c.String("username")))
 				return nil
 			},
 		},
@@ -566,20 +571,25 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support $ brook server and $ brook wsserver address, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443. Do not omit the port under any circumstances",
+					Usage:   "Support $ brook server,  $ brook wsserver and socks5 server, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443, socks5://1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:    "password",
 					Aliases: []string{"p"},
 					Usage:   "Server password",
 				},
+				&cli.StringFlag{
+					Name:    "username",
+					Aliases: []string{"u"},
+					Usage:   "Server username",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("server") == "" || c.String("password") == "" {
+				if c.String("server") == "" {
 					cli.ShowCommandHelp(c, "qr")
 					return nil
 				}
-				brook.QR(c.String("server"), c.String("password"))
+				brook.QR(c.String("server"), c.String("password"), c.String("username"))
 				return nil
 			},
 		},
