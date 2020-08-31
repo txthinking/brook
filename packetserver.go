@@ -56,6 +56,9 @@ func (s *PacketServer) RemoteToClient(remote net.Conn, timeout int, dst []byte, 
 			}
 		}
 		l, err := remote.Read(s.wb[12+len(dst) : 65507-16])
+		if err != nil {
+			return nil
+		}
 		if _, err := io.ReadFull(rand.Reader, s.wb[:12]); err != nil {
 			return err
 		}
