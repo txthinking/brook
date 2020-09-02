@@ -4,7 +4,6 @@
 [![Docs](https://img.shields.io/badge/Tutorial-docs-yellow.svg)](https://txthinking.github.io/brook/)
 [![Slides](https://img.shields.io/badge/Tutorial-Slides-blueviolet.svg)](https://talks.txthinking.com)
 [![Youtube](https://img.shields.io/badge/Tutorial-Youtube-red.svg)](https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A)
-[![Google Chat](https://img.shields.io/badge/Google-Chat-blue.svg)](https://docs.google.com/forms/d/e/1FAIpQLSd61-WE__WYiDee2UWjhDKNcb-A6KQW9xwzFkeYiAmQ3dpEcA/viewform)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 <p align="center">
