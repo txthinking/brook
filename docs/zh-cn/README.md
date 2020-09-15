@@ -1,13 +1,13 @@
-CLI(Command line interface), Brook CLI is just one file, in other words, brook has no concept of installation, you only need to download the brook file to your computer. Brook CLI has both server and client functions.
+CLI 是命令行界面, 与之对应的另一个概念是 GUI 图形用户界面. Brook CLI 只是一个独立的文件, 就是说并没有安装的概念, 只需要下载这一个文件到你电脑即可. Brook CLI 文件同时具有服务端和客户端的功能.
 
-You may need to run the below commands as **root user or sudo**, if you are not very familiar with linux, we recommend you to use root user.
+你可能需要用 **root** 用户或 **sudo** 来运行下面提到的命令, 如果你不熟悉 Linux, 我们建议你使用 root 用户来进行操作.
 
 ## Install via curl
 
-Let's take the v20200901 version downloaded on linux amd64 as an example
+Let's take the v20200909 version downloaded on linux amd64 as an example
 
 ```
-$ curl -L https://github.com/txthinking/brook/releases/download/v20200901/brook_linux_amd64 -o /usr/bin/brook
+$ curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
 $ chmod +x /usr/bin/brook
 ```
 
@@ -27,7 +27,7 @@ You may want more information on [nami github page](https://github.com/txthinkin
 $ nami install github.com/txthinking/brook
 ```
 
-## Install on Archlinux
+## Install on Archlinux(maybe outdated)
 
 ```
 $ pacman -S brook

@@ -1,34 +1,34 @@
-* Install
+* 安装
 
-    * [Install CLI](README.md)
-    * [Install GUI Client](install-gui-client.md)
+    * [安装 CLI](README.md)
+    * [安装图形客户端](install-gui-client.md)
 
-* Server and Client
+* 服务端和客户端
 
     * [$ brook server](brook-server.md)
-    * [Daemon with joker](joker.md)
+    * [用joker守护进程](joker.md)
     * [$ brook client](brook-client.md)
-    * [GUI Client](brook-client-gui.md)
+    * [图形客户端](brook-client-gui.md)
 
-* WSServer and WSClient
+* WS服务端和WS客户端
 
     * [$ brook wsserver](brook-wsserver.md)
     * [$ brook wsclient](brook-wsclient.md)
-    * [GUI WSClient](brook-wsclient-gui.md)
+    * [图形客户端](brook-wsclient-gui.md)
 
-* Server and Map
+* 服务端和 Map
 
     * [$ brook map](brook-map.md)
 
-* Server and DNS
+* 服务端和 DNS Server
 
     * [$ brook dns](brook-dns.md)
 
-* Server and Transparent Proxy
+* 服务端和透明代理
 
     * [$ brook tproxy](brook-tproxy.md)
 
-* Relay
+* 中继
 
     * [$ brook relay](brook-relay.md)
 
@@ -36,15 +36,15 @@
 
     * [$ brook socks5](brook-socks5.md)
 
-* Socks5 to HTTP
+* Socks5 转 HTTP 代理
 
     * [$ brook socks5tohttp](brook-socks5tohttp.md)
 
-* Socks5 and Hijack HTTPS magic DNS
+* Socks5 和魔法DNS
 
     * [$ brook hijackhttps](brook-hijackhttps.md)
 
-* Brook Link
+* Brook 链接
 
     * [Brook Link](brook-link.md)
 
@@ -56,11 +56,11 @@
 
     * [IPv6](ipv6.md)
 
-* Resources
+* 资源
 
     * [Resources](resources.md)
 
-* Spec
+* 协议
 
     * [brook server](brook-server-spec.md)
     * [brook wsserver](brook-wsserver-spec.md)
