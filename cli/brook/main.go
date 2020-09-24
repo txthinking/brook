@@ -876,22 +876,10 @@ func main() {
 					Usage:   "Proxy, like: 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT'",
 				},
 				&cli.StringFlag{
-					Name:    "mode",
-					Aliases: []string{"m"},
-					Value:   "white",
-					Usage:   "white/black/global",
-				},
-				&cli.StringFlag{
-					Name:    "domainURL",
-					Aliases: []string{"d"},
-					Value:   "https://txthinking.github.io/blackwhite/white.list",
+					Name:    "bypassDomainList",
+					Aliases: []string{"b"},
+					Value:   "https://txthinking.github.io/bypass/chinadomain.list",
 					Usage:   "domain list url, http(s):// or local file path",
-				},
-				&cli.StringFlag{
-					Name:    "cidrURL",
-					Aliases: []string{"c"},
-					Value:   "https://txthinking.github.io/blackwhite/white_cidr.list",
-					Usage:   "CIDR list url, http(s):// or local file path",
 				},
 				&cli.StringFlag{
 					Name:    "file",
@@ -900,11 +888,11 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if (c.String("mode") != "global" && c.String("mode") != "white" && c.String("mode") != "black") || (c.String("listen") == "" && c.String("file") == "") {
+				if c.String("listen") == "" && c.String("file") == "" {
 					cli.ShowCommandHelp(c, "pac")
 					return nil
 				}
-				p := brook.NewPAC(c.String("listen"), c.String("file"), c.String("proxy"), c.String("mode"), c.String("domainURL"), c.String("cidrURL"))
+				p := brook.NewPAC(c.String("listen"), c.String("file"), c.String("proxy"), c.String("bypassDomainList"))
 				if c.String("file") != "" {
 					return p.WriteToFile()
 				}
