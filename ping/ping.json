@@ -1,5 +1,5 @@
 {
     "version": "v20200909",
-    "text": "v20200901 has breaking change, you should upgrade both of server and client",
+    "text": "I found iOS client on iOS 14, it may have fake 'connected' state, this means when you tap 'Connect', the button changed to 'Disconnect', and VPN icon appears at the top. But can't open any website. The temporary solution is connect again.",
     "link": "https://github.com/txthinking/brook"
 }
