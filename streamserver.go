@@ -164,6 +164,7 @@ var StreamServerInit func(*StreamServer, int) (*StreamServer, []byte, error) = f
 
 func (s *StreamServer) Exchange(remote net.Conn) error {
 	remote = s.ConnFunc(remote)
+	defer remote.Close()
 	go func() {
 		for {
 			if s.Timeout != 0 {
