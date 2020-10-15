@@ -6,6 +6,6 @@
 > Brook 遵循 KISS 哲学.
 
 [GitHub](https://github.com/txthinking/brook)
-[开始](#install-via-curl)
+[开始](#brook)
 
 ![color](#ffffff)
