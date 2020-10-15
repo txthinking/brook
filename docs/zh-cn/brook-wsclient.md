@@ -1,22 +1,21 @@
 ## $ brook wsclient
 
-Assume your brook wsserver is `ws://1.2.3.4:9999` and password is `hello`, and you want to create a socks5 proxy `127.0.0.1:1080` on local.
+假设你的brook server是 `ws://1.2.3.4:9999`, 密码是 `hello`, 你要在本地创建一个socks5代理 `127.0.0.1:1080`
 
 ```
-send request <--> local socks5 <-- | brook wsserver protocol | --> brook wsserver <--> a remote address
+请求 <--> 本地socks5 <-- | brook wsserver 协议 | --> brook wsserver <--> 目标
 ```
 
-## Run brook wsclient
+## 运行 brook wsclient
 
 ```
 $ brook wsclient -s ws://1.2.3.4:9999 -p hello --socks5 127.0.0.1:1080
 ```
 
-> More parameters: $ brook wsclient -h
+> 更多参数: $ brook wsclient -h
 
-## Use the socks5 proxy created by brook client
+## 使用刚才创建的socks5代理
 
-> TODO: Please help improve the documentation here
+> TODO: 请帮助完善此文档
 
-* Configure it on your system network settings
-* Configure it on your browser
+* 手动配置系统代理

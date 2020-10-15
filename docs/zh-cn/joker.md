@@ -1,42 +1,38 @@
-## Run brook server as daemon with &nbsp; [joker](https://github.com/txthinking/joker)
+## 使用[joker](https://github.com/txthinking/joker)运行brook server守护进程
 
-Install joker
+安装joker
 
 ```
 $ nami install github.com/txthinking/joker
 ```
 
-You may want more information on [joker github page](https://github.com/txthinking/joker)
+如果你想看更多信息可以去 [joker github 页面](https://github.com/txthinking/joker)
 
-> We recommend running the command directly to make sure there are no errors before running it with joker
+> 我们建议你先在前台直接运行brook server, 确保一切都正常后再结合joker使用
 
 ```
 $ joker brook server -l :9999 -p hello
 ```
 
-## View running commmands with joker
+> 可以看得出来, 这条命令相比之前的命令只是前面多个joker. 用joker守护某个进程就是这样简单
+
+## 查看joker守护的所有进程
 
 ```
 $ joker list
 ```
 
-## View running and stopped commands with joker
+## 停止joker守护某个进程
 
-```
-$ joker list -a
-```
-
-## Stop a running command with joker
-
-> Your can get ID from output by $ joker list
+> $ joker list 会输出所有进程ID
 
 ```
 $ joker stop <ID>
 ```
 
-## View log of a running or stopped command with joker
+## 查看某个进程的日志
 
-> Your can get ID from output by $ joker list
+> $ joker list 会输出所有进程ID
 
 ```
 $ joker log <ID>

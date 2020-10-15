@@ -58,6 +58,7 @@
 
 * Resources
 
+    * [Video](video.md)
     * [Resources](resources.md)
 
 * Spec

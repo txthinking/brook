@@ -20,12 +20,6 @@ $ joker brook server -l :9999 -p hello
 $ joker list
 ```
 
-## View running and stopped commands with joker
-
-```
-$ joker list -a
-```
-
 ## Stop a running command with joker
 
 > Your can get ID from output by $ joker list

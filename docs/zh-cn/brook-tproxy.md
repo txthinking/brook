@@ -1,12 +1,12 @@
 ## $ brook tproxy
 
-$ brook tproxy can create Transparent Proxy on your linux router, it must work with $ brook server.
+$ brook tproxy 可以在创建透明代理在你的路由器, 它与brook server一起工作.
 
-Assume your brook server is `1.2.3.4:9999` and password is `hello`
+假设你的brook server是 `1.2.3.4:9999`, 密码是 `hello`
 
-## Run brook tproxy
+## 运行 brook tproxy
 
-> Due to the differences in many router systems, the following steps are for reference only
+> 因为不同路由器可能有差异, 所以以下仅供参考
 
 #### 1. Route table
 
@@ -53,15 +53,14 @@ iptables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1
 iptables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 1080
 ```
 
-#### 5. Run brook
+#### 5. 运行 brook tproxy
 
 ```
 brook tproxy -s 1.2.3.4:9999 -p hello -l :1080
 ```
 
-> More parameters: $ brook tproxy -h
+> 更多参数: $ brook tproxy -h
 
-### On your computer
+### 在你的电脑上
 
-* Set the gateway to your Linux box IP
-* Set the DNS server to 8.8.8.8(or any other working DNS server)
+* 你需要设置一个信用好点的DNS, 比如8.8.8.8

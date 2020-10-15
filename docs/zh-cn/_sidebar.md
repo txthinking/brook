@@ -58,7 +58,8 @@
 
 * 资源
 
-    * [Resources](resources.md)
+    * [视频教程](video.md)
+    * [相关资源](resources.md)
 
 * 协议
 

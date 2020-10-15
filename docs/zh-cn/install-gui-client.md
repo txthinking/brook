@@ -1,30 +1,30 @@
-GUI(Graphical user interface), Brook GUI has only client function.
+GUI(图形用户界面), Brook 图形客户端.
 
 ## macOS
 
-[Brook for macOS](https://github.com/txthinking/brook/releases/download/v20200909/Brook.dmg)
+[Brook macOS 图形客户端](https://github.com/txthinking/brook/releases/download/v20200909/Brook.dmg)
 
-Please prefer to use the latest version of macOS
+最好保持你的系统为最新版
 
 ## Windows
 
-[Brook for Windows](https://github.com/txthinking/brook/releases/download/v20200909/Brook.exe)
+[Brook Windows 图形客户端](https://github.com/txthinking/brook/releases/download/v20200909/Brook.exe)
 
-Please prefer to use the latest version of Windows
+最好保持你的系统为最新版
 
 ## Android
 
-[Brook for Android](https://github.com/txthinking/brook/releases/download/v20200909/Brook.apk)
+[Brook Android 图形客户端](https://github.com/txthinking/brook/releases/download/v20200909/Brook.apk)
 
-Please prefer to use the latest version of Android and Native ROM or Google ROM
+最好保持你的系统为最新版
 
 ## iOS
 
-[Brook for iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+[Brook iOS 图形客户端](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
-Brook for iOS is not available on China AppStore, please use apple id from other regions
+最好保持你的系统为最新版. 因为不可抗因素, 请使用非中国大陆Apple ID下载.
 
 ---
 
-You can get the all above download links on the [releases](https://github.com/txthinking/brook/releases) page
+以上下载链接你也能在[releases](https://github.com/txthinking/brook/releases)页面找到
 

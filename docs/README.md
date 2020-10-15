@@ -1,6 +1,6 @@
 CLI(Command line interface), Brook CLI is just one file, in other words, brook has no concept of installation, you only need to download the brook file to your computer. Brook CLI has both server and client functions.
 
-You may need to run the below commands as **root user or sudo**, if you are not very familiar with linux, we recommend you to use root user.
+You may need to run the below commands as **root user or sudo**, if you are not very familiar with linux, we recommend you to use ubuntu with root user.
 
 ## Install via curl
 
@@ -25,10 +25,4 @@ You may want more information on [nami github page](https://github.com/txthinkin
 
 ```
 $ nami install github.com/txthinking/brook
-```
-
-## Install on Archlinux(maybe outdated)
-
-```
-$ pacman -S brook
 ```

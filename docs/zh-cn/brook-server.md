@@ -1,23 +1,23 @@
-## Run brook server
+## 运行 brook server
 
-Assume with port `9999` and password `hello`
+假设选择端口`9999`, 密码`hello`
 
 ```
 $ brook server -l :9999 -p hello
 ```
 
-Assume your server public IP is `1.2.3.4`, then your brook server is: `1.2.3.4:9999`
+假设你的服务器IP是 `1.2.3.4`, 那么你的brook server就是: `1.2.3.4:9999`
 
-> You can stop it with CTRL+C<br/>
-> More parameters: $ brook server -h
+> 你可以按组合键CTRL+C来停止<br/>
+> 更多参数介绍: $ brook server -h
 
-## Run in background
+## 后台运行
 
 ```
 $ nohup brook server -l :9999 -p hello &
 ```
 
-## Stop background brook
+## 停止后台运行的 brook
 
 ```
 $ killall brook

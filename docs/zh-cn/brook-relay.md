@@ -1,12 +1,12 @@
 ## $ brook relay
 
-$ brook relay can relay a address to a remote address. It can relay any tcp and udp server
+$ brook relay 可以中继任何TCP和UDP server, 这是一个独立的功能, 它不依赖brook server和brook wsserver等
 
 ```
-send request <--> relay server <--> a remote address
+请求 <--> relay server <--> 被中继的server
 ```
 
-Assume your (any) server is `1.2.3.4:9999`, and you want to relay port `9999` on your relay server to `1.2.3.4:9999`
+假设你要中继的server地址是 `1.2.3.4:9999`, 你想中继服务器监听端口 `9999` 中继到 `1.2.3.4:9999`
 
 ## Run brook relay
 
@@ -14,7 +14,7 @@ Assume your (any) server is `1.2.3.4:9999`, and you want to relay port `9999` on
 $ brook relay -f :9999 -t 1.2.3.4:9999
 ```
 
-Assume your relay server IP is `5.6.7.8`, then send request to `5.6.7.8:9999` is equal with send request to `1.2.3.4:9999` now
+假设你的中继服务器IP是 `5.6.7.8`, 那么你就可以访问 `5.6.7.8:9999`等于访问`1.2.3.4:9999`
 
-> More parameters: $ brook relay -h
+> 更多参数: $ brook relay -h
 

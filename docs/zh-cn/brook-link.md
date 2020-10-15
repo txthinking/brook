@@ -6,9 +6,9 @@
 brook://urlencode(SERVER PASSWORD)
 ```
 
-> urlencode() is a virtual RFC3986 function that means encoding string which in the parentheses
+> urlencode() is a 虚拟 RFC3986 函数
 
-SERVER format:
+SERVER 格式可以是:
 
 * brook server: `server_ip:port`
 * brook wsserver: `ws://wsserver_ip:port`, `wss://wsserver_domain:port`
@@ -20,7 +20,7 @@ brook://urlencode(SERVER)
 brook://urlencode(SERVER USERNAME PASSWORD)
 ```
 
-SERVER format:
+SERVER 格式可以是:
 
 * socks5 server: `socks5://server_ip:port`
 
@@ -39,12 +39,12 @@ $ brook qr -s wss://wsserver_domain:port
 $ brook qr -s socks5://server_address:port -u username -p password
 ```
 
-### Example
+### 举例
 
 * brook server: `1.2.3.4:9999`
 * password: `password`
 
-Link:
+那么生成的 Brook Link:
 
 ```
 brook://1.2.3.4%3A9999%20password

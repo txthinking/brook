@@ -1,26 +1,26 @@
-## Run brook wsserver
+## 运行 brook wsserver
 
-Assume with port `9999` and password `hello`
+假设选择端口`9999`, 密码`hello`
 
 ```
 $ brook wsserver -l :9999 -p hello
 ```
 
-Assume your server public IP is `1.2.3.4`, then your brook wsserver is: `ws://1.2.3.4:9999`
+假设你的服务器IP是 `1.2.3.4`, 那么你的brook wsserver是: `ws://1.2.3.4:9999`
 
-> More parameters: $ brook wsserver -h
+> 更多参数介绍: $ brook wsserver -h
 
-## Run brook wsserver with domain
+## 运行 brook wsserver 和域名
 
-Make sure your domain name has been successfully resolved, 80 and 443 are open, brook will automatically issue certificate for you, assume your domain is `domain.com`
+确保你的域名已经解析到你的服务器IP, 并且防火墙已开放80和443端口. brook 会自动签发域名证书. 假设你的域名是 `domain.com`
 
 ```
 $ brook wsserver --domain domain.com -p hello
 ```
 
-Then your brook wsserver is: `wss://domain.com:443`
+那么你的 brook wsserver是: `wss://domain.com:443`
 
-## Run in background or daemon
+## 后台运行和守护进程
 
-* Reference [Background](brook-server.md)
-* Reference [Daemon](joker.md)
+* 参考 [后台运行](brook-server.md)
+* 参考 [守护进程](joker.md)
