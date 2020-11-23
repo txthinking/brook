@@ -1,12 +1,14 @@
 # Brook
 
+[English](README.md)
+
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
-[![Docs](https://img.shields.io/badge/Tutorial-docs-yellow.svg)](https://txthinking.github.io/brook/)
-[![Slides](https://img.shields.io/badge/Tutorial-Slides-blueviolet.svg)](https://talks.txthinking.com)
-[![Youtube](https://img.shields.io/badge/Tutorial-Youtube-red.svg)](https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![Donate](https://img.shields.io/badge/Support-Donate-ff69b4.svg)](https://www.txthinking.com/opensource-support.html)
-[![Slack](https://img.shields.io/badge/Join-Slack-ff69b4.svg)](https://docs.google.com/forms/d/e/1FAIpQLSdzMwPtDue3QoezXSKfhW88BXp57wkbDXnLaqokJqLeSWP9vQ/viewform)
+[![文档](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E6%96%87%E6%A1%A3-yellow.svg)](https://txthinking.github.io/brook/)
+[![幻灯片](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E5%B9%BB%E7%81%AF%E7%89%87-blueviolet.svg)](https://talks.txthinking.com)
+[![视频](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E8%A7%86%E9%A2%91-red.svg)](https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A)
+[![开源协议: GPL v3](https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![捐赠](https://img.shields.io/badge/%E6%94%AF%E6%8C%81-%E6%8D%90%E8%B5%A0-ff69b4.svg)](https://www.txthinking.com/opensource-support.html)
+[![交流群](https://img.shields.io/badge/%E7%94%B3%E8%AF%B7%E5%8A%A0%E5%85%A5-%E4%BA%A4%E6%B5%81%E7%BE%A4-ff69b4.svg)](https://docs.google.com/forms/d/e/1FAIpQLSdzMwPtDue3QoezXSKfhW88BXp57wkbDXnLaqokJqLeSWP9vQ/viewform)
 
 <p align="center">
     <img style="float:right;" src="https://txthinking.github.io/brook/_static/brook.png" alt="Brook"/>
@@ -16,55 +18,52 @@
 
 **v20200901**
 
-- **❗️Breaking change, you should upgrade both server and client**
-- New [Docs](https://txthinking.github.io/brook/)
+- **此版本不兼容之前的版本, 建议一起升级服务端和客户端**
+- [新的文档站点](https://txthinking.github.io/brook/)
 
 
 **v20200909**
 
-- Import server list from URL. [ref here](https://txthinking.github.io/brook/#/brook-link) and [here](https://gist.githubusercontent.com/txthinking/7ecdb282982e14cc95714141c0ce2581/raw/350363229d1ce123b87b7cb0789e459969620cb3/brooklink.list)
+- 支持从HTTP URL导入服务器列表. [参考这里](https://txthinking.github.io/brook/#/brook-link) 和 [这里](https://gist.githubusercontent.com/txthinking/7ecdb282982e14cc95714141c0ce2581/raw/350363229d1ce123b87b7cb0789e459969620cb3/brooklink.list)
 
 ---
 
-## What is Brook
+## 什么是 Brook
 
-Brook is a cross-platform strong encryption and not detectable proxy.<br/>
-Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
+Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学.
 
-### Install CLI
+### 安装 CLI (命令行版本)
 
-> The CLI file has both server and client functions
+> CLI 版本同时具有服务端和客户端等很多功能
 
-Download from [releases](https://github.com/txthinking/brook/releases)
+从 [releases](https://github.com/txthinking/brook/releases) 页面下载
 
 ```
-# For example, on linux amd64, v20200909
+# 举例, linux amd64, v20200909
 
 $ curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
 $ chmod +x /usr/bin/brook
 ```
 
-Install via [nami](https://github.com/txthinking/nami)
+通过 [nami](https://github.com/txthinking/nami) 安装
 
 ```
 nami install github.com/txthinking/brook
 ```
 
-### Install GUI
+### 安装 GUI (图形客户端)
 
-> The GUI file has only client function
+从 [releases](https://github.com/txthinking/brook/releases) 页面下载: [macOS](https://github.com/txthinking/brook/releases/download/v20200909/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200909/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200909/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
-Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/download/v20200909/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200909/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200909/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
-
-Install via brew
+通过 brew 安装
 
 ```
 brew cask install brook
 ```
 
-## Usage
+## 使用
 
-[Docs](https://txthinking.github.io/brook/)
+[文档](https://txthinking.github.io/brook/)
 
 ```
 NAME:
@@ -109,12 +108,12 @@ COPYRIGHT:
    https://github.com/txthinking/brook
 ```
 
-[Docs](https://txthinking.github.io/brook/)
+[文档](https://txthinking.github.io/brook/)
 
-## Contributing
+## 贡献
 
-Please read [CONTRIBUTING.md](https://github.com/txthinking/brook/blob/master/.github/CONTRIBUTING.md) first
+请先阅读 [CONTRIBUTING.md](https://github.com/txthinking/brook/blob/master/.github/CONTRIBUTING.md)
 
-## License
+## 开源协议
 
-Licensed under The GPLv3 License
+基于 GPLv3 协议开源
