@@ -3,7 +3,7 @@
 [English](README.md)
 
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
-[![文档](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E6%96%87%E6%A1%A3-yellow.svg)](https://txthinking.github.io/brook/)
+[![文档](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E6%96%87%E6%A1%A3-yellow.svg)](https://txthinking.github.io/brook/#/zh-cn/)
 [![幻灯片](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E5%B9%BB%E7%81%AF%E7%89%87-blueviolet.svg)](https://talks.txthinking.com)
 [![视频](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E8%A7%86%E9%A2%91-red.svg)](https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A)
 [![开源协议: GPL v3](https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
@@ -19,7 +19,7 @@
 **v20200901**
 
 - **此版本不兼容之前的版本, 建议一起升级服务端和客户端**
-- [新的文档站点](https://txthinking.github.io/brook/)
+- [新的文档站点](https://txthinking.github.io/brook/#/zh-cn/)
 
 
 **v20200909**
@@ -41,8 +41,8 @@ Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学
 ```
 # 举例, linux amd64, v20200909
 
-$ curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
-$ chmod +x /usr/bin/brook
+curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
+chmod +x /usr/bin/brook
 ```
 
 通过 [nami](https://github.com/txthinking/nami) 安装
@@ -63,7 +63,7 @@ brew cask install brook
 
 ## 使用
 
-[文档](https://txthinking.github.io/brook/)
+[文档](https://txthinking.github.io/brook/#/zh-cn/)
 
 ```
 NAME:
@@ -108,7 +108,7 @@ COPYRIGHT:
    https://github.com/txthinking/brook
 ```
 
-[文档](https://txthinking.github.io/brook/)
+[文档](https://txthinking.github.io/brook/#/zh-cn/)
 
 ## 贡献
 

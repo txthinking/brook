@@ -1,5 +1,7 @@
 # Brook
 
+[中文](README_ZH.md)
+
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
 [![Docs](https://img.shields.io/badge/Tutorial-docs-yellow.svg)](https://txthinking.github.io/brook/)
 [![Slides](https://img.shields.io/badge/Tutorial-Slides-blueviolet.svg)](https://talks.txthinking.com)
@@ -40,8 +42,8 @@ Download from [releases](https://github.com/txthinking/brook/releases)
 ```
 # For example, on linux amd64, v20200909
 
-$ curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
-$ chmod +x /usr/bin/brook
+curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
+chmod +x /usr/bin/brook
 ```
 
 Install via [nami](https://github.com/txthinking/nami)

@@ -171,7 +171,7 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 				}
 			}
 		}
-		if has {
+		if !has {
 			debug("dns hijack", r.Question[0].Name)
 			m := &dns.Msg{}
 			m.SetReply(r)
