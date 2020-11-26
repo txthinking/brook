@@ -22,8 +22,9 @@
 - New [Docs](https://txthinking.github.io/brook/)
 
 
-**v20200909**
+**v20210101**
 
+- Support iOS 13
 - Import server list from URL. [ref here](https://txthinking.github.io/brook/#/brook-link) and [here](https://gist.githubusercontent.com/txthinking/7ecdb282982e14cc95714141c0ce2581/raw/350363229d1ce123b87b7cb0789e459969620cb3/brooklink.list)
 
 ---
@@ -40,9 +41,9 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 Download from [releases](https://github.com/txthinking/brook/releases)
 
 ```
-# For example, on linux amd64, v20200909
+# For example, on linux amd64, v20210101
 
-curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
+curl -L https://github.com/txthinking/brook/releases/download/v20210101/brook_linux_amd64 -o /usr/bin/brook
 chmod +x /usr/bin/brook
 ```
 
@@ -56,7 +57,7 @@ nami install github.com/txthinking/brook
 
 > The GUI file has only client function
 
-Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/download/v20200909/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200909/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200909/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/download/v20210101/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210101/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20210101/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 Install via brew
 
@@ -76,7 +77,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20200909
+   20210101
 
 AUTHOR:
    Cloud <cloud@txthinking.com>

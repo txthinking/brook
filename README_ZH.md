@@ -22,9 +22,10 @@
 - [新的文档站点](https://txthinking.github.io/brook/#/zh-cn/)
 
 
-**v20200909**
+**v20210101**
 
 - 支持从HTTP URL导入服务器列表. [参考这里](https://txthinking.github.io/brook/#/brook-link) 和 [这里](https://gist.githubusercontent.com/txthinking/7ecdb282982e14cc95714141c0ce2581/raw/350363229d1ce123b87b7cb0789e459969620cb3/brooklink.list)
+- 恢复支持iOS 13
 
 ---
 
@@ -39,9 +40,9 @@ Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学
 从 [releases](https://github.com/txthinking/brook/releases) 页面下载
 
 ```
-# 举例, linux amd64, v20200909
+# 举例, linux amd64, v20210101
 
-curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
+curl -L https://github.com/txthinking/brook/releases/download/v20210101/brook_linux_amd64 -o /usr/bin/brook
 chmod +x /usr/bin/brook
 ```
 
@@ -53,7 +54,7 @@ nami install github.com/txthinking/brook
 
 ### 安装 GUI (图形客户端)
 
-从 [releases](https://github.com/txthinking/brook/releases) 页面下载: [macOS](https://github.com/txthinking/brook/releases/download/v20200909/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20200909/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20200909/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+从 [releases](https://github.com/txthinking/brook/releases) 页面下载: [macOS](https://github.com/txthinking/brook/releases/download/v20210101/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210101/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20210101/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 通过 brew 安装
 
@@ -73,7 +74,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20200909
+   20210101
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
