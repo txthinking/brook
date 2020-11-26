@@ -7,7 +7,6 @@ fi
 
 mkdir _
 
-GOOS=darwin GOARCH=386 go build                      -ldflags="-w -s" -o _/brook_darwin_386 .
 GOOS=darwin GOARCH=amd64 go build                    -ldflags="-w -s" -o _/brook_darwin_amd64 .
 GOOS=freebsd GOARCH=386 go build                     -ldflags="-w -s" -o _/brook_freebsd_386 .
 GOOS=freebsd GOARCH=amd64 go build                   -ldflags="-w -s" -o _/brook_freebsd_amd64 .
