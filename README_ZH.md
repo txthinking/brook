@@ -59,7 +59,7 @@ nami install github.com/txthinking/brook
 通过 brew 安装
 
 ```
-brew cask install brook
+brew install --cask brook
 ```
 
 ## 使用
