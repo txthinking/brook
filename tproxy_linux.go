@@ -122,14 +122,6 @@ func (s *Tproxy) RunAutoScripts() error {
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	c = exec.Command("sh", "-c", "modprobe xt_socket")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("sh", "-c", "modprobe xt_TPROXY")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
 	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 0.0.0.0/8 -j RETURN")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
