@@ -14,7 +14,7 @@ $ brook wsclient -s ws://1.2.3.4:9999 -p hello --socks5 127.0.0.1:1080
 
 > More parameters: $ brook wsclient -h
 
-## Use the socks5 proxy created by brook client
+## Use the socks5 proxy
 
 > TODO: Please help improve the documentation here
 

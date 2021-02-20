@@ -16,6 +16,12 @@
     * [$ brook wsclient](brook-wsclient.md)
     * [图形客户端](brook-wsclient-gui.md)
 
+* WSS服务端和WSS客户端
+
+    * [$ brook wssserver](brook-wssserver.md)
+    * [$ brook wssclient](brook-wssclient.md)
+    * [图形客户端](brook-wssclient-gui.md)
+
 * 服务端和 Map
 
     * [$ brook map](brook-map.md)
@@ -44,9 +50,9 @@
 
     * [$ brook hijackhttps](brook-hijackhttps.md)
 
-* Brook 链接
+* Brook 链接 & QR
 
-    * [Brook Link](brook-link.md)
+    * [$ brook link](brook-link.md)
 
 * PAC
 

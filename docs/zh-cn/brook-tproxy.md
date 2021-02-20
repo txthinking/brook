@@ -6,7 +6,7 @@ $ brook tproxy 可以创建透明代理在你的Linux路由器, Linux需要有TP
 
 ## 运行 brook tproxy
 
-> 以下仅供参考
+> 以下步骤在官方openwrt x86-64位固件, 使用的brook_linux_amd64文件测试通过
 
 #### 1. Enable forward
 

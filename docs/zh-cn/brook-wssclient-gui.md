@@ -1,9 +1,9 @@
-假设你的brook wsserver是 `ws://1.2.3.4:9999`, 密码是 `hello`
+假设你的brook wssserver是 `wss://domain.com:443`, 密码是 `hello`
 
 ## 在Brook图形客户端
 
-1. 选择 `wsserver`
-2. 输入server `ws://1.2.3.4:9999`
+1. 选择 `wssserver`
+2. 输入server `wss://domain.com:443`
 3. 输入密码 `hello`
 4. 点击 `Connect` 按钮
 

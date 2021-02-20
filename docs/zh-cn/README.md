@@ -4,12 +4,14 @@ CLI 是命令行界面, 与之对应的另一个概念是 GUI 图形用户界面
 
 你可能需要用 **root** 用户或 **sudo** 来运行下面提到的命令, **如果你不是非常熟悉 Linux, 我们建议你使用 ubuntu 和 root 用户来进行操作.**
 
+[如果你想了解命令行的本质, 点这里->](https://talks.txthinking.com/)
+
 ## 用curl直接下载brook文件
 
-截止目前最新版是v20210101, 以linux 64位系统为例
+截止目前最新版是v20210214, 以linux 64位系统为例
 
 ```
-$ curl -L https://github.com/txthinking/brook/releases/download/v20210101/brook_linux_amd64 -o /usr/bin/brook
+$ curl -L https://github.com/txthinking/brook/releases/download/v20210214/brook_linux_amd64 -o /usr/bin/brook
 $ chmod +x /usr/bin/brook
 ```
 

@@ -6,10 +6,10 @@ You may need to run the below commands as **root user or sudo**, if you are not 
 
 ## Install via curl
 
-Let's take the v20200909 version downloaded on linux amd64 as an example
+Let's take the v20210214 version downloaded on linux amd64 as an example
 
 ```
-$ curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
+$ curl -L https://github.com/txthinking/brook/releases/download/v20210214/brook_linux_amd64 -o /usr/bin/brook
 $ chmod +x /usr/bin/brook
 ```
 

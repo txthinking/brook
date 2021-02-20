@@ -1,6 +1,6 @@
 ### Brook Link
 
-#### brook server & brook wsserver
+#### brook server & brook wsserver & brook wssserver
 
 ```
 brook://urlencode(SERVER PASSWORD)
@@ -11,7 +11,8 @@ brook://urlencode(SERVER PASSWORD)
 SERVER format:
 
 * brook server: `server_ip:port`
-* brook wsserver: `ws://wsserver_ip:port`, `wss://wsserver_domain:port`
+* brook wsserver: `ws://wsserver_ip:port`
+* brook wssserver: `wss://wsserver_domain:port`
 
 #### socks5 server
 

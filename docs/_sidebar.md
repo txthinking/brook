@@ -16,6 +16,13 @@
     * [$ brook wsclient](brook-wsclient.md)
     * [GUI WSClient](brook-wsclient-gui.md)
 
+* WSSServer and WSSClient
+
+    * [$ brook wssserver](brook-wssserver.md)
+    * [$ brook wssclient](brook-wssclient.md)
+    * [GUI WSClient](brook-wssclient-gui.md)
+
+
 * Server and Map
 
     * [$ brook map](brook-map.md)
@@ -44,9 +51,9 @@
 
     * [$ brook hijackhttps](brook-hijackhttps.md)
 
-* Brook Link
+* Brook Link & QR
 
-    * [Brook Link](brook-link.md)
+    * [$ brook link](brook-link.md)
 
 * PAC
 
