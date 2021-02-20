@@ -37,7 +37,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20210101"
+	app.Version = "20210214"
 	app.Usage = "A cross-platform strong encryption and not detectable proxy"
 	app.Authors = []*cli.Author{
 		{
@@ -164,7 +164,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "client",
-			Usage: "Run as brook client, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> socks5 <-> $ brook client <-> $ brook server <-> dst], [works with $ brook server]",
+			Usage: "Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook client <-> $ brook server <-> dst], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -425,7 +425,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "wsserver",
-			Usage: "Run as brook wsserver, both TCP and UDP, it will start a standard http(s) server and websocket server",
+			Usage: "Run as brook wsserver, both TCP and UDP, it will start a standard http server and websocket server",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -439,7 +439,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "domain",
-					Usage: "If domain is specified, the domain must have been resolved to the external IP, listen will be ignored, 80 and 443 ports will be used, TLS certificate will be automatically issued",
+					Usage: "deprecated, please use $ brook wssserver",
 				},
 				&cli.StringFlag{
 					Name:  "path",
@@ -458,6 +458,9 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.String("domain") != "" {
+					log.Println("--domain deprecated, please use $ brook wssserver")
+				}
 				if (c.String("listen") == "" && c.String("domain") == "") || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "wsserver")
 					return nil
@@ -479,13 +482,63 @@ func main() {
 			},
 		},
 		&cli.Command{
+			Name:  "wssserver",
+			Usage: "Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "domain",
+					Usage: "The domain must have been resolved to the external IP, 80 and 443 ports will be used, TLS certificate will be automatically issued",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
+				},
+				&cli.StringFlag{
+					Name:  "path",
+					Usage: "URL path",
+					Value: "/ws",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpTimeout",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("domain") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "wssserver")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				s, err := brook.NewWSServer("", c.String("password"), c.String("domain"), c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
+			},
+		},
+		&cli.Command{
 			Name:  "wsclient",
-			Usage: "Run as brook wsclient, both TCP and UDP, to start a socks5 proxy or a http proxy, [src <-> socks5 <-> $ brook wsclient <-> $ brook wsserver <-> dst], [works with $ brook wsserver]",
+			Usage: "Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook wsclient <-> $ brook wsserver <-> dst], [works with $ brook wsserver]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "wsserver",
 					Aliases: []string{"s"},
-					Usage:   "Brook wsserver address, like: ws://1.2.3.4:80, wss://google.com:443/ws, if no path then /ws will be used. Do not omit the port under any circumstances",
+					Usage:   "Brook wsserver address, like: ws://1.2.3.4:80, if no path then /ws will be used. Do not omit the port under any circumstances",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -536,13 +589,70 @@ func main() {
 			},
 		},
 		&cli.Command{
+			Name:  "wssclient",
+			Usage: "Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook wssclient <-> $ brook wssserver <-> dst], [works with $ brook wssserver]",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "wssserver",
+					Aliases: []string{"s"},
+					Usage:   "Brook wssserver address, like: wss://google.com:443, if no path then /ws will be used. Do not omit the port under any circumstances",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Brook wssserver password",
+				},
+				&cli.StringFlag{
+					Name:  "socks5",
+					Usage: "Socks5 server which will be created, like: 127.0.0.1:1080",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpTimeout",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "wsclient")
+					return nil
+				}
+				h, p, err := net.SplitHostPort(c.String("socks5"))
+				if err != nil {
+					return err
+				}
+				if h == "" {
+					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
+				}
+				if debug {
+					enableDebug()
+				}
+				s, err := brook.NewWSClient(":"+p, h, c.String("wssserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+				}()
+				return s.ListenAndServe()
+			},
+		},
+		&cli.Command{
 			Name:  "link",
 			Usage: "Print brook link",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support $ brook server, $ brook wsserver and socks5 server, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443/ws, socks5://1.2.3.4:1080",
+					Usage:   "Support $ brook server, $ brook wsserver, $ brook wssserver and socks5 server, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443/ws, socks5://1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -571,7 +681,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support $ brook server,  $ brook wsserver and socks5 server, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443, socks5://1.2.3.4:1080",
+					Usage:   "Support $ brook server,  $ brook wsserver, $ brook wssserver and socks5 server, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443, socks5://1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -708,6 +818,10 @@ func main() {
 					Name:  "password",
 					Usage: "Password, optional",
 				},
+				&cli.StringFlag{
+					Name:  "bindip",
+					Usage: "Default bind to all, such as :PORT",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
@@ -734,7 +848,11 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewSocks5Server(":"+p, h, c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				a := ":" + p
+				if c.String("bindip") != "" {
+					a = net.JoinHostPort(c.String("bindip"), p)
+				}
+				s, err := brook.NewSocks5Server(a, h, c.String("username"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -912,9 +1030,9 @@ func main() {
 				fmt.Println("")
 				fmt.Println("Brook Github:", "https://github.com/txthinking/brook")
 				fmt.Println("Brook Docs:", "https://txthinking.github.io/brook")
-				fmt.Println("Brook Issues:", "https://github.com/txthinking/brook/issues")
+				fmt.Println("Brook Community:", "https://github.com/txthinking/brook/discussions")
 				fmt.Println("")
-				fmt.Println("Slides:", "https://talks.txthinking.com")
+				fmt.Println("Blog:", "https://talks.txthinking.com")
 				fmt.Println("Youtube:", "https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A")
 				fmt.Println("")
 				fmt.Println("Nami:", "https://github.com/txthinking/nami")
