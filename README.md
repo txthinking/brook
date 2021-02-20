@@ -62,7 +62,7 @@ Download from [releases](https://github.com/txthinking/brook/releases): [macOS](
 Install via brew
 
 ```
-brew cask install brook
+brew install --cask brook
 ```
 
 ## Usage

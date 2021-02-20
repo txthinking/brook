@@ -6,10 +6,10 @@ CLI 是命令行界面, 与之对应的另一个概念是 GUI 图形用户界面
 
 ## 用curl直接下载brook文件
 
-截止目前最新版是v20200909, 以linux 64位系统为例
+截止目前最新版是v20210101, 以linux 64位系统为例
 
 ```
-$ curl -L https://github.com/txthinking/brook/releases/download/v20200909/brook_linux_amd64 -o /usr/bin/brook
+$ curl -L https://github.com/txthinking/brook/releases/download/v20210101/brook_linux_amd64 -o /usr/bin/brook
 $ chmod +x /usr/bin/brook
 ```
 
