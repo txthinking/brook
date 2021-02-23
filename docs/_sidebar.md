@@ -14,14 +14,13 @@
 
     * [$ brook wsserver](brook-wsserver.md)
     * [$ brook wsclient](brook-wsclient.md)
-    * [GUI WSClient](brook-wsclient-gui.md)
+    * [GUI Client](brook-wsclient-gui.md)
 
 * WSSServer and WSSClient
 
     * [$ brook wssserver](brook-wssserver.md)
     * [$ brook wssclient](brook-wssclient.md)
-    * [GUI WSClient](brook-wssclient-gui.md)
-
+    * [GUI Client](brook-wssclient-gui.md)
 
 * Server and Map
 
