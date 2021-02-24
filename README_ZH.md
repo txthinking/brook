@@ -23,7 +23,7 @@
 
 ## 什么是 Brook
 
-[官方文档](https://txthinking.github.io/brook/)
+[官方文档](https://txthinking.github.io/brook/#/zh-cn/)
 
 Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学.
 
