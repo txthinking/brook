@@ -18,6 +18,8 @@
 **v20210214**
 
 - Only updated the client, optimized link, QR, sharing, import
+- [Document](https://txthinking.github.io/brook/)
+- [Community](https://github.com/txthinking/brook/discussions)
 
 ---
 

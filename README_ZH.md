@@ -18,6 +18,8 @@
 **v20210214**
 
 - 只是更新了客户端, 优化link, QR, 分享, 导入
+- [官方文档](https://txthinking.github.io/brook/#/zh-cn/)
+- [官方论坛](https://github.com/txthinking/brook/discussions)
 
 ---
 
