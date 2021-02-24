@@ -1,6 +1,6 @@
 ## $ brook tproxy
 
-$ brook tproxy 可以创建透明代理在你的Linux路由器, Linux需要有TPROXY内核模块. 它与brook server一起工作.
+$ brook tproxy 可以创建透明代理在你的Linux路由器, Linux需要有TPROXY内核模块. 它与$ brook server一起工作.
 
 假设你的brook server是 `1.2.3.4:9999`, 密码是 `hello`
 

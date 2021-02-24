@@ -1,62 +1,63 @@
 * 安装
 
-    * [安装 CLI](README.md)
-    * [安装图形客户端](install-gui-client.md)
+    * [CLI和GUI](README.md)
+    * [[CLI] 安装Brook CLI](install-cli.md)
+    * [[GUI] 安装Brook GUI图形客户端](install-gui-client.md)
 
 * 服务端和客户端
 
-    * [$ brook server](brook-server.md)
-    * [用joker守护进程](joker.md)
-    * [$ brook client](brook-client.md)
-    * [图形客户端](brook-client-gui.md)
+    * [[CLI] $ brook server](brook-server.md)
+    * [[CLI] 用joker守护进程](joker.md)
+    * [[CLI] $ brook client](brook-client.md)
+    * [[GUI] 图形客户端](brook-client-gui.md)
 
 * WS服务端和WS客户端
 
-    * [$ brook wsserver](brook-wsserver.md)
-    * [$ brook wsclient](brook-wsclient.md)
-    * [图形客户端](brook-wsclient-gui.md)
+    * [[CLI] $ brook wsserver](brook-wsserver.md)
+    * [[CLI] $ brook wsclient](brook-wsclient.md)
+    * [[GUI] 图形客户端](brook-wsclient-gui.md)
 
 * WSS服务端和WSS客户端
 
-    * [$ brook wssserver](brook-wssserver.md)
-    * [$ brook wssclient](brook-wssclient.md)
-    * [图形客户端](brook-wssclient-gui.md)
+    * [[CLI] $ brook wssserver](brook-wssserver.md)
+    * [[CLI] $ brook wssclient](brook-wssclient.md)
+    * [[GUI] 图形客户端](brook-wssclient-gui.md)
 
 * 服务端和 Map
 
-    * [$ brook map](brook-map.md)
+    * [[CLI] $ brook map](brook-map.md)
 
 * 服务端和 DNS Server
 
-    * [$ brook dns](brook-dns.md)
+    * [[CLI] $ brook dns](brook-dns.md)
 
 * 服务端和透明代理
 
-    * [$ brook tproxy](brook-tproxy.md)
+    * [[CLI] $ brook tproxy](brook-tproxy.md)
 
 * 中继
 
-    * [$ brook relay](brook-relay.md)
+    * [[CLI] $ brook relay](brook-relay.md)
 
 * Socks5
 
-    * [$ brook socks5](brook-socks5.md)
+    * [[CLI] $ brook socks5](brook-socks5.md)
 
 * Socks5 转 HTTP 代理
 
-    * [$ brook socks5tohttp](brook-socks5tohttp.md)
+    * [[CLI] $ brook socks5tohttp](brook-socks5tohttp.md)
 
 * Socks5 和魔法DNS
 
-    * [$ brook hijackhttps](brook-hijackhttps.md)
+    * [[CLI] $ brook hijackhttps](brook-hijackhttps.md)
 
 * Brook 链接 & QR
 
-    * [$ brook link](brook-link.md)
+    * [[CLI] $ brook link](brook-link.md)
 
 * PAC
 
-    * [$ brook pac](brook-pac.md)
+    * [[CLI] $ brook pac](brook-pac.md)
 
 * IPv6
 
@@ -64,7 +65,8 @@
 
 * 资源
 
-    * [视频教程](video.md)
+    * [博客和视频](blogvideo.md)
+    * [论坛](community.md)
     * [相关资源](resources.md)
 
 * 协议

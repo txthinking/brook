@@ -1,6 +1,6 @@
 ## $ brook dns
 
-$ brook dns 用来创建一个加密DNS Server, 它与 brook server 一起工作
+$ brook dns 用来创建一个加密DNS Server, 它与 $ brook server 一起工作
 
 ```
 请求 <--> 加密DNS Server <-- | brook server 协议 | --> brook server <--> DNS Server

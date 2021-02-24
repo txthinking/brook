@@ -1,30 +1,62 @@
 # Brook
 
-CLI(Command line interface), Brook CLI is just one file, in other words, brook has no concept of installation, you only need to download the brook file to your computer. Brook CLI has both server and client functions.
+## `CLI` and `GUI`
 
-You may need to run the below commands as **root user or sudo**, if you are not very familiar with linux, we recommend you to use ubuntu with root user.
+- CLI(Command-line interface)
 
-## Install via curl
+    - You can run commands after **entering the command-line interface**. [What is CLI(Chinese)](https://talks.txthinking.com/)
+    - Usually, everyone uses the command line interface on Linux servers. Of course, Linux also has desktops that can also run GUI
+    - Of course, macOS and Windows also have command-line interfaces, but you may not use them frequently
 
-Let's take the v20210214 version downloaded on linux amd64 as an example
+- GUI(Graphical user interface)
 
-```
-$ curl -L https://github.com/txthinking/brook/releases/download/v20210214/brook_linux_amd64 -o /usr/bin/brook
-$ chmod +x /usr/bin/brook
-```
+    - Usually, the applications opened by **double-clicking/clicking** on macOS/Windows/iOS/Android are all GUIs
 
-You can get the download link corresponding to your system on the [releases](https://github.com/txthinking/brook/releases) page
+## Brook CLI files and GUI files
 
-## Install via &nbsp; [nami](https://github.com/txthinking/nami)
+**Usually**, if you use Brook, you will need a combination of **Server** and **Client**, **Of course**Brook CLI also has **many other independent functions**
 
-Install nami
+- Brook CLI file
 
-```
-$ curl -L https://git.io/getnami | bash && sleep 6 && exec -l $SHELL
-```
+    - The Brook CLI file is an **independent command file**, it can be said that there is no concept of installation, just download this file to your computer, **run it after granting it executable permissions in the command line interface**
+    - Brook CLI file has both **server function** and **client function**, Brook CLI file also has **many other independent functions**
+    - If you are under Linux and you are not very familiar with Linux, **It is strongly recommended to use the ubuntu system and root user** to run commands. The command to switch to the root user is `$ sudo su`
 
-You may want more information on [nami github page](https://github.com/txthinking/nami)
+- Brook GUI file
 
-```
-$ nami install github.com/txthinking/brook
-```
+    - Brook GUI file is a graphical client, only has **client function**
+    - macOS GUI client, **first run it needs to be allowd in [System Preferences]-[Security and Privacy]*8
+    - Windows GUI client, **after installation, desktop shortcuts are not automatically created**, which can be found in C:\Program Files (x86) or C:\Program Files
+
+**Brook files description**, all can be downloaded in [Releases](https://github.com/txthinking/brook/releases/tag/v20210214) page
+
+| File Name | CLI/GUI | Applicable system |
+| --- | --- | --- |
+| brook_linux_amd64 | CLI| Linux 64 bit |
+| brook_linux_386 | CLI| Linux 32 bit |
+| brook_linux_arm64 | CLI| Linux arm64 |
+| brook_linux_arm7 | CLI| Linux arm7 |
+| brook_linux_arm6 | CLI| Linux arm6 |
+| brook_linux_arm5 | CLI| Linux arm5 |
+| brook_linux_mips | CLI| Linux mips |
+| brook_linux_mipsle | CLI| Linux mipsle |
+| brook_linux_mips_softfloat | CLI| Linux mips softfloat |
+| brook_linux_mipsle_softfloat | CLI| Linux mipsle softfloat |
+| brook_linux_mips64 | CLI| Linux mips64 |
+| brook_linux_mips64le | CLI| Linux mips64le |
+| brook_linux_mips64_softfloat | CLI| Linux mips64 softfloat |
+| brook_linux_mips64le_softfloat | CLI| Linux mips64le softfloat |
+| brook_linux_ppc64 | CLI| Linux ppc64 |
+| brook_linux_ppc64le | CLI| Linux ppc64le |
+| brook_freebsd_386 | CLI| FreeBSD 32 bit |
+| brook_freebsd_amd64| CLI| FreeBSD 64 bit |
+| brook_netbsd_386 | CLI| NetBSD 32 bit |
+| brook_netbsd_amd64 | CLI| NetBSD 64 bit |
+| brook_openbsd_386 | CLI| OpenBSD 32 bit |
+| brook_openbsd_amd64| CLI| OpenBSD 64 bit |
+| brook_windows_amd64.exe| CLI| Windows 64 bit |
+| brook_windows_386.exe| CLI| Windows 32 bit |
+| brook_darwin_amd64.exe| CLI| macOS 64 bit |
+| Brook.dmg | GUI| macOS 64 bit |
+| Brook.msi | GUI| Windows 64 bit |
+| Brook.apk | GUI| Android |

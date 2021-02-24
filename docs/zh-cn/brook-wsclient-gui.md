@@ -2,7 +2,7 @@
 
 ## 在Brook图形客户端
 
-1. 选择 `wsserver`
+1. 选择 `brook wsserver`
 2. 输入server `ws://1.2.3.4:9999`
 3. 输入密码 `hello`
 4. 点击 `Connect` 按钮

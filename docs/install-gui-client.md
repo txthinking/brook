@@ -4,25 +4,22 @@ GUI(Graphical user interface), Brook GUI has only client function.
 
 [Brook for macOS](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg)
 
-Please prefer to use the latest version of macOS
+macOS GUI client, first run it needs to be allowd in [System Preferences]-[Security and Privacy]
 
 ## Windows
 
 [Brook for Windows](https://github.com/txthinking/brook/releases/download/v20210214/Brook.exe)
 
-Please prefer to use the latest version of Windows
+Windows GUI client, after installation, desktop shortcuts are not automatically created, which can be found in C:\Program Files (x86) or C:\Program Files
 
 ## Android
 
 [Brook for Android](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk)
 
-Please prefer to use the latest version of Android and Native ROM or Google ROM
 
 ## iOS
 
 [Brook for iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
-
-Brook for iOS is not available on China AppStore, please use apple id from other regions
 
 ---
 

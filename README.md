@@ -17,11 +17,13 @@
 
 **v20210214**
 
-- more and more...
+- Only updated the client, optimized link, QR, sharing, import
 
 ---
 
 ## What is Brook
+
+[Document](https://txthinking.github.io/brook/)
 
 Brook is a cross-platform strong encryption and not detectable proxy.<br/>
 Brook's goal is to keep it **simple**, **stupid** and **not detectable**.

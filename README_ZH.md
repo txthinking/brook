@@ -17,11 +17,13 @@
 
 **v20210214**
 
-- more and more...
+- 只是更新了客户端, 优化link, QR, 分享, 导入
 
 ---
 
 ## 什么是 Brook
+
+[官方文档](https://txthinking.github.io/brook/)
 
 Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学.
 

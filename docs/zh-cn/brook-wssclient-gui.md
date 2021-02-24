@@ -2,7 +2,7 @@
 
 ## 在Brook图形客户端
 
-1. 选择 `wssserver`
+1. 选择 `brook wssserver`
 2. 输入server `wss://domain.com:443`
 3. 输入密码 `hello`
 4. 点击 `Connect` 按钮

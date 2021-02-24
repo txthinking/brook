@@ -1,62 +1,63 @@
 * Install
 
-    * [Install CLI](README.md)
-    * [Install GUI Client](install-gui-client.md)
+    * [CLI和GUI](README.md)
+    * [[CLI] Install CLI](install-cli.md)
+    * [[GUI] Install GUI Client](install-gui-client.md)
 
 * Server and Client
 
-    * [$ brook server](brook-server.md)
-    * [Daemon with joker](joker.md)
-    * [$ brook client](brook-client.md)
-    * [GUI Client](brook-client-gui.md)
+    * [[CLI] $ brook server](brook-server.md)
+    * [[CLI] Daemon with joker](joker.md)
+    * [[CLI] $ brook client](brook-client.md)
+    * [[GUI] Client](brook-client-gui.md)
 
 * WSServer and WSClient
 
-    * [$ brook wsserver](brook-wsserver.md)
-    * [$ brook wsclient](brook-wsclient.md)
-    * [GUI Client](brook-wsclient-gui.md)
+    * [[CLI] $ brook wsserver](brook-wsserver.md)
+    * [[CLI] $ brook wsclient](brook-wsclient.md)
+    * [[GUI] Client](brook-wsclient-gui.md)
 
 * WSSServer and WSSClient
 
-    * [$ brook wssserver](brook-wssserver.md)
-    * [$ brook wssclient](brook-wssclient.md)
-    * [GUI Client](brook-wssclient-gui.md)
+    * [[CLI] $ brook wssserver](brook-wssserver.md)
+    * [[CLI] $ brook wssclient](brook-wssclient.md)
+    * [[GUI] Client](brook-wssclient-gui.md)
 
 * Server and Map
 
-    * [$ brook map](brook-map.md)
+    * [[CLI] $ brook map](brook-map.md)
 
 * Server and DNS
 
-    * [$ brook dns](brook-dns.md)
+    * [[CLI] $ brook dns](brook-dns.md)
 
 * Server and Transparent Proxy
 
-    * [$ brook tproxy](brook-tproxy.md)
+    * [[CLI] $ brook tproxy](brook-tproxy.md)
 
 * Relay
 
-    * [$ brook relay](brook-relay.md)
+    * [[CLI] $ brook relay](brook-relay.md)
 
 * Socks5
 
-    * [$ brook socks5](brook-socks5.md)
+    * [[CLI] $ brook socks5](brook-socks5.md)
 
 * Socks5 to HTTP
 
-    * [$ brook socks5tohttp](brook-socks5tohttp.md)
+    * [[CLI] $ brook socks5tohttp](brook-socks5tohttp.md)
 
 * Socks5 and Hijack HTTPS magic DNS
 
-    * [$ brook hijackhttps](brook-hijackhttps.md)
+    * [[CLI] $ brook hijackhttps](brook-hijackhttps.md)
 
 * Brook Link & QR
 
-    * [$ brook link](brook-link.md)
+    * [[CLI] $ brook link](brook-link.md)
 
 * PAC
 
-    * [$ brook pac](brook-pac.md)
+    * [[CLI] $ brook pac](brook-pac.md)
 
 * IPv6
 
@@ -64,7 +65,8 @@
 
 * Resources
 
-    * [Video](video.md)
+    * [Blog and Video](blogvideo.md)
+    * [Community](community.md)
     * [Resources](resources.md)
 
 * Spec

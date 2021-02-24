@@ -2,7 +2,7 @@
 
 ## 在Brook图形客户端
 
-1. 选择 `server`
+1. 选择 `brook server`
 2. 输入server `1.2.3.4:9999`
 3. 输入密码 `hello`
 4. 点击 `Connect` 按钮

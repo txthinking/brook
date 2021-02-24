@@ -1,12 +1,10 @@
 ## 使用[joker](https://github.com/txthinking/joker)运行brook server守护进程
 
-安装joker
+安装joker, 如果你想看更多信息可以去 [joker github 页面](https://github.com/txthinking/joker)
 
 ```
 $ nami install github.com/txthinking/joker
 ```
-
-如果你想看更多信息可以去 [joker github 页面](https://github.com/txthinking/joker)
 
 > 我们建议你先在前台直接运行brook server, 确保一切都正常后再结合joker使用
 
