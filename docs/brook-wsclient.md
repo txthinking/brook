@@ -16,7 +16,7 @@ $ brook wsclient -s ws://1.2.3.4:9999 -p hello --socks5 127.0.0.1:1080
 
 ## Use the socks5 proxy
 
-Once brook is listening as a SOCKS5 proxy on localhost port `1080`, you need to configure your browser to use the SOCKS5 proxy.
+Once brook is listening as a SOCKS5 proxy on `127.0.0.1` port `1080`, you need to configure your browser to use the SOCKS5 proxy.
 
 There are two ways to cause your browser to use a SOCKS5 proxy: either system-wide, or browser by browser
 
