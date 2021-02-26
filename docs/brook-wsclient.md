@@ -29,4 +29,4 @@ To use a SOCKS5 proxy in just one browser:
 
 * In Firefox, go to **Options** / **Preferences** > **General** > **Network Settings** > **Manual proxy configuration**
 * In Chrome, install and configure SwitchyOmega by FelisCatus
-* In Safari on macOS, choose **Safari** > **Preferences** > **Advanced** > **Proxies
+* In Safari on macOS, choose **Safari** > **Preferences** > **Advanced** > **Proxies**
