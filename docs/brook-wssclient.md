@@ -16,7 +16,17 @@ $ brook wssclient -s wss://domain.com:443 -p hello --socks5 127.0.0.1:1080
 
 ## Use the socks5 proxy
 
-> TODO: Please help improve the documentation here
+Once brook is listening as a SOCKS5 proxy on `127.0.0.1` port `1080`, you need to configure your browser to use the SOCKS5 proxy.
 
-* Configure it on your system network settings
-* Configure it on your browser
+There are two ways to cause your browser to use a SOCKS5 proxy: either system-wide, or browser by browser
+
+To use a SOCKS5 proxy system-wide:
+
+* On Windows, do **Settings** > **Network & Internet** > **Proxy** > **Manual proxy setup**
+* On macOS, do Apple > **System Preferences** > **Network** > select network > **Advanced** > **Proxies**
+
+To use a SOCKS5 proxy in just one browser:
+
+* In Firefox, go to **Options** / **Preferences** > **General** > **Network Settings** > **Manual proxy configuration**
+* In Chrome, install and configure SwitchyOmega by FelisCatus
+* In Safari on macOS, choose **Safari** > **Preferences** > **Advanced** > **Proxies**
