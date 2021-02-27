@@ -7,11 +7,8 @@ assignees: ''
 
 ---
 
-### You may find solutions from the following resources:
+### Please read the document first
 
-* https://github.com/txthinking/brook/wiki
-* https://github.com/txthinking/brook/issues
-* https://talks.txthinking.com
-* https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A
+* https://txthinking.github.io/brook/
 
 ### Please describe step by step any commands and operations you have performed, environment and version:
