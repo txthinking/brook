@@ -1,6 +1,6 @@
 * Install
 
-    * [CLI和GUI](README.md)
+    * [CLI and GUI](README.md)
     * [[CLI] Install CLI](install-cli.md)
     * [[GUI] Install GUI Client](install-gui-client.md)
 
