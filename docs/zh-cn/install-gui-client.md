@@ -4,13 +4,19 @@ GUI(图形用户界面), Brook 图形客户端.
 
 [Brook macOS 图形客户端](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg)
 
-macOS 图形客户端, 首次运行需要在[系统偏好] - [安全与隐私]里放行
+[BrookLite macOS 图形客户端](https://github.com/txthinking/brook/releases/download/v20210214/BrookLite.dmg)
+
+- **保持系统版本最新**
+- macOS 图形客户端, 首次运行需要在[系统偏好]-[安全与隐私]-[通用]里放行
 
 ## Windows
 
 [Brook Windows 图形客户端](https://github.com/txthinking/brook/releases/download/v20210214/Brook.msi)
 
-Windows 图形客户端, 安装后并不会自动创建桌面快捷方式, 可以在C:\Program Files (x86)或C:\Program Files里找到
+[BrookLite Windows 图形客户端](https://github.com/txthinking/brook/releases/download/v20210214/Brook.exe)
+
+- **保持系统版本最新**
+- Brook.msi, 安装后并不会自动创建桌面快捷方式, 可以在C:\Program Files (x86)或C:\Program Files里找到
 
 ## Android
 

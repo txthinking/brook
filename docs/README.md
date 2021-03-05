@@ -27,7 +27,7 @@
     - **Keep system up to date**
     - Brook GUI file is a graphical client, only has **client function**
     - macOS GUI client, **first time run it needs to be allowd in [System Preferences]-[Security and Privacy]-[General]**
-    - Windows GUI client, **after installation, desktop shortcuts are not automatically created**, which can be found in C:\Program Files (x86) or C:\Program Files
+    - Windows GUI client, **Brook.msi, after installation, desktop shortcuts are not automatically created**, which can be found in C:\Program Files (x86) or C:\Program Files
 
 **Brook files description**, all can be downloaded in [Releases](https://github.com/txthinking/brook/releases/tag/v20210214) page
 
