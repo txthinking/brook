@@ -26,7 +26,7 @@
 
     - **保持系统版本最新**
     - Brook GUI文件是图形客户端, 只具有**客户端功能**
-    - Brook macOS 图形客户端, **首次运行需要在[系统偏好] - [安全与隐私]里放行**
+    - Brook macOS 图形客户端, **首次运行需要在[系统偏好]-[安全与隐私]-[通用]里放行**
     - Brook Windows 图形客户端, **安装后并不会自动创建桌面快捷方式**, 可以在C:\Program Files (x86)或C:\Program Files里找到
 
 **Brook 文件说明**, 都可以在[Releases](https://github.com/txthinking/brook/releases/tag/v20210214)页面下载
@@ -61,3 +61,5 @@
 | Brook.dmg | GUI| macOS 64位 |
 | Brook.msi | GUI| Windows 64位 |
 | Brook.apk | GUI| Android |
+| BrookLite.dmg | GUI| macOS 64 bit |
+| BrookLite.exe | GUI| Windows 64 bit |
