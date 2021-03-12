@@ -18,7 +18,7 @@ GUI(Graphical user interface), Brook GUI has only client function.
 
 ## Android
 
-[Brook.exe](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk)
+[Brook.apk](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk)
 
 ## iOS
 
