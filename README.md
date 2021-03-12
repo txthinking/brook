@@ -53,7 +53,7 @@ nami install github.com/txthinking/brook
 
 > The GUI file has only client function
 
-Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210214/Brook.msi), [Android](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210214/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 Install via brew
 

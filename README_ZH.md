@@ -50,7 +50,7 @@ nami install github.com/txthinking/brook
 
 ### 安装 GUI (图形客户端)
 
-从 [releases](https://github.com/txthinking/brook/releases) 页面下载: [macOS](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210214/Brook.msi), [Android](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+从 [releases](https://github.com/txthinking/brook/releases) 页面下载: [macOS](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210214/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 通过 brew 安装
 
