@@ -2,26 +2,23 @@ GUI(Graphical user interface), Brook GUI has only client function.
 
 ## macOS
 
-[Brook for macOS](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg)
+[Brook.dmg](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg)
 
-[BrookLite for macOS](https://github.com/txthinking/brook/releases/download/v20210214/BrookLite.dmg)
+[BrookLite.dmg](https://github.com/txthinking/brook/releases/download/v20210214/BrookLite.dmg)
 
 - **Keep system up to date**
-- macOS GUI client, first run it needs to be allowd in [System Preferences]-[Security and Privacy]-[General]
 
 ## Windows
 
-[Brook for Windows](https://github.com/txthinking/brook/releases/download/v20210214/Brook.msi)
+[Brook.exe](https://github.com/txthinking/brook/releases/download/v20210214/Brook.exe)
 
-[BrookLite for Windows](https://github.com/txthinking/brook/releases/download/v20210214/BrookLite.exe)
+[BrookLite.exe](https://github.com/txthinking/brook/releases/download/v20210214/BrookLite.exe)
 
 - **Keep system up to date**
-- Brook.msi, after installation, desktop shortcuts are not automatically created, which can be found in C:\Program Files (x86) or C:\Program Files
 
 ## Android
 
-[Brook for Android](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk)
-
+[Brook.exe](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk)
 
 ## iOS
 
