@@ -11,7 +11,7 @@ $ brook dns 用来创建一个加密DNS Server, 它与 $ brook server 一起工�
 ## Run brook dns
 
 ```
-$ brook dns -s 1.2.3.4:9999 -p hello -l 127.0.0.1:53
+$ brook dns --server 1.2.3.4:9999 --password hello --listen 127.0.0.1:53
 ```
 
 > 你可能需要用sudo运行<br/>

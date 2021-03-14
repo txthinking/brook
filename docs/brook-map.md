@@ -11,7 +11,7 @@ Assume your brook server is `1.2.3.4:9999` and password is `hello`, and you want
 ## Run brook map
 
 ```
-$ brook map -s 1.2.3.4:9999 -p hello -f 127.0.0.1:5353 -t 8.8.8.8:53
+$ brook map --server 1.2.3.4:9999 --password hello --from 127.0.0.1:5353 --to 8.8.8.8:53
 ```
 
 > More parameters: $ brook map -h

@@ -9,7 +9,7 @@ send request <--> local socks5 <-- | brook server protocol | --> brook server <-
 ## Run brook client
 
 ```
-$ brook client -s 1.2.3.4:9999 -p hello --socks5 127.0.0.1:1080
+$ brook client --server 1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080
 ```
 
 > More parameters: $ brook client -h

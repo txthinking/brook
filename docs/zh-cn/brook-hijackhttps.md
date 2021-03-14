@@ -5,7 +5,7 @@ $ brook hijackhttps can create a magic DNS and force domains is https protocol. 
 ## Run brook hijackhttps
 
 ```
-$ brook hijackhttps -s 127.0.0.1:1080
+$ brook hijackhttps --socks5 127.0.0.1:1080
 ```
 
 Then configure your system DNS server with `127.0.0.1`

@@ -7,7 +7,6 @@
 * Server and Client
 
     * [[CLI] $ brook server](brook-server.md)
-    * [[CLI] Daemon with joker](joker.md)
     * [[CLI] $ brook client](brook-client.md)
     * [[GUI] Client](brook-client-gui.md)
 

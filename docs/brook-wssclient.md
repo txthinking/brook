@@ -9,7 +9,7 @@ send request <--> local socks5 <-- | brook wssserver protocol | --> brook wssser
 ## Run brook wssclient
 
 ```
-$ brook wssclient -s wss://domain.com:443 -p hello --socks5 127.0.0.1:1080
+$ brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080
 ```
 
 > More parameters: $ brook wssclient -h

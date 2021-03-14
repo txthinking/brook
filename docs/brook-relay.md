@@ -11,7 +11,7 @@ Assume your (any) server is `1.2.3.4:9999`, and you want to relay port `9999` on
 ## Run brook relay
 
 ```
-$ brook relay -f :9999 -t 1.2.3.4:9999
+$ brook relay --from :9999 --to 1.2.3.4:9999
 ```
 
 Assume your relay server IP is `5.6.7.8`, then send request to `5.6.7.8:9999` is equal with send request to `1.2.3.4:9999` now

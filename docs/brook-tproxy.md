@@ -6,8 +6,6 @@ Assume your brook server is `1.2.3.4:9999` and password is `hello`
 
 ## Run brook tproxy
 
-> The following steps are for reference only
-
 #### IPv4
 
 ```
@@ -64,12 +62,11 @@ ip6tables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-po
 #### Run brook
 
 ```
-brook tproxy -s 1.2.3.4:9999 -p hello -l :1080
+brook tproxy --server 1.2.3.4:9999 --password hello --listen :1080
 ```
 
 > More parameters: $ brook tproxy -h
 
 ### On your computer
 
-* Set the gateway to your Linux box IP
 * Set the DNS server to 8.8.8.8(or any other working DNS server)

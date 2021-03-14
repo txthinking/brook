@@ -9,7 +9,7 @@
 ## 运行 brook wssclient
 
 ```
-$ brook wssclient -s wss://domain.com:443 -p hello --socks5 127.0.0.1:1080
+$ brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080
 ```
 
 > 更多参数: $ brook wssclient -h

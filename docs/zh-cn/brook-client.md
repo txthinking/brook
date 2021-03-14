@@ -9,7 +9,7 @@
 ## 运行 brook client
 
 ```
-$ brook client -s 1.2.3.4:9999 -p hello --socks5 127.0.0.1:1080
+$ brook client --server 1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080
 ```
 
 > 更多参数: $ brook client -h

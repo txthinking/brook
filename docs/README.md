@@ -14,7 +14,7 @@
 
 ## Brook CLI files and GUI files
 
-**Usually**, if you use Brook, you will need a combination of **Server** and **Client**, **Of course**Brook CLI also has **many other independent functions**
+**Usually**, if you use Brook, you will need a combination of **Server** and **Client**, **Of course** Brook CLI also has **many other independent functions**
 
 - Brook CLI file
 
