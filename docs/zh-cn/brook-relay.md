@@ -1,6 +1,6 @@
 ## $ brook relay
 
-$ brook relay 可以中继任何TCP和UDP server, 这是一个独立的功能, 它不依赖$ brook server和$ brook wsserver等
+$ brook relay 可以中继任何TCP和UDP server, 这是一个独立的功能, 它不依赖$ brook server和$ brook wsserver等. 如果有防火墙, 记得允许此端口的TCP和UDP协议.
 
 ```
 请求 <--> relay server <--> 被中继的server

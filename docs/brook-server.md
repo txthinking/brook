@@ -1,6 +1,6 @@
 ## Run brook server
 
-Assume with port `9999` and password `hello`
+Assume with port `9999` and password `hello`. If there is a firewall, remember to allow TCP and UDP on this port.
 
 ```
 $ brook server -l :9999 -p hello

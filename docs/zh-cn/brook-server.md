@@ -1,6 +1,6 @@
 ## 运行 brook server
 
-假设选择端口`9999`, 密码`hello`
+假设选择端口`9999`, 密码`hello`. 如果有防火墙, 记得允许此端口的TCP和UDP协议.
 
 ```
 $ brook server -l :9999 -p hello

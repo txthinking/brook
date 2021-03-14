@@ -1,6 +1,6 @@
 ## $ brook relay
 
-$ brook relay can relay a address to a remote address. It can relay any tcp and udp server
+$ brook relay can relay a address to a remote address. It can relay any tcp and udp server. If there is a firewall, remember to allow TCP and UDP on the port.
 
 ```
 send request <--> relay server <--> a remote address

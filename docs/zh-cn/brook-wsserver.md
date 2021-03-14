@@ -1,6 +1,6 @@
 ## 运行 brook wsserver
 
-假设选择端口`9999`, 密码`hello`
+假设选择端口`9999`, 密码`hello`. 如果有防火墙, 记得允许此端口的TCP协议.
 
 ```
 $ brook wsserver -l :9999 -p hello
