@@ -41,6 +41,7 @@
 * Socks5
 
     * [[CLI] $ brook socks5](brook-socks5.md)
+    * [[GUI] 图形客户端](socks5-client-gui.md)
 
 * Socks5 转 HTTP 代理
 

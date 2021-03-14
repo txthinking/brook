@@ -41,6 +41,7 @@
 * Socks5
 
     * [[CLI] $ brook socks5](brook-socks5.md)
+    * [[GUI] Client](socks5-client-gui.md)
 
 * Socks5 to HTTP
 
