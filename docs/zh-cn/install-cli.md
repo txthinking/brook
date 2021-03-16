@@ -33,3 +33,9 @@ $ nami install github.com/txthinking/brook
 ```
 $ nami install github.com/txthinking/joker
 ```
+
+使用nami安装[boa](https://github.com/brook-community/boa), 她可以添加开机启动命令, **这是可选的**
+
+```
+$ nami install github.com/brook-community/boa
+```

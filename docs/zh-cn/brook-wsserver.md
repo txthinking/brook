@@ -55,3 +55,19 @@ $ joker stop <ID>
 ```
 $ joker log <ID>
 ```
+
+---
+
+## 使用[boa](https://github.com/brook-community/boa)开机自动启动命令
+
+> 我们建议你先在前台直接运行, 确保一切都正常后, 再使用boa运行
+
+```
+$ boa brook wsserver --listen :9999 --password hello
+```
+
+或者同时用上joker
+
+```
+$ boa joker brook wsserver --listen :9999 --password hello
+```

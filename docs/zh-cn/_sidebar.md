@@ -65,9 +65,10 @@
 
 * 资源
 
+    * [一键脚本](installscript.md)
     * [博客和视频](blogvideo.md)
     * [论坛](community.md)
-    * [相关资源](resources.md)
+    * [Telegram](telegram.md)
 
 * 协议
 

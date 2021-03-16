@@ -65,9 +65,10 @@
 
 * Resources
 
+    * [Install script](installscript.md)
     * [Blog and Video](blogvideo.md)
     * [Community](community.md)
-    * [Resources](resources.md)
+    * [Telegram](telegram.md)
 
 * Spec
 

@@ -59,3 +59,18 @@ View log of a command run via joker
 $ joker log <ID>
 ```
 
+---
+
+## Auto start at boot via [`boa`](https://github.com/brook-community/boa)
+
+> We recommend running the command directly to make sure there are no errors before running it via boa
+
+```
+$ boa brook server --listen :9999 --password hello
+```
+
+Or with joker
+
+```
+$ boa joker brook server --listen :9999 --password hello
+```

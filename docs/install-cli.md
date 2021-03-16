@@ -36,3 +36,8 @@ Use nami to install [joker](https://github.com/txthinking/joker), she can run br
 $ nami install github.com/txthinking/joker
 ```
 
+Use nami to install [boa](https://github.com/brook-community/boa), she can add auto start command at boot, **optional**
+
+```
+$ nami install github.com/brook-community/boa
+```
