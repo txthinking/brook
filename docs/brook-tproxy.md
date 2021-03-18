@@ -26,9 +26,6 @@ iptables -t mangle -A PREROUTING -d 192.168.0.0/16 -j RETURN
 iptables -t mangle -A PREROUTING -d 224.0.0.0/4 -j RETURN
 iptables -t mangle -A PREROUTING -d 240.0.0.0/4 -j RETURN
 
-# IMPORTANT
-iptables -t mangle -A PREROUTING -d 1.2.3.4 -j RETURN
-
 iptables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1
 iptables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 1080
 iptables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1
@@ -48,10 +45,7 @@ ip -6 route add local ::/0 dev lo table 106
 ip6tables -t mangle -F
 ip6tables -t mangle -X
 
-# This command with print some CIDRs, remember them
-ip address | grep -w inet6 | awk '{print $2}'
-# replace REPLACE_ME_WITH_CIDR with the CIDR you remembered, one CIDR one time
-ip6tables -t mangle -A PREROUTING -d REPLACE_ME_WITH_CIDR -j RETURN
+for s in `ip address | grep -w inet6 | awk '{print $2}'`; do ip6tables -t mangle -A PREROUTING -d $s -j RETURN; done
 
 ip6tables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1
 ip6tables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port 1080

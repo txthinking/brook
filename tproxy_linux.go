@@ -92,7 +92,7 @@ func (s *Tproxy) RunAutoScripts() error {
 	hc := &http.Client{
 		Timeout: 9 * time.Second,
 	}
-	r, err := hc.Get("https://txthinking.github.io/bypass/chinacidr4.list")
+	r, err := hc.Get("https://txthinking.github.io/bypass/chinacidr4.txt")
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (s *Tproxy) RunAutoScripts() error {
 	data = bytes.Replace(data, []byte{0x0d, 0x0a}, []byte{0x0a}, -1)
 	cidr4l := strings.Split(string(data), "\n")
 
-	r, err = hc.Get("https://txthinking.github.io/bypass/chinacidr6.list")
+	r, err = hc.Get("https://txthinking.github.io/bypass/chinacidr6.txt")
 	if err != nil {
 		return err
 	}
@@ -170,12 +170,6 @@ func (s *Tproxy) RunAutoScripts() error {
 			return errors.New(string(out) + err.Error())
 		}
 	}
-	if s.ServerTCPAddr.IP.To4() != nil {
-		c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d "+s.ServerTCPAddr.IP.String()+" -j RETURN")
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-	}
 	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
@@ -219,12 +213,6 @@ func (s *Tproxy) RunAutoScripts() error {
 	}
 	for _, v := range cidr6l {
 		c = exec.Command("sh", "-c", "ip6tables -t mangle -A PREROUTING -d "+v+" -j RETURN")
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-	}
-	if s.ServerTCPAddr.IP.To4() == nil {
-		c = exec.Command("sh", "-c", "ip6tables -t mangle -A PREROUTING -d "+s.ServerTCPAddr.IP.String()+" -j RETURN")
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New(string(out) + err.Error())
 		}
