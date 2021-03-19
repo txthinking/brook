@@ -1,8 +1,11 @@
 language: go
 sudo: false
+os:
+  - linux
+  - osx
+  - windows
 go:
-install:
-    - go get -t -v .
+  - "1.16"
 script:
     - go test -v .
     - cd cli/brook && go get -t -v . && go build .
