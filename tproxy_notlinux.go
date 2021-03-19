@@ -25,7 +25,7 @@ type Tproxy struct {
 }
 
 // NewTproxy.
-func NewTproxy(addr, remote, password string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
+func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 	return nil, errors.New("Only support Linux")
 }
 
