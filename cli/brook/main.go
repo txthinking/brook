@@ -342,7 +342,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tproxy",
-			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, will listen on port 1080, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]",
+			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -353,6 +353,12 @@ func main() {
 					Name:    "password",
 					Aliases: []string{"p"},
 					Usage:   "Brook server password",
+				},
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Listen address, DO NOT contain IP, just like: ':1080'",
+					Value:   ":1080",
 				},
 				&cli.StringFlag{
 					Name:  "dnsListen",
@@ -401,7 +407,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.Bool("clean") {
-					s, err := brook.NewTproxy(":0", "", false, "", "", 0, 60)
+					s, err := brook.NewTproxy(":0", ":0", "", false, "", "", 0, 60)
 					if err != nil {
 						return err
 					}
@@ -410,14 +416,14 @@ func main() {
 					}
 					return nil
 				}
-				if c.String("server") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || cc.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "tproxy")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewTproxy(c.String("server"), c.String("password"), c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}

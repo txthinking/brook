@@ -52,12 +52,12 @@ type Tproxy struct {
 }
 
 // NewTproxy.
-func NewTproxy(server, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
-	taddr, err := net.ResolveTCPAddr("tcp", ":1080")
+func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
+	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
 	}
-	uaddr, err := net.ResolveUDPAddr("udp", ":1080")
+	uaddr, err := net.ResolveUDPAddr("udp", addr)
 	if err != nil {
 		return nil, err
 	}
