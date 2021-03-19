@@ -416,7 +416,7 @@ func main() {
 					}
 					return nil
 				}
-				if c.String("listen") == "" || cc.String("server") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "tproxy")
 					return nil
 				}
