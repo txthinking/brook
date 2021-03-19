@@ -48,15 +48,16 @@ type Tproxy struct {
 	EnableIPv6    bool
 	Cidr4         []*net.IPNet
 	Cidr6         []*net.IPNet
+	BypassCache   *cache.Cache
 }
 
 // NewTproxy.
-func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
-	taddr, err := net.ResolveTCPAddr("tcp", addr)
+func NewTproxy(server, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
+	taddr, err := net.ResolveTCPAddr("tcp", ":1080")
 	if err != nil {
 		return nil, err
 	}
-	uaddr, err := net.ResolveUDPAddr("udp", addr)
+	uaddr, err := net.ResolveUDPAddr("udp", ":1080")
 	if err != nil {
 		return nil, err
 	}
@@ -115,6 +116,7 @@ func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6ur
 		EnableIPv6:    enableIPv6,
 		Cidr4:         c4,
 		Cidr6:         c6,
+		BypassCache:   cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 	return s, nil
 }
@@ -234,37 +236,21 @@ func (s *Tproxy) RunAutoScripts() error {
 
 func (s *Tproxy) ClearAutoScripts() error {
 	c := exec.Command("sh", "-c", "iptables -t mangle -F")
-	if out, err := c.CombinedOutput(); err != nil {
-		log.Println(errors.New(string(out) + err.Error()))
-	}
+	c.Run()
 	c = exec.Command("sh", "-c", "iptables -t mangle -X")
-	if out, err := c.CombinedOutput(); err != nil {
-		log.Println(errors.New(string(out) + err.Error()))
-	}
+	c.Run()
 	c = exec.Command("sh", "-c", "ip rule del fwmark 1 lookup 100")
-	if out, err := c.CombinedOutput(); err != nil {
-		log.Println(errors.New(string(out) + err.Error()))
-	}
+	c.Run()
 	c = exec.Command("sh", "-c", "ip route del local 0.0.0.0/0 dev lo table 100")
-	if out, err := c.CombinedOutput(); err != nil {
-		log.Println(errors.New(string(out) + err.Error()))
-	}
+	c.Run()
 	c = exec.Command("sh", "-c", "ip6tables -t mangle -F")
-	if out, err := c.CombinedOutput(); err != nil {
-		log.Println(errors.New(string(out) + err.Error()))
-	}
+	c.Run()
 	c = exec.Command("sh", "-c", "ip6tables -t mangle -X")
-	if out, err := c.CombinedOutput(); err != nil {
-		log.Println(errors.New(string(out) + err.Error()))
-	}
+	c.Run()
 	c = exec.Command("sh", "-c", "ip -6 rule del fwmark 1 table 106")
-	if out, err := c.CombinedOutput(); err != nil {
-		log.Println(errors.New(string(out) + err.Error()))
-	}
+	c.Run()
 	c = exec.Command("sh", "-c", "ip -6 route del local ::/0 dev lo table 106")
-	if out, err := c.CombinedOutput(); err != nil {
-		log.Println(errors.New(string(out) + err.Error()))
-	}
+	c.Run()
 	return nil
 }
 
@@ -360,10 +346,15 @@ func (s *Tproxy) HasIP(i net.IP) bool {
 	if i == nil {
 		return false
 	}
+	any, ok := s.BypassCache.Get(i.String())
+	if ok {
+		return any.(bool)
+	}
 	if i.To4() != nil {
 		ii := i.To4()
 		for _, v := range s.Cidr4 {
 			if v.Contains(ii) {
+				s.BypassCache.Set(i.String(), true, -1)
 				return true
 			}
 		}
@@ -372,10 +363,12 @@ func (s *Tproxy) HasIP(i net.IP) bool {
 		ii := i.To16()
 		for _, v := range s.Cidr6 {
 			if v.Contains(ii) {
+				s.BypassCache.Set(i.String(), true, -1)
 				return true
 			}
 		}
 	}
+	s.BypassCache.Set(i.String(), false, -1)
 	return false
 }
 

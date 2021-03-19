@@ -342,7 +342,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tproxy",
-			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]",
+			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, will listen on port 1080, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -353,11 +353,6 @@ func main() {
 					Name:    "password",
 					Aliases: []string{"p"},
 					Usage:   "Brook server password",
-				},
-				&cli.StringFlag{
-					Name:    "listen",
-					Aliases: []string{"l"},
-					Usage:   "Listen address, DO NOT contain IP, just like: ':1080'",
 				},
 				&cli.StringFlag{
 					Name:  "dnsListen",
@@ -391,7 +386,7 @@ func main() {
 				},
 				&cli.BoolFlag{
 					Name:  "clean",
-					Usage: "Clean things the Brook did before if need. Example: $ brook tproxy -s 1.2.3.4:9999 -p hello -l :1080 --clean",
+					Usage: "Clean things the Brook did before if need. Example: $ brook tproxy --clean",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -405,29 +400,26 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "tproxy")
-					return nil
-				}
-				h, _, err := net.SplitHostPort(c.String("listen"))
-				if err != nil {
-					return err
-				}
-				if h != "" {
-					return errors.New("listen does not require IP, just pass it like ':port'")
-				}
-				if debug {
-					enableDebug()
-				}
-				s, err := brook.NewTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-				if err != nil {
-					return err
-				}
 				if c.Bool("clean") {
+					s, err := brook.NewTproxy(":0", "", false, "", "", 0, 60)
+					if err != nil {
+						return err
+					}
 					if err := s.ClearAutoScripts(); err != nil {
 						return err
 					}
 					return nil
+				}
+				if c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "tproxy")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				s, err := brook.NewTproxy(c.String("server"), c.String("password"), c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
 				}
 				var s1 *brook.DNS
 				if c.String("dnsListen") != "" {
