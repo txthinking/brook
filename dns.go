@@ -16,7 +16,9 @@ package brook
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
+	"errors"
 	"io/ioutil"
 	"log"
 	"net"
@@ -71,7 +73,7 @@ func NewDNS(addr, server, password, dnsServer, dnsServerForBypass, bypassList st
 	ds := make(map[string]byte)
 	ss := make([]string, 0)
 	if bypassList != "" {
-		ss, err = readList(bypassList)
+		ss, err = ReadList(bypassList)
 		if err != nil {
 			return nil, err
 		}
@@ -405,12 +407,44 @@ func (s *DNS) Has(host string) bool {
 	return false
 }
 
-func readList(url string) ([]string, error) {
+func ReadList(url string) ([]string, error) {
 	var data []byte
 	var err error
 	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 		c := &http.Client{
 			Timeout: 9 * time.Second,
+			Transport: &http.Transport{
+				DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+					r := &net.Resolver{
+						Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+							c, err := net.Dial(network, "8.8.8.8:53")
+							if err != nil {
+								c, err = net.Dial(network, "[2001:4860:4860::8888]:53")
+							}
+							return c, err
+						},
+					}
+					h, p, err := net.SplitHostPort(addr)
+					if err != nil {
+						return nil, err
+					}
+					l, err := r.LookupIP(ctx, "ip4", h)
+					if err == nil && len(l) > 0 {
+						c, err := net.Dial(network, net.JoinHostPort(l[0].String(), p))
+						if err == nil {
+							return c, nil
+						}
+					}
+					l, err = r.LookupIP(ctx, "ip6", h)
+					if err == nil && len(l) > 0 {
+						c, err := net.Dial(network, net.JoinHostPort(l[0].String(), p))
+						if err == nil {
+							return c, nil
+						}
+					}
+					return nil, errors.New("Can not fetch " + addr + ", maybe dns or network error")
+				},
+			},
 		}
 		r, err := c.Get(url)
 		if err != nil {

@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"text/template"
 	"time"
 
@@ -47,20 +46,13 @@ func NewPAC(addr, file, proxy, domainURL string) *PAC {
 
 func (p *PAC) MakeBody() (io.Reader, error) {
 	var err error
+	l := make([]string, 0)
 	if p.DomainURL != "" {
-		p.DomainData, err = readURL(p.DomainURL)
+		l, err = ReadList(p.DomainURL)
 		if err != nil {
 			return nil, err
 		}
 	}
-	ds := make([]string, 0)
-	if p.DomainData != nil {
-		b := bytes.TrimSpace(p.DomainData)
-		b = bytes.Replace(b, []byte{0x20}, []byte{}, -1)
-		b = bytes.Replace(b, []byte{0x0d, 0x0a}, []byte{0x0a}, -1)
-		ds = strings.Split(string(b), "\n")
-	}
-
 	t := template.New("pac")
 	t, err = t.Parse(tpl)
 	if err != nil {
@@ -69,7 +61,7 @@ func (p *PAC) MakeBody() (io.Reader, error) {
 	b := &bytes.Buffer{}
 	if err := t.Execute(b, map[string]interface{}{
 		"proxy":   p.Proxy,
-		"domains": ds,
+		"domains": l,
 	}); err != nil {
 		return nil, err
 	}
@@ -127,29 +119,6 @@ func (p *PAC) WriteToStdout() error {
 		return err
 	}
 	return nil
-}
-
-func readURL(url string) ([]byte, error) {
-	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
-		c := &http.Client{
-			Timeout: 9 * time.Second,
-		}
-		r, err := c.Get(url)
-		if err != nil {
-			return nil, err
-		}
-		defer r.Body.Close()
-		data, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			return nil, err
-		}
-		return data, nil
-	}
-	data, err := ioutil.ReadFile(url)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
 }
 
 var tpl = `

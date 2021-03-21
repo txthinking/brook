@@ -49,7 +49,7 @@ type HijackHTTPS struct {
 func NewHijackHTTPS(socks5addr, socks5username, socks5password, listenIP, dnsForBypass, bypassList string, tcpTimeout, udpTimeout int) (*HijackHTTPS, error) {
 	ds := make(map[string]byte)
 	if bypassList != "" {
-		ss, err := readList(bypassList)
+		ss, err := ReadList(bypassList)
 		if err != nil {
 			return nil, err
 		}

@@ -362,7 +362,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "dnsListen",
-					Usage: "Start a smart DNS server, like: ':53'. If 53 is occupied by another DNS server, change that DNS server to use another port",
+					Usage: "Start a smart DNS server, like: ':53'",
 				},
 				&cli.StringFlag{
 					Name:  "dnsForDefault",
@@ -391,8 +391,12 @@ func main() {
 					Usage: "Your local and server must support IPv6",
 				},
 				&cli.BoolFlag{
+					Name:  "doNotRunScripts",
+					Usage: "This will not change iptables and others",
+				},
+				&cli.BoolFlag{
 					Name:  "clean",
-					Usage: "Clean things the Brook did before if need. Example: $ brook tproxy --clean",
+					Usage: "Clean things the brook scripts did before if need. Example: $ brook tproxy --clean",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -439,15 +443,19 @@ func main() {
 						}
 					}()
 				}
-				if err := s.RunAutoScripts(); err != nil {
-					return err
+				if !c.Bool("doNotRunScripts") {
+					if err := s.RunAutoScripts(); err != nil {
+						return err
+					}
 				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs
-					if err := s.ClearAutoScripts(); err != nil {
-						log.Println(err)
+					if !c.Bool("doNotRunScripts") {
+						if err := s.ClearAutoScripts(); err != nil {
+							log.Println(err)
+						}
 					}
 					s.Shutdown()
 					if s1 != nil {

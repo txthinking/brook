@@ -71,7 +71,7 @@ func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6ur
 	}
 	c4 := make([]*net.IPNet, 0)
 	if cidr4url != "" {
-		l, err := readList(cidr4url)
+		l, err := ReadList(cidr4url)
 		if err != nil {
 			return nil, err
 		}
@@ -85,7 +85,7 @@ func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6ur
 	}
 	c6 := make([]*net.IPNet, 0)
 	if cidr6url != "" {
-		l, err := readList(cidr6url)
+		l, err := ReadList(cidr6url)
 		if err != nil {
 			return nil, err
 		}
