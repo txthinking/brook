@@ -12,6 +12,4 @@ $ brook socks5 --socks5 1.2.3.4:1080
 
 ## 使用刚才创建的socks5代理
 
-Once brook is listening as a SOCKS5 proxy on `1.2.3.4` port `1080`, you need to configure your browser to use the SOCKS5 proxy.
-
-* In Chrome, install and configure extension SwitchyOmega by FelisCatus
+* 安裝並配置Chrome擴展[Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)

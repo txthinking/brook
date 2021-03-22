@@ -33,6 +33,7 @@
 * 服务端和透明代理
 
     * [[CLI] $ brook tproxy](brook-tproxy.md)
+    * [[GUI] OpenWrt](brook-tproxy-gui.md)
 
 * 中继
 

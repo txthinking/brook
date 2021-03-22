@@ -33,6 +33,7 @@
 * Server and Transparent Proxy
 
     * [[CLI] $ brook tproxy](brook-tproxy.md)
+    * [[GUI] OpenWrt](brook-tproxy-gui.md)
 
 * Relay
 

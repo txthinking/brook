@@ -1,0 +1,6 @@
+#!/bin/sh
+
+s=`cat /etc/rc.local | grep brook`; if [ "$s" == "" ]; then echo 'nohup /usr/bin/brook tproxy --webListen :9999 > /root/.brook.web.err 2>&1 &' > /tmp/brook && cat /etc/rc.local  >> /tmp/brook && mv /tmp/brook /etc/rc.local; fi
+rm -rf /tmp/luci-*
+touch /root/.brook.args
+nohup /usr/bin/brook tproxy --webListen :9999 > /root/.brook.web.err 2>&1 &

@@ -122,111 +122,111 @@ func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6ur
 }
 
 func (s *Tproxy) RunAutoScripts() error {
-	c := exec.Command("sh", "-c", "echo 1 > /proc/sys/net/ipv4/ip_forward")
+	c := exec.Command("/bin/sh", "-c", "echo 1 > /proc/sys/net/ipv4/ip_forward")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
 
-	c = exec.Command("sh", "-c", "ip route add local 0.0.0.0/0 dev lo table 100")
+	c = exec.Command("/bin/sh", "-c", "ip route add local 0.0.0.0/0 dev lo table 100")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	c = exec.Command("sh", "-c", "ip rule add fwmark 1 lookup 100")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 0.0.0.0/8 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 10.0.0.0/8 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 127.0.0.0/8 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 169.254.0.0/16 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 172.16.0.0/12 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 192.168.0.0/16 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 224.0.0.0/4 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -d 240.0.0.0/4 -j RETURN")
+	c = exec.Command("/bin/sh", "-c", "ip rule add fwmark 1 lookup 100")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
 
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1")
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 0.0.0.0/8 -j RETURN")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.TCPAddr.Port))
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 10.0.0.0/8 -j RETURN")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1")
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 127.0.0.0/8 -j RETURN")
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
-	c = exec.Command("sh", "-c", "iptables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.UDPAddr.Port))
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 169.254.0.0/16 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 172.16.0.0/12 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 192.168.0.0/16 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 224.0.0.0/4 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 240.0.0.0/4 -j RETURN")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.TCPAddr.Port))
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1")
+	if out, err := c.CombinedOutput(); err != nil {
+		return errors.New(string(out) + err.Error())
+	}
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.UDPAddr.Port))
 	if out, err := c.CombinedOutput(); err != nil {
 		return errors.New(string(out) + err.Error())
 	}
 
 	if s.EnableIPv6 {
-		c = exec.Command("sh", "-c", "echo 1 > /proc/sys/net/ipv6/conf/all/forwarding")
+		c = exec.Command("/bin/sh", "-c", "echo 1 > /proc/sys/net/ipv6/conf/all/forwarding")
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New(string(out) + err.Error())
 		}
 
-		c = exec.Command("sh", "-c", "ip -6 route add local ::/0 dev lo table 106")
+		c = exec.Command("/bin/sh", "-c", "ip -6 route add local ::/0 dev lo table 106")
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New(string(out) + err.Error())
 		}
-		c = exec.Command("sh", "-c", "ip -6 rule add fwmark 1 table 106")
+		c = exec.Command("/bin/sh", "-c", "ip -6 rule add fwmark 1 table 106")
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New(string(out) + err.Error())
 		}
 
-		c = exec.Command("sh", "-c", "ip address | grep -w inet6 | awk '{print $2}'")
+		c = exec.Command("/bin/sh", "-c", "ip address | grep -w inet6 | awk '{print $2}'")
 		out, err := c.CombinedOutput()
 		if err != nil {
 			return errors.New(string(out) + err.Error())
 		}
 		l := strings.Split(strings.TrimSpace(string(out)), "\n")
 		for _, v := range l {
-			c = exec.Command("sh", "-c", "ip6tables -t mangle -A PREROUTING -d "+v+" -j RETURN")
+			c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -d "+v+" -j RETURN")
 			if out, err := c.CombinedOutput(); err != nil {
 				return errors.New(string(out) + err.Error())
 			}
 		}
 
-		c = exec.Command("sh", "-c", "ip6tables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1")
+		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1")
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New(string(out) + err.Error())
 		}
-		c = exec.Command("sh", "-c", "ip6tables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.TCPAddr.Port))
+		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.TCPAddr.Port))
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New(string(out) + err.Error())
 		}
-		c = exec.Command("sh", "-c", "ip6tables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1")
+		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1")
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New(string(out) + err.Error())
 		}
-		c = exec.Command("sh", "-c", "ip6tables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.UDPAddr.Port))
+		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-port "+strconv.Itoa(s.UDPAddr.Port))
 		if out, err := c.CombinedOutput(); err != nil {
 			return errors.New(string(out) + err.Error())
 		}
@@ -235,21 +235,21 @@ func (s *Tproxy) RunAutoScripts() error {
 }
 
 func (s *Tproxy) ClearAutoScripts() error {
-	c := exec.Command("sh", "-c", "iptables -t mangle -F")
+	c := exec.Command("/bin/sh", "-c", "iptables -t mangle -F")
 	c.Run()
-	c = exec.Command("sh", "-c", "iptables -t mangle -X")
+	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -X")
 	c.Run()
-	c = exec.Command("sh", "-c", "ip rule del fwmark 1 lookup 100")
+	c = exec.Command("/bin/sh", "-c", "ip rule del fwmark 1 lookup 100")
 	c.Run()
-	c = exec.Command("sh", "-c", "ip route del local 0.0.0.0/0 dev lo table 100")
+	c = exec.Command("/bin/sh", "-c", "ip route del local 0.0.0.0/0 dev lo table 100")
 	c.Run()
-	c = exec.Command("sh", "-c", "ip6tables -t mangle -F")
+	c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -F")
 	c.Run()
-	c = exec.Command("sh", "-c", "ip6tables -t mangle -X")
+	c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -X")
 	c.Run()
-	c = exec.Command("sh", "-c", "ip -6 rule del fwmark 1 table 106")
+	c = exec.Command("/bin/sh", "-c", "ip -6 rule del fwmark 1 table 106")
 	c.Run()
-	c = exec.Command("sh", "-c", "ip -6 route del local ::/0 dev lo table 106")
+	c = exec.Command("/bin/sh", "-c", "ip -6 route del local ::/0 dev lo table 106")
 	c.Run()
 	return nil
 }

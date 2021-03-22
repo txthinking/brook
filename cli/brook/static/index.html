@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+        <title>Brook</title>
+<style>
+body{
+	margin:0;
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
+a,a:link,a:visited,a:hover,a:active{
+	color:inherit;
+}
+wl-button {
+    --button-color: white;
+    --button-bg: black;
+}
+wl-progress-spinner{
+    --progress-spinner-buffer-color: black;
+    --progress-spinner-color: white;
+    --progress-spinner-size: 1rem;
+}
+wl-card{
+    padding: 20px;
+}
+wl-switch{
+    --switch-color-checked:black;
+}
+
+.column {
+    width: 30%;
+    display:flex;
+    flex-direction:column;
+}
+.row {
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+}
+.center {
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+}
+.container20{
+    height:20px;
+}
+.container30{
+    height:30px;
+}
+</style>
+<script src="weightless.min.js"></script>
+    </head>
+	<body style="background-color:#f0f2f5;">
+		<div style="background-color:black;display:flex;flex-direction:row;justify-content:space-between;flex-wrap: wrap;padding:0px 20px;">
+			<div style="color:white;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;flex-wrap: wrap;">
+				<h2>Brook for OpenWrt</h2>
+			</div>
+			<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;flex-wrap: wrap;">
+				<wl-button flat inverted style="color:white;text-transform: none;"><a target="_blank" href="https://github.com/txthinking/brook">Github</a></wl-button>
+				<wl-button flat inverted style="color:white;text-transform: none;"><a target="_blank" href="https://txthinking.github.io/brook/">Document</a></wl-button>
+			</div>
+		</div>
+        <div class="container30"></div>
+        <div class="center">
+            <wl-card class="column">
+                <div class="row">
+                    <wl-title level="3">Server</wl-title>
+                </div>
+                <div class="container20"></div>
+                <wl-textfield id="server" label="Server, like: 1.2.3.4:9999"></wl-textfield>
+                <div class="container20"></div>
+                <wl-textfield id="password" label="Password"></wl-textfield>
+                <div class="container20"></div>
+            </wl-card>
+        </div>
+        <div class="container30"></div>
+        <div class="center">
+            <wl-card class="column">
+                <div class="row">
+                    <wl-title level="3">Brook DNS</wl-title>
+                    <wl-switch checked id="dnsswitch"></wl-switch>
+                </div>
+                <div class="container20"></div>
+                <wl-textfield label="Port" id="dnsListen"></wl-textfield>
+                <div class="container20"></div>
+                <wl-textfield label="DNS for default" id="dnsForDefault"></wl-textfield>
+                <div class="container20"></div>
+                <wl-textfield label="DNS for bypass" id="dnsForBypass"></wl-textfield>
+                <div class="container20"></div>
+            </wl-card>
+        </div>
+        <div class="container30"></div>
+        <div class="center">
+            <wl-card class="column">
+                <div class="row">
+                    <wl-title level="3">Bypass List</wl-title>
+                    <wl-switch checked id="bypassswitch"></wl-switch>
+                </div>
+                <div class="container20"></div>
+                <wl-textfield label="Domain list, example: https://txthinking.github.io/bypass/chinadomain.txt" id="bypassDomainList"></wl-textfield>
+                <div class="container20"></div>
+                <wl-textfield label="CIDR4 list, example: https://txthinking.github.io/bypass/chinacidr4.txt" id="bypassCIDR4List"></wl-textfield>
+                <div class="container20"></div>
+                <wl-textfield label="CIDR6 list, example: https://txthinking.github.io/bypass/chinacidr6.txt" id="bypassCIDR6List"></wl-textfield>
+                <div class="container20"></div>
+            </wl-card>
+        </div>
+        <div class="container30"></div>
+        <div class="center">
+            <wl-card class="column">
+                <div class="row">
+                    <wl-title level="3">IPv6</wl-title>
+                    <wl-switch checked id="enableIPv6"></wl-switch>
+                </div>
+            </wl-card>
+        </div>
+        <div class="container30"></div>
+        <div class="center">
+            <wl-button id="go">Connect</wl-button>
+            <wl-button id="ing"><wl-progress-spinner></wl-progress-spinner></wl-button>
+        </div>
+		<div style="height:60px;"></div>
+		<div style="display:flex;flex-direction:row;background-color:white;justify-content:space-between;margin-top:auto;padding:60px 30px;">
+			<div style="display:flex;flex-direction:row;justify-content:space-around;align-items:flex-start;flex-wrap: wrap;">
+				<wl-button flat inverted style="color:black;text-transform: none;"><a target="_blank" href="https://github.com/txthinking/brook">Brook Github</a></wl-button>
+				<wl-button flat inverted style="color:black;text-transform: none;"><a target="_blank" href="https://txthinking.github.io/brook/">Document</a></wl-button>
+				<wl-button flat inverted style="color:black;text-transform: none;"><a target="_blank" href="https://talks.txthinking.com">Blog</a></wl-button>
+				<wl-button flat inverted style="color:black;text-transform: none;"><a target="_blank" href="https://www.youtube.com/cgannel/UC5j8-I5Y4lWo4KTa4_0Kx5A">Youtube</a></wl-button>
+				<wl-button flat inverted style="color:black;text-transform: none;"><a target="_blank" href="https://github.com/txthinking/brook/discussions">Community</a></wl-button>
+				<wl-button flat inverted style="color:black;text-transform: none;"><a target="_blank" href="https://github.com/brook-community">Brook Community Github</a></wl-button>
+				<wl-button flat inverted style="color:black;text-transform: none;"><a target="_blank" href="https://t.me/brookgroup">Telegram Group</a></wl-button>
+				<wl-button flat inverted style="color:black;text-transform: none;"><a target="_blank" href="https://t.me/brookchannel">Telegram Channel</a></wl-button>
+			</div>
+		</div>
+<script>
+document.querySelector('#ing').style.display='none';
+
+document.querySelector('#server').value = localStorage.getItem('server') || '';
+document.querySelector('#password').value = localStorage.getItem('password') || '';
+document.querySelector('#dnsswitch').checked = localStorage.getItem('dnsswitch') == 'off' ? false : true;
+document.querySelector('#dnsListen').value = localStorage.getItem('dnsListen') || '5353';
+document.querySelector('#dnsForDefault').value = localStorage.getItem('dnsForDefault') || '8.8.8.8:53';
+document.querySelector('#dnsForBypass').value = localStorage.getItem('dnsForBypass') || '223.5.5.5:53';
+document.querySelector('#bypassswitch').checked = localStorage.getItem('bypassswitch') == 'on' ? true : false;
+document.querySelector('#bypassDomainList').value = localStorage.getItem('bypassDomainList') || 'https://txthinking.github.io/bypass/chinadomain.txt';
+document.querySelector('#bypassCIDR4List').value = localStorage.getItem('bypassCIDR4List') || 'https://txthinking.github.io/bypass/chinacidr4.txt';
+document.querySelector('#bypassCIDR6List').value = localStorage.getItem('bypassCIDR6List') || 'https://txthinking.github.io/bypass/chinacidr6.txt';
+document.querySelector('#enableIPv6').checked = localStorage.getItem('enableIPv6') == 'on' ? true : false;
+
+var init = async () => {
+	document.querySelector('#go').style.display = 'none';
+	document.querySelector('#ing').style.display = 'block';
+	try{
+		var r = await fetch('/status');
+		if(r.status != 200){
+			throw new Error(await r.text());
+		}
+		document.querySelector('#go').style.display = 'block';
+		document.querySelector('#ing').style.display = 'none';
+		document.querySelector('#go').innerText = await r.text();
+	}catch(e){
+		alert(e.message);
+		document.querySelector('#go').style.display = 'block';
+		document.querySelector('#ing').style.display = 'none';
+	}
+};
+init();
+
+document.querySelector('#go').addEventListener("click", async (e) => {
+    document.querySelector('#go').style.display = 'none';
+    document.querySelector('#ing').style.display = 'block';
+
+    var server = document.querySelector('#server').value.trim();
+    var password = document.querySelector('#password').value.trim();
+
+    var dnsswitch = document.querySelector('#dnsswitch').checked;
+    var dnsListen = parseInt(document.querySelector('#dnsListen').value.trim());
+    var dnsForDefault = document.querySelector('#dnsForDefault').value.trim();
+    var dnsForBypass = document.querySelector('#dnsForBypass').value.trim();
+
+    var bypassswitch = document.querySelector('#bypassswitch').checked;
+    var bypassDomainList = document.querySelector('#bypassDomainList').value.trim();
+    var bypassCIDR4List = document.querySelector('#bypassCIDR4List').value.trim();
+    var bypassCIDR6List = document.querySelector('#bypassCIDR6List').value.trim();
+
+    var enableIPv6 = document.querySelector('#enableIPv6').checked;
+
+    localStorage.setItem('server', server);
+    localStorage.setItem('password', password);
+    localStorage.setItem('dnsswitch', dnsswitch ? 'on' : 'off');
+    localStorage.setItem('dnsListen', dnsListen);
+    localStorage.setItem('dnsForDefault', dnsForDefault);
+    localStorage.setItem('dnsForBypass', dnsForBypass);
+    localStorage.setItem('bypassswitch', bypassswitch ? 'on' : 'off');
+    localStorage.setItem('bypassDomainList', bypassDomainList);
+    localStorage.setItem('bypassCIDR4List', bypassCIDR4List);
+    localStorage.setItem('bypassCIDR6List', bypassCIDR6List);
+    localStorage.setItem('enableIPv6', enableIPv6 ? 'on' : 'off');
+
+    if(!/.+:\d+/.test(server)){
+        alert("Invalid server");
+        document.querySelector('#go').style.display = 'block';
+        document.querySelector('#ing').style.display = 'none';
+        return;
+    }
+    if(dnsswitch && isNaN(dnsListen)){
+        alert("Invalid DNS port");
+        document.querySelector('#go').style.display = 'block';
+        document.querySelector('#ing').style.display = 'none';
+        return;
+    }
+    var s = '--server '+server+' --password '+password;
+    s += dnsswitch ? ' --dnsListen :'+dnsListen+' --dnsForDefault '+dnsForDefault+' --dnsForBypass '+dnsForBypass : '';
+    s += bypassswitch ? ' --bypassDomainList '+bypassDomainList+' --bypassCIDR4List '+bypassCIDR4List+' --bypassCIDR6List '+bypassCIDR6List : '';
+    s += enableIPv6 ? ' --enableIPv6' : '';
+	try{
+		var r;
+		if(document.querySelector('#go').innerText == 'Connect'){
+			r = await fetch('/connect?args='+encodeURIComponent(s));
+		}else{
+			r = await fetch('/disconnect');
+		}
+		if(r.status != 200){
+			throw new Error(await r.text());
+		}
+		document.querySelector('#go').innerText = await r.text();
+        document.querySelector('#go').style.display = 'block';
+        document.querySelector('#ing').style.display = 'none';
+	}catch(e){
+        alert(e.message);
+        document.querySelector('#go').style.display = 'block';
+        document.querySelector('#ing').style.display = 'none';
+        return;
+	}
+});
+</script>
+    </body>
+</html>

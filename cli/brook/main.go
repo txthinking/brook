@@ -15,14 +15,18 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"io/fs"
 	"log"
 	"net"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"net/http"
 	_ "net/http/pprof"
@@ -394,9 +398,9 @@ func main() {
 					Name:  "doNotRunScripts",
 					Usage: "This will not change iptables and others",
 				},
-				&cli.BoolFlag{
-					Name:  "clean",
-					Usage: "Clean things the brook scripts did before if need. Example: $ brook tproxy --clean",
+				&cli.StringFlag{
+					Name:  "webListen",
+					Usage: "Ignore all other parameters, run web UI, like: ':6666'",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -410,15 +414,79 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.Bool("clean") {
-					s, err := brook.NewTproxy(":0", ":0", "", false, "", "", 0, 60)
+				if c.String("webListen") != "" {
+					if err := os.WriteFile("/root/.brook.pid", []byte(fmt.Sprintf("%d", os.Getpid())), 0666); err != nil {
+						return err
+					}
+					web, err := fs.Sub(static, "static")
 					if err != nil {
 						return err
 					}
-					if err := s.ClearAutoScripts(); err != nil {
-						return err
+					var cmd *exec.Cmd
+					// TODO lock
+					b, _ := os.ReadFile("/root/.brook.args")
+					if len(b) != 0 {
+						s, err := os.Executable()
+						if err != nil {
+							return err
+						}
+						cmd = exec.Command("/bin/sh", "-c", s+" tproxy "+string(b))
+						go func() {
+							time.Sleep(30 * time.Second)
+							out, _ := cmd.CombinedOutput()
+							os.WriteFile("/root/.brook.tproxy.err", out, 0666)
+							cmd = nil
+						}()
 					}
-					return nil
+					m := http.NewServeMux()
+					m.Handle("/", http.FileServer(http.FS(web)))
+					m.HandleFunc("/connect", func(w http.ResponseWriter, r *http.Request) {
+						s, err := os.Executable()
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						os.WriteFile("/root/.brook.args", []byte(r.FormValue("args")), 0666)
+						cmd = exec.Command("/bin/sh", "-c", s+" tproxy "+r.FormValue("args"))
+						go func() {
+							out, _ := cmd.CombinedOutput()
+							os.WriteFile("/root/.brook.tproxy.err", out, 0666)
+							cmd = nil
+						}()
+						w.Write([]byte("Diconnect"))
+					})
+					m.HandleFunc("/disconnect", func(w http.ResponseWriter, r *http.Request) {
+						if cmd == nil {
+							w.Write([]byte("Connect"))
+							return
+						}
+						if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						w.Write([]byte("Connect"))
+					})
+					m.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+						if cmd == nil {
+							w.Write([]byte("Connect"))
+							return
+						}
+						w.Write([]byte("Diconnect"))
+					})
+					s := &http.Server{
+						Addr:    c.String("webListen"),
+						Handler: m,
+					}
+					go func() {
+						sigs := make(chan os.Signal, 1)
+						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+						<-sigs
+						if cmd != nil {
+							cmd.Process.Signal(syscall.SIGTERM)
+						}
+						s.Shutdown(context.Background())
+					}()
+					return s.ListenAndServe()
 				}
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "tproxy")
@@ -444,6 +512,7 @@ func main() {
 					}()
 				}
 				if !c.Bool("doNotRunScripts") {
+					s.ClearAutoScripts()
 					if err := s.RunAutoScripts(); err != nil {
 						return err
 					}
@@ -1080,7 +1149,7 @@ func main() {
 		},
 	}
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 }
 

@@ -16,6 +16,4 @@ $ brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127
 
 ## 使用刚才创建的socks5代理
 
-Once brook is listening as a SOCKS5 proxy on `127.0.0.1` port `1080`, you need to configure your browser to use the SOCKS5 proxy.
-
-* In Chrome, install and configure extension SwitchyOmega by FelisCatus
+* 安裝並配置Chrome擴展[Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
