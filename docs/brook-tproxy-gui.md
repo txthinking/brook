@@ -1,4 +1,4 @@
-## $ brook tproxy
+## \$ brook tproxy
 
 $ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, it must work with $ brook server.
 
@@ -10,7 +10,6 @@ $ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mo
 2. Upload and install: OpenWrt Web -> System -> Software -> Upload Package...
 3. Refresh page, the Brook menu will appear at the top
 4. OpenWrt Web -> Brook -> type and Connect
-
-* And OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353 or other port brook created
-* And OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-* By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
+5. And OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353 or other port brook created
+6. And OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
+7. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles

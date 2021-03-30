@@ -9,7 +9,7 @@ $ brook server --listen :9999 --password hello
 Assume your server public IP is `1.2.3.4`, then your brook server is: `1.2.3.4:9999`
 
 > You can stop it with CTRL+C<br/>
-> More parameters: $ brook server -h
+> More parameters: \$ brook server -h
 
 ---
 
@@ -45,7 +45,7 @@ $ joker list
 
 Stop a running command via joker
 
-> Your can get ID from output by $ joker list
+> Your can get ID from output by \$ joker list
 
 ```
 $ joker stop <ID>
@@ -53,7 +53,7 @@ $ joker stop <ID>
 
 View log of a command run via joker
 
-> Your can get ID from output by $ joker list
+> Your can get ID from output by \$ joker list
 
 ```
 $ joker log <ID>
@@ -61,16 +61,16 @@ $ joker log <ID>
 
 ---
 
-## Auto start at boot via [`boa`](https://github.com/brook-community/boa)
+## Auto start at boot via [`jinbe`](https://github.com/txthinking/jinbe)
 
-> We recommend running the command directly to make sure there are no errors before running it via boa
+> We recommend running the command directly to make sure there are no errors before running it via jinbe
 
 ```
-$ boa brook server --listen :9999 --password hello
+$ jinbe brook server --listen :9999 --password hello
 ```
 
 Or with joker
 
 ```
-$ boa joker brook server --listen :9999 --password hello
+$ jinbe joker brook server --listen :9999 --password hello
 ```

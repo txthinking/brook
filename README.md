@@ -15,11 +15,17 @@
 
 ---
 
-**v20210214**
+**v20210401**
 
-- Only updated the client, optimized link, QR, sharing, import
-- [Document](https://txthinking.github.io/brook/)
-- [Community](https://github.com/txthinking/brook/discussions)
+-   [GUI] Block list(Ad Block)
+-   [Bypass & Block rule](https://github.com/txthinking/bypass)
+-   [GUI] Forward DNS
+-   [GUI] OpenWrt GUI client
+-   [GUI] Fake DNS
+-   [CLI] \$ brook tproxy
+-   [Document](https://txthinking.github.io/brook/)
+-   [Community(ask here)](https://github.com/txthinking/brook/discussions)
+-   go mod
 
 ---
 
@@ -37,9 +43,9 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 Download from [releases](https://github.com/txthinking/brook/releases)
 
 ```
-# For example, on linux amd64, v20210214
+# For example, on linux amd64, v20210401
 
-curl -L https://github.com/txthinking/brook/releases/download/v20210214/brook_linux_amd64 -o /usr/bin/brook
+curl -L https://github.com/txthinking/brook/releases/download/v20210401/brook_linux_amd64 -o /usr/bin/brook
 chmod +x /usr/bin/brook
 ```
 
@@ -49,16 +55,26 @@ Install via [nami](https://github.com/txthinking/nami)
 nami install github.com/txthinking/brook
 ```
 
+Install via brew
+
+```
+brew install brook
+```
+
 ### Install GUI
 
 > The GUI file has only client function
 
-Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/download/v20210214/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210214/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20210214/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/download/v20210401/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210401/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20210401/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 Install via brew
 
 ```
 brew install --cask brook
+```
+
+```
+brew install --cask brooklite
 ```
 
 ## Usage
@@ -73,7 +89,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20210214
+   20210401
 
 AUTHOR:
    Cloud <cloud@txthinking.com>

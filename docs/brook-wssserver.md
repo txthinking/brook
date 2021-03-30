@@ -6,7 +6,7 @@ Make sure your domain name has been successfully resolved, brook will automatica
 $ brook wssserver --domain domain.com --password hello
 ```
 
-> More parameters: $ brook wssserver -h
+> More parameters: \$ brook wssserver -h
 
 Then your brook wsserver is: `wss://domain.com:443`
 
@@ -44,7 +44,7 @@ $ joker list
 
 Stop a running command via joker
 
-> Your can get ID from output by $ joker list
+> Your can get ID from output by \$ joker list
 
 ```
 $ joker stop <ID>
@@ -52,7 +52,7 @@ $ joker stop <ID>
 
 View log of a command run via joker
 
-> Your can get ID from output by $ joker list
+> Your can get ID from output by \$ joker list
 
 ```
 $ joker log <ID>
@@ -60,16 +60,16 @@ $ joker log <ID>
 
 ---
 
-## Auto start at boot via [`boa`](https://github.com/brook-community/boa)
+## Auto start at boot via [`jinbe`](https://github.com/txthinking/jinbe)
 
-> We recommend running the command directly to make sure there are no errors before running it via boa
+> We recommend running the command directly to make sure there are no errors before running it via jinbe
 
 ```
-$ boa brook wssserver --domain domain.com --password hello
+$ jinbe brook wssserver --domain domain.com --password hello
 ```
 
 Or with joker
 
 ```
-$ boa joker brook wssserver --domain domain.com --password hello
+$ jinbe joker brook wssserver --domain domain.com --password hello
 ```

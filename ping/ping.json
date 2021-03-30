@@ -1,5 +1,5 @@
 {
-    "version": "20210214",
-    "text": "Tips: if you got IPC failed on iOS, maybe the bypass rule is too long, try no bypass. When connecting, please wait for the system vpn icon to appear before leaving. 提示: 如果遇到IPC failed在iOS上, 可能是因为bypass规则太长, 试试全局. 另外连接时请等待系统vpn图标出现后再离开.",
-    "link": ""
+    "version": "20210401",
+    "text": "If you want to customize the bypass rules ->",
+    "link": "https://github.com/txthinking/bypass"
 }

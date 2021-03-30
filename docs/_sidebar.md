@@ -1,77 +1,78 @@
-* Install
+-   Install
 
-    * [CLI and GUI](README.md)
-    * [[CLI] Install CLI](install-cli.md)
-    * [[GUI] Install GUI Client](install-gui-client.md)
+    -   [CLI and GUI](README.md)
+    -   [[CLI] Install CLI](install-cli.md)
+    -   [[GUI] Install GUI Client](install-gui-client.md)
 
-* Server and Client
+-   Server and Client
 
-    * [[CLI] $ brook server](brook-server.md)
-    * [[CLI] $ brook client](brook-client.md)
-    * [[GUI] Client](brook-client-gui.md)
+    -   [[CLI] \$ brook server](brook-server.md)
+    -   [[CLI] \$ brook client](brook-client.md)
+    -   [[GUI] Client](brook-client-gui.md)
 
-* WSServer and WSClient
+-   WSServer and WSClient
 
-    * [[CLI] $ brook wsserver](brook-wsserver.md)
-    * [[CLI] $ brook wsclient](brook-wsclient.md)
-    * [[GUI] Client](brook-wsclient-gui.md)
+    -   [[CLI] \$ brook wsserver](brook-wsserver.md)
+    -   [[CLI] \$ brook wsclient](brook-wsclient.md)
+    -   [[GUI] Client](brook-wsclient-gui.md)
 
-* WSSServer and WSSClient
+-   WSSServer and WSSClient
 
-    * [[CLI] $ brook wssserver](brook-wssserver.md)
-    * [[CLI] $ brook wssclient](brook-wssclient.md)
-    * [[GUI] Client](brook-wssclient-gui.md)
+    -   [[CLI] \$ brook wssserver](brook-wssserver.md)
+    -   [[CLI] \$ brook wssclient](brook-wssclient.md)
+    -   [[GUI] Client](brook-wssclient-gui.md)
 
-* Server and Map
+-   Server and Map
 
-    * [[CLI] $ brook map](brook-map.md)
+    -   [[CLI] \$ brook map](brook-map.md)
 
-* Server and DNS
+-   Server and DNS
 
-    * [[CLI] $ brook dns](brook-dns.md)
+    -   [[CLI] \$ brook dns](brook-dns.md)
 
-* Server and Transparent Proxy
+-   Server and Transparent Proxy
 
-    * [[CLI] $ brook tproxy](brook-tproxy.md)
-    * [[GUI] OpenWrt](brook-tproxy-gui.md)
+    -   [[CLI] \$ brook tproxy](brook-tproxy.md)
+    -   [[GUI] OpenWrt](brook-tproxy-gui.md)
 
-* Relay
+-   Relay
 
-    * [[CLI] $ brook relay](brook-relay.md)
+    -   [[CLI] \$ brook relay](brook-relay.md)
 
-* Socks5
+-   Socks5
 
-    * [[CLI] $ brook socks5](brook-socks5.md)
-    * [[GUI] Client](socks5-client-gui.md)
+    -   [[CLI] \$ brook socks5](brook-socks5.md)
+    -   [[GUI] Client](socks5-client-gui.md)
 
-* Socks5 to HTTP
+-   Socks5 to HTTP
 
-    * [[CLI] $ brook socks5tohttp](brook-socks5tohttp.md)
+    -   [[CLI] \$ brook socks5tohttp](brook-socks5tohttp.md)
 
-* Socks5 and Hijack HTTPS magic DNS
+-   Socks5 and Hijack HTTPS magic DNS
 
-    * [[CLI] $ brook hijackhttps](brook-hijackhttps.md)
+    -   [[CLI] \$ brook hijackhttps](brook-hijackhttps.md)
 
-* Brook Link & QR
+-   Brook Link & QR
 
-    * [[CLI] $ brook link](brook-link.md)
+    -   [[CLI] \$ brook link](brook-link.md)
 
-* PAC
+-   PAC
 
-    * [[CLI] $ brook pac](brook-pac.md)
+    -   [[CLI] \$ brook pac](brook-pac.md)
 
-* IPv6
+-   IPv6
 
-    * [IPv6](ipv6.md)
+    -   [IPv6](ipv6.md)
 
-* Resources
+-   Resources
 
-    * [Install script](installscript.md)
-    * [Blog and Video](blogvideo.md)
-    * [Community](community.md)
-    * [Telegram](telegram.md)
+    -   [Bypass Rule](bypass.md)
+    -   [Install script](installscript.md)
+    -   [Blog and Video](blogvideo.md)
+    -   [Community](community.md)
+    -   [Telegram](telegram.md)
 
-* Spec
+-   Spec
 
-    * [brook server](brook-server-spec.md)
-    * [brook wsserver](brook-wsserver-spec.md)
+    -   [brook server](brook-server-spec.md)
+    -   [brook wsserver](brook-wsserver-spec.md)
