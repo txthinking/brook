@@ -7,10 +7,6 @@ Assume your brook wsserver is `ws://1.2.3.4:9999` and password is `hello`
 3. Type `hello` on password field
 4. Tap `Add` button
 
-## TODO
-
-> TODO: Please help improve the documentation here
-
 ## Tips
 
 -   On desktop, please prefer to use Chrome browser. You may need to restart your browser or application

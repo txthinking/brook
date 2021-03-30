@@ -23,8 +23,9 @@
 -   [GUI] OpenWrt 图形客户端
 -   [GUI] Fake DNS
 -   [CLI] \$ brook tproxy
+-   [一键脚本](https://brook-community.github.io/script/)
 -   [官方文档](https://txthinking.github.io/brook/#/zh-cn/)
--   [官方论坛(问问题的地方](https://github.com/txthinking/brook/discussions)
+-   [官方论坛(问问题的地方)](https://github.com/txthinking/brook/discussions)
 -   go mod
 
 ---
@@ -48,7 +49,7 @@ curl -L https://github.com/txthinking/brook/releases/download/v20210401/brook_li
 chmod +x /usr/bin/brook
 ```
 
-通过 [nami](https://github.com/txthinking/nami) 安装
+通过 [nami](https://github.com/txthinking/nami) 安装 🔥
 
 ```
 nami install github.com/txthinking/brook
