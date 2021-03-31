@@ -831,7 +831,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "wsclient")
+					cli.ShowCommandHelp(c, "wssclient")
 					return nil
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
