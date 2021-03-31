@@ -69,7 +69,7 @@ func main() {
 	app.Commands = []*cli.Command{
 		&cli.Command{
 			Name:  "connect",
-			Usage: "connect via standard sharing link",
+			Usage: "Connect via standard sharing link (brook server & wsserver & wssserver)",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "link",
