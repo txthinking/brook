@@ -30,6 +30,7 @@ import (
 
 	"net/http"
 	_ "net/http/pprof"
+	"net/url"
 
 	"github.com/txthinking/brook"
 	"github.com/urfave/cli/v2"
@@ -66,6 +67,106 @@ func main() {
 		},
 	}
 	app.Commands = []*cli.Command{
+		&cli.Command{
+			Name:  "connect",
+			Usage: "Connect via standard sharing link (brook server & wsserver & wssserver)",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "link",
+					Aliases: []string{"l"},
+					Usage:   "specify the sharing link",
+				},
+				&cli.StringFlag{
+					Name:    "socks5",
+					Aliases: []string{"s"},
+					Value:   "127.0.0.1:1080",
+					Usage:   "where to listen for SOCKS5 connections",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpTimeout",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("link") == "" {
+					cli.ShowCommandHelp(c, "connect")
+					return nil
+				}
+				if debug {
+					enableDebug()
+				}
+				h, p, err := net.SplitHostPort(c.String("socks5"))
+				if err != nil {
+					return err
+				}
+				if h == "" {
+					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
+				}
+				sharinglink := c.String("link")
+
+				tmp := strings.Split(sharinglink, "brook://")
+				if len(tmp) != 2 {
+					return errors.New("invaild sharing link")
+				}
+
+				sharinglink, err = url.QueryUnescape(tmp[1])
+				if err != nil {
+					return errors.New("invaild sharing link")
+				}
+
+				tmp = strings.Split(sharinglink, " ")
+				if len(tmp) != 2 {
+					return errors.New("invaild sharing link")
+				}
+
+				server := tmp[0]
+				password := tmp[1]
+				protocol := strings.Split(server, "://")[0]
+				if protocol == "ws" {
+					s, err := brook.NewWSClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					go func() {
+						sigs := make(chan os.Signal, 1)
+						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+						<-sigs
+						s.Shutdown()
+					}()
+					return s.ListenAndServe()
+				} else if protocol == "wss" {
+					s, err := brook.NewWSClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					go func() {
+						sigs := make(chan os.Signal, 1)
+						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+						<-sigs
+						s.Shutdown()
+					}()
+					return s.ListenAndServe()
+				} else {
+					s, err := brook.NewClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					go func() {
+						sigs := make(chan os.Signal, 1)
+						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+						<-sigs
+						s.Shutdown()
+					}()
+					return s.ListenAndServe()
+				}
+			},
+		},
 		&cli.Command{
 			Name:  "server",
 			Usage: "Run as brook server, both TCP and UDP",
@@ -730,7 +831,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "wsclient")
+					cli.ShowCommandHelp(c, "wssclient")
 					return nil
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
