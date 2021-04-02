@@ -82,6 +82,11 @@ func main() {
 					Value:   "127.0.0.1:1080",
 					Usage:   "where to listen for SOCKS5 connections",
 				},
+				&cli.StringFlag{
+					Name:  "http",
+					Value: "127.0.0.1:8080",
+					Usage: "where to listen for HTTP connections",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
@@ -133,27 +138,25 @@ func main() {
 					if err != nil {
 						return err
 					}
+					http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
+					if err != nil {
+						return err
+					}
 					go func() {
 						sigs := make(chan os.Signal, 1)
 						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 						<-sigs
 						s.Shutdown()
+						http.Shutdown()
 					}()
+					go http.ListenAndServe()
 					return s.ListenAndServe()
 				} else if protocol == "wss" {
 					s, err := brook.NewWSClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
 						return err
 					}
-					go func() {
-						sigs := make(chan os.Signal, 1)
-						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-						<-sigs
-						s.Shutdown()
-					}()
-					return s.ListenAndServe()
-				} else {
-					s, err := brook.NewClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
 					if err != nil {
 						return err
 					}
@@ -162,7 +165,27 @@ func main() {
 						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 						<-sigs
 						s.Shutdown()
+						http.Shutdown()
 					}()
+					go http.ListenAndServe()
+					return s.ListenAndServe()
+				} else {
+					s, err := brook.NewClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
+					if err != nil {
+						return err
+					}
+					go func() {
+						sigs := make(chan os.Signal, 1)
+						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+						<-sigs
+						s.Shutdown()
+						http.Shutdown()
+					}()
+					go http.ListenAndServe()
 					return s.ListenAndServe()
 				}
 			},
@@ -245,7 +268,7 @@ func main() {
 				for _, v := range c.StringSlice("listenpassword") {
 					ss := strings.Split(v, " ")
 					if len(ss) != 2 {
-						return errors.New("Invalid listenpassword")
+						return errors.New("invalid listenpassword")
 					}
 					s, err := brook.NewServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
@@ -283,7 +306,13 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
-					Usage: "Socks5 server which will be created, like: 127.0.0.1:1080",
+					Value: "127.0.0.1:1080",
+					Usage: "where to listen for SOCKS5 connections",
+				},
+				&cli.StringFlag{
+					Name:  "http",
+					Value: "127.0.0.1:8080",
+					Usage: "where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -315,12 +344,18 @@ func main() {
 				if err != nil {
 					return err
 				}
+				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
+				if err != nil {
+					return err
+				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs
 					s.Shutdown()
+					http.Shutdown()
 				}()
+				go http.ListenAndServe()
 				return s.ListenAndServe()
 			},
 		},
@@ -759,7 +794,13 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
-					Usage: "Socks5 server which will be created, like: 127.0.0.1:1080",
+					Value: "127.0.0.1:1080",
+					Usage: "where to listen for SOCKS5 connections",
+				},
+				&cli.StringFlag{
+					Name:  "http",
+					Value: "127.0.0.1:8080",
+					Usage: "where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -791,12 +832,18 @@ func main() {
 				if err != nil {
 					return err
 				}
+				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
+				if err != nil {
+					return err
+				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs
 					s.Shutdown()
+					http.Shutdown()
 				}()
+				go http.ListenAndServe()
 				return s.ListenAndServe()
 			},
 		},
@@ -816,7 +863,13 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
-					Usage: "Socks5 server which will be created, like: 127.0.0.1:1080",
+					Value: "127.0.0.1:1080",
+					Usage: "where to listen for SOCKS5 connections",
+				},
+				&cli.StringFlag{
+					Name:  "http",
+					Value: "127.0.0.1:8080",
+					Usage: "where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -848,12 +901,18 @@ func main() {
 				if err != nil {
 					return err
 				}
+				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
+				if err != nil {
+					return err
+				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs
 					s.Shutdown()
+					http.Shutdown()
 				}()
+				go http.ListenAndServe()
 				return s.ListenAndServe()
 			},
 		},
@@ -992,7 +1051,7 @@ func main() {
 				for _, v := range c.StringSlice("fromto") {
 					ss := strings.Split(v, " ")
 					if len(ss) != 2 {
-						return errors.New("Invalid fromto")
+						return errors.New("invalid fromto")
 					}
 					s, err := brook.NewRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
