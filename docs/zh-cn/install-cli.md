@@ -39,3 +39,5 @@ $ nami install github.com/txthinking/joker
 ```
 $ nami install github.com/txthinking/jinbe
 ```
+
+> 社区有一个rust版本的[brook-community/jinbe](https://github.com/brook-community/jinbe), 但是参数使用方式可能有些不同

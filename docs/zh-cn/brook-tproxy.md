@@ -1,5 +1,7 @@
 ## $ brook tproxy
 
+> 依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
+
 $ brook tproxy 可以创建透明代理在你的Linux路由器, Linux需要有`TPROXY内核模块`. 它与$ brook server一起工作.
 
 假设你的brook server是 `1.2.3.4:9999`, 密码是 `hello`

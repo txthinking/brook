@@ -30,7 +30,6 @@ import (
 
 	"net/http"
 	_ "net/http/pprof"
-	"net/url"
 
 	"github.com/txthinking/brook"
 	"github.com/urfave/cli/v2"
@@ -77,14 +76,13 @@ func main() {
 					Usage:   "specify the sharing link",
 				},
 				&cli.StringFlag{
-					Name:    "socks5",
-					Aliases: []string{"s"},
-					Value:   "127.0.0.1:1080",
-					Usage:   "where to listen for SOCKS5 connections",
+					Name:  "socks5",
+					Value: "127.0.0.1:1080",
+					Usage: "where to listen for SOCKS5 connections",
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Value: "127.0.0.1:8080",
+					Value: "127.0.0.1:8010",
 					Usage: "where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
@@ -113,63 +111,14 @@ func main() {
 				if h == "" {
 					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				sharinglink := c.String("link")
-
-				tmp := strings.Split(sharinglink, "brook://")
-				if len(tmp) != 2 {
-					return errors.New("invaild sharing link")
-				}
-
-				sharinglink, err = url.QueryUnescape(tmp[1])
+				kind, server, _, password, err := brook.ParseLink(c.String("link"))
 				if err != nil {
-					return errors.New("invaild sharing link")
+					return err
 				}
-
-				tmp = strings.Split(sharinglink, " ")
-				if len(tmp) != 2 {
-					return errors.New("invaild sharing link")
+				if kind == "socks5" {
+					return errors.New("connect doesn't support socks5 link, you may want $ brook socks5tohttp")
 				}
-
-				server := tmp[0]
-				password := tmp[1]
-				protocol := strings.Split(server, "://")[0]
-				if protocol == "ws" {
-					s, err := brook.NewWSClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
-					if err != nil {
-						return err
-					}
-					go func() {
-						sigs := make(chan os.Signal, 1)
-						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-						<-sigs
-						s.Shutdown()
-						http.Shutdown()
-					}()
-					go http.ListenAndServe()
-					return s.ListenAndServe()
-				} else if protocol == "wss" {
-					s, err := brook.NewWSClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
-					if err != nil {
-						return err
-					}
-					go func() {
-						sigs := make(chan os.Signal, 1)
-						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-						<-sigs
-						s.Shutdown()
-						http.Shutdown()
-					}()
-					go http.ListenAndServe()
-					return s.ListenAndServe()
-				} else {
+				if kind == "server" {
 					s, err := brook.NewClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
 						return err
@@ -185,9 +134,34 @@ func main() {
 						s.Shutdown()
 						http.Shutdown()
 					}()
-					go http.ListenAndServe()
+					go func() {
+						if err := http.ListenAndServe(); err != nil {
+							log.Println(err)
+						}
+					}()
 					return s.ListenAndServe()
 				}
+				s, err := brook.NewWSClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
+				}
+				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+					http.Shutdown()
+				}()
+				go func() {
+					if err := http.ListenAndServe(); err != nil {
+						log.Println(err)
+					}
+				}()
+				return s.ListenAndServe()
 			},
 		},
 		&cli.Command{
@@ -197,7 +171,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address, like: ':1080'",
+					Usage:   "Listen address, like: ':9999'",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -243,7 +217,7 @@ func main() {
 				&cli.StringSliceFlag{
 					Name:    "listenpassword",
 					Aliases: []string{"l"},
-					Usage:   "Listen address and password, like '0.0.0.0:1080 password'",
+					Usage:   "Listen address and password, like '0.0.0.0:9999 password'",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -297,7 +271,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Brook server address, like: 1.2.3.4:1080",
+					Usage:   "Brook server address, like: 1.2.3.4:9999",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -311,7 +285,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Value: "127.0.0.1:8080",
+					Value: "127.0.0.1:8010",
 					Usage: "where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
@@ -355,7 +329,11 @@ func main() {
 					s.Shutdown()
 					http.Shutdown()
 				}()
-				go http.ListenAndServe()
+				go func() {
+					if err := http.ListenAndServe(); err != nil {
+						log.Println(err)
+					}
+				}()
 				return s.ListenAndServe()
 			},
 		},
@@ -422,7 +400,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Brook server address, like: 1.2.3.4:1080",
+					Usage:   "Brook server address, like: 1.2.3.4:9999",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -799,7 +777,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Value: "127.0.0.1:8080",
+					Value: "127.0.0.1:8010",
 					Usage: "where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
@@ -843,7 +821,11 @@ func main() {
 					s.Shutdown()
 					http.Shutdown()
 				}()
-				go http.ListenAndServe()
+				go func() {
+					if err := http.ListenAndServe(); err != nil {
+						log.Println(err)
+					}
+				}()
 				return s.ListenAndServe()
 			},
 		},
@@ -868,7 +850,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Value: "127.0.0.1:8080",
+					Value: "127.0.0.1:8010",
 					Usage: "where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
@@ -912,7 +894,11 @@ func main() {
 					s.Shutdown()
 					http.Shutdown()
 				}()
-				go http.ListenAndServe()
+				go func() {
+					if err := http.ListenAndServe(); err != nil {
+						log.Println(err)
+					}
+				}()
 				return s.ListenAndServe()
 			},
 		},
@@ -923,7 +909,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support $ brook server, $ brook wsserver, $ brook wssserver and socks5 server, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443/ws, socks5://1.2.3.4:1080",
+					Usage:   "Support $ brook server, $ brook wsserver, $ brook wssserver and socks5 server, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -952,7 +938,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support $ brook server,  $ brook wsserver, $ brook wssserver and socks5 server, like: 1.2.3.4:1080, ws://1.2.3.4:1080, wss://google.com:443, socks5://1.2.3.4:1080",
+					Usage:   "Support $ brook server,  $ brook wsserver, $ brook wssserver and socks5 server, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443, socks5://1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -981,12 +967,12 @@ func main() {
 				&cli.StringFlag{
 					Name:    "from",
 					Aliases: []string{"f"},
-					Usage:   "Listen address: like ':1080'",
+					Usage:   "Listen address: like ':9999'",
 				},
 				&cli.StringFlag{
 					Name:    "to",
 					Aliases: []string{"t"},
-					Usage:   "Address which relay to, like: 1.2.3.4:1080",
+					Usage:   "Address which relay to, like: 1.2.3.4:9999",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1026,7 +1012,7 @@ func main() {
 			Flags: []cli.Flag{
 				&cli.StringSliceFlag{
 					Name:  "fromto",
-					Usage: "Listen address and relay to address, like '0.0.0.0:1080 1.2.3.4:1080'",
+					Usage: "Listen address and relay to address, like '0.0.0.0:9999 1.2.3.4:9999'",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1156,7 +1142,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "HTTP proxy which will be create: like: 127.0.0.1:8080",
+					Usage:   "HTTP proxy which will be create: like: 127.0.0.1:8010",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",

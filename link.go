@@ -15,7 +15,9 @@
 package brook
 
 import (
+	"errors"
 	"os"
+	"strings"
 
 	"github.com/mdp/qrterminal"
 	"github.com/txthinking/encrypt"
@@ -45,4 +47,44 @@ func QR(server, password, username string) {
 	}
 	s = "brook://" + encrypt.URIEscape(s)
 	qrterminal.GenerateHalfBlock(s, qrterminal.L, os.Stdout)
+}
+
+// kind: server/wsserver/wssserver/socks5
+func ParseLink(link string) (kind, server, username, password string, err error) {
+	if !strings.HasPrefix(link, "brook://") {
+		err = errors.New("Invalid brook link")
+		return
+	}
+	s := link[8:]
+	s, err = encrypt.URIUnescape(s)
+	if err != nil {
+		return
+	}
+	l := strings.Split(s, " ")
+	if len(l) == 1 {
+		kind = "socks5"
+		server = l[0]
+		return
+	}
+	if len(l) == 3 {
+		kind = "socks5"
+		server = l[0]
+		username = l[1]
+		password = l[2]
+		return
+	}
+	if len(l) == 2 {
+		kind = "server"
+		if strings.HasPrefix(l[0], "ws://") {
+			kind = "wsserver"
+		}
+		if strings.HasPrefix(l[0], "wss://") {
+			kind = "wssserver"
+		}
+		server = l[0]
+		password = l[1]
+		return
+	}
+	err = errors.New("Invalid brook link")
+	return
 }

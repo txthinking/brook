@@ -1,5 +1,7 @@
 ## \$ brook tproxy
 
+> Depends: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
+
 $ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, it must work with $ brook server.
 
 > Only support IPv4 server, but if your server support IPv6 you can enable later, please see the introduction below

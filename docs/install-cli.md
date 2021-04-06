@@ -41,3 +41,5 @@ Use nami to install [jinbe](https://github.com/txthinking/jinbe), she can add au
 ```
 $ nami install github.com/txthinking/jinbe
 ```
+
+> There is a rust port of [brook-community/jinbe](https://github.com/brook-community/jinbe), but the parameter usage may be different

@@ -15,8 +15,14 @@
 package brook
 
 import (
+	"log"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
+	log.Println(ParseLink("brook://1.2.3.4%3A5%20hello"))
+	log.Println(ParseLink("brook://ws%3A%2F%2F1.2.3.4%3A5%20hello"))
+	log.Println(ParseLink("brook://wss%3A%2F%2F1.2.3.4%3A5%20hello"))
+	log.Println(ParseLink("brook://socks5%3A%2F1.1.1.1%3A1"))
+	log.Println(ParseLink("brook://socks5%3A%2F%2F1.2.3.5%3A5%20world%20hello"))
 }
