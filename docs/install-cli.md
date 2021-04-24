@@ -13,6 +13,7 @@ $ chmod +x /usr/bin/brook
 > The second command is to use chmod to allow executable permissions.
 
 You can go to the [releases](https://github.com/txthinking/brook/releases) to download and install the latest version of brook for your system
+
 ---
 
 ## Install via &nbsp; [nami](https://github.com/txthinking/nami) 🔥
