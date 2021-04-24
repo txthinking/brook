@@ -1,6 +1,6 @@
 ## Run brook wssserver
 
-Make sure your domain name has been successfully resolved, brook will automatically issue certificate for you, assume your domain is `domain.com`. If there is a firewall, remember to allow TCP on this port 80 and 443.
+Make sure your domain name has been resolved successfully. Brook will automatically issue a certificate for your server, assuming your domain is `domain.com`. If there is a firewall, remember to allow TCP on this port 80 and 443.
 
 ```
 $ brook wssserver --domain domain.com --password hello
@@ -8,11 +8,11 @@ $ brook wssserver --domain domain.com --password hello
 
 > More parameters: \$ brook wssserver -h
 
-Then your brook wsserver is: `wss://domain.com:443`
+Then your brook wssserver should be: `wss://domain.com:443`
 
 ---
 
-## Run in background via `nohup`
+## Run it in the background via `nohup`
 
 > We recommend running the command directly to make sure there are no errors before running it via nohup
 
@@ -50,7 +50,7 @@ Stop a running command via joker
 $ joker stop <ID>
 ```
 
-View log of a command run via joker
+View logs of a command run via joker
 
 > Your can get ID from output by \$ joker list
 

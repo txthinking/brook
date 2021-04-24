@@ -2,23 +2,23 @@ GUI(Graphical user interface), Brook GUI has only client function.
 
 ## macOS
 
-[Brook.dmg](https://github.com/txthinking/brook/releases/download/v20210401/Brook.dmg)
+[Brook.dmg](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 
-[BrookLite.dmg](https://github.com/txthinking/brook/releases/download/v20210401/BrookLite.dmg)
+[BrookLite.dmg](https://github.com/txthinking/brook/releases/latest/download/BrookLite.dmg)
 
 -   **Keep system up to date**
 
 ## Windows
 
-[Brook.exe](https://github.com/txthinking/brook/releases/download/v20210401/Brook.exe)
+[Brook.exe](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 
-[BrookLite.exe](https://github.com/txthinking/brook/releases/download/v20210401/BrookLite.exe)
+[BrookLite.exe](https://github.com/txthinking/brook/releases/latest/download/BrookLite.exe)
 
 -   **Keep system up to date**
 
 ## Android
 
-[Brook.apk](https://github.com/txthinking/brook/releases/download/v20210401/Brook.apk)
+[Brook.apk](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
 
 ## iOS
 

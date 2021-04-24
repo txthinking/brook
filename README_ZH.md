@@ -43,9 +43,9 @@ Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学
 从 [releases](https://github.com/txthinking/brook/releases) 页面下载
 
 ```
-# 举例, linux amd64, v20210401
+# 举例, linux amd64
 
-curl -L https://github.com/txthinking/brook/releases/download/v20210401/brook_linux_amd64 -o /usr/bin/brook
+curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
 chmod +x /usr/bin/brook
 ```
 
@@ -63,7 +63,7 @@ brew install brook
 
 ### 安装 GUI (图形客户端)
 
-从 [releases](https://github.com/txthinking/brook/releases) 页面下载: [macOS](https://github.com/txthinking/brook/releases/download/v20210401/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210401/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20210401/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+从 [releases](https://github.com/txthinking/brook/releases) 页面下载: [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe), [Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 通过 brew 安装
 

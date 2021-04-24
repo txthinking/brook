@@ -1,18 +1,18 @@
 ## Run brook wsserver
 
-Assume with port `9999` and password `hello`. If there is a firewall, remember to allow TCP on this port.
+Assume the port is `9999` and the password is `hello`. If there is a firewall, remember to allow the TCP port.
 
 ```
 $ brook wsserver --listen :9999 --password hello
 ```
 
-Assume your server public IP is `1.2.3.4`, then your brook wsserver is: `ws://1.2.3.4:9999`
+Assuming your server public IP is `1.2.3.4`, your brook wsserver is `ws://1.2.3.4:9999`
 
 > More parameters: \$ brook wsserver -h
 
 ---
 
-## Run in background via `nohup`
+## Run in the background via `nohup`
 
 > We recommend running the command directly to make sure there are no errors before running it via nohup
 
