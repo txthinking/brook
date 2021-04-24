@@ -1,1 +1,1 @@
--   Bypass 規則: https://github.com/txthinking/bypass
+-   Bypass list: https://github.com/txthinking/bypass

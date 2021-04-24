@@ -44,9 +44,9 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 Download from [releases](https://github.com/txthinking/brook/releases)
 
 ```
-# For example, on linux amd64, v20210401
+# For example, on linux amd64
 
-curl -L https://github.com/txthinking/brook/releases/download/v20210401/brook_linux_amd64 -o /usr/bin/brook
+curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
 chmod +x /usr/bin/brook
 ```
 
@@ -66,7 +66,7 @@ brew install brook
 
 > The GUI file has only client function
 
-Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/download/v20210401/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/download/v20210401/Brook.exe), [Android](https://github.com/txthinking/brook/releases/download/v20210401/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe), [Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 Install via brew
 

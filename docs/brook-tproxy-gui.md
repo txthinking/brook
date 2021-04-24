@@ -1,6 +1,6 @@
 ## \$ brook tproxy
 
-> Depends: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
+> Dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
 
 $ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, it must work with $ brook server.
 
@@ -8,7 +8,7 @@ $ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mo
 
 ## Install ipk
 
-1. Download the [ipk](https://github.com/txthinking/brook/releases) file suitable for your router
+1. Download the [ipk](https://github.com/txthinking/brook/releases) file for your router
 2. Upload and install: OpenWrt Web -> System -> Software -> Upload Package...
 3. Refresh page, the Brook menu will appear at the top
 4. OpenWrt Web -> Brook -> type and Connect
