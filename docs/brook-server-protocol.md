@@ -70,10 +70,10 @@ Client Nonce + AES_GCM(Fragment)
 - `Client Nonce`: 12 bytes, randomly generated each time
 - `Fragment`:
     ```
-    Unix Timestamp + DST Address + Datagram
+    Unix Timestamp + DST Address + Data
     ```
     - [`Unix Timestamp`](https://en.wikipedia.org/wiki/Unix_time): Big Endian 32-bit unsigned integer
-    - `Datagram`: Actual data being proxied
+    - `Data`: Actual data being proxied
 
 
 ## Server --UDP--> Client
@@ -87,6 +87,6 @@ Server Nonce + AES_GCM(Fragment)
 - `Server Nonce`: 12 bytes, randomly generated each time
 - `Fragment`:
     ```
-    DST Address + Datagram
+    DST Address + Data
     ```
-    - `Datagram`: Actual data being proxied
+    - `Data`: Actual data being proxied
