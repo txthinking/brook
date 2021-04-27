@@ -5,7 +5,7 @@
 - **`DST Address`**: The address that the application actually wants to request, address contains IP/domain and port
 
     ```
-    ATYP+IP/Domain+PORT
+    ATYP + IP/Domain + PORT
     ```
     - `ATYP`: 1 byte
         - 0x01: IPv4
