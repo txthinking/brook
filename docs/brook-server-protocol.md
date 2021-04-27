@@ -19,15 +19,15 @@
         - Big Endian 16-bit unsigned integer
 
 - **`KEY`**: AES key, 32 bytes
-    - `KEY` = HKDF_SHA256(Password, Nonce, Info)
-    - `Password`: User-defined password
-    - `Nonce`: 12 bytes
-    - `Info`: [0x62, 0x72, 0x6f, 0x6f, 0x6b]
+    - `KEY`: HKDF_SHA256(Password, Nonce, Info)
+        - `Password`: User-defined password
+        - `Nonce`: 12 bytes
+        - `Info`: [0x62, 0x72, 0x6f, 0x6f, 0x6b]
 
 ## Client --TCP--> Server
 
 ```
-Client Nonce + AES_GCM(Fragment Length) + AES_GCM(Fragment)
+Client Nonce + [AES_GCM(Fragment Length) + AES_GCM(Fragment)]...
 ```
 
 > The maximum length of `AES_GCM(Fragment Length) + AES_GCM(Fragment)` is 2048 bytes
@@ -47,7 +47,7 @@ Client Nonce + AES_GCM(Fragment Length) + AES_GCM(Fragment)
 ## Server --TCP--> Client
 
 ```
-Server Nonce + AES_GCM(Fragment Length) + AES_GCM(Fragment)
+Server Nonce + [AES_GCM(Fragment Length) + AES_GCM(Fragment)]...
 ```
 
 > The maximum length of `AES_GCM(Fragment Length) + AES_GCM(Fragment)` is 2048 bytes
@@ -65,7 +65,7 @@ Server Nonce + AES_GCM(Fragment Length) + AES_GCM(Fragment)
 Client Nonce + AES_GCM(Fragment)
 ```
 
-> The maximum length of `Client Nonce + AES_GCM(Fragment Length) + AES_GCM(Fragment)` is 65507 bytes
+> The maximum length of `Client Nonce + AES_GCM(Fragment)` is 65507 bytes
 
 - `Client Nonce`: 12 bytes, randomly generated each time
 - `Fragment`:
@@ -82,7 +82,7 @@ Client Nonce + AES_GCM(Fragment)
 Server Nonce + AES_GCM(Fragment)
 ```
 
-> The maximum length of `Server Nonce + AES_GCM(Fragment Length) + AES_GCM(Fragment)` is 65507 bytes
+> The maximum length of `Server Nonce + AES_GCM(Fragment)` is 65507 bytes
 
 - `Server Nonce`: 12 bytes, randomly generated each time
 - `Fragment`:
