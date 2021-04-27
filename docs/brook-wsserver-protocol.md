@@ -37,9 +37,7 @@
 > The maximum length of `AES_GCM(Fragment Length) + AES_GCM(Fragment)` is 2048 bytes
 
 - `Client Nonce`: 12 bytes, randomly generated
-
-> The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
-
+    - The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
 - `Fragment Length`: Big Endian 16-bit unsigned integer
 - `Fragment`: Actual data being proxied
     - The first Fragment should be:
@@ -57,9 +55,7 @@
 > The maximum length of `AES_GCM(Fragment Length) + AES_GCM(Fragment)` is 2048 bytes
 
 - Server Nonce: 12 bytes, randomly generated
-
-> The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
-
+    - The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
 - `Fragment Length`: Big Endian 16-bit unsigned integer
 - `Fragment`: Actual data being proxied
 
@@ -72,9 +68,7 @@
 > The maximum length of `AES_GCM(Fragment Length) + AES_GCM(Fragment)` is 65507 bytes, but the maximum length if the first one is 2048 bytes
 
 - `Client Nonce`: 12 bytes, randomly generated
-
-> The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
-
+    - The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
 - `Fragment Length`: Big Endian 16-bit unsigned integer
 - `Fragment`: Actual data being proxied
     - The first Fragment should be:
@@ -82,7 +76,6 @@
         Unix Timestamp + DST Address
         ```
         - [`Unix Timestamp`](https://en.wikipedia.org/wiki/Unix_time): If it is not odd, it should be increased by 1. Big Endian 32-bit unsigned integer
-
 
 ## Server --UDP(UDP over TCP)--> Client
 
@@ -93,9 +86,7 @@
 > The maximum length of `AES_GCM(Fragment Length) + AES_GCM(Fragment)` is 65507 bytes
 
 - Server Nonce: 12 bytes, randomly generated
-
-> The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
-
+    - The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
 - `Fragment Length`: Big Endian 16-bit unsigned integer
 - `Fragment`: Actual data being proxied
 
