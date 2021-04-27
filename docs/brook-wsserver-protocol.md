@@ -23,6 +23,10 @@
         - `Password`: User-defined password
         - `Nonce`: 12 bytes
         - `Info`: [0x62, 0x72, 0x6f, 0x6f, 0x6b]
+- **`HKDF`**: Defined in RFC 5869
+- **`SHA256`**: Defined in FIPS 180-4
+- **`AES`**: Defined in U.S. Federal Information Processing Standards Publication 197
+- **`AES-GCM`**: Defined in RFC 5246, 5869
 
 ## Client --TCP--> Server
 
@@ -72,7 +76,7 @@
 > The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
 
 - `Fragment Length`: Big Endian 16-bit unsigned integer
-- `Fragment`: Actual datagram being proxied
+- `Fragment`: Actual data being proxied
     - The first Fragment should be:
         ```
         Unix Timestamp + DST Address
@@ -93,5 +97,5 @@
 > The nonce should be recalculated when it is not used for the first time, the calculation method: add `1` to the first 8 bytes according to the Little Endian 64-bit unsigned integer
 
 - `Fragment Length`: Big Endian 16-bit unsigned integer
-- `Fragment`: Actual datagram being proxied
+- `Fragment`: Actual data being proxied
 
