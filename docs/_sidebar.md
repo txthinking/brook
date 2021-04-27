@@ -72,7 +72,8 @@
     -   [Community](community.md)
     -   [Telegram](telegram.md)
 
--   Spec
+-   Protocol
 
-    -   [brook server](brook-server-spec.md)
-    -   [brook wsserver](brook-wsserver-spec.md)
+    -   [brook server](brook-server-protocol.md)
+    -   [brook wsserver](brook-wsserver-protocol.md)
+    -   [brook wssserver](brook-wssserver-protocol.md)
