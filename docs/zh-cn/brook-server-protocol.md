@@ -14,7 +14,7 @@
     - `IP/Domain`: 4/n/16 bytes
         - If ATYP is 0x01, then this is IPv4, 4 bytes
         - If ATYP is 0x03, then this is domain, n bytes, and the first byte is the domain length
-        - If ATYP is 0x04, then this is IPv4, 16 bytes
+        - If ATYP is 0x04, then this is IPv6, 16 bytes
     - `Port`: 2 bytes
         - Big Endian 16-bit unsigned integer
 
