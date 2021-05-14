@@ -43,3 +43,19 @@ $ nami install github.com/txthinking/jinbe
 ```
 
 > There is a rust port of [brook-community/jinbe](https://github.com/brook-community/jinbe), but the usage may be different
+
+---
+
+## Package manager
+
+Archlinux
+
+```
+$ pacman -S brook
+```
+
+macOS
+
+```
+$ brew install brook
+```

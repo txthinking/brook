@@ -4,17 +4,25 @@ GUI(图形用户界面), Brook 图形客户端.
 
 [Brook.dmg](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 
+or
+
+```
+$ brew install --cask brook
+```
+
 [BrookLite.dmg](https://github.com/txthinking/brook/releases/latest/download/BrookLite.dmg)
 
--   **保持系统版本最新**
+or
+
+```
+$ brew install --cask brooklite
+```
 
 ## Windows
 
 [Brook.exe](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 
 [BrookLite.exe](https://github.com/txthinking/brook/releases/latest/download/BrookLite.exe)
-
--   **保持系统版本最新**
 
 ## Android
 

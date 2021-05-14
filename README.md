@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
 [![Docs](https://img.shields.io/badge/Tutorial-docs-yellow.svg)](https://txthinking.github.io/brook/)
 [![Blog](https://img.shields.io/badge/Tutorial-Slides-blueviolet.svg)](https://talks.txthinking.com)
-[![Youtube](https://img.shields.io/badge/Tutorial-Youtube-red.svg)](https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A)
+[![Youtube](https://img.shields.io/badge/Tutorial-Youtube-red.svg)](https://www.youtube.com/txthinking)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Donate](https://img.shields.io/badge/Support-Donate-ff69b4.svg)](https://www.txthinking.com/opensource-support.html)
 
@@ -32,55 +32,22 @@
 
 ## What is Brook
 
-[Document](https://txthinking.github.io/brook/)
-
 Brook is a cross-platform strong encryption and not detectable proxy.<br/>
 Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
+[Read Document](https://txthinking.github.io/brook/#/?id=cli-and-gui)
+
 ### Install CLI
 
-> The CLI file has both server and client functions
-
-Download from [releases](https://github.com/txthinking/brook/releases)
-
-```
-# For example, on linux amd64
-
-curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
-chmod +x /usr/bin/brook
-```
-
-Install via [nami](https://github.com/txthinking/nami)🔥
-
-```
-nami install github.com/txthinking/brook
-```
-
-Install via brew
-
-```
-brew install brook
-```
+[Read Document](https://txthinking.github.io/brook/#/install-cli)
 
 ### Install GUI
 
-> The GUI file has only client function
-
-Download from [releases](https://github.com/txthinking/brook/releases): [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe), [Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
-
-Install via brew
-
-```
-brew install --cask brook
-```
-
-```
-brew install --cask brooklite
-```
+[Read Document](https://txthinking.github.io/brook/#/install-gui-client)
 
 ## Usage
 
-[Docs](https://txthinking.github.io/brook/)
+[Read Document](https://txthinking.github.io/brook/)
 
 ```
 NAME:
@@ -127,7 +94,7 @@ COPYRIGHT:
    https://github.com/txthinking/brook
 ```
 
-[Docs](https://txthinking.github.io/brook/)
+[Read Document](https://txthinking.github.io/brook/)
 
 ## Contributing
 

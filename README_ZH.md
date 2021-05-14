@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
 [![文档](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E6%96%87%E6%A1%A3-yellow.svg)](https://txthinking.github.io/brook/#/zh-cn/)
 [![博客](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E5%B9%BB%E7%81%AF%E7%89%87-blueviolet.svg)](https://talks.txthinking.com)
-[![视频](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E8%A7%86%E9%A2%91-red.svg)](https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A)
+[![视频](https://img.shields.io/badge/%E6%95%99%E7%A8%8B-%E8%A7%86%E9%A2%91-red.svg)](https://www.youtube.com/txthinking)
 [![开源协议: GPL v3](https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-yellow.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![捐赠](https://img.shields.io/badge/%E6%94%AF%E6%8C%81-%E6%8D%90%E8%B5%A0-ff69b4.svg)](https://www.txthinking.com/opensource-support.html)
 
@@ -32,52 +32,21 @@
 
 ## 什么是 Brook
 
-[官方文档](https://txthinking.github.io/brook/#/zh-cn/)
-
 Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学.
+
+[查看文档](https://txthinking.github.io/brook/#/zh-cn/?id=%e4%bb%80%e4%b9%88%e6%98%afcli%e5%92%8cgui)
 
 ### 安装 CLI (命令行版本)
 
-> CLI 版本同时具有服务端和客户端等很多功能
-
-从 [releases](https://github.com/txthinking/brook/releases) 页面下载
-
-```
-# 举例, linux amd64
-
-curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
-chmod +x /usr/bin/brook
-```
-
-通过 [nami](https://github.com/txthinking/nami) 安装 🔥
-
-```
-nami install github.com/txthinking/brook
-```
-
-通过 brew 安装
-
-```
-brew install brook
-```
+[查看文档](https://txthinking.github.io/brook/#/zh-cn/install-cli)
 
 ### 安装 GUI (图形客户端)
 
-从 [releases](https://github.com/txthinking/brook/releases) 页面下载: [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg), [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe), [Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk), [iOS](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
-
-通过 brew 安装
-
-```
-brew install --cask brook
-```
-
-```
-brew install --cask brooklite
-```
+[查看文档](https://txthinking.github.io/brook/#/zh-cn/install-gui-client)
 
 ## 使用
 
-[文档](https://txthinking.github.io/brook/#/zh-cn/)
+[查看文档](https://txthinking.github.io/brook/#/zh-cn/)
 
 ```
 NAME:

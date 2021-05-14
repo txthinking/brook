@@ -4,17 +4,25 @@ GUI(Graphical user interface), Brook GUI has only client function.
 
 [Brook.dmg](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 
+or
+
+```
+$ brew install --cask brook
+```
+
 [BrookLite.dmg](https://github.com/txthinking/brook/releases/latest/download/BrookLite.dmg)
 
--   **Keep system up to date**
+or
+
+```
+$ brew install --cask brooklite
+```
 
 ## Windows
 
 [Brook.exe](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 
 [BrookLite.exe](https://github.com/txthinking/brook/releases/latest/download/BrookLite.exe)
-
--   **Keep system up to date**
 
 ## Android
 
