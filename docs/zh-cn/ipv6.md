@@ -5,7 +5,7 @@
 | $ brook client | CLI | Yes | Yes |
 | $ brook map | CLI | Yes | Yes |
 | $ brook dns | CLI | Yes | Yes |
-| $ brook tproxy | CLI | Yes | Yes |
+| $ brook tproxy | CLI | Yes | Yes/2 |
 | $ brook wsserver | CLI | Yes | Yes |
 | $ brook wsclient | CLI | Yes | Yes |
 | $ brook relay | CLI | Yes | Yes |
