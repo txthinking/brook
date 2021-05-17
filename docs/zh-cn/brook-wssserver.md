@@ -6,6 +6,7 @@
 $ brook wssserver --domain domain.com --password hello
 ```
 
+> 你可以按组合键 CTRL+C 来停止<br/>
 > 更多参数介绍: \$ brook wssserver -h
 
 那么你的 brook wssserver 是: `wss://domain.com:443`

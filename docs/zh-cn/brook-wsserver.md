@@ -8,6 +8,7 @@ $ brook wsserver --listen :9999 --password hello
 
 假设你的服务器 IP 是 `1.2.3.4`, 那么你的 brook wsserver 是: `ws://1.2.3.4:9999`
 
+> 你可以按组合键 CTRL+C 来停止<br/>
 > 更多参数介绍: \$ brook wsserver -h
 
 ## 使用`nohup`后台运行

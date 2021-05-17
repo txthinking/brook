@@ -6,6 +6,7 @@ Make sure your domain name has been resolved successfully. Brook will automatica
 $ brook wssserver --domain domain.com --password hello
 ```
 
+> You can stop it with CTRL+C<br/>
 > More parameters: \$ brook wssserver -h
 
 Then your brook wssserver should be: `wss://domain.com:443`

@@ -8,6 +8,7 @@ $ brook wsserver --listen :9999 --password hello
 
 Assuming your server public IP is `1.2.3.4`, your brook wsserver is `ws://1.2.3.4:9999`
 
+> You can stop it with CTRL+C<br/>
 > More parameters: \$ brook wsserver -h
 
 ---
