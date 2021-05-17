@@ -1,6 +1,6 @@
 ## Run brook wsserver
 
-Assume the port is `9999` and the password is `hello`. If there is a firewall, remember to allow the TCP port.
+Assume the port is `9999` and the password is `hello`. If there is a firewall, remember to open **TCP on port 9999**.
 
 ```
 $ brook wsserver --listen :9999 --password hello

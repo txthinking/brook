@@ -1,6 +1,6 @@
 ## 运行 brook wssserver
 
-确保你的域名已经解析到你的服务器 IP, brook 会自动签发域名证书. 假设你的域名是 `domain.com`. 如果有防火墙, 记得允许 80, 443 端口的 TCP 协议.
+确保你的域名已经解析到你的服务器 IP, brook 会自动签发域名证书. 假设你的域名是 `domain.com`. 如果有防火墙, 记得允许**端口80和443的 TCP 协议**.
 
 ```
 $ brook wssserver --domain domain.com --password hello

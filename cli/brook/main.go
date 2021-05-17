@@ -26,7 +26,6 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
 	"net/http"
 	_ "net/http/pprof"
@@ -537,21 +536,6 @@ func main() {
 						return err
 					}
 					var cmd *exec.Cmd
-					// TODO lock
-					b, _ := os.ReadFile("/root/.brook.args")
-					if len(b) != 0 {
-						s, err := os.Executable()
-						if err != nil {
-							return err
-						}
-						cmd = exec.Command("/bin/sh", "-c", s+" tproxy "+string(b))
-						go func() {
-							time.Sleep(30 * time.Second)
-							out, _ := cmd.CombinedOutput()
-							os.WriteFile("/root/.brook.tproxy.err", out, 0666)
-							cmd = nil
-						}()
-					}
 					m := http.NewServeMux()
 					m.Handle("/", http.FileServer(http.FS(web)))
 					m.HandleFunc("/connect", func(w http.ResponseWriter, r *http.Request) {
