@@ -72,3 +72,17 @@ $ jinbe brook wssserver --domain domain.com --password hello
 ```
 $ jinbe joker brook wssserver --domain domain.com --password hello
 ```
+
+查看 jinbe 添加的所有开机命令
+
+```
+$ jinbe list
+```
+
+移除 jinbe 添加的某个开机命令
+
+> \$ jinbe list 会输出所有开机命令 ID
+
+```
+$ jinbe remove <ID>
+```

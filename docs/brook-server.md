@@ -74,3 +74,18 @@ Or with joker
 ```
 $ jinbe joker brook server --listen :9999 --password hello
 ```
+
+View added commmands via jinbe
+
+```
+$ jinbe list
+```
+
+Remove a added command via jinbe
+
+> Your can get ID from output by \$ jinbe list
+
+```
+$ jinbe remove <ID>
+```
+
