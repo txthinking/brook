@@ -102,6 +102,6 @@ mv brook.ipk ../cli/brook/_/brook_linux_ppc64le.ipk
 
 cd ../cli/brook/
 
-nami release github.com/txthinking/brook $1 _
+# nami release github.com/txthinking/brook $1 _
 
-rm -rf _
+# rm -rf _

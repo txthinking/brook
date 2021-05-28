@@ -79,9 +79,9 @@ wl-switch{
                     <wl-title level="3">Server</wl-title>
                 </div>
                 <div class="container20"></div>
-                <wl-textfield id="server" label="Server, like: 1.2.3.4:9999"></wl-textfield>
+                <wl-textfield id="server" label="brook server/brook wsserver/brook wssserver"></wl-textfield>
                 <div class="container20"></div>
-                <wl-textfield id="password" label="Password"></wl-textfield>
+                <wl-textfield id="password" label="password"></wl-textfield>
                 <div class="container20"></div>
             </wl-card>
         </div>
@@ -109,11 +109,11 @@ wl-switch{
                     <wl-switch checked id="bypassswitch"></wl-switch>
                 </div>
                 <div class="container20"></div>
-                <wl-textfield label="Domain list, example: https://txthinking.github.io/bypass/chinadomain.txt" id="bypassDomainList"></wl-textfield>
+                <wl-textfield label="Domain list, example: https://txthinking.github.io/bypass/sample_domain.txt" id="bypassDomainList"></wl-textfield>
                 <div class="container20"></div>
-                <wl-textfield label="CIDR4 list, example: https://txthinking.github.io/bypass/chinacidr4.txt" id="bypassCIDR4List"></wl-textfield>
+                <wl-textfield label="CIDR4 list, example: https://txthinking.github.io/bypass/sample_cidr4.txt" id="bypassCIDR4List"></wl-textfield>
                 <div class="container20"></div>
-                <wl-textfield label="CIDR6 list, example: https://txthinking.github.io/bypass/chinacidr6.txt" id="bypassCIDR6List"></wl-textfield>
+                <wl-textfield label="CIDR6 list, example: https://txthinking.github.io/bypass/sample_cidr6.txt" id="bypassCIDR6List"></wl-textfield>
                 <div class="container20"></div>
             </wl-card>
         </div>
@@ -160,9 +160,9 @@ document.querySelector('#dnsListen').value = localStorage.getItem('dnsListen') |
 document.querySelector('#dnsForDefault').value = localStorage.getItem('dnsForDefault') || '8.8.8.8:53';
 document.querySelector('#dnsForBypass').value = localStorage.getItem('dnsForBypass') || '223.5.5.5:53';
 document.querySelector('#bypassswitch').checked = localStorage.getItem('bypassswitch') == 'on' ? true : false;
-document.querySelector('#bypassDomainList').value = localStorage.getItem('bypassDomainList') || 'https://txthinking.github.io/bypass/chinadomain.txt';
-document.querySelector('#bypassCIDR4List').value = localStorage.getItem('bypassCIDR4List') || 'https://txthinking.github.io/bypass/chinacidr4.txt';
-document.querySelector('#bypassCIDR6List').value = localStorage.getItem('bypassCIDR6List') || 'https://txthinking.github.io/bypass/chinacidr6.txt';
+document.querySelector('#bypassDomainList').value = localStorage.getItem('bypassDomainList') || 'https://txthinking.github.io/bypass/sample_domain.txt';
+document.querySelector('#bypassCIDR4List').value = localStorage.getItem('bypassCIDR4List') || 'https://txthinking.github.io/bypass/sample_cidr4.txt';
+document.querySelector('#bypassCIDR6List').value = localStorage.getItem('bypassCIDR6List') || 'https://txthinking.github.io/bypass/sample_cidr6.txt';
 document.querySelector('#enableIPv6').checked = localStorage.getItem('enableIPv6') == 'on' ? true : false;
 
 var init = async () => {
@@ -215,12 +215,6 @@ document.querySelector('#go').addEventListener("click", async (e) => {
     localStorage.setItem('bypassCIDR6List', bypassCIDR6List);
     localStorage.setItem('enableIPv6', enableIPv6 ? 'on' : 'off');
 
-    if(!/.+:\d+/.test(server)){
-        alert("Invalid server");
-        document.querySelector('#go').style.display = 'block';
-        document.querySelector('#ing').style.display = 'none';
-        return;
-    }
     if(dnsswitch && isNaN(dnsListen)){
         alert("Invalid DNS port");
         document.querySelector('#go').style.display = 'block';

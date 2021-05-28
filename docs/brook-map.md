@@ -1,9 +1,9 @@
 ## $ brook map
 
-$ brook map can map a local address to a remote address with brook server protocol, it must work with $ brook server.
+$ brook map can map a local address to a remote address with brook, both TCP and UDP, it works with $ brook server/wsserver/wssserver.
 
 ```
-send request <--> a local address <-- | brook server protocol | --> brook server <--> a remote address
+send request <--> a local address <-- | brook protocol | --> brook <--> a remote address
 ```
 
 Assume your brook server is `1.2.3.4:9999` and password is `hello`, and you want to map `127.0.0.1:5353` to `8.8.8.8:53`

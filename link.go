@@ -16,6 +16,8 @@ package brook
 
 import (
 	"errors"
+	"fmt"
+	"net/url"
 	"os"
 	"strings"
 
@@ -23,34 +25,36 @@ import (
 	"github.com/txthinking/encrypt"
 )
 
-// Link
-func Link(server, password, username string) string {
-	s := server
-	if username == "" && password != "" {
-		s += " " + password
-	}
-	if username != "" && password != "" {
-		s += " " + username + " " + password
-	}
-	s = "brook://" + encrypt.URIEscape(s)
+// kind: brookserver/brookwsserver/brookwssserver/socks5server
+func Link(kind, s, username, password string) string {
+	v := url.Values{}
+	v.Set(kind, s)
+	v.Set("username", username)
+	v.Set("password", password)
+	s = fmt.Sprintf("brook://%s?%s", kind, v.Encode())
 	return s
 }
 
-// QR generate and print QR code.
-func QR(server, password, username string) {
-	s := server
-	if username == "" && password != "" {
-		s += " " + password
-	}
-	if username != "" && password != "" {
-		s += " " + username + " " + password
-	}
-	s = "brook://" + encrypt.URIEscape(s)
-	qrterminal.GenerateHalfBlock(s, qrterminal.L, os.Stdout)
+func QR(kind, s, username, password string) {
+	qrterminal.GenerateHalfBlock(Link(kind, s, username, password), qrterminal.L, os.Stdout)
 }
 
 // kind: server/wsserver/wssserver/socks5
-func ParseLink(link string) (kind, server, username, password string, err error) {
+func ParseLink(link string) (kind, s, username, password string, err error) {
+	var u *url.URL
+	u, err = url.Parse(link)
+	if err != nil {
+		return
+	}
+	kind = u.Host
+	s = u.Query().Get(kind)
+	username = u.Query().Get("username")
+	password = u.Query().Get("password")
+	return
+}
+
+// kind: server/wsserver/wssserver/socks5
+func ParseLinkOld(link string) (kind, server, username, password string, err error) {
 	if !strings.HasPrefix(link, "brook://") {
 		err = errors.New("Invalid brook link")
 		return

@@ -41,6 +41,7 @@ type Map struct {
 	UDPTimeout    int
 	RunnerGroup   *runnergroup.RunnerGroup
 	UDPSrc        *cache.Cache
+	WSClient      *WSClient
 }
 
 // NewMap.
@@ -53,13 +54,24 @@ func NewMap(from, to, remote, password string, tcpTimeout, udpTimeout int) (*Map
 	if err != nil {
 		return nil, err
 	}
-	rtaddr, err := net.ResolveTCPAddr("tcp", remote)
-	if err != nil {
-		return nil, err
+	var rtaddr *net.TCPAddr
+	var ruaddr *net.UDPAddr
+	if !strings.HasPrefix(remote, "ws://") && !strings.HasPrefix(remote, "wss://") {
+		rtaddr, err = net.ResolveTCPAddr("tcp", remote)
+		if err != nil {
+			return nil, err
+		}
+		ruaddr, err = net.ResolveUDPAddr("udp", remote)
+		if err != nil {
+			return nil, err
+		}
 	}
-	ruaddr, err := net.ResolveUDPAddr("udp", remote)
-	if err != nil {
-		return nil, err
+	var wsc *WSClient
+	if strings.HasPrefix(remote, "ws://") || strings.HasPrefix(remote, "wss://") {
+		wsc, err = NewWSClient(":1080", "127.0.0.1", remote, password, tcpTimeout, udpTimeout)
+		if err != nil {
+			return nil, err
+		}
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
@@ -78,6 +90,7 @@ func NewMap(from, to, remote, password string, tcpTimeout, udpTimeout int) (*Map
 		UDPTimeout:    udpTimeout,
 		RunnerGroup:   runnergroup.New(),
 		UDPSrc:        cs2,
+		WSClient:      wsc,
 	}
 	return s, nil
 }
@@ -169,7 +182,14 @@ func (s *Map) Shutdown() error {
 
 // TCPHandle handles request.
 func (s *Map) TCPHandle(c *net.TCPConn) error {
-	rc, err := Dial.Dial("tcp", s.ServerTCPAddr.String())
+	var rc net.Conn
+	var err error
+	if s.WSClient == nil {
+		rc, err = Dial.Dial("tcp", s.ServerTCPAddr.String())
+	}
+	if s.WSClient != nil {
+		rc, err = s.WSClient.DialWebsocket("")
+	}
 	if err != nil {
 		return err
 	}
@@ -202,10 +222,62 @@ func (s *Map) TCPHandle(c *net.TCPConn) error {
 func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	src := addr.String()
 	dst := s.RemoteAddress
+	if s.WSClient == nil {
+		any, ok := s.UDPExchanges.Get(src + dst)
+		if ok {
+			ue := any.(*UDPExchange)
+			return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
+		}
+		debug("dial udp", dst)
+		var laddr *net.UDPAddr
+		any, ok = s.UDPSrc.Get(src + dst)
+		if ok {
+			laddr = any.(*net.UDPAddr)
+		}
+		rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
+		if err != nil {
+			if strings.Contains(err.Error(), "address already in use") {
+				// we dont choose lock, so ignore this error
+				return nil
+			}
+			return err
+		}
+		defer rc.Close()
+		if laddr == nil {
+			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+		}
+		a, h, p, err := socks5.ParseAddress(s.RemoteAddress)
+		if err != nil {
+			return err
+		}
+		dstb := make([]byte, 0, 1+len(h)+2)
+		dstb = append(dstb, a)
+		dstb = append(dstb, h...)
+		dstb = append(dstb, p...)
+		pc := NewPacketClient(s.Password)
+		defer pc.Clean()
+		if err := pc.LocalToServer(dstb, b, rc, s.UDPTimeout); err != nil {
+			return err
+		}
+		ue := &UDPExchange{
+			Conn: rc,
+			Any:  pc,
+			Dst:  dstb,
+		}
+		s.UDPExchanges.Set(src+dst, ue, -1)
+		defer s.UDPExchanges.Delete(src + dst)
+		err = pc.RunServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
+			return s.UDPConn.WriteToUDP(d, addr)
+		})
+		if err != nil {
+			return nil
+		}
+		return nil
+	}
 	any, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue := any.(*UDPExchange)
-		return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
+		return ue.Any.(func(b []byte) error)(b)
 	}
 	debug("dial udp", dst)
 	var laddr *net.UDPAddr
@@ -213,7 +285,11 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	if ok {
 		laddr = any.(*net.UDPAddr)
 	}
-	rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
+	la := ""
+	if laddr != nil {
+		la = laddr.String()
+	}
+	rc, err := s.WSClient.DialWebsocket(la)
 	if err != nil {
 		if strings.Contains(err.Error(), "address already in use") {
 			// we dont choose lock, so ignore this error
@@ -223,8 +299,19 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	defer rc.Close()
 	if laddr == nil {
-		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+		laddr = &net.UDPAddr{
+			IP:   rc.LocalAddr().(*net.TCPAddr).IP,
+			Port: rc.LocalAddr().(*net.TCPAddr).Port,
+			Zone: rc.LocalAddr().(*net.TCPAddr).Zone,
+		}
+		s.UDPSrc.Set(src+dst, laddr, -1)
 	}
+	if s.UDPTimeout != 0 {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+			return err
+		}
+	}
+
 	a, h, p, err := socks5.ParseAddress(s.RemoteAddress)
 	if err != nil {
 		return err
@@ -233,22 +320,22 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	dstb = append(dstb, a)
 	dstb = append(dstb, h...)
 	dstb = append(dstb, p...)
-	pc := NewPacketClient(s.Password)
-	defer pc.Clean()
-	if err := pc.LocalToServer(dstb, b, rc, s.UDPTimeout); err != nil {
+	sc, err := NewStreamClient("udp", s.Password, dstb, rc, s.UDPTimeout)
+	if err != nil {
 		return err
 	}
+	defer sc.Clean()
+	ps, pi := NewPacketStream(func(b []byte) (int, error) {
+		return s.UDPConn.WriteToUDP(b, addr)
+	})
+	defer ps.Close()
 	ue := &UDPExchange{
-		Conn: rc,
-		Any:  pc,
-		Dst:  dstb,
+		Any: pi,
 	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
 	defer s.UDPExchanges.Delete(src + dst)
-	err = pc.RunServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
-		return s.UDPConn.WriteToUDP(d, addr)
-	})
-	if err != nil {
+	go pi(b)
+	if err := sc.Exchange(ps); err != nil {
 		return nil
 	}
 	return nil

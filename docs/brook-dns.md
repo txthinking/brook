@@ -1,9 +1,9 @@
 ## $ brook dns
 
-$ brook dns can create a encrypted DNS server, it must work with $ brook server.
+$ brook dns can create a encrypted DNS server, both TCP and UDP, it works with $ brook server/wsserver/wssserver.
 
 ```
-send request <--> encrypted DNS server <-- | brook server protocol | --> brook server <--> DNS server
+send request <--> encrypted DNS server <-- | brook protocol | --> brook <--> DNS server
 ```
 
 Assume your brook server is `1.2.3.4:9999` and password is `hello`, and you want to create a encrypted DNS server `127.0.0.1:53`

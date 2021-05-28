@@ -2,7 +2,7 @@
 
 > **If running on openwrt, dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
-$ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, it must work with $ brook server.
+$ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, it works with $ brook server, $ brook wsserver and $ brook wssserver.
 
 Assume your brook server is `1.2.3.4:9999` and password is `hello`
 

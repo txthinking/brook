@@ -22,15 +22,15 @@
     -   [[CLI] \$ brook wssclient](brook-wssclient.md)
     -   [[GUI] Client](brook-wssclient-gui.md)
 
--   brook server & brook map
+-   brook map
 
     -   [[CLI] \$ brook map](brook-map.md)
 
--   brook server & brook dns
+-   brook dns
 
     -   [[CLI] \$ brook dns](brook-dns.md)
 
--   brook server & brook tproxy
+-   brook tproxy
 
     -   [[CLI] \$ brook tproxy](brook-tproxy.md)
     -   [[GUI] OpenWrt](brook-tproxy-gui.md)

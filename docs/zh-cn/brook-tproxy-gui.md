@@ -2,7 +2,7 @@
 
 > **依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
-$ brook tproxy 可以创建透明代理在你的Linux路由器, **端口9999, 1080, 5353将会被使用**. 它与$ brook server 一起工作.
+$ brook tproxy 可以创建透明代理在你的Linux路由器, **端口9999, 1080, 5353将会被使用**. 它与$ brook server, $ brook wsserver, $ brook wssserver 一起工作.
 
 > 只支持 IPv4 server, 如果你的服務端支持 IPv6, 你可以稍後開啟, 請看下面介紹
 

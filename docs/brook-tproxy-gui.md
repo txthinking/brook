@@ -2,7 +2,7 @@
 
 > **Dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
-$ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, **port 9999, 1080, 5353 will be used**. It must work with $ brook server.
+$ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, **port 9999, 1080, 5353 will be used**. It work with $ brook server, $ brook wsserver and $ brook wssserver.
 
 > Only support IPv4 server, but if your server support IPv6 you can enable later, please see the introduction below
 

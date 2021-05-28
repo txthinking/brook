@@ -66,104 +66,6 @@ func main() {
 	}
 	app.Commands = []*cli.Command{
 		&cli.Command{
-			Name:  "connect",
-			Usage: "Connect via standard sharing link (brook server & wsserver & wssserver)",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "link",
-					Aliases: []string{"l"},
-					Usage:   "specify the sharing link",
-				},
-				&cli.StringFlag{
-					Name:  "socks5",
-					Value: "127.0.0.1:1080",
-					Usage: "where to listen for SOCKS5 connections",
-				},
-				&cli.StringFlag{
-					Name:  "http",
-					Value: "127.0.0.1:8010",
-					Usage: "where to listen for HTTP connections",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpTimeout",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if c.String("link") == "" {
-					cli.ShowCommandHelp(c, "connect")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				h, p, err := net.SplitHostPort(c.String("socks5"))
-				if err != nil {
-					return err
-				}
-				if h == "" {
-					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
-				}
-				kind, server, _, password, err := brook.ParseLink(c.String("link"))
-				if err != nil {
-					return err
-				}
-				if kind == "socks5" {
-					return errors.New("connect doesn't support socks5 link, you may want $ brook socks5tohttp")
-				}
-				if kind == "server" {
-					s, err := brook.NewClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
-					if err != nil {
-						return err
-					}
-					go func() {
-						sigs := make(chan os.Signal, 1)
-						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-						<-sigs
-						s.Shutdown()
-						http.Shutdown()
-					}()
-					go func() {
-						if err := http.ListenAndServe(); err != nil {
-							log.Println(err)
-						}
-					}()
-					return s.ListenAndServe()
-				}
-				s, err := brook.NewWSClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
-				if err != nil {
-					return err
-				}
-				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
-				if err != nil {
-					return err
-				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					s.Shutdown()
-					http.Shutdown()
-				}()
-				go func() {
-					if err := http.ListenAndServe(); err != nil {
-						log.Println(err)
-					}
-				}()
-				return s.ListenAndServe()
-			},
-		},
-		&cli.Command{
 			Name:  "server",
 			Usage: "Run as brook server, both TCP and UDP",
 			Flags: []cli.Flag{
@@ -338,17 +240,17 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "map",
-			Usage: "Run as mapping, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook server <-> to address], [works with $ brook server]",
+			Usage: "Run as mapping, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook <-> to address], works with $ brook server/wsserver/wssserver",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Brook server address, like: 1.2.3.4:9999",
+					Usage:   "brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws",
 				},
 				&cli.StringFlag{
 					Name:    "password",
 					Aliases: []string{"p"},
-					Usage:   "Brook server password",
+					Usage:   "password",
 				},
 				&cli.StringFlag{
 					Name:    "from",
@@ -394,17 +296,17 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "dns",
-			Usage: "Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook server <-> dns server] or [src <-> $ brook dns <-> dns server for bypass], [works with $ brook server]",
+			Usage: "Run as DNS server, both TCP and UDP, [src <-> $ brook dns <-> $ brook <-> dns server] or [src <-> $ brook dns <-> dns server for bypass], works with $ brook server/wsserver/wssserver",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Brook server address, like: 1.2.3.4:9999",
+					Usage:   "brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws",
 				},
 				&cli.StringFlag{
 					Name:    "password",
 					Aliases: []string{"p"},
-					Usage:   "Brook server password",
+					Usage:   "password",
 				},
 				&cli.StringFlag{
 					Name:    "listen",
@@ -459,17 +361,17 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tproxy",
-			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server <-> dst], [works with $ brook server]",
+			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook <-> dst], works with $ brook server/wsserver/wssserver",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Brook server address, like: 1.2.3.4:9999",
+					Usage:   "brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws",
 				},
 				&cli.StringFlag{
 					Name:    "password",
 					Aliases: []string{"p"},
-					Usage:   "Brook server password",
+					Usage:   "Password",
 				},
 				&cli.StringFlag{
 					Name:    "listen",
@@ -513,7 +415,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "webListen",
-					Usage: "Ignore all other parameters, run web UI, like: ':6666'",
+					Usage: "Ignore all other parameters, run web UI, like: ':9999'",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -586,7 +488,7 @@ func main() {
 					}()
 					return s.ListenAndServe()
 				}
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || c.String("s") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "tproxy")
 					return nil
 				}
@@ -898,20 +800,26 @@ func main() {
 				&cli.StringFlag{
 					Name:    "password",
 					Aliases: []string{"p"},
-					Usage:   "Server password",
+					Usage:   "Password",
 				},
 				&cli.StringFlag{
 					Name:    "username",
 					Aliases: []string{"u"},
-					Usage:   "Server username",
+					Usage:   "Username, when server is socks5 server",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("server") == "" {
-					cli.ShowCommandHelp(c, "link")
-					return nil
+				s := "server"
+				if strings.HasPrefix(c.String("s"), "ws://") {
+					s = "wsserver"
 				}
-				fmt.Println(brook.Link(c.String("server"), c.String("password"), c.String("username")))
+				if strings.HasPrefix(c.String("s"), "wss://") {
+					s = "wssserver"
+				}
+				if strings.HasPrefix(c.String("s"), "socks5://") {
+					s = "socks5"
+				}
+				fmt.Println(brook.Link(s, c.String("s"), c.String("username"), c.String("password")))
 				return nil
 			},
 		},
@@ -927,21 +835,134 @@ func main() {
 				&cli.StringFlag{
 					Name:    "password",
 					Aliases: []string{"p"},
-					Usage:   "Server password",
+					Usage:   "Password",
 				},
 				&cli.StringFlag{
 					Name:    "username",
 					Aliases: []string{"u"},
-					Usage:   "Server username",
+					Usage:   "Username, when server is socks5 server",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("server") == "" {
-					cli.ShowCommandHelp(c, "qr")
+				s := "server"
+				if strings.HasPrefix(c.String("s"), "ws://") {
+					s = "wsserver"
+				}
+				if strings.HasPrefix(c.String("s"), "wss://") {
+					s = "wssserver"
+				}
+				if strings.HasPrefix(c.String("s"), "socks5://") {
+					s = "socks5"
+				}
+				brook.QR(s, c.String("s"), c.String("username"), c.String("password"))
+				return nil
+			},
+		},
+		&cli.Command{
+			Name:  "connect",
+			Usage: "Connect via standard sharing link (brook server & brook wsserver & brook wssserver)",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "link",
+					Aliases: []string{"l"},
+					Usage:   "specify the sharing link",
+				},
+				&cli.StringFlag{
+					Name:  "socks5",
+					Value: "127.0.0.1:1080",
+					Usage: "where to listen for SOCKS5 connections",
+				},
+				&cli.StringFlag{
+					Name:  "http",
+					Value: "127.0.0.1:8010",
+					Usage: "where to listen for HTTP connections",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 0,
+					Usage: "connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpTimeout",
+					Value: 60,
+					Usage: "connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("link") == "" {
+					cli.ShowCommandHelp(c, "connect")
 					return nil
 				}
-				brook.QR(c.String("server"), c.String("password"), c.String("username"))
-				return nil
+				if debug {
+					enableDebug()
+				}
+				h, p, err := net.SplitHostPort(c.String("socks5"))
+				if err != nil {
+					return err
+				}
+				if h == "" {
+					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
+				}
+				var kind, server, password string
+				if !strings.Contains(c.String("link"), "?") {
+					kind, server, _, password, err = brook.ParseLinkOld(c.String("link"))
+					if err != nil {
+						return err
+					}
+				}
+				if strings.Contains(c.String("link"), "?") {
+					kind, server, _, password, err = brook.ParseLink(c.String("link"))
+					if err != nil {
+						return err
+					}
+				}
+				if kind == "socks5" {
+					return errors.New("connect doesn't support socks5 link, you may want $ brook socks5tohttp")
+				}
+				if kind == "server" {
+					s, err := brook.NewClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
+					if err != nil {
+						return err
+					}
+					go func() {
+						sigs := make(chan os.Signal, 1)
+						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+						<-sigs
+						s.Shutdown()
+						http.Shutdown()
+					}()
+					go func() {
+						if err := http.ListenAndServe(); err != nil {
+							log.Println(err)
+						}
+					}()
+					return s.ListenAndServe()
+				}
+				s, err := brook.NewWSClient(":"+p, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
+				}
+				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
+				if err != nil {
+					return err
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					s.Shutdown()
+					http.Shutdown()
+				}()
+				go func() {
+					if err := http.ListenAndServe(); err != nil {
+						log.Println(err)
+					}
+				}()
+				return s.ListenAndServe()
 			},
 		},
 		&cli.Command{

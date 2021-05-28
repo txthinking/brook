@@ -15,10 +15,12 @@
 package brook
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
 	"net"
+	"net/url"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -49,10 +51,11 @@ type Tproxy struct {
 	Cidr4         []*net.IPNet
 	Cidr6         []*net.IPNet
 	BypassCache   *cache.Cache
+	WSClient      *WSClient
 }
 
 // NewTproxy.
-func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
+func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -61,11 +64,49 @@ func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6ur
 	if err != nil {
 		return nil, err
 	}
-	rtaddr, err := net.ResolveTCPAddr("tcp", server)
+	var wsc *WSClient
+	hp := s
+	if strings.HasPrefix(s, "ws://") || strings.HasPrefix(s, "wss://") {
+		u, err := url.Parse(s)
+		if err != nil {
+			return nil, err
+		}
+		hp = u.Host
+		wsc, err = NewWSClient(":1080", "127.0.0.1", s, password, tcpTimeout, udpTimeout)
+		if err != nil {
+			return nil, err
+		}
+		wsc.DialTCP = tproxy.DialTCP
+	}
+	r := &net.Resolver{
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			c, err := net.Dial(network, "8.8.8.8:53")
+			if err != nil {
+				c, err = net.Dial(network, "[2001:4860:4860::8888]:53")
+			}
+			return c, err
+		},
+	}
+	h, p, err := net.SplitHostPort(hp)
 	if err != nil {
 		return nil, err
 	}
-	ruaddr, err := net.ResolveUDPAddr("udp", server)
+	l, err := r.LookupIP(context.Background(), "ip4", h)
+	if err != nil {
+		return nil, err
+	}
+	if len(l) == 0 {
+		return nil, errors.New("Can not find server IPv4")
+	}
+	hp = net.JoinHostPort(l[0].String(), p)
+	if wsc != nil {
+		wsc.ServerAddress = hp
+	}
+	rtaddr, err := net.ResolveTCPAddr("tcp", hp)
+	if err != nil {
+		return nil, err
+	}
+	ruaddr, err := net.ResolveUDPAddr("udp", hp)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +143,7 @@ func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6ur
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
-	s := &Tproxy{
+	t := &Tproxy{
 		Password:      []byte(password),
 		TCPAddr:       taddr,
 		UDPAddr:       uaddr,
@@ -117,8 +158,9 @@ func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6ur
 		Cidr4:         c4,
 		Cidr6:         c6,
 		BypassCache:   cache.New(cache.NoExpiration, cache.NoExpiration),
+		WSClient:      wsc,
 	}
-	return s, nil
+	return t, nil
 }
 
 func (s *Tproxy) RunAutoScripts() error {
@@ -415,7 +457,14 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 		return nil
 	}
 
-	rc, err := tproxy.DialTCP("tcp", s.ServerTCPAddr.String())
+	var rc net.Conn
+	var err error
+	if s.WSClient == nil {
+		rc, err = tproxy.DialTCP("tcp", s.ServerTCPAddr.String())
+	}
+	if s.WSClient != nil {
+		rc, err = s.WSClient.DialWebsocket("")
+	}
 	if err != nil {
 		return err
 	}
@@ -524,22 +573,74 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
+	if s.WSClient == nil {
+		any, ok = s.UDPExchanges.Get(src + dst)
+		if ok {
+			ue := any.(*UDPExchange)
+			return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
+		}
+		rc, err := tproxy.DialUDP("udp", laddr, s.ServerUDPAddr)
+		if err != nil {
+			if strings.Contains(err.Error(), "address already in use") {
+				// we dont choose lock, so ignore this error
+				return nil
+			}
+			return err
+		}
+		defer rc.Close()
+		if laddr.Port == 0 {
+			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+		}
+		c, err := tproxy.DialUDP("udp", daddr, addr)
+		if err != nil {
+			return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
+		}
+		defer c.Close()
+
+		a, h, p, err := socks5.ParseAddress(dst)
+		if err != nil {
+			return err
+		}
+		dstb := make([]byte, 0, 1+len(h)+2)
+		dstb = append(dstb, a)
+		dstb = append(dstb, h...)
+		dstb = append(dstb, p...)
+		pc := NewPacketClient(s.Password)
+		defer pc.Clean()
+		if err := pc.LocalToServer(dstb, b, rc, s.UDPTimeout); err != nil {
+			return err
+		}
+		ue := &UDPExchange{
+			Conn: rc,
+			Any:  pc,
+			Dst:  dstb,
+		}
+		s.UDPExchanges.Set(src+dst, ue, -1)
+		defer s.UDPExchanges.Delete(src + dst)
+		err = pc.RunServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
+			return c.Write(d)
+		})
+		if err != nil {
+			return nil
+		}
+		return nil
+	}
 	any, ok = s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue := any.(*UDPExchange)
-		return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
+		return ue.Any.(func(b []byte) error)(b)
 	}
-	rc, err := tproxy.DialUDP("udp", laddr, s.ServerUDPAddr)
+	rc, err := s.WSClient.DialWebsocket(laddr.String())
 	if err != nil {
-		if strings.Contains(err.Error(), "address already in use") {
-			// we dont choose lock, so ignore this error
-			return nil
-		}
-		return err
+		return nil
 	}
 	defer rc.Close()
 	if laddr.Port == 0 {
-		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+		s.UDPSrc.Set(src+dst, &net.UDPAddr{
+			IP:   rc.LocalAddr().(*net.TCPAddr).IP,
+			Port: rc.LocalAddr().(*net.TCPAddr).Port,
+			Zone: rc.LocalAddr().(*net.TCPAddr).Zone,
+		}, -1)
 	}
 	c, err := tproxy.DialUDP("udp", daddr, addr)
 	if err != nil {
@@ -555,22 +656,22 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	dstb = append(dstb, a)
 	dstb = append(dstb, h...)
 	dstb = append(dstb, p...)
-	pc := NewPacketClient(s.Password)
-	defer pc.Clean()
-	if err := pc.LocalToServer(dstb, b, rc, s.UDPTimeout); err != nil {
+	sc, err := NewStreamClient("udp", s.Password, dstb, rc, s.UDPTimeout)
+	if err != nil {
 		return err
 	}
+	defer sc.Clean()
+	ps, pi := NewPacketStream(func(b []byte) (int, error) {
+		return c.Write(b)
+	})
+	defer ps.Close()
 	ue := &UDPExchange{
-		Conn: rc,
-		Any:  pc,
-		Dst:  dstb,
+		Any: pi,
 	}
 	s.UDPExchanges.Set(src+dst, ue, -1)
 	defer s.UDPExchanges.Delete(src + dst)
-	err = pc.RunServerToLocal(rc, s.UDPTimeout, func(dst, d []byte) (int, error) {
-		return c.Write(d)
-	})
-	if err != nil {
+	go pi(b)
+	if err := sc.Exchange(ps); err != nil {
 		return nil
 	}
 	return nil
