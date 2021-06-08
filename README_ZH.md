@@ -30,6 +30,8 @@
 
 Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学.
 
+❤️ A project by [txthinking.com](https://www.txthinking.com)
+
 [查看文档](https://txthinking.github.io/brook/#/zh-cn/?id=%e4%bb%80%e4%b9%88%e6%98%afcli%e5%92%8cgui)
 
 ### 安装 CLI (命令行版本)
