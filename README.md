@@ -31,6 +31,8 @@
 Brook is a cross-platform strong encryption and not detectable proxy.<br/>
 Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
+❤️ A project by [txthinking.com](https://www.txthinking.com)
+
 [Read Document](https://txthinking.github.io/brook/#/?id=cli-and-gui)
 
 ### Install CLI
