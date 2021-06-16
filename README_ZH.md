@@ -15,14 +15,13 @@
 
 ---
 
-**v20210601**
+**v20210616 Pre-release**
 
--   [CLI] \$ brook map 支持 brook server/wsserver/wssserver
--   [CLI] \$ brook dns 支持 brook server/wsserver/wssserver
--   [CLI] \$ brook tproxy 支持 brook server/wsserver/wssserver
--   [GUI] OpenWrt 支持 brook server/wsserver/wssserver
--   [Document](https://txthinking.github.io/brook/)
--   [论坛](https://github.com/txthinking/brook/discussions)
+- [GUI] macOS, 优化 tun 模式
+- [GUI] Windows, 优化兼容性, 比如虚拟机
+- [GUI] 如果服务器信息通过brook link添加, 不会显示详情
+
+[Document](https://txthinking.github.io/brook/) [Video](https://www.youtube.com/txthinking) [Blog](https://talks.txthinking.com) [Discussions(ask here)](https://github.com/txthinking/brook/discussions)
 
 ---
 
@@ -31,8 +30,6 @@
 Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学.
 
 ❤️ A project by [txthinking.com](https://www.txthinking.com)
-
-[查看文档](https://txthinking.github.io/brook/#/zh-cn/?id=%e4%bb%80%e4%b9%88%e6%98%afcli%e5%92%8cgui)
 
 ### 安装 CLI (命令行版本)
 
@@ -49,8 +46,6 @@ $ chmod +x /usr/bin/brook
 
 ## 使用
 
-[查看文档](https://txthinking.github.io/brook/#/zh-cn/)
-
 ```
 NAME:
    Brook - A cross-platform strong encryption and not detectable proxy
@@ -59,7 +54,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20210601
+   20210616
 
 AUTHOR:
    Cloud <cloud@txthinking.com>

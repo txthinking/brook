@@ -15,14 +15,13 @@
 
 ---
 
-**v20210601**
+**v20210616 Pre-release**
 
--   [CLI] \$ brook map supports brook server/wsserver/wssserver
--   [CLI] \$ brook dns supports brook server/wsserver/wssserver
--   [CLI] \$ brook tproxy supports brook server/wsserver/wssserver
--   [GUI] OpenWrt supports brook server/wsserver/wssserver
--   [Document](https://txthinking.github.io/brook/)
--   [Community(ask here)](https://github.com/txthinking/brook/discussions)
+- [GUI] macOS, optimize tun mode
+- [GUI] Windows, optimize compatibility, such as virtual machines
+- [GUI] If the server information is added through brook link, the details will not be displayed
+
+[Document](https://txthinking.github.io/brook/) [Video](https://www.youtube.com/txthinking) [Blog](https://talks.txthinking.com) [Discussions(ask here)](https://github.com/txthinking/brook/discussions)
 
 ---
 
@@ -32,8 +31,6 @@ Brook is a cross-platform strong encryption and not detectable proxy.<br/>
 Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
 ❤️ A project by [txthinking.com](https://www.txthinking.com)
-
-[Read Document](https://txthinking.github.io/brook/#/?id=cli-and-gui)
 
 ### Install CLI
 
@@ -50,8 +47,6 @@ $ chmod +x /usr/bin/brook
 
 ## Usage
 
-[Read Document](https://txthinking.github.io/brook/)
-
 ```
 NAME:
    Brook - A cross-platform strong encryption and not detectable proxy
@@ -60,7 +55,7 @@ USAGE:
    brook [global options] command [command options] [arguments...]
 
 VERSION:
-   20210601
+   20210616
 
 AUTHOR:
    Cloud <cloud@txthinking.com>
