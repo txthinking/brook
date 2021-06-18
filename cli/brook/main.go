@@ -40,7 +40,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20210616"
+	app.Version = "20210701"
 	app.Usage = "A cross-platform strong encryption and not detectable proxy"
 	app.Authors = []*cli.Author{
 		{
@@ -207,10 +207,6 @@ func main() {
 					Usage:   "Server password",
 				},
 				&cli.StringFlag{
-					Name:  "domain",
-					Usage: "deprecated, please use $ brook wssserver",
-				},
-				&cli.StringFlag{
 					Name:  "path",
 					Usage: "URL path",
 					Value: "/ws",
@@ -227,17 +223,14 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("domain") != "" {
-					log.Println("--domain deprecated, please use $ brook wssserver")
-				}
-				if (c.String("listen") == "" && c.String("domain") == "") || c.String("password") == "" {
+				if c.String("listen") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "wsserver")
 					return nil
 				}
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), c.String("domain"), c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -712,7 +705,7 @@ func main() {
 					}()
 					return s.ListenAndServe()
 				}
-				if c.String("listen") == "" || c.String("s") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "tproxy")
 					return nil
 				}
@@ -1229,36 +1222,9 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("listenpassword")) == 0 {
-					cli.ShowCommandHelp(c, "servers")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				l := make([]*brook.Server, 0)
-				for _, v := range c.StringSlice("listenpassword") {
-					ss := strings.Split(v, " ")
-					if len(ss) != 2 {
-						return errors.New("invalid listenpassword")
-					}
-					s, err := brook.NewServer(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					l = append(l, s)
-				}
-				for _, v := range l {
-					go func(v *brook.Server) {
-						log.Println(v.ListenAndServe())
-					}(v)
-				}
-				sigs := make(chan os.Signal, 1)
-				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-				<-sigs
-				for _, v := range l {
-					v.Shutdown()
-				}
+				fmt.Println("$ brook servers has been removed, you may like joker:")
+				fmt.Println("$ joker brook server ...")
+				fmt.Println("$ joker brook server ...")
 				return nil
 			},
 		},
@@ -1282,36 +1248,9 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if len(c.StringSlice("fromto")) == 0 {
-					cli.ShowCommandHelp(c, "relays")
-					return nil
-				}
-				if debug {
-					enableDebug()
-				}
-				l := make([]*brook.Relay, 0)
-				for _, v := range c.StringSlice("fromto") {
-					ss := strings.Split(v, " ")
-					if len(ss) != 2 {
-						return errors.New("invalid fromto")
-					}
-					s, err := brook.NewRelay(ss[0], ss[1], c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					l = append(l, s)
-				}
-				for _, v := range l {
-					go func(v *brook.Relay) {
-						log.Println(v.ListenAndServe())
-					}(v)
-				}
-				sigs := make(chan os.Signal, 1)
-				signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-				<-sigs
-				for _, v := range l {
-					v.Shutdown()
-				}
+				fmt.Println("$ brook relays has been removed, you may like joker:")
+				fmt.Println("$ joker brook relay ...")
+				fmt.Println("$ joker brook relay ...")
 				return nil
 			},
 		},
@@ -1360,12 +1299,12 @@ func main() {
 			Usage: "Print some useful tutorial resources",
 			Action: func(c *cli.Context) error {
 				fmt.Println("")
-				fmt.Println("Brook Github:", "https://github.com/txthinking/brook")
-				fmt.Println("Brook Docs:", "https://txthinking.github.io/brook")
-				fmt.Println("Brook Community:", "https://github.com/txthinking/brook/discussions")
+				fmt.Println("Github:", "https://github.com/txthinking/brook")
+				fmt.Println("Docs:", "https://txthinking.github.io/brook")
+				fmt.Println("Discussions:", "https://github.com/txthinking/brook/discussions")
 				fmt.Println("")
 				fmt.Println("Blog:", "https://talks.txthinking.com")
-				fmt.Println("Youtube:", "https://www.youtube.com/channel/UC5j8-I5Y4lWo4KTa4_0Kx5A")
+				fmt.Println("Youtube:", "https://www.youtube.com/txthinking")
 				fmt.Println("")
 				return nil
 			},

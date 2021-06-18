@@ -1,4 +1,4 @@
-![logo](https://storage.googleapis.com/txthinking/_/brook.png)
+![logo](https://txthinking.github.io/brook/_static/brook.png)
 
 # Brook
 

@@ -60,8 +60,6 @@
 | Brook.dmg                          | GUI     | macOS 64 位                      |
 | Brook.exe                          | GUI     | Windows 64 位                    |
 | Brook.apk                          | GUI     | Android                          |
-| BrookLite.dmg                      | GUI     | macOS 64 bit                     |
-| BrookLite.exe                      | GUI     | Windows 64 bit                   |
 | brook_linux_amd64.ipk              | GUI     | OpenWrt Linux 64 bit             |
 | brook_linux_386.ipk                | GUI     | OpenWrt Linux 32 bit             |
 | brook_linux_arm64.ipk              | GUI     | OpenWrt Linux arm64              |

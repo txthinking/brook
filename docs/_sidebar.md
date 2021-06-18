@@ -22,9 +22,9 @@
     -   [[CLI] \$ brook wssclient](brook-wssclient.md)
     -   [[GUI] Client](brook-wssclient-gui.md)
 
--   brook map
+-   brook relayoverbrook
 
-    -   [[CLI] \$ brook map](brook-map.md)
+    -   [[CLI] \$ brook relayoverbrook](brook-relayoverbrook.md)
 
 -   brook dns
 

@@ -1,29 +1,71 @@
 ### Brook Link
 
-#### brook server & brook wsserver & brook wssserver
-
 ```
-brook://urlencode(SERVER PASSWORD)
+brook://KIND?QUERY
 ```
 
-> urlencode() is a 虚拟 RFC3986 函数
+- **KIND**: `server`, `wsserver`, `wssserver`, `socks5`
+- **QUERY**: key=value, key and value should be urlencoded(RFC3986), such as `key0=xxx&key1=xxx`
 
-SERVER 格式可以是:
+#### brook server
 
-* brook server: `server_ip:port`
-* brook wsserver: `ws://wsserver_ip:port` 或 `ws://wsserver_ip:port/path`
-* brook wssserver: `wss://wssserver_domain:port` 或 `wss://wssserver_domain:port/path`
+- **KIND**: `server`
+- **QUERY**:
+    - `server`: brook server, such as `1.2.3.4:9999`
+    - `password`: password
+    - Any other custom key
+
+Example
+
+```
+brook://server?password=hello&server=1.2.3.4%3A9999
+```
+
+#### brook wsserver
+
+- **KIND**: `wsserver`
+- **QUERY**:
+    - `wsserver`: brook wsserver, such as `ws://1.2.3.4:9999`, `ws://1.2.3.4:9999/ws`
+    - `password`: password
+    - Any other custom key
+
+Example
+
+```
+brook://wsserver?password=hello&wsserver=ws%3A%2F%2F1.2.3.4%3A9999
+brook://wsserver?password=hello&wsserver=ws%3A%2F%2F1.2.3.4%3A9999%2Fws
+```
+
+#### brook wssserver
+
+- **KIND**: `wssserver`
+- **QUERY**:
+    - `wssserver`: brook wssserver, such as `wss://domain.com:443`, `wss://domain.com:443/ws`
+    - `password`: password
+    - Any other custom key
+
+Example
+
+```
+brook://wssserver?password=hello&wssserver=wss%3A%2F%2Fdomain.com%3A443
+brook://wssserver?password=hello&wssserver=wss%3A%2F%2Fdomain.com%3A443%2Fws
+```
 
 #### socks5 server
 
-```
-brook://urlencode(SERVER)
-brook://urlencode(SERVER USERNAME PASSWORD)
-```
+- **KIND**: `socks5`
+- **QUERY**:
+    - `socks5`: socks5 server, such as `socks5://1.2.3.4:9999`
+    - `username`: username, such as `hello`, optional
+    - `password`: password, such as `world`, optional
+    - Any other custom key
 
-SERVER 格式可以是:
+Example
 
-* socks5 server: `socks5://server_ip:port`
+```
+brook://socks5?socks5=socks5%3A%2F%2F1.2.3.4%3A9999
+brook://socks5?password=world&socks5=socks5%3A%2F%2F1.2.3.4%3A9999&username=hello
+```
 
 ### $ brook link/qr
 
@@ -39,15 +81,3 @@ $ brook qr -s ws://wsserver_address:port -p password
 $ brook qr -s wss://wsserver_domain:port
 $ brook qr -s socks5://server_address:port -u username -p password
 ```
-
-### 举例
-
-* brook server: `1.2.3.4:9999`
-* password: `password`
-
-那么生成的 Brook Link:
-
-```
-brook://1.2.3.4%3A9999%20password
-```
-
