@@ -15,14 +15,15 @@
 
 | 🌚 | 🌝 |
 | --- | --- |
-| 必读 | https://txthinking.github.io/brook/#/README |
-| 安装 CLI | https://txthinking.github.io/brook/#/install-cli |
-| 安装 GUI | https://txthinking.github.io/brook/#/install-gui |
-| OpenWrt GUI | https://txthinking.github.io/brook/#/brook-tproxy-gui |
-| 文档 | https://txthinking.github.io/brook/ |
+| 必读 | https://txthinking.github.io/brook/#/zh-cn/README |
+| 安装 CLI | https://txthinking.github.io/brook/#/zh-cn/install-cli |
+| 安装 GUI | https://txthinking.github.io/brook/#/zh-cn/install-gui |
+| OpenWrt GUI | https://txthinking.github.io/brook/#/zh-cn/brook-tproxy-gui |
+| 文档 | https://txthinking.github.io/brook/#/zh-cn/ |
 | Blog | https://talks.txthinking.com |
 | Youtube | https://www.youtube.com/txthinking |
-| Discussions | https://github.com/txthinking/brook/discussions |
+| 论坛 | https://github.com/txthinking/brook/discussions |
+| Telegram 频道 | https://t.me/brookchannel |
 
 ---
 

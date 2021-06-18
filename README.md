@@ -23,6 +23,7 @@
 | Blog | https://talks.txthinking.com |
 | Youtube | https://www.youtube.com/txthinking |
 | Discussions | https://github.com/txthinking/brook/discussions |
+| Telegram Channel | https://t.me/brookchannel |
 
 ---
 
