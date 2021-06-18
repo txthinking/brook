@@ -8,7 +8,9 @@
 
 **v20210701**
 
-- [CLI] $ brook relayoverbrook
+- [CLI] `$ brook relayoverbrook`
+- [CLI] `$ brook servers` 已移除, 请使用多个 `$ brook server` 代替, joker 会很方便, 查看文档
+- [CLI] `$ brook relays` 已移除, 请使用多个 `$ brook relay` 代替, joker 会很方便, 查看文档
 - [GUI] macOS, 优化 tun 模式
 - [GUI] Windows, 优化兼容性, 比如虚拟机
 - [GUI] 如果服务器信息通过brook link添加, 不会显示详情
