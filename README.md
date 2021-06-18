@@ -8,7 +8,9 @@
 
 **v20210701**
 
-- [CLI] $ brook relayoverbrook
+- [CLI] `$ brook relayoverbrook`
+- [CLI] `$ brook servers` removed, please use multiple `$ brook server` instead, joker will be useful, read the document
+- [CLI] `$ brook relays` removed, please use multiple `$ brook relay` instead, , joker will be useful, read the document
 - [GUI] macOS, optimize tun mode
 - [GUI] Windows, optimize compatibility, such as virtual machines
 - [GUI] If the server information is added through brook link, the details will not be displayed
