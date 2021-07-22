@@ -22,7 +22,7 @@ import (
 	"strings"
 
 	"github.com/mdp/qrterminal"
-	"github.com/txthinking/encrypt"
+	"github.com/txthinking/crypto"
 )
 
 // kind: brookserver/brookwsserver/brookwssserver/socks5server
@@ -60,7 +60,7 @@ func ParseLinkOld(link string) (kind, server, username, password string, err err
 		return
 	}
 	s := link[8:]
-	s, err = encrypt.URIUnescape(s)
+	s, err = crypto.URIUnescape(s)
 	if err != nil {
 		return
 	}
