@@ -25,9 +25,16 @@ import (
 	"github.com/txthinking/crypto"
 )
 
-// kind: brookserver/brookwsserver/brookwssserver/socks5server
 func Link(kind, s, username, password string) string {
 	v := url.Values{}
+	v.Set(kind, s)
+	v.Set("username", username)
+	v.Set("password", password)
+	s = fmt.Sprintf("brook://%s?%s", kind, v.Encode())
+	return s
+}
+
+func LinkExtra(kind, s, username, password string, v url.Values) string {
 	v.Set(kind, s)
 	v.Set("username", username)
 	v.Set("password", password)
@@ -39,7 +46,6 @@ func QR(kind, s, username, password string) {
 	qrterminal.GenerateHalfBlock(Link(kind, s, username, password), qrterminal.L, os.Stdout)
 }
 
-// kind: server/wsserver/wssserver/socks5
 func ParseLink(link string) (kind, s, username, password string, err error) {
 	var u *url.URL
 	u, err = url.Parse(link)
@@ -53,7 +59,20 @@ func ParseLink(link string) (kind, s, username, password string, err error) {
 	return
 }
 
-// kind: server/wsserver/wssserver/socks5
+func ParseLinkExtra(link string) (kind, s, username, password string, v url.Values, err error) {
+	var u *url.URL
+	u, err = url.Parse(link)
+	if err != nil {
+		return
+	}
+	kind = u.Host
+	s = u.Query().Get(kind)
+	username = u.Query().Get("username")
+	password = u.Query().Get("password")
+	v = u.Query()
+	return
+}
+
 func ParseLinkOld(link string) (kind, server, username, password string, err error) {
 	if !strings.HasPrefix(link, "brook://") {
 		err = errors.New("Invalid brook link")
