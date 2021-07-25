@@ -43,13 +43,16 @@ curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux
 chmod +x /usr/bin/brook
 ```
 
-#### _OR_ Install CLI via [nami](https://github.com/txthinking/nami) and run brook wsserver with [joker](https://github.com/txthinking/joker)
+#### _OR_ Install CLI via [nami](https://github.com/txthinking/nami), and run brook wsserver with [joker](https://github.com/txthinking/joker), print brook link
 
 ```
 source <(curl -L https://git.io/getnami)
 nami install github.com/txthinking/joker
 nami install github.com/txthinking/brook
 joker brook wsserver --listen :9999 --password hello
+
+joker list
+brook link -s ws://`curl -s -4 ipip.ooo`:9999 -p hello
 ```
 
 [Read Document](https://txthinking.github.io/brook/#/install-cli)
