@@ -42,7 +42,7 @@ curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux
 chmod +x /usr/bin/brook
 ```
 
-#### 通过 [nami](https://github.com/txthinking/nami) 安装 CLI 并通过 [joker](https://github.com/txthinking/joker) 运行 brook server 
+#### _或_ 通过 [nami](https://github.com/txthinking/nami) 安装 CLI 并通过 [joker](https://github.com/txthinking/joker) 运行 brook server 
 
 ```
 source <(curl -L https://git.io/getnami)
