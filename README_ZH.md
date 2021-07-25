@@ -42,13 +42,13 @@ curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux
 chmod +x /usr/bin/brook
 ```
 
-#### _或_ 通过 [nami](https://github.com/txthinking/nami) 安装 CLI 并通过 [joker](https://github.com/txthinking/joker) 运行 brook server 
+#### _或_ 通过 [nami](https://github.com/txthinking/nami) 安装 CLI 并通过 [joker](https://github.com/txthinking/joker) 运行 brook wswserver 
 
 ```
 source <(curl -L https://git.io/getnami)
 nami install github.com/txthinking/joker
 nami install github.com/txthinking/brook
-joker brook server --listen :9999 --password hello
+joker brook wsserver --listen :9999 --password hello
 ```
 
 [查看文档](https://txthinking.github.io/brook/#/zh-cn/install-cli)
