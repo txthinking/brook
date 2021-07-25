@@ -7,7 +7,7 @@ GUI(Graphical user interface), Brook GUI has only client function.
 or
 
 ```
-$ brew install --cask brook
+brew install --cask brook
 ```
 
 ## Windows

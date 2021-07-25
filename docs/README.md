@@ -20,7 +20,7 @@
 
     -   The Brook CLI file is an **independent command file**, it can be said that there is no concept of installation, just download this file to your computer, **run it after granting it executable permissions in the command line interface**
     -   Brook CLI file has both **server function** and **client function**, Brook CLI file also has **many other independent functions**
-    -   If you are under Linux and you are not very familiar with Linux, **It is strongly recommended to use the ubuntu system and root user** to run commands. The command to switch to the root user is `$ sudo su`
+    -   If you are under Linux and you are not very familiar with Linux, **It is strongly recommended to use the ubuntu system and root user** to run commands. The command to switch to the root user is `sudo su`
     -   **Each function of Brook requires only one command, no configuration is required**
 
 -   Brook GUI file

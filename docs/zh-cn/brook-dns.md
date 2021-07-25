@@ -1,6 +1,6 @@
-## $ brook dns
+## brook dns
 
-$ brook dns 用来创建一个加密DNS Server, TCP and UDP, 它与 $ brook server/wsserver/wssserver 一起工作
+brook dns 用来创建一个加密DNS Server, TCP and UDP, 它与 brook server/wsserver/wssserver 一起工作
 
 ```
 请求 <--> 加密DNS Server <-- | brook 协议 | --> brook <--> DNS Server
@@ -11,9 +11,9 @@ $ brook dns 用来创建一个加密DNS Server, TCP and UDP, 它与 $ brook serv
 ## Run brook dns
 
 ```
-$ brook dns --server 1.2.3.4:9999 --password hello --listen 127.0.0.1:53
+brook dns --server 1.2.3.4:9999 --password hello --listen 127.0.0.1:53
 ```
 
 > 你可能需要用sudo运行<br/>
-> 更多参数: $ brook dns -h
+> 更多参数: brook dns -h
 

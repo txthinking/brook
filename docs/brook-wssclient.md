@@ -1,4 +1,4 @@
-## $ brook wssclient
+## brook wssclient
 
 Assume your brook wssserver is `wss://domain.com:443` and password is `hello`, and you want to create a socks5 proxy `127.0.0.1:1080` on local.
 
@@ -9,10 +9,10 @@ send request <--> local socks5 <-- | brook wssserver protocol | --> brook wssser
 ## Run brook wssclient
 
 ```
-$ brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080
+brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080
 ```
 
-> More parameters: $ brook wssclient -h
+> More parameters: brook wssclient -h
 
 ## Use the socks5 proxy
 

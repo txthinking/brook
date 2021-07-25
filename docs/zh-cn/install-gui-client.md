@@ -7,7 +7,7 @@ GUI(图形用户界面), Brook 图形客户端.
 or
 
 ```
-$ brew install --cask brook
+brew install --cask brook
 ```
 
 ## Windows

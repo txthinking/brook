@@ -8,9 +8,9 @@
 
 **v20210701**
 
-- [CLI] `$ brook relayoverbrook`
-- [CLI] `$ brook servers` removed, please use multiple `$ brook server` instead, joker will be useful, read the document
-- [CLI] `$ brook relays` removed, please use multiple `$ brook relay` instead, , joker will be useful, read the document
+- [CLI] `brook relayoverbrook`
+- [CLI] `brook servers` removed, please use multiple `brook server` instead, joker will be useful, read the document
+- [CLI] `brook relays` removed, please use multiple `brook relay` instead, , joker will be useful, read the document
 - [GUI] macOS, optimize tun mode
 - [GUI] Windows, optimize compatibility, such as virtual machines
 - [GUI] If the server information is added through brook link, the details will not be displayed
@@ -39,8 +39,8 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 ### Install CLI
 
 ```
-$ curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
-$ chmod +x /usr/bin/brook
+curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
+chmod +x /usr/bin/brook
 ```
 
 [Read Document](https://txthinking.github.io/brook/#/install-cli)
@@ -66,21 +66,21 @@ AUTHOR:
 
 COMMANDS:
    server          Run as brook server, both TCP and UDP
-   client          Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook client <-> $ brook server <-> dst]
+   client          Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> brook client <-> brook server <-> dst]
    wsserver        Run as brook wsserver, both TCP and UDP, it will start a standard http server and websocket server
-   wsclient        Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook wsclient <-> $ brook wsserver <-> dst]
+   wsclient        Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> brook wsclient <-> brook wsserver <-> dst]
    wssserver       Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server
-   wssclient       Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook wssclient <-> $ brook wssserver <-> dst]
-   relayoverbrook  Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook server/wsserver/wssserver <-> to address]
-   dns             Run as dns server over brook, both TCP and UDP, [src <-> $ brook dns <-> $ brook server/wsserver/wssserver <-> dns] or [src <-> $ brook dns <-> dnsForBypass]
-   tproxy          Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver <-> dst]
+   wssclient       Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> brook wssclient <-> brook wssserver <-> dst]
+   relayoverbrook  Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> brook server/wsserver/wssserver <-> to address]
+   dns             Run as dns server over brook, both TCP and UDP, [src <-> brook dns <-> brook server/wsserver/wssserver <-> dns] or [src <-> brook dns <-> dnsForBypass]
+   tproxy          Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> brook tproxy <-> brook server/wsserver/wssserver <-> dst]
    link            Print brook link
    qr              Print brook server QR code
    connect         Connect via standard sharing link (brook server & brook wsserver & brook wssserver)
    relay           Run as standalone relay, both TCP and UDP, this means access [from address] is equal to access [to address], [src <-> from address <-> to address]
    socks5          Run as standalone standard socks5 server, both TCP and UDP
    socks5tohttp    Convert socks5 to http proxy, [src <-> listen address(http proxy) <-> socks5 address <-> dst]
-   hijackhttps     Hijack domains and assume is TCP/TLS/443. Requesting these domains from anywhere in the system will be hijacked . [src <-> $ brook hijackhttps <-> socks5 server] or [src <-> direct]
+   hijackhttps     Hijack domains and assume is TCP/TLS/443. Requesting these domains from anywhere in the system will be hijacked . [src <-> brook hijackhttps <-> socks5 server] or [src <-> direct]
    pac             Run as PAC server or save PAC to file
    servers         Run as multiple brook servers
    relays          Run as multiple standalone relays

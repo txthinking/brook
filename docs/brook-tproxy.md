@@ -1,8 +1,8 @@
-## $ brook tproxy
+## brook tproxy
 
 > **If running on openwrt, dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
-$ brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, it works with $ brook server, $ brook wsserver and $ brook wssserver.
+brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, it works with brook server, brook wsserver and brook wssserver.
 
 Assume your brook server is `1.2.3.4:9999` and password is `hello`
 
@@ -17,7 +17,7 @@ brook tproxy --server 1.2.3.4:9999 --password hello
 * By default, OpenWrt will automatically issue the IP of the router as gateway for your computers and mobiles
 * And configure your computer/mobile's DNS: such as `8.8.8.8`
 
-> More parameters: $ brook tproxy -h
+> More parameters: brook tproxy -h
 
 ## Run brook tproxy + smart DNS + bypass list
 
@@ -29,7 +29,7 @@ brook tproxy --server 1.2.3.4:9999 --password hello --dnsListen :5353 --dnsForDe
 * And OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 * By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
 
-> More parameters: $ brook tproxy -h
+> More parameters: brook tproxy -h
 
 ## Run brook tproxy + smart DNS + bypass list + enable IPv6
 
@@ -43,4 +43,4 @@ brook tproxy --server 1.2.3.4:9999 --password hello --dnsListen :5353 --dnsForDe
 * And OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 * By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
 
-> More parameters: $ brook tproxy -h
+> More parameters: brook tproxy -h

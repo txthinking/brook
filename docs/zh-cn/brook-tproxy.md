@@ -1,8 +1,8 @@
-## $ brook tproxy
+## brook tproxy
 
 > **如果运行在openwrt上, 依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
-$ brook tproxy 可以创建透明代理在你的Linux路由器, **Linux需要有`TPROXY内核模块`**. 它与$ brook server, $ brook wsserver, $ brook wssserver 一起工作.
+brook tproxy 可以创建透明代理在你的Linux路由器, **Linux需要有`TPROXY内核模块`**. 它与brook server, brook wsserver, brook wssserver 一起工作.
 
 假设你的brook server是 `1.2.3.4:9999`, 密码是 `hello`
 
@@ -17,7 +17,7 @@ brook tproxy --server 1.2.3.4:9999 --password hello
 * 默認, OpenWrt 將會下發router的IP的為電腦或手機的網關
 * 配置你的電腦或手機的DNS, 比如`8.8.8.8`
 
-> 更多參數: $ brook tproxy -h
+> 更多參數: brook tproxy -h
 
 ## 運行 brook tproxy + 智能DNS + bypass list
 
@@ -29,7 +29,7 @@ brook tproxy --server 1.2.3.4:9999 --password hello --dnsListen :5353 --dnsForDe
 * OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 * 默認, OpenWrt 將會下發router的IP的為電腦或手機的網關和DNS
 
-> 更多參數: $ brook tproxy -h
+> 更多參數: brook tproxy -h
 
 ## 運行 brook tproxy + 智能DNS + bypass list + 開啟IPv6
 
@@ -43,4 +43,4 @@ brook tproxy --server 1.2.3.4:9999 --password hello --dnsListen :5353 --dnsForDe
 * OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 * 默認, OpenWrt 將會下發router的IP的為電腦或手機的網關和DNS
 
-> 更多參數: $ brook tproxy -h
+> 更多參數: brook tproxy -h

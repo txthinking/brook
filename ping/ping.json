@@ -1,5 +1,5 @@
 {
     "version": "20210701",
-    "text": "It is recommended to use brook wsserver on iOS and macOS(tun) ->",
+    "text": "iOS memory limit 15M ->",
     "link": "https://github.com/txthinking/brook/discussions/861"
 }

@@ -1,4 +1,4 @@
-## $ brook client
+## brook client
 
 Assume your brook server is `1.2.3.4:9999` and password is `hello`, and you want to create a socks5 proxy `127.0.0.1:1080` on local.
 
@@ -9,10 +9,10 @@ send request <--> local socks5 <-- | brook server protocol | --> brook server <-
 ## Run brook client
 
 ```
-$ brook client --server 1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080
+brook client --server 1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080
 ```
 
-> More parameters: $ brook client -h
+> More parameters: brook client -h
 
 ## Use the socks5 proxy
 

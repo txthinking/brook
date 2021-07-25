@@ -67,17 +67,17 @@ brook://socks5?socks5=socks5%3A%2F%2F1.2.3.4%3A9999
 brook://socks5?password=world&socks5=socks5%3A%2F%2F1.2.3.4%3A9999&username=hello
 ```
 
-### $ brook link/qr
+### brook link/qr
 
 ```
-$ brook link -s server_address:port -p password
-$ brook link -s ws://wsserver_address:port -p password
-$ brook link -s wss://wsserver_domain:port -p password
-$ brook link -s socks5://server_address:port
-$ brook link -s socks5://server_address:port -u username -p password
+brook link -s server_address:port -p password
+brook link -s ws://wsserver_address:port -p password
+brook link -s wss://wsserver_domain:port -p password
+brook link -s socks5://server_address:port
+brook link -s socks5://server_address:port -u username -p password
 
-$ brook qr -s server_address:port -p password
-$ brook qr -s ws://wsserver_address:port -p password
-$ brook qr -s wss://wsserver_domain:port
-$ brook qr -s socks5://server_address:port -u username -p password
+brook qr -s server_address:port -p password
+brook qr -s ws://wsserver_address:port -p password
+brook qr -s wss://wsserver_domain:port
+brook qr -s socks5://server_address:port -u username -p password
 ```
