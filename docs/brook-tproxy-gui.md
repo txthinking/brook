@@ -1,4 +1,6 @@
-## brook tproxy
+## ipk
+
+**Test passed on the official OpenWrt, it is recommended to use the official original OpenWrt**
 
 > **Dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
