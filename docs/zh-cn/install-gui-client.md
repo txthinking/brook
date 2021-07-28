@@ -8,6 +8,10 @@ GUI(图形用户界面), Brook 图形客户端.
 
 [Brook.exe](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 
+或
+
+[BrookLite.exe](https://github.com/txthinking/brook/releases/latest/download/BrookLite.exe) (BrookLite需要你已经安装了最新版(基于chromium的那款)的Edge浏览器)
+
 ## Android
 
 [Brook.apk](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
