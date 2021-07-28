@@ -36,7 +36,7 @@ chmod +x /usr/bin/brook
 
 ### [Recommend] Install CLI via [nami](https://github.com/txthinking/nami), run `brook wsserver` with [joker](https://github.com/txthinking/joker)
 
-> 😘 Just copy and paste these four lines of commands, you can call this **one-click script**
+> 😘 Just copy and paste these four lines of commands, you can call this **💛one-click script💛**
 
 ```
 source <(curl -L https://git.io/getnami)
