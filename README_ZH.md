@@ -6,22 +6,13 @@
 [![开源协议: GPL v3](https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![捐赠](https://img.shields.io/badge/%E6%94%AF%E6%8C%81-%E6%8D%90%E8%B5%A0-ff69b4.svg)](https://github.com/sponsors/txthinking)
 
-**v20210701**
-
-- [CLI] `brook relayoverbrook`
-- [CLI] `brook servers` 已移除, 请使用多个 `brook server` 代替, joker 会很方便, 查看文档
-- [CLI] `brook relays` 已移除, 请使用多个 `brook relay` 代替, joker 会很方便, 查看文档
-- [GUI] macOS, 优化 tun 模式
-- [GUI] Windows, 优化兼容性, 比如虚拟机
-- [GUI] 如果服务器信息通过brook link添加, 不会显示详情
-
 | 🌚 | 🌝 |
 | --- | --- |
 | 必读 | https://txthinking.github.io/brook/#/zh-cn/README |
 | 安装 CLI | https://txthinking.github.io/brook/#/zh-cn/install-cli |
-| 安装 GUI | https://txthinking.github.io/brook/#/zh-cn/install-gui |
-| OpenWrt GUI | https://txthinking.github.io/brook/#/zh-cn/brook-tproxy-gui |
-| 文档 | https://txthinking.github.io/brook/#/zh-cn/ |
+| 安装 GUI (macOS, Windows, iOS, Android, OpenWrt) | https://txthinking.github.io/brook/#/zh-cn/install-gui-client |
+| OpenWrt CLI | https://txthinking.github.io/brook/#/zh-cn/brook-tproxy |
+| 📹 | ✍️ |
 | Blog | https://talks.txthinking.com |
 | Youtube | https://www.youtube.com/txthinking |
 | 论坛 | https://github.com/txthinking/brook/discussions |
@@ -42,18 +33,18 @@ curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux
 chmod +x /usr/bin/brook
 ```
 
-#### _或_ 通过 [nami](https://github.com/txthinking/nami) 安装 CLI, 并通过 [joker](https://github.com/txthinking/joker) 运行 brook wswserver, 打印 brook link 
+### [推荐] 通过 [nami](https://github.com/txthinking/nami) 安装 CLI, 并通过 [joker](https://github.com/txthinking/joker) 运行 `brook wswserver`
+
+> 😘 只需复制这四行命令粘贴即可, 你可以称此为**一键脚本**
 
 ```
 source <(curl -L https://git.io/getnami)
 nami install github.com/txthinking/joker
 nami install github.com/txthinking/brook
 joker brook wsserver --listen :9999 --password hello
-
-joker list
-
-brook link -s ws://`curl -s -4 ipip.ooo`:9999 -p hello
 ```
+
+> 然后, 你的 `brook wsserver` 是 `ws://YOUR_SERVER_IP:9999`, 密码是 `password`
 
 [查看文档](https://txthinking.github.io/brook/#/zh-cn/install-cli)
 
