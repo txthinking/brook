@@ -8,6 +8,10 @@ GUI(Graphical user interface), Brook GUI has only client function.
 
 [Brook.exe](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 
+或
+
+[BrookLite.exe](https://github.com/txthinking/brook/releases/latest/download/BrookLite.exe) (BrookLite requires that the latest version of Edge(chromium-based) has been installed)
+
 ## Android
 
 [Brook.apk](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
