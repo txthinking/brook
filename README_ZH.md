@@ -35,7 +35,7 @@ chmod +x /usr/bin/brook
 
 ### [推荐] 通过 [nami](https://github.com/txthinking/nami) 安装 CLI, 并通过 [joker](https://github.com/txthinking/joker) 运行 `brook wswserver`
 
-> 😘 只需复制这四行命令粘贴即可, 你可以称此为**一键脚本**
+> 😘 只需复制这四行命令粘贴即可, 你可以称此为**💛一键脚本💛**
 
 ```
 source <(curl -L https://git.io/getnami)
