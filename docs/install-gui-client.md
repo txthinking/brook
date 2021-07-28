@@ -4,12 +4,6 @@ GUI(Graphical user interface), Brook GUI has only client function.
 
 [Brook.dmg](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 
-or
-
-```
-brew install --cask brook
-```
-
 ## Windows
 
 [Brook.exe](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
