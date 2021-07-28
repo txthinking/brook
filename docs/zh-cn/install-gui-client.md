@@ -4,12 +4,6 @@ GUI(图形用户界面), Brook 图形客户端.
 
 [Brook.dmg](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 
-or
-
-```
-brew install --cask brook
-```
-
 ## Windows
 
 [Brook.exe](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
