@@ -1,5 +1,7 @@
 ## brook tproxy
 
+**在官方OpenWrt测试通过, 推荐使用官方原版OpenWrt**
+
 > **如果运行在openwrt上, 依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
 brook tproxy 可以创建透明代理在你的Linux路由器, **Linux需要有`TPROXY内核模块`**. 它与brook server, brook wsserver, brook wssserver 一起工作.
