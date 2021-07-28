@@ -1,27 +1,17 @@
 # Brook
 
-[中文](README_ZH.md)
+[🇨🇳 中文](README_ZH.md)
 
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Donate](https://img.shields.io/badge/Support-Donate-ff69b4.svg)](https://github.com/sponsors/txthinking)
 
-**v20210701**
-
-- [CLI] `brook relayoverbrook`
-- [CLI] `brook servers` removed, please use multiple `brook server` instead, joker will be useful, read the document
-- [CLI] `brook relays` removed, please use multiple `brook relay` instead, , joker will be useful, read the document
-- [GUI] macOS, optimize tun mode
-- [GUI] Windows, optimize compatibility, such as virtual machines
-- [GUI] If the server information is added through brook link, the details will not be displayed
-
 | 🌚 | 🌝 |
 | --- | --- |
 | MUST READ | https://txthinking.github.io/brook/#/README |
 | Install CLI | https://txthinking.github.io/brook/#/install-cli |
-| Install GUI | https://txthinking.github.io/brook/#/install-gui |
-| OpenWrt GUI | https://txthinking.github.io/brook/#/brook-tproxy-gui |
-| Document | https://txthinking.github.io/brook/ |
+| Install GUI (macOS, Windows, iOS, Android, OpenWrt) | https://txthinking.github.io/brook/#/install-gui-client |
+| OpenWrt CLI | https://txthinking.github.io/brook/#/brook-tproxy |
 | Blog | https://talks.txthinking.com |
 | Youtube | https://www.youtube.com/txthinking |
 | Discussions | https://github.com/txthinking/brook/discussions |
@@ -43,17 +33,18 @@ curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux
 chmod +x /usr/bin/brook
 ```
 
-#### _OR_ Install CLI via [nami](https://github.com/txthinking/nami), and run brook wsserver with [joker](https://github.com/txthinking/joker), print brook link
+### [Recommend] Install CLI via [nami](https://github.com/txthinking/nami), run `brook wsserver` with [joker](https://github.com/txthinking/joker)
+
+> Just copy and paste these four lines of commands, you can call this **one-click script**
 
 ```
 source <(curl -L https://git.io/getnami)
 nami install github.com/txthinking/joker
 nami install github.com/txthinking/brook
 joker brook wsserver --listen :9999 --password hello
-
-joker list
-brook link -s ws://`curl -s -4 ipip.ooo`:9999 -p hello
 ```
+
+> Then, your `brook wsserver` is `ws://YOUR_SERVER_IP:9999`, password is `hello`
 
 [Read Document](https://txthinking.github.io/brook/#/install-cli)
 
