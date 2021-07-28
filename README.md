@@ -12,6 +12,7 @@
 | Install CLI | https://txthinking.github.io/brook/#/install-cli |
 | Install GUI (macOS, Windows, iOS, Android, OpenWrt) | https://txthinking.github.io/brook/#/install-gui-client |
 | OpenWrt CLI | https://txthinking.github.io/brook/#/brook-tproxy |
+| 📹 | ✍️ |
 | Blog | https://talks.txthinking.com |
 | Youtube | https://www.youtube.com/txthinking |
 | Discussions | https://github.com/txthinking/brook/discussions |
@@ -35,7 +36,7 @@ chmod +x /usr/bin/brook
 
 ### [Recommend] Install CLI via [nami](https://github.com/txthinking/nami), run `brook wsserver` with [joker](https://github.com/txthinking/joker)
 
-> Just copy and paste these four lines of commands, you can call this **one-click script**
+> 😘 Just copy and paste these four lines of commands, you can call this **one-click script**
 
 ```
 source <(curl -L https://git.io/getnami)
