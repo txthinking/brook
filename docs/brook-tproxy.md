@@ -1,5 +1,7 @@
 ## brook tproxy
 
+**Test passed on the official OpenWrt, it is recommended to use the official original OpenWrt**
+
 > **If running on openwrt, dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
 brook tproxy can create Transparent Proxy on your linux router with `TPROXY mod`, it works with brook server, brook wsserver and brook wssserver.
