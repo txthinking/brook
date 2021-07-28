@@ -1,4 +1,6 @@
-## brook tproxy
+## ipk
+
+**在官方OpenWrt测试通过, 推荐使用官方原版OpenWrt**
 
 > **依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
 
