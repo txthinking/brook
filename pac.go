@@ -23,6 +23,7 @@ import (
 	"os"
 	"text/template"
 	"time"
+	"strings"
 
 	"github.com/tdewolff/minify"
 	"github.com/tdewolff/minify/js"
