@@ -67,6 +67,12 @@ func (p *PAC) MakeBody() (io.Reader, error) {
 			return nil, err
 		}
 	}
+	if p.DomainData != nil {
+		b := bytes.TrimSpace(p.DomainData)
+		b = bytes.Replace(b, []byte{0x20}, []byte{}, -1)
+		b = bytes.Replace(b, []byte{0x0d, 0x0a}, []byte{0x0a}, -1)
+		l = strings.Split(string(b), "\n")
+	}
 	t := template.New("pac")
 	t, err = t.Parse(tpl)
 	if err != nil {
