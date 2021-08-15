@@ -28,17 +28,16 @@ import (
 
 // Relay is relay server.
 type Relay struct {
-	TCPAddr       *net.TCPAddr
-	UDPAddr       *net.UDPAddr
-	RemoteTCPAddr *net.TCPAddr
-	RemoteUDPAddr *net.UDPAddr
-	TCPListen     *net.TCPListener
-	UDPConn       *net.UDPConn
-	UDPExchanges  *cache.Cache
-	TCPTimeout    int
-	UDPTimeout    int
-	RunnerGroup   *runnergroup.RunnerGroup
-	UDPSrc        *cache.Cache
+	TCPAddr      *net.TCPAddr
+	UDPAddr      *net.UDPAddr
+	Remote       string
+	TCPListen    *net.TCPListener
+	UDPConn      *net.UDPConn
+	UDPExchanges *cache.Cache
+	TCPTimeout   int
+	UDPTimeout   int
+	RunnerGroup  *runnergroup.RunnerGroup
+	UDPSrc       *cache.Cache
 }
 
 // NewRelay returns a Relay.
@@ -51,29 +50,20 @@ func NewRelay(addr, remote string, tcpTimeout, udpTimeout int) (*Relay, error) {
 	if err != nil {
 		return nil, err
 	}
-	rtaddr, err := net.ResolveTCPAddr("tcp", remote)
-	if err != nil {
-		return nil, err
-	}
-	ruaddr, err := net.ResolveUDPAddr("udp", remote)
-	if err != nil {
-		return nil, err
-	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
 	s := &Relay{
-		TCPAddr:       taddr,
-		UDPAddr:       uaddr,
-		RemoteTCPAddr: rtaddr,
-		RemoteUDPAddr: ruaddr,
-		UDPExchanges:  cs,
-		TCPTimeout:    tcpTimeout,
-		UDPTimeout:    udpTimeout,
-		RunnerGroup:   runnergroup.New(),
-		UDPSrc:        cs2,
+		TCPAddr:      taddr,
+		UDPAddr:      uaddr,
+		Remote:       remote,
+		UDPExchanges: cs,
+		TCPTimeout:   tcpTimeout,
+		UDPTimeout:   udpTimeout,
+		RunnerGroup:  runnergroup.New(),
+		UDPSrc:       cs2,
 	}
 	return s, nil
 }
@@ -164,12 +154,11 @@ func (s *Relay) Shutdown() error {
 }
 
 // TCPHandle handles request.
-func (s *Relay) TCPHandle(c *net.TCPConn) error {
-	tmp, err := Dial.Dial("tcp", s.RemoteTCPAddr.String())
+func (s *Relay) TCPHandle(c net.Conn) error {
+	rc, err := Dial.Dial("tcp", s.Remote)
 	if err != nil {
 		return err
 	}
-	rc := tmp.(*net.TCPConn)
 	defer rc.Close()
 	if s.TCPTimeout != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
@@ -223,7 +212,12 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
-	dst := s.RemoteUDPAddr.String()
+	ruaddr, err := net.ResolveUDPAddr("udp", s.Remote)
+	if err != nil {
+		return err
+	}
+
+	dst := ruaddr.String()
 	var ue *socks5.UDPExchange
 	iue, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
@@ -236,7 +230,7 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	if ok {
 		laddr = any.(*net.UDPAddr)
 	}
-	rc, err := Dial.DialUDP("udp", laddr, s.RemoteUDPAddr)
+	rc, err := Dial.DialUDP("udp", laddr, ruaddr)
 	if err != nil {
 		if strings.Contains(err.Error(), "address already in use") {
 			// we dont choose lock, so ignore this error
