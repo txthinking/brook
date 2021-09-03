@@ -670,7 +670,7 @@ func main() {
 							os.WriteFile("/root/.brook.tproxy.err", out, 0666)
 							cmd = nil
 						}()
-						w.Write([]byte("Diconnect"))
+						w.Write([]byte("Disconnect"))
 					})
 					m.HandleFunc("/disconnect", func(w http.ResponseWriter, r *http.Request) {
 						if cmd == nil {
@@ -688,7 +688,7 @@ func main() {
 							w.Write([]byte("Connect"))
 							return
 						}
-						w.Write([]byte("Diconnect"))
+						w.Write([]byte("Disconnect"))
 					})
 					s := &http.Server{
 						Addr:    c.String("webListen"),
