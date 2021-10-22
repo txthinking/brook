@@ -19,7 +19,7 @@ chmod +x /usr/bin/brook
 安装 nami
 
 ```
-source <(curl -L https://git.io/getnami)
+curl -L https://raw.githubusercontent.com/txthinking/nami/master/install.sh | bash && sleep 3 && exec -l $SHELL
 ```
 
 使用 nami 安装 brook, 她会自动帮你下载适用你系统的最新版 Brook CLI 文件, 并赋予可执行权限
