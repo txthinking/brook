@@ -21,7 +21,7 @@ You can go to the [releases](https://github.com/txthinking/brook/releases) to do
 Install nami
 
 ```
-source <(curl -L https://git.io/getnami)
+curl -L https://raw.githubusercontent.com/txthinking/nami/master/install.sh | bash && sleep 3 && exec -l $SHELL
 ```
 
 Use nami to install brook, she will automatically download the latest version for your system
