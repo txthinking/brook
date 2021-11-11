@@ -39,7 +39,7 @@ chmod +x /usr/bin/brook
 > 😘 Just copy and paste these four lines of commands, you can call this **💛one-click script💛**
 
 ```
-source <(curl -L https://git.io/getnami)
+curl -L https://git.io/getnami | bash && sleep 3 && exec -l $SHELL
 nami install github.com/txthinking/joker
 nami install github.com/txthinking/brook
 joker brook wsserver --listen :9999 --password hello
