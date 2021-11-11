@@ -38,7 +38,7 @@ chmod +x /usr/bin/brook
 > 😘 只需复制这四行命令粘贴即可, 你可以称此为**💛一键脚本💛**
 
 ```
-source <(curl -L https://git.io/getnami)
+curl -L https://git.io/getnami | bash && sleep 3 && exec -l $SHELL
 nami install github.com/txthinking/joker
 nami install github.com/txthinking/brook
 joker brook wsserver --listen :9999 --password hello
