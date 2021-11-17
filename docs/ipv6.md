@@ -14,6 +14,6 @@
 | brook socks5tohttp | CLI | Yes | Yes |
 | brook hijackhttps | CLI | Yes | Yes |
 | macOS Client | GUI | Yes | Yes |
-| Windows Client | GUI | Yes | Yes |
+| Windows Client | GUI | Yes | Yes/2 |
 | iOS Client | GUI | Yes | Yes |
 | Android Client | GUI | Yes | Yes |
