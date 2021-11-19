@@ -27,6 +27,8 @@ github.com/txthinking/crypto v0.0.0-20210716135230-de9624a415a4 h1:B7V42IzgF+GNj
 github.com/txthinking/crypto v0.0.0-20210716135230-de9624a415a4/go.mod h1:zHo3SEOo2aSacDyz0YJ3GL5GbZrc5nyp8LWTkzVHv6g=
 github.com/txthinking/runnergroup v0.0.0-20210608031112-152c7c4432bf h1:7PflaKRtU4np/epFxRXlFhlzLXZzKFrH5/I4so5Ove0=
 github.com/txthinking/runnergroup v0.0.0-20210608031112-152c7c4432bf/go.mod h1:CLUSJbazqETbaR+i0YAhXBICV9TrKH93pziccMhmhpM=
+github.com/txthinking/socks5 v0.0.0-20210716140126-fa1f52a8f2da h1:7x8pJcBTdKTBpQbRjZZc9o6CDquXBbvm9UIrR6ZSRJ4=
+github.com/txthinking/socks5 v0.0.0-20210716140126-fa1f52a8f2da/go.mod h1:7NloQcrxaZYKURWph5HLxVDlIwMHJXCPkeWPtpftsIg=
 github.com/txthinking/x v0.0.0-20210326105829-476fab902fbe h1:gMWxZxBFRAXqoGkwkYlPX2zvyyKNWJpxOxCrjqJkm5A=
 github.com/txthinking/x v0.0.0-20210326105829-476fab902fbe/go.mod h1:WgqbSEmUYSjEV3B1qmee/PpP2NYEz4bL9/+mF1ma+s4=
 github.com/urfave/cli/v2 v2.3.0 h1:qph92Y649prgesehzOrQjdWyxFOp/QVM+6imKHad91M=
