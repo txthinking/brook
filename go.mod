@@ -12,11 +12,13 @@ require (
 	github.com/tdewolff/parse v2.3.4+incompatible // indirect
 	github.com/tdewolff/test v1.0.6 // indirect
 	github.com/txthinking/crypto v0.0.0-20210716135230-de9624a415a4
-	github.com/txthinking/runnergroup v0.0.0-20200327135940-540a793bb997
+	github.com/txthinking/runnergroup v0.0.0-20210608031112-152c7c4432bf
 	github.com/txthinking/socks5 v0.0.0-20210106113028-328af325654e
-	github.com/txthinking/x v0.0.0-20201210150116-a8015a742c8c
+	github.com/txthinking/x v0.0.0-20210326105829-476fab902fbe
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
 )
+
+replace github.com/txthinking/socks5 => ../socks5

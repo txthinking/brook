@@ -241,35 +241,20 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 	any, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue := any.(*UDPExchange)
-		return ue.Any.(func(b []byte) error)(d.Data)
-	}
-	debug("dial udp", dst)
-	var laddr *net.UDPAddr
-	any, ok = s.UDPSrc.Get(src + dst)
-	if ok {
-		laddr = any.(*net.UDPAddr)
-	}
-	la := ""
-	if laddr != nil {
-		la = laddr.String()
-	}
-	rc, err := x.DialWebsocket(la)
-	if err != nil {
-		if strings.Contains(err.Error(), "address already in use") {
-			// we dont choose lock, so ignore this error
+		err := ue.Any.(func(b []byte) error)(d.Data)
+		if err == nil {
 			return nil
 		}
+		if !strings.Contains(err.Error(), "closed") {
+			return err
+		}
+	}
+	debug("dial udp", dst)
+	rc, err := x.DialWebsocket("")
+	if err != nil {
 		return err
 	}
 	defer rc.Close()
-	if laddr == nil {
-		laddr = &net.UDPAddr{
-			IP:   rc.LocalAddr().(*net.TCPAddr).IP,
-			Port: rc.LocalAddr().(*net.TCPAddr).Port,
-			Zone: rc.LocalAddr().(*net.TCPAddr).Zone,
-		}
-		s.UDPSrc.Set(src+dst, laddr, -1)
-	}
 	if x.UDPTimeout != 0 {
 		if err := rc.SetDeadline(time.Now().Add(time.Duration(x.UDPTimeout) * time.Second)); err != nil {
 			return err
