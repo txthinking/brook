@@ -13,7 +13,7 @@ require (
 	github.com/tdewolff/test v1.0.6 // indirect
 	github.com/txthinking/crypto v0.0.0-20210716135230-de9624a415a4
 	github.com/txthinking/runnergroup v0.0.0-20210608031112-152c7c4432bf
-	github.com/txthinking/socks5 v0.0.0-20211119145022-870fa1380069
+	github.com/txthinking/socks5 v0.0.0-20211121111206-e03c1217a50b
 	github.com/txthinking/x v0.0.0-20210326105829-476fab902fbe
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/urfave/negroni v1.0.0
