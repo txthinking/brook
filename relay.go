@@ -37,6 +37,7 @@ type Relay struct {
 	TCPTimeout   int
 	UDPTimeout   int
 	RunnerGroup  *runnergroup.RunnerGroup
+	UDPSrc       *cache.Cache
 }
 
 // NewRelay returns a Relay.
@@ -50,6 +51,7 @@ func NewRelay(addr, remote string, tcpTimeout, udpTimeout int) (*Relay, error) {
 		return nil, err
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -61,6 +63,7 @@ func NewRelay(addr, remote string, tcpTimeout, udpTimeout int) (*Relay, error) {
 		TCPTimeout:   tcpTimeout,
 		UDPTimeout:   udpTimeout,
 		RunnerGroup:  runnergroup.New(),
+		UDPSrc:       cs2,
 	}
 	return s, nil
 }
@@ -219,18 +222,24 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	iue, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue = iue.(*socks5.UDPExchange)
-		err := send(ue, b)
-		if err == nil {
-			return nil
-		}
-		if !strings.Contains(err.Error(), "closed") {
-			return err
-		}
+		return send(ue, b)
 	}
 
-	rc, err := Dial.DialUDP("udp", nil, ruaddr)
+	var laddr *net.UDPAddr
+	any, ok := s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
+	rc, err := Dial.DialUDP("udp", laddr, ruaddr)
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			// we dont choose lock, so ignore this error
+			return nil
+		}
 		return err
+	}
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 	}
 	ue = &socks5.UDPExchange{
 		ClientAddr: addr,

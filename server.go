@@ -38,6 +38,7 @@ type Server struct {
 	TCPTimeout   int
 	UDPTimeout   int
 	RunnerGroup  *runnergroup.RunnerGroup
+	UDPSrc       *cache.Cache
 }
 
 // NewServer.
@@ -51,6 +52,7 @@ func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, erro
 		return nil, err
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
+	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -62,6 +64,7 @@ func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, erro
 		TCPTimeout:   tcpTimeout,
 		UDPTimeout:   udpTimeout,
 		RunnerGroup:  runnergroup.New(),
+		UDPSrc:       cs2,
 	}
 	return s, nil
 }
@@ -182,25 +185,34 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	any, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue := any.(*UDPExchange)
-		_, err := ue.Any.(io.Writer).Write(d)
-		if err == nil {
-			return nil
-		}
-		if !strings.Contains(err.Error(), "closed") {
+		if _, err := ue.Any.(io.Writer).Write(d); err != nil {
 			return err
 		}
+		return nil
 	}
 
 	debug("dial udp", dst)
+	var laddr *net.UDPAddr
+	any, ok = s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
 	raddr, err := net.ResolveUDPAddr("udp", dst)
 	if err != nil {
 		return err
 	}
-	rc, err := Dial.DialUDP("udp", nil, raddr)
+	rc, err := Dial.DialUDP("udp", laddr, raddr)
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			// we dont choose lock, so ignore this error
+			return nil
+		}
 		return err
 	}
 	defer rc.Close()
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+	}
 	wer := w(rc.Write)
 	if _, err := wer.Write(d); err != nil {
 		return err

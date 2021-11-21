@@ -20,10 +20,12 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/socks5"
 	"github.com/urfave/negroni"
@@ -40,6 +42,7 @@ type WSServer struct {
 	TCPTimeout  int
 	UDPTimeout  int
 	Path        string
+	UDPSrc      *cache.Cache
 }
 
 // NewWSServer.
@@ -52,6 +55,7 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 			return nil, err
 		}
 	}
+	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -62,6 +66,7 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 		TCPTimeout: tcpTimeout,
 		UDPTimeout: udpTimeout,
 		Path:       path,
+		UDPSrc:     cs2,
 	}
 	return s, nil
 }
@@ -186,15 +191,27 @@ func (s *WSServer) TCPHandle(ss *StreamServer, dst []byte) error {
 func (s *WSServer) UDPHandle(ss *StreamServer, src string, dstb []byte) error {
 	dst := socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:])
 	debug("dial udp", dst)
+	var laddr *net.UDPAddr
+	any, ok := s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
 	raddr, err := net.ResolveUDPAddr("udp", dst)
 	if err != nil {
 		return err
 	}
-	rc, err := Dial.DialUDP("udp", nil, raddr)
+	rc, err := Dial.DialUDP("udp", laddr, raddr)
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			// we dont choose lock, so ignore this error
+			return nil
+		}
 		return err
 	}
 	defer rc.Close()
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+	}
 	if err := ss.Exchange(rc); err != nil {
 		return nil
 	}

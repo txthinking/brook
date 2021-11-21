@@ -116,24 +116,30 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	any, ok := s.UDPExchanges.Get(src + dst)
 	if ok {
 		ue := any.(*UDPExchange)
-		err := ue.Any.(*PacketClient).LocalToServer(ue.Dst, d.Data, ue.Conn, x.UDPTimeout)
-		if err == nil {
-			return nil
-		}
-		if !strings.Contains(err.Error(), "closed") {
-			return err
-		}
+		return ue.Any.(*PacketClient).LocalToServer(ue.Dst, d.Data, ue.Conn, x.UDPTimeout)
 	}
 	debug("dial udp", dst)
+	var laddr *net.UDPAddr
+	any, ok = s.UDPSrc.Get(src + dst)
+	if ok {
+		laddr = any.(*net.UDPAddr)
+	}
 	raddr, err := net.ResolveUDPAddr("udp", x.ServerAddress)
 	if err != nil {
 		return err
 	}
-	rc, err := Dial.DialUDP("udp", nil, raddr)
+	rc, err := Dial.DialUDP("udp", laddr, raddr)
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			// we dont choose lock, so ignore this error
+			return nil
+		}
 		return err
 	}
 	defer rc.Close()
+	if laddr == nil {
+		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+	}
 	dstb := make([]byte, 0, 1+len(d.DstAddr)+2)
 	dstb = append(dstb, d.Atyp)
 	dstb = append(dstb, d.DstAddr...)
