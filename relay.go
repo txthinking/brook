@@ -17,7 +17,6 @@ package brook
 import (
 	"log"
 	"net"
-	"strings"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
@@ -232,10 +231,6 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	rc, err := Dial.DialUDP("udp", laddr, ruaddr)
 	if err != nil {
-		if strings.Contains(err.Error(), "address already in use") {
-			// we dont choose lock, so ignore this error
-			return nil
-		}
 		return err
 	}
 	if laddr == nil {

@@ -17,7 +17,6 @@ package brook
 import (
 	"log"
 	"net"
-	"strings"
 	"time"
 
 	"github.com/txthinking/brook/limits"
@@ -130,10 +129,6 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	}
 	rc, err := Dial.DialUDP("udp", laddr, raddr)
 	if err != nil {
-		if strings.Contains(err.Error(), "address already in use") {
-			// we dont choose lock, so ignore this error
-			return nil
-		}
 		return err
 	}
 	defer rc.Close()

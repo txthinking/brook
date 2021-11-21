@@ -20,7 +20,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -202,10 +201,6 @@ func (s *WSServer) UDPHandle(ss *StreamServer, src string, dstb []byte) error {
 	}
 	rc, err := Dial.DialUDP("udp", laddr, raddr)
 	if err != nil {
-		if strings.Contains(err.Error(), "address already in use") {
-			// we dont choose lock, so ignore this error
-			return nil
-		}
 		return err
 	}
 	defer rc.Close()

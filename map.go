@@ -236,10 +236,6 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		}
 		rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
 		if err != nil {
-			if strings.Contains(err.Error(), "address already in use") {
-				// we dont choose lock, so ignore this error
-				return nil
-			}
 			return err
 		}
 		defer rc.Close()
@@ -291,10 +287,6 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	rc, err := s.WSClient.DialWebsocket(la)
 	if err != nil {
-		if strings.Contains(err.Error(), "address already in use") {
-			// we dont choose lock, so ignore this error
-			return nil
-		}
 		return err
 	}
 	defer rc.Close()
