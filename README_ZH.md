@@ -5,18 +5,10 @@
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
 [![开源协议: GPL v3](https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![捐赠](https://img.shields.io/badge/%E6%94%AF%E6%8C%81-%E6%8D%90%E8%B5%A0-ff69b4.svg)](https://github.com/sponsors/txthinking)
-
-| 🌚 | 🌝 |
-| --- | --- |
-| 必读 | https://txthinking.github.io/brook/#/zh-cn/README |
-| 安装 CLI | https://txthinking.github.io/brook/#/zh-cn/install-cli |
-| 安装 GUI (macOS, Windows, iOS, Android, OpenWrt) | https://txthinking.github.io/brook/#/zh-cn/install-gui-client |
-| OpenWrt CLI | https://txthinking.github.io/brook/#/zh-cn/brook-tproxy |
-| 📹 | ✍️ |
-| Blog | https://talks.txthinking.com |
-| Youtube | https://www.youtube.com/txthinking |
-| 论坛 | https://github.com/txthinking/brook/discussions |
-| Telegram 频道 | https://t.me/brookchannel |
+[![Talks](https://img.shields.io/badge/txthinking-talks-blue.svg)](https://talks.txthinking.com)
+[![Youtube](https://img.shields.io/badge/Youtube-@txthinking-blue.svg)](https://www.youtube.com/txthinking)
+[![Document](https://img.shields.io/badge/github.io-Document-blue.svg)](https://txthinking.github.io/brook/)
+[![Telegram](https://img.shields.io/badge/telegram-@brookgroup-blue.svg)](https://t.me/brookgroup)
 
 ---
 
@@ -38,13 +30,13 @@ chmod +x /usr/bin/brook
 > 😘 只需复制这四行命令粘贴即可, 你可以称此为**💛一键脚本💛**
 
 ```
-curl -L https://git.io/getnami | bash && sleep 3 && exec -l $SHELL
+curl -L https://raw.githubusercontent.com/txthinking/nami/master/install.sh | bash && sleep 3 && exec -l $SHELL
 nami install github.com/txthinking/joker
 nami install github.com/txthinking/brook
-joker brook wsserver --listen :9999 --password hello
+joker brook server --listen :9999 --password hello
 ```
 
-> 然后, 你的 `brook wsserver` 是 `ws://YOUR_SERVER_IP:9999`, 密码是 `password`
+> 然后, 你的 `brook server` 是 `YOUR_SERVER_IP:9999`, 密码是 `password`
 
 [查看文档](https://txthinking.github.io/brook/#/zh-cn/install-cli)
 
