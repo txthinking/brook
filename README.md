@@ -5,18 +5,9 @@
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Donate](https://img.shields.io/badge/Support-Donate-ff69b4.svg)](https://github.com/sponsors/txthinking)
-
-| 🌚 | 🌝 |
-| --- | --- |
-| MUST READ | https://txthinking.github.io/brook/#/README |
-| Install CLI | https://txthinking.github.io/brook/#/install-cli |
-| Install GUI (macOS, Windows, iOS, Android, OpenWrt) | https://txthinking.github.io/brook/#/install-gui-client |
-| OpenWrt CLI | https://txthinking.github.io/brook/#/brook-tproxy |
-| 📹 | ✍️ |
-| Blog | https://talks.txthinking.com |
-| Youtube | https://www.youtube.com/txthinking |
-| Discussions | https://github.com/txthinking/brook/discussions |
-| Telegram Channel | https://t.me/brookchannel |
+[Talks](https://talks.txthinking.com)
+[Youtube](https://www.youtube.com/txthinking)
+[Document](https://txthinking.github.io/brook/)
 
 ---
 
@@ -39,13 +30,13 @@ chmod +x /usr/bin/brook
 > 😘 Just copy and paste these four lines of commands, you can call this **💛one-click script💛**
 
 ```
-curl -L https://git.io/getnami | bash && sleep 3 && exec -l $SHELL
+curl -L https://raw.githubusercontent.com/txthinking/nami/master/install.sh | bash && sleep 3 && exec -l $SHELL
 nami install github.com/txthinking/joker
 nami install github.com/txthinking/brook
-joker brook wsserver --listen :9999 --password hello
+joker brook server --listen :9999 --password hello
 ```
 
-> Then, your `brook wsserver` is `ws://YOUR_SERVER_IP:9999`, password is `hello`
+> Then, your `brook server` is `YOUR_SERVER_IP:9999`, password is `hello`
 
 [Read Document](https://txthinking.github.io/brook/#/install-cli)
 
