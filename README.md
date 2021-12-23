@@ -19,21 +19,33 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
 ❤️ A project by [txthinking.com](https://www.txthinking.com)
 
-### Install CLI
+### Install CLI via curl, and run `brook server`
 
 ```
 curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
 chmod +x /usr/bin/brook
+brook server --listen :9999 --password hello
 ```
 
-### [Recommend] Install CLI via [nami](https://github.com/txthinking/nami), run `brook wsserver` with [joker](https://github.com/txthinking/joker)
+> Then, your `brook server` is `YOUR_SERVER_IP:9999`, password is `hello`
 
-> 😘 Just copy and paste these four lines of commands, you can call this **💛one-click script💛**
+### OR install CLI and [joker](https://github.com/txthinking/joker) via curl, and run `brook server` with [joker](https://github.com/txthinking/joker)
+
+```
+curl -L https://github.com/txthinking/joker/releases/latest/download/joker_linux_amd64 -o /usr/bin/joker
+chmod +x /usr/bin/joker
+curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
+chmod +x /usr/bin/brook
+joker brook server --listen :9999 --password hello
+```
+
+> Then, your `brook server` is `YOUR_SERVER_IP:9999`, password is `hello`
+
+### OR install CLI via [nami](https://github.com/txthinking/nami), and run `brook server` with [joker](https://github.com/txthinking/joker)
 
 ```
 curl -L https://raw.githubusercontent.com/txthinking/nami/master/install.sh | bash && sleep 3 && exec -l $SHELL
-nami install github.com/txthinking/joker
-nami install github.com/txthinking/brook
+nami install joker brook
 joker brook server --listen :9999 --password hello
 ```
 
