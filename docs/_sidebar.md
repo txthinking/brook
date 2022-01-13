@@ -67,7 +67,6 @@
 -   Resources
 
     -   [Bypass Rule](bypass.md)
-    -   [Install script](installscript.md)
     -   [Blog and Video](blogvideo.md)
     -   [Community](community.md)
     -   [Telegram](telegram.md)
