@@ -67,7 +67,6 @@
 -   资源
 
     -   [Bypass 規則](bypass.md)
-    -   [一键脚本](installscript.md)
     -   [博客和视频](blogvideo.md)
     -   [论坛](community.md)
     -   [Telegram](telegram.md)
