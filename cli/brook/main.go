@@ -70,6 +70,12 @@ func main() {
 			Usage: "Run as brook server, both TCP and UDP",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
+					Name:    "ipversion",
+					Aliases: []string{"v"},
+					Value:   "ipv6",
+					Usage:   "Listen address, like: 'ipv4', 'ipv6'",
+				},
+				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
 					Usage:   "Listen address, like: ':9999'",
@@ -98,7 +104,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewServer(c.String("ipversion"), c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}

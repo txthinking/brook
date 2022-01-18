@@ -38,15 +38,42 @@ type Server struct {
 	UDPTimeout   int
 	RunnerGroup  *runnergroup.RunnerGroup
 	UDPSrc       *cache.Cache
+	IPVersion    string
 }
 
 // NewServer.
-func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, error) {
-	taddr, err := net.ResolveTCPAddr("tcp", addr)
+func getNetworkByIpversion(protocol, ipversion string) string {
+	network := ""
+
+	if protocol == "tcp" {
+		if ipversion == "ipv4" {
+			return "tcp4"
+		} else if ipversion == "ipv6" {
+			return "tcp6"
+		} else {
+			return "tcp"
+		}
+	} else if protocol == "udp" {
+		if ipversion == "ipv4" {
+			return "udp4"
+		} else if ipversion == "ipv6" {
+			return "udp6"
+		} else {
+			return "udp"
+		}
+	}
+
+	return network
+}
+
+func NewServer(ipversion, addr, password string, tcpTimeout, udpTimeout int) (*Server, error) {
+	tcpNetwork := getNetworkByIpversion("tcp", ipversion)
+	udpNetwork := getNetworkByIpversion("udp", ipversion)
+	taddr, err := net.ResolveTCPAddr(tcpNetwork, addr)
 	if err != nil {
 		return nil, err
 	}
-	uaddr, err := net.ResolveUDPAddr("udp", addr)
+	uaddr, err := net.ResolveUDPAddr(udpNetwork, addr)
 	if err != nil {
 		return nil, err
 	}
@@ -64,6 +91,7 @@ func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, erro
 		UDPTimeout:   udpTimeout,
 		RunnerGroup:  runnergroup.New(),
 		UDPSrc:       cs2,
+		IPVersion:    ipversion,
 	}
 	return s, nil
 }
@@ -98,7 +126,8 @@ func (s *Server) ListenAndServe() error {
 // RunTCPServer starts tcp server.
 func (s *Server) RunTCPServer() error {
 	var err error
-	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
+	network := getNetworkByIpversion("tcp", s.IPVersion)
+	s.TCPListen, err = net.ListenTCP(network, s.TCPAddr)
 	if err != nil {
 		return err
 	}
@@ -127,7 +156,8 @@ func (s *Server) RunTCPServer() error {
 // RunUDPServer starts udp server.
 func (s *Server) RunUDPServer() error {
 	var err error
-	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
+	network := getNetworkByIpversion("tcp", s.IPVersion)
+	s.UDPConn, err = net.ListenUDP(network, s.UDPAddr)
 	if err != nil {
 		return err
 	}
