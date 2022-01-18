@@ -156,7 +156,7 @@ func (s *Server) RunTCPServer() error {
 // RunUDPServer starts udp server.
 func (s *Server) RunUDPServer() error {
 	var err error
-	network := getNetworkByIpversion("tcp", s.IPVersion)
+	network := getNetworkByIpversion("udp", s.IPVersion)
 	s.UDPConn, err = net.ListenUDP(network, s.UDPAddr)
 	if err != nil {
 		return err
