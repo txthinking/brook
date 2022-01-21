@@ -1,6 +1,8 @@
 - Bypass list: https://github.com/txthinking/bypass
 - Brook 工作原理: https://talks.txthinking.com/articles/brook.article
 - Blog: https://talks.txthinking.com
+- https://ipip.ooo
+- 用nico将brook wsserver包装成任意https网站: https://talks.txthinking.com/articles/nico-brook-wsserver.article
 - Youtube: https://www.youtube.com/txthinking
 - Forum: https://github.com/txthinking/brook/discussions
 - Telegram Group: https://t.me/brookgroup
