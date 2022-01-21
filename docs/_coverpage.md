@@ -2,6 +2,10 @@
 
 # Brook
 
+```
+bash <(curl -s https://bash.ooo/brook.sh)
+```
+
 > Brook is a cross-platform strong encryption and not detectable proxy.<br/>
 > Brook's goal is to keep it **simple**, **stupid** and **not detectable**.<br/>
 <br/>
