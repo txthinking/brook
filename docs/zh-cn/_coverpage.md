@@ -7,6 +7,6 @@ bash <(curl -s https://bash.ooo/brook.sh)
 ```
 
 [GitHub](https://github.com/txthinking/brook)
-[开始](#什么是cli和gui)
+[开始](#brook)
 
 ![color](#ffffff)
