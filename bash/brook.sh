@@ -285,6 +285,7 @@ function all(){
                 echo -e "$PC"">>> joker list""$NC"
                 joker list
                 test "$lang" = "en" && read -p "Choose a PID your want to stop: " pid
+                test "$lang" = "zh" && read -p "选择你要停止的PID: " pid
                 echo
                 echo -e "$PC"">>> joker stop $pid""$NC"
                 joker stop $pid
