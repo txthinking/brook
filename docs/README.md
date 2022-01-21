@@ -1,7 +1,6 @@
 # Brook
 
-Brook is a cross-platform strong encryption and not detectable proxy.<br/>
-Brook's goal is to keep it simple, stupid and not detectable.
+Brook is a cross-platform strong encryption and not detectable proxy. Brook's goal is to keep it simple, stupid and not detectable.
 
 ## `CLI` and `GUI`
 
