@@ -64,12 +64,7 @@
 
     -   [IPv6](ipv6.md)
 
--   Resources
-
-    -   [Bypass Rule](bypass.md)
-    -   [Blog and Video](blogvideo.md)
-    -   [Community](community.md)
-    -   [Telegram](telegram.md)
+-   [Resources](resources.md)
 
 -   Protocol
 
