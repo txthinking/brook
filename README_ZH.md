@@ -44,12 +44,18 @@ joker brook server --listen :9999 --password hello
 ### 通过 [nami](https://github.com/txthinking/nami) 安装 CLI, 并通过 [joker](https://github.com/txthinking/joker) 运行 `brook wserver`
 
 ```
-curl -L https://raw.githubusercontent.com/txthinking/nami/master/install.sh | bash && sleep 3 && exec -l $SHELL
+mkdir -p $HOME/.nami/bin && curl -L https://github.com/txthinking/nami/releases/latest/download/nami_$(uname -s | cut -d_ -f1)$(uname -m) -o $HOME/.nami/bin/nami && chmod +x $HOME/.nami/bin/nami && echo 'export PATH=$HOME/.nami/bin:$PATH' >> $HOME/.bashrc && echo 'export PATH=$HOME/.nami/bin:$PATH' >> $HOME/.bash_profile && echo 'export PATH=$HOME/.nami/bin:$PATH' >> $HOME/.zshenv && exec -l $SHELL
 nami install joker brook
 joker brook server --listen :9999 --password hello
 ```
 
 > 然后, 你的 `brook server` 是 `YOUR_SERVER_IP:9999`, 密码是 `password`
+
+### 通过一键脚本
+
+```
+bash <(curl -s https://bash.ooo/brook.sh)
+```
 
 [查看文档](https://txthinking.github.io/brook/#/zh-cn/install-cli)
 
