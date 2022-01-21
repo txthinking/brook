@@ -19,7 +19,7 @@ chmod +x /usr/bin/brook
 安装 nami
 
 ```
-mkdir -p $HOME/.nami/bin && curl -L https://github.com/txthinking/nami/releases/latest/download/nami_$(uname -s | cut -d_ -f1)$(uname -m) -o $HOME/.nami/bin/nami && chmod +x $HOME/.nami/bin/nami && echo 'export PATH=$HOME/.nami/bin:$PATH' >> $HOME/.bashrc && echo 'export PATH=$HOME/.nami/bin:$PATH' >> $HOME/.bash_profile && echo 'export PATH=$HOME/.nami/bin:$PATH' >> $HOME/.zshenv && exec -l $SHELL
+bash <(curl -s https://bash.ooo/nami.sh)
 ```
 
 使用 nami 安装 brook, 她会自动帮你下载适用你系统的最新版 Brook CLI 文件, 并赋予可执行权限
