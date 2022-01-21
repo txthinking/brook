@@ -1,5 +1,7 @@
 # Brook
 
+Brook 是一个跨平台的强加密无特征的代理软件. Brook 遵循 KISS 哲学.
+
 ## 什么是`CLI`和`GUI`
 
 -   CLI(Command-line interface), 即命令行界面
