@@ -64,10 +64,10 @@
 
     -   [IPv6](ipv6.md)
 
--   [Resources](resources.md)
-
 -   Protocol
 
     -   [brook server](brook-server-protocol.md)
     -   [brook wsserver](brook-wsserver-protocol.md)
     -   [brook wssserver](brook-wssserver-protocol.md)
+
+-   [**Resources**](resources.md)
