@@ -42,7 +42,15 @@ nami install jinbe
 
 ---
 
-## Package manager
+## 通过一键脚本安装
+
+```
+bash <(curl -s https://bash.ooo/brook.sh)
+```
+
+---
+
+## 通过包管理器
 
 Archlinux
 
