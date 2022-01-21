@@ -1,0 +1,7 @@
+- Bypass list: https://github.com/txthinking/bypass
+- Brook 工作原理: https://talks.txthinking.com/articles/brook.article
+- Blog: https://talks.txthinking.com
+- Youtube: https://www.youtube.com/txthinking
+- Forum: https://github.com/txthinking/brook/discussions
+- Telegram Group: https://t.me/brookgroup
+- Telegram Channel: https://t.me/txthinking_talks
