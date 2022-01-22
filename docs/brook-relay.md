@@ -3,7 +3,8 @@
 brook relay can relay a address to a remote address. It can relay any tcp and udp server. If there is a firewall, remember to allow TCP and UDP on the port.
 
 ```
-send request <--> relay server <--> a remote address
+SRC --TCP--> brook relay --TCP--> DST
+SRC --UDP--> brook relay --UDP--> DST
 ```
 
 Assume your (any) server is `1.2.3.4:9999`, and you want to relay port `9999` on your relay server to `1.2.3.4:9999`
