@@ -1,3 +1,10 @@
+## brook wsserver
+
+```
+SRC --TCP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wsserver --TCP--> DST
+SRC --UDP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wsserver --UDP--> DST
+```
+
 ## Run brook wsserver
 
 Assume the port is `9999` and the password is `hello`. If there is a firewall, remember to open **TCP on port 9999**.
