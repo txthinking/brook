@@ -1,7 +1,7 @@
 # Brook
 
 ```
-bash <(curl -s https://bash.ooo/brook.sh)
+bash <(curl https://bash.ooo/brook.sh)
 ```
 
 [GitHub](https://github.com/txthinking/brook)
