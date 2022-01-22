@@ -1,3 +1,10 @@
+## brook server
+
+```
+SRC --TCP--> brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook server --TCP--> DST
+SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP(Brook Protocol)--> brook server --UDP--> DST
+```
+
 ## 运行 brook server
 
 假设选择端口`9999`, 密码`hello`. 如果有防火墙, 记得允许**端口9999的 TCP 和 UDP 协议**.
