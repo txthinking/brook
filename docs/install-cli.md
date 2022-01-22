@@ -21,7 +21,7 @@ You can go to the [releases](https://github.com/txthinking/brook/releases) to do
 Install nami
 
 ```
-bash <(curl -s https://bash.ooo/nami.sh)
+bash <(curl https://bash.ooo/nami.sh)
 ```
 
 Use nami to install brook, she will automatically download the latest version for your system
@@ -47,7 +47,7 @@ nami install jinbe
 ## Install via script
 
 ```
-bash <(curl -s https://bash.ooo/brook.sh)
+bash <(curl https://bash.ooo/brook.sh)
 ```
 
 ---
