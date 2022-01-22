@@ -2,6 +2,11 @@
 
 brook socks5 运行一个独立的socks5 server, 支持 TCP and UDP, 假设你的服务器IP是 `1.2.3.4`, 你想创建一个 socks5 server `1.2.3.4:1080`. 如果有防火墙, 记得允许此端口的TCP和UDP协议.
 
+```
+SRC --TCP--> brook socks5 --TCP--> DST
+SRC --UDP--> brook socks5 --UDP--> DST
+```
+
 ## Run brook socks5
 
 ```
