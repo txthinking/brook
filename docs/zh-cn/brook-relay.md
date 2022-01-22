@@ -3,7 +3,8 @@
 brook relay 可以中继任何TCP和UDP server, 这是一个独立的功能, 它不依赖brook server和brook wsserver等. 如果有防火墙, 记得允许此端口的TCP和UDP协议.
 
 ```
-请求 <--> relay server <--> 被中继的server
+SRC --TCP--> brook relay --TCP--> DST
+SRC --UDP--> brook relay --UDP--> DST
 ```
 
 假设你要中继的server地址是 `1.2.3.4:9999`, 你想中继服务器监听端口 `9999` 中继到 `1.2.3.4:9999`
