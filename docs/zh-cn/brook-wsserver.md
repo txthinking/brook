@@ -1,3 +1,10 @@
+## brook wsserver
+
+```
+SRC --TCP--> brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wsserver --TCP--> DST
+SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wsserver --UDP--> DST
+```
+
 ## 运行 brook wsserver
 
 假设选择端口`9999`, 密码`hello`. 如果有防火墙, 记得允许**端口9999的 TCP 协议**.
