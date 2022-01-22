@@ -1,3 +1,10 @@
+## brook server
+
+```
+Application --TCP--> brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook server --TCP--> DST
+Application --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP(Brook Protocol)--> brook server --UDP--> DST
+```
+
 ## Run brook server
 
 Assume with port `9999` and password `hello`. If there is a firewall, remember to open **TCP and UDP on port 9999**.
