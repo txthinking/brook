@@ -44,7 +44,7 @@ joker brook server --listen :9999 --password hello
 ### 通过 [nami](https://github.com/txthinking/nami) 安装 CLI, 并通过 [joker](https://github.com/txthinking/joker) 运行 `brook wserver`
 
 ```
-bash <(curl -s https://bash.ooo/nami.sh)
+bash <(curl https://bash.ooo/nami.sh)
 nami install joker brook
 joker brook server --listen :9999 --password hello
 ```
@@ -54,7 +54,7 @@ joker brook server --listen :9999 --password hello
 ### 通过一键脚本
 
 ```
-bash <(curl -s https://bash.ooo/brook.sh)
+bash <(curl https://bash.ooo/brook.sh)
 ```
 
 [查看文档](https://txthinking.github.io/brook/#/zh-cn/install-cli)
