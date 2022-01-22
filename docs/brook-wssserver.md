@@ -1,3 +1,10 @@
+## brook wssserver
+
+```
+SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --TCP--> DST
+SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --UDP--> DST
+```
+
 ## Run brook wssserver
 
 Make sure your domain name has been resolved successfully. Brook will automatically issue a certificate for your server, assuming your domain is `domain.com`. If there is a firewall, remember to open **TCP on port 80 and 443**.
