@@ -1,3 +1,10 @@
+## brook wssserver
+
+```
+SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --TCP--> DST
+SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --UDP--> DST
+```
+
 ## 运行 brook wssserver
 
 确保你的域名已经解析到你的服务器 IP, brook 会自动签发域名证书. 假设你的域名是 `domain.com`. 如果有防火墙, 记得允许**端口80和443的 TCP 协议**.
