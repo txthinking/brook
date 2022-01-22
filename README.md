@@ -45,7 +45,7 @@ joker brook server --listen :9999 --password hello
 ### Install CLI via [nami](https://github.com/txthinking/nami), and run `brook server` with [joker](https://github.com/txthinking/joker)
 
 ```
-bash <(curl -s https://bash.ooo/nami.sh)
+bash <(curl https://bash.ooo/nami.sh)
 nami install joker brook
 joker brook server --listen :9999 --password hello
 ```
@@ -55,7 +55,7 @@ joker brook server --listen :9999 --password hello
 ### Install via script
 
 ```
-bash <(curl -s https://bash.ooo/brook.sh)
+bash <(curl https://bash.ooo/brook.sh)
 ```
 
 [Read Document](https://txthinking.github.io/brook/#/install-cli)
