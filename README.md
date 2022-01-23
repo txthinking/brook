@@ -10,6 +10,7 @@
 [![Document](https://img.shields.io/badge/github.io-Document-blue.svg)](https://txthinking.github.io/brook/)
 [![Telegram](https://img.shields.io/badge/telegram-@txthinking_talks-blue.svg)](https://t.me/txthinking_talks)
 [![Telegram](https://img.shields.io/badge/telegram-@brookgroup-blue.svg)](https://t.me/brookgroup)
+[💬 Join](https://join.txthinking.com)
 
 ---
 
