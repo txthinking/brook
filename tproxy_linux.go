@@ -110,32 +110,18 @@ func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url str
 	if err != nil {
 		return nil, err
 	}
-	c4 := make([]*net.IPNet, 0)
+	var c4 []*net.IPNet
 	if cidr4url != "" {
-		l, err := ReadList(cidr4url)
+		c4, err = ReadCIDRList(cidr4url)
 		if err != nil {
 			return nil, err
-		}
-		for _, v := range l {
-			_, in, err := net.ParseCIDR(v)
-			if err != nil {
-				continue
-			}
-			c4 = append(c4, in)
 		}
 	}
-	c6 := make([]*net.IPNet, 0)
+	var c6 []*net.IPNet
 	if cidr6url != "" {
-		l, err := ReadList(cidr6url)
+		c6, err = ReadCIDRList(cidr6url)
 		if err != nil {
 			return nil, err
-		}
-		for _, v := range l {
-			_, in, err := net.ParseCIDR(v)
-			if err != nil {
-				continue
-			}
-			c6 = append(c6, in)
 		}
 	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
@@ -384,39 +370,9 @@ func (s *Tproxy) Shutdown() error {
 	return s.RunnerGroup.Done()
 }
 
-func (s *Tproxy) HasIP(i net.IP) bool {
-	if i == nil {
-		return false
-	}
-	any, ok := s.BypassCache.Get(i.String())
-	if ok {
-		return any.(bool)
-	}
-	if i.To4() != nil {
-		ii := i.To4()
-		for _, v := range s.Cidr4 {
-			if v.Contains(ii) {
-				s.BypassCache.Set(i.String(), true, -1)
-				return true
-			}
-		}
-	}
-	if i.To4() == nil {
-		ii := i.To16()
-		for _, v := range s.Cidr6 {
-			if v.Contains(ii) {
-				s.BypassCache.Set(i.String(), true, -1)
-				return true
-			}
-		}
-	}
-	s.BypassCache.Set(i.String(), false, -1)
-	return false
-}
-
 // TCPHandle handles request.
 func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
-	if s.HasIP(c.LocalAddr().(*net.TCPAddr).IP) {
+	if ListHasIP(s.Cidr4, s.Cidr6, c.LocalAddr().(*net.TCPAddr).IP, s.BypassCache) {
 		rc, err := Dial.Dial("tcp", c.LocalAddr().String())
 		if err != nil {
 			return err
@@ -519,7 +475,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 	}
 
-	if s.HasIP(daddr.IP) {
+	if ListHasIP(s.Cidr4, s.Cidr6, daddr.IP, s.BypassCache) {
 		any, ok := s.UDPExchanges.Get(src + dst)
 		if ok {
 			ue := any.(*UDPExchange)

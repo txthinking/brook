@@ -190,7 +190,9 @@ func (x *WSClient) DialWebsocket(src string) (net.Conn, error) {
 // TCPHandle handles tcp request.
 func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
 	if r.Cmd == socks5.CmdConnect {
-		debug("dial tcp", r.Address())
+		if Debug {
+			log.Println("dial tcp", r.Address())
+		}
 		rc, err := x.DialWebsocket("")
 		if err != nil {
 			return ErrorReply(r, c, err)
@@ -242,7 +244,9 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 		ue := any.(*UDPExchange)
 		return ue.Any.(func(b []byte) error)(d.Data)
 	}
-	debug("dial udp", dst)
+	if Debug {
+		log.Println("dial udp", dst)
+	}
 	var laddr *net.UDPAddr
 	any, ok = s.UDPSrc.Get(src + dst)
 	if ok {

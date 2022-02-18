@@ -40,7 +40,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20210701"
+	app.Version = "20220217.dev"
 	app.Usage = "A cross-platform strong encryption and not detectable proxy"
 	app.Authors = []*cli.Author{
 		{
@@ -89,6 +89,22 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.StringFlag{
+					Name:  "blockDomainList",
+					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockCIDR4List",
+					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockCIDR6List",
+					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+				},
+				&cli.Int64Flag{
+					Name:  "updateListInterval",
+					Usage: "Update list interval, second. default 0, only read one time on start",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("password") == "" {
@@ -98,7 +114,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
 				if err != nil {
 					return err
 				}
@@ -221,6 +237,22 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.StringFlag{
+					Name:  "blockDomainList",
+					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockCIDR4List",
+					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockCIDR6List",
+					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+				},
+				&cli.Int64Flag{
+					Name:  "updateListInterval",
+					Usage: "Update list interval, second. default 0, only read one time on start",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("password") == "" {
@@ -230,7 +262,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
 				if err != nil {
 					return err
 				}
@@ -352,6 +384,22 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.StringFlag{
+					Name:  "blockDomainList",
+					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockCIDR4List",
+					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockCIDR6List",
+					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+				},
+				&cli.Int64Flag{
+					Name:  "updateListInterval",
+					Usage: "Update list interval, second. default 0, only read one time on start",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("domain") == "" || c.String("password") == "" {
@@ -361,7 +409,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewWSServer("", c.String("password"), c.String("domain"), c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewWSServer("", c.String("password"), c.String("domain"), c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
 				if err != nil {
 					return err
 				}
@@ -542,7 +590,11 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "bypassDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/chinadomain.txt",
+					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockDomainList",
+					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -563,7 +615,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 				if err != nil {
 					return err
 				}
@@ -612,15 +664,19 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "bypassDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/chinadomain.txt",
+					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR4List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/chinacidr4.txt",
+					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/china_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR6List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/chinacidr6.txt",
+					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/china_cidr6.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockDomainList",
+					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.BoolFlag{
 					Name:  "enableIPv6",
@@ -718,7 +774,7 @@ func main() {
 				}
 				var s1 *brook.DNS
 				if c.String("dnsListen") != "" {
-					s1, err = brook.NewDNS(c.String("dnsListen"), c.String("server"), c.String("password"), c.String("dnsForDefault"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					s1, err = brook.NewDNS(c.String("dnsListen"), c.String("server"), c.String("password"), c.String("dnsForDefault"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 					if err != nil {
 						return err
 					}
@@ -1123,7 +1179,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "bypassDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/chinadomain.txt",
+					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1175,7 +1231,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "bypassDomainList",
 					Aliases: []string{"b"},
-					Usage:   "domain list url, http(s):// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/chinadomain.txt",
+					Usage:   "domain list url, http(s):// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:    "file",

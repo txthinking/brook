@@ -228,7 +228,9 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			ue := any.(*UDPExchange)
 			return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
 		}
-		debug("dial udp", dst)
+		if Debug {
+			log.Println("dial udp", dst)
+		}
 		var laddr *net.UDPAddr
 		any, ok = s.UDPSrc.Get(src + dst)
 		if ok {
@@ -275,7 +277,9 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		ue := any.(*UDPExchange)
 		return ue.Any.(func(b []byte) error)(b)
 	}
-	debug("dial udp", dst)
+	if Debug {
+		log.Println("dial udp", dst)
+	}
 	var laddr *net.UDPAddr
 	any, ok = s.UDPSrc.Get(src + dst)
 	if ok {

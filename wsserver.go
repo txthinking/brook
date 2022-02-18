@@ -17,9 +17,11 @@ package brook
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"log"
 	"net"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -42,10 +44,16 @@ type WSServer struct {
 	UDPTimeout  int
 	Path        string
 	UDPSrc      *cache.Cache
+	BlockDomain map[string]byte
+	BlockCIDR4  []*net.IPNet
+	BlockCIDR6  []*net.IPNet
+	BlockCache  *cache.Cache
+	BlockLock   *sync.RWMutex
+	Done        chan byte
 }
 
 // NewWSServer.
-func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int) (*WSServer, error) {
+func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64) (*WSServer, error) {
 	var taddr *net.TCPAddr
 	var err error
 	if domain == "" {
@@ -54,18 +62,96 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 			return nil, err
 		}
 	}
+	var ds map[string]byte
+	if blockDomainList != "" {
+		ds, err = ReadDomainList(blockDomainList)
+		if err != nil {
+			return nil, err
+		}
+	}
+	var c4 []*net.IPNet
+	if blockCIDR4List != "" {
+		c4, err = ReadCIDRList(blockCIDR4List)
+		if err != nil {
+			return nil, err
+		}
+	}
+	var c6 []*net.IPNet
+	if blockCIDR6List != "" {
+		c6, err = ReadCIDRList(blockCIDR6List)
+		if err != nil {
+			return nil, err
+		}
+	}
 	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
+	cs3 := cache.New(cache.NoExpiration, cache.NoExpiration)
+	var lock *sync.RWMutex
+	if updateListInterval != 0 {
+		lock = &sync.RWMutex{}
+	}
+	done := make(chan byte)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
 	s := &WSServer{
-		Password:   []byte(password),
-		Domain:     domain,
-		TCPAddr:    taddr,
-		TCPTimeout: tcpTimeout,
-		UDPTimeout: udpTimeout,
-		Path:       path,
-		UDPSrc:     cs2,
+		Password:    []byte(password),
+		Domain:      domain,
+		TCPAddr:     taddr,
+		TCPTimeout:  tcpTimeout,
+		UDPTimeout:  udpTimeout,
+		Path:        path,
+		UDPSrc:      cs2,
+		BlockDomain: ds,
+		BlockCIDR4:  c4,
+		BlockCIDR6:  c6,
+		BlockCache:  cs3,
+		BlockLock:   lock,
+		Done:        done,
+	}
+	if updateListInterval != 0 {
+		go func() {
+			ticker := time.NewTicker(time.Duration(updateListInterval) * time.Second)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-done:
+					return
+				case <-ticker.C:
+					var ds map[string]byte
+					if blockDomainList != "" {
+						ds, err = ReadDomainList(blockDomainList)
+						if err != nil {
+							log.Println("ReadDomainList", blockDomainList, err)
+							break
+						}
+					}
+					var c4 []*net.IPNet
+					if blockCIDR4List != "" {
+						c4, err = ReadCIDRList(blockCIDR4List)
+						if err != nil {
+							log.Println("ReadCIDRList", blockCIDR4List, err)
+							break
+						}
+					}
+					var c6 []*net.IPNet
+					if blockCIDR6List != "" {
+						c6, err = ReadCIDRList(blockCIDR6List)
+						if err != nil {
+							log.Println("ReadCIDRList", blockCIDR6List, err)
+							break
+						}
+					}
+					lock.Lock()
+					s.BlockDomain = ds
+					s.BlockCIDR4 = c4
+					s.BlockCIDR6 = c6
+					if cs3 != nil {
+						cs3.Flush()
+					}
+					lock.Unlock()
+				}
+			}
+		}()
 	}
 	return s, nil
 }
@@ -169,7 +255,24 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // TCPHandle handles request.
 func (s *WSServer) TCPHandle(ss *StreamServer, dst []byte) error {
 	address := socks5.ToAddress(dst[0], dst[1:len(dst)-2], dst[len(dst)-2:])
-	debug("dial tcp", address)
+	if Debug {
+		log.Println("dial tcp", address)
+	}
+	var ds map[string]byte
+	var c4 []*net.IPNet
+	var c6 []*net.IPNet
+	if s.BlockLock != nil {
+		s.BlockLock.RLock()
+	}
+	ds = s.BlockDomain
+	c4 = s.BlockCIDR4
+	c6 = s.BlockCIDR6
+	if s.BlockLock != nil {
+		s.BlockLock.RUnlock()
+	}
+	if BlockAddress(address, ds, c4, c6, s.BlockCache) {
+		return errors.New("block " + address)
+	}
 	rc, err := Dial.Dial("tcp", address)
 	if err != nil {
 		return err
@@ -189,7 +292,24 @@ func (s *WSServer) TCPHandle(ss *StreamServer, dst []byte) error {
 // UDPHandle handles packet.
 func (s *WSServer) UDPHandle(ss *StreamServer, src string, dstb []byte) error {
 	dst := socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:])
-	debug("dial udp", dst)
+	if Debug {
+		log.Println("dial udp", dst)
+	}
+	var ds map[string]byte
+	var c4 []*net.IPNet
+	var c6 []*net.IPNet
+	if s.BlockLock != nil {
+		s.BlockLock.RLock()
+	}
+	ds = s.BlockDomain
+	c4 = s.BlockCIDR4
+	c6 = s.BlockCIDR6
+	if s.BlockLock != nil {
+		s.BlockLock.RUnlock()
+	}
+	if BlockAddress(dst, ds, c4, c6, s.BlockCache) {
+		return errors.New("block " + dst)
+	}
 	var laddr *net.UDPAddr
 	any, ok := s.UDPSrc.Get(src + dst)
 	if ok {
@@ -215,6 +335,7 @@ func (s *WSServer) UDPHandle(ss *StreamServer, src string, dstb []byte) error {
 
 // Shutdown server.
 func (s *WSServer) Shutdown() error {
+	close(s.Done)
 	if s.Domain == "" {
 		return s.HTTPServer.Shutdown(context.Background())
 	}

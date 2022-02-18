@@ -126,7 +126,9 @@ func (s *Socks5ToHTTP) Handle(c *net.TCPConn) error {
 		}
 	}
 
-	debug("dial http", addr)
+	if Debug {
+		log.Println("dial http", addr)
+	}
 	tmp, err := s.Dial.Dial("tcp", addr)
 	if err != nil {
 		return err

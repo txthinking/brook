@@ -15,9 +15,11 @@
 package brook
 
 import (
+	"errors"
 	"io"
 	"log"
 	"net"
+	"sync"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
@@ -38,10 +40,16 @@ type Server struct {
 	UDPTimeout   int
 	RunnerGroup  *runnergroup.RunnerGroup
 	UDPSrc       *cache.Cache
+	BlockDomain  map[string]byte
+	BlockCIDR4   []*net.IPNet
+	BlockCIDR6   []*net.IPNet
+	BlockCache   *cache.Cache
+	BlockLock    *sync.RWMutex
+	Done         chan byte
 }
 
 // NewServer.
-func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, error) {
+func NewServer(addr, password string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64) (*Server, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -50,8 +58,35 @@ func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, erro
 	if err != nil {
 		return nil, err
 	}
+	var ds map[string]byte
+	if blockDomainList != "" {
+		ds, err = ReadDomainList(blockDomainList)
+		if err != nil {
+			return nil, err
+		}
+	}
+	var c4 []*net.IPNet
+	if blockCIDR4List != "" {
+		c4, err = ReadCIDRList(blockCIDR4List)
+		if err != nil {
+			return nil, err
+		}
+	}
+	var c6 []*net.IPNet
+	if blockCIDR6List != "" {
+		c6, err = ReadCIDRList(blockCIDR6List)
+		if err != nil {
+			return nil, err
+		}
+	}
 	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
+	cs3 := cache.New(cache.NoExpiration, cache.NoExpiration)
+	var lock *sync.RWMutex
+	if updateListInterval != 0 {
+		lock = &sync.RWMutex{}
+	}
+	done := make(chan byte)
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
@@ -64,6 +99,57 @@ func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, erro
 		UDPTimeout:   udpTimeout,
 		RunnerGroup:  runnergroup.New(),
 		UDPSrc:       cs2,
+		BlockDomain:  ds,
+		BlockCIDR4:   c4,
+		BlockCIDR6:   c6,
+		BlockCache:   cs3,
+		BlockLock:    lock,
+		Done:         done,
+	}
+	if updateListInterval != 0 {
+		go func() {
+			ticker := time.NewTicker(time.Duration(updateListInterval) * time.Second)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-done:
+					return
+				case <-ticker.C:
+					var ds map[string]byte
+					if blockDomainList != "" {
+						ds, err = ReadDomainList(blockDomainList)
+						if err != nil {
+							log.Println("ReadDomainList", blockDomainList, err)
+							break
+						}
+					}
+					var c4 []*net.IPNet
+					if blockCIDR4List != "" {
+						c4, err = ReadCIDRList(blockCIDR4List)
+						if err != nil {
+							log.Println("ReadCIDRList", blockCIDR4List, err)
+							break
+						}
+					}
+					var c6 []*net.IPNet
+					if blockCIDR6List != "" {
+						c6, err = ReadCIDRList(blockCIDR6List)
+						if err != nil {
+							log.Println("ReadCIDRList", blockCIDR6List, err)
+							break
+						}
+					}
+					lock.Lock()
+					s.BlockDomain = ds
+					s.BlockCIDR4 = c4
+					s.BlockCIDR6 = c6
+					if cs3 != nil {
+						cs3.Flush()
+					}
+					lock.Unlock()
+				}
+			}
+		}()
 	}
 	return s, nil
 }
@@ -156,7 +242,24 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 	}
 	defer ss.Clean()
 	address := socks5.ToAddress(dst[0], dst[1:len(dst)-2], dst[len(dst)-2:])
-	debug("dial tcp", address)
+	if Debug {
+		log.Println("dial tcp", address)
+	}
+	var ds map[string]byte
+	var c4 []*net.IPNet
+	var c6 []*net.IPNet
+	if s.BlockLock != nil {
+		s.BlockLock.RLock()
+	}
+	ds = s.BlockDomain
+	c4 = s.BlockCIDR4
+	c6 = s.BlockCIDR6
+	if s.BlockLock != nil {
+		s.BlockLock.RUnlock()
+	}
+	if BlockAddress(address, ds, c4, c6, s.BlockCache) {
+		return errors.New("block " + address)
+	}
 	rc, err := Dial.Dial("tcp", address)
 	if err != nil {
 		return err
@@ -189,8 +292,24 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		}
 		return nil
 	}
-
-	debug("dial udp", dst)
+	if Debug {
+		log.Println("dial udp", dst)
+	}
+	var ds map[string]byte
+	var c4 []*net.IPNet
+	var c6 []*net.IPNet
+	if s.BlockLock != nil {
+		s.BlockLock.RLock()
+	}
+	ds = s.BlockDomain
+	c4 = s.BlockCIDR4
+	c6 = s.BlockCIDR6
+	if s.BlockLock != nil {
+		s.BlockLock.RUnlock()
+	}
+	if BlockAddress(dst, ds, c4, c6, s.BlockCache) {
+		return errors.New("block " + dst)
+	}
 	var laddr *net.UDPAddr
 	any, ok = s.UDPSrc.Get(src + dst)
 	if ok {
@@ -230,5 +349,6 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 
 // Shutdown server.
 func (s *Server) Shutdown() error {
+	close(s.Done)
 	return s.RunnerGroup.Done()
 }
