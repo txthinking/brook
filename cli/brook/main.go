@@ -19,11 +19,14 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -93,15 +96,15 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
@@ -115,6 +118,15 @@ func main() {
 				if c.String("listen") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "server")
 					return nil
+				}
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !filepath.IsAbs(c.String("blockDomainList")) {
+					return errors.New("--blockDomainList must be with absolute path")
+				}
+				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
+					return errors.New("--blockCIDR4List must be with absolute path")
+				}
+				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
+					return errors.New("--blockCIDR6List must be with absolute path")
 				}
 				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
 				if err != nil {
@@ -265,15 +277,15 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
@@ -287,6 +299,15 @@ func main() {
 				if c.String("listen") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "wsserver")
 					return nil
+				}
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !filepath.IsAbs(c.String("blockDomainList")) {
+					return errors.New("--blockDomainList must be with absolute path")
+				}
+				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
+					return errors.New("--blockCIDR4List must be with absolute path")
+				}
+				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
+					return errors.New("--blockCIDR6List must be with absolute path")
 				}
 				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
 				if err != nil {
@@ -418,8 +439,16 @@ func main() {
 			Usage: "Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:  "domain",
-					Usage: "The domain must have been resolved to the external IP, 80 and 443 ports will be used, TLS certificate will be automatically issued",
+					Name:  "domainaddress",
+					Usage: "Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used",
+				},
+				&cli.StringFlag{
+					Name:  "cert",
+					Usage: "The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically",
+				},
+				&cli.StringFlag{
+					Name:  "certkey",
+					Usage: "The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -430,11 +459,6 @@ func main() {
 					Name:  "path",
 					Usage: "URL path",
 					Value: "/ws",
-				},
-				&cli.Int64Flag{
-					Name:  "port",
-					Value: 443,
-					Usage: "wssserver port, default 443. Whatever this is, that always need 80 port to issue certificate for your domain",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -448,15 +472,15 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
@@ -467,15 +491,52 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				if c.String("domain") == "" || c.String("password") == "" {
+				if c.String("domainaddress") == "" || c.String("password") == "" {
 					cli.ShowCommandHelp(c, "wssserver")
 					return nil
 				}
-				s, err := brook.NewWSServer("", c.String("password"), c.String("domain"), c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !filepath.IsAbs(c.String("blockDomainList")) {
+					return errors.New("--blockDomainList must be with absolute path")
+				}
+				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
+					return errors.New("--blockCIDR4List must be with absolute path")
+				}
+				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
+					return errors.New("--blockCIDR6List must be with absolute path")
+				}
+				if c.String("cert") != "" && !filepath.IsAbs(c.String("cert")) {
+					return errors.New("--cert must be with absolute path")
+				}
+				if c.String("certkey") != "" && !filepath.IsAbs(c.String("certkey")) {
+					return errors.New("--certkey must be with absolute path")
+				}
+				h, p, err := net.SplitHostPort(c.String("domainaddress"))
 				if err != nil {
 					return err
 				}
-				s.WSSServerPort = c.Int64("port")
+				s, err := brook.NewWSServer("", c.String("password"), h, c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
+				if err != nil {
+					return err
+				}
+				if c.String("cert") != "" {
+					b, err := ioutil.ReadFile(c.String("cert"))
+					if err != nil {
+						return err
+					}
+					s.Cert = b
+				}
+				if c.String("certkey") != "" {
+					b, err := ioutil.ReadFile(c.String("certkey"))
+					if err != nil {
+						return err
+					}
+					s.CertKey = b
+				}
+				i, err := strconv.ParseInt(p, 10, 64)
+				if err != nil {
+					return err
+				}
+				s.WSSServerPort = i
 				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -1288,7 +1349,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("listen") == "" {
-					cli.ShowCommandHelp(c, "listen")
+					cli.ShowCommandHelp(c, "socks5")
 					return nil
 				}
 				h, _, err := net.SplitHostPort(c.String("listen"))
