@@ -55,7 +55,7 @@ type Tproxy struct {
 }
 
 // NewTproxy.
-func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
+func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure bool) (*Tproxy, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -72,9 +72,15 @@ func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url str
 			return nil, err
 		}
 		hp = u.Host
+		if address != "" {
+			hp = address
+		}
 		wsc, err = NewWSClient(":1080", "127.0.0.1", s, password, tcpTimeout, udpTimeout)
 		if err != nil {
 			return nil, err
+		}
+		if strings.HasPrefix(s, "wss://") && insecure {
+			wsc.TLSConfig.InsecureSkipVerify = true
 		}
 		wsc.DialTCP = tproxy.DialTCP
 	}

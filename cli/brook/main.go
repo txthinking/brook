@@ -29,6 +29,7 @@ import (
 
 	"net/http"
 	_ "net/http/pprof"
+	"net/url"
 
 	"github.com/txthinking/brook"
 	"github.com/urfave/cli/v2"
@@ -313,6 +314,10 @@ func main() {
 					Name:  "bindip",
 					Usage: "socks5 server bind IP, default bind to all",
 				},
+				&cli.StringFlag{
+					Name:  "address",
+					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("socks5") == "" || c.String("wsserver") == "" || c.String("password") == "" {
@@ -336,6 +341,9 @@ func main() {
 				s, err := brook.NewWSClient(a, h, c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
+				}
+				if c.String("address") != "" {
+					s.ServerAddress = c.String("address")
 				}
 				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
 				if err != nil {
@@ -460,6 +468,14 @@ func main() {
 					Name:  "bindip",
 					Usage: "socks5 server bind IP, default bind to all",
 				},
+				&cli.StringFlag{
+					Name:  "address",
+					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.BoolFlag{
+					Name:  "insecure",
+					Usage: "Client do not verify the server's certificate chain and host name",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
@@ -483,6 +499,12 @@ func main() {
 				s, err := brook.NewWSClient(a, h, c.String("wssserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
+				}
+				if c.String("address") != "" {
+					s.ServerAddress = c.String("address")
+				}
+				if c.Bool("insecure") {
+					s.TLSConfig.InsecureSkipVerify = true
 				}
 				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
 				if err != nil {
@@ -537,6 +559,14 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.StringFlag{
+					Name:  "address",
+					Usage: "When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.BoolFlag{
+					Name:  "insecure",
+					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("from") == "" || c.String("to") == "" || c.String("server") == "" || c.String("password") == "" {
@@ -549,6 +579,12 @@ func main() {
 				s, err := brook.NewMap(c.String("from"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
+				}
+				if (strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://")) && c.String("address") != "" {
+					s.WSClient.ServerAddress = c.String("address")
+				}
+				if strings.HasPrefix(c.String("server"), "wss://") && c.Bool("insecure") {
+					s.WSClient.TLSConfig.InsecureSkipVerify = true
 				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
@@ -606,6 +642,14 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.StringFlag{
+					Name:  "address",
+					Usage: "When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.BoolFlag{
+					Name:  "insecure",
+					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
@@ -618,6 +662,12 @@ func main() {
 				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 				if err != nil {
 					return err
+				}
+				if (strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://")) && c.String("address") != "" {
+					s.WSClient.ServerAddress = c.String("address")
+				}
+				if strings.HasPrefix(c.String("server"), "wss://") && c.Bool("insecure") {
+					s.WSClient.TLSConfig.InsecureSkipVerify = true
 				}
 				go func() {
 					sigs := make(chan os.Signal, 1)
@@ -700,6 +750,14 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.StringFlag{
+					Name:  "address",
+					Usage: "When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.BoolFlag{
+					Name:  "insecure",
+					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("webListen") != "" {
@@ -768,7 +826,7 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				s, err := brook.NewTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				s, err := brook.NewTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("address"), c.Bool("insecure"))
 				if err != nil {
 					return err
 				}
@@ -777,6 +835,12 @@ func main() {
 					s1, err = brook.NewDNS(c.String("dnsListen"), c.String("server"), c.String("password"), c.String("dnsForDefault"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 					if err != nil {
 						return err
+					}
+					if (strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://")) && c.String("address") != "" {
+						s1.WSClient.ServerAddress = c.String("address")
+					}
+					if strings.HasPrefix(c.String("server"), "wss://") && c.Bool("insecure") {
+						s1.WSClient.TLSConfig.InsecureSkipVerify = true
 					}
 					go func() {
 						if err := s1.ListenAndServe(); err != nil {
@@ -826,6 +890,18 @@ func main() {
 					Aliases: []string{"u"},
 					Usage:   "Username, when server is socks5 server",
 				},
+				&cli.StringFlag{
+					Name:  "name",
+					Usage: "Give this server a name",
+				},
+				&cli.StringFlag{
+					Name:  "address",
+					Usage: "When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.BoolFlag{
+					Name:  "insecure",
+					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				s := "server"
@@ -838,7 +914,15 @@ func main() {
 				if strings.HasPrefix(c.String("s"), "socks5://") {
 					s = "socks5"
 				}
-				fmt.Println(brook.Link(s, c.String("s"), c.String("username"), c.String("password")))
+				v := url.Values{}
+				v.Set("name", c.String("name"))
+				v.Set("address", c.String("address"))
+				yn := ""
+				if c.Bool("insecure") {
+					yn = "true"
+				}
+				v.Set("insecure", yn)
+				fmt.Println(brook.Link(s, c.String("s"), c.String("username"), c.String("password"), v))
 				return nil
 			},
 		},
@@ -926,18 +1010,9 @@ func main() {
 				if h == "" {
 					return errors.New("socks5 server requires a clear IP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				var kind, server, password string
-				if !strings.Contains(c.String("link"), "?") {
-					kind, server, _, password, err = brook.ParseLinkOld(c.String("link"))
-					if err != nil {
-						return err
-					}
-				}
-				if strings.Contains(c.String("link"), "?") {
-					kind, server, _, password, err = brook.ParseLink(c.String("link"))
-					if err != nil {
-						return err
-					}
+				kind, server, _, password, v, err := brook.ParseLinkExtra(c.String("link"))
+				if err != nil {
+					return err
 				}
 				if kind == "socks5" {
 					return errors.New("connect doesn't support socks5 link, you may want $ brook socks5tohttp")
@@ -972,6 +1047,12 @@ func main() {
 				s, err := brook.NewWSClient(a, h, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
+				}
+				if v.Get("address") != "" {
+					s.ServerAddress = v.Get("address")
+				}
+				if kind == "wssserver" && v.Get("insecure") == "true" {
+					s.TLSConfig.InsecureSkipVerify = true
 				}
 				http, err := brook.NewSocks5ToHTTP(c.String("http"), c.String("socks5"), "", "", c.Int("tcpTimeout"))
 				if err != nil {

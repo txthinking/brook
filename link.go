@@ -15,14 +15,11 @@
 package brook
 
 import (
-	"errors"
 	"fmt"
 	"net/url"
 	"os"
-	"strings"
 
 	"github.com/mdp/qrterminal"
-	"github.com/txthinking/crypto"
 )
 
 func Link(kind, s, username, password string) string {
@@ -70,44 +67,5 @@ func ParseLinkExtra(link string) (kind, s, username, password string, v url.Valu
 	username = u.Query().Get("username")
 	password = u.Query().Get("password")
 	v = u.Query()
-	return
-}
-
-func ParseLinkOld(link string) (kind, server, username, password string, err error) {
-	if !strings.HasPrefix(link, "brook://") {
-		err = errors.New("Invalid brook link")
-		return
-	}
-	s := link[8:]
-	s, err = crypto.URIUnescape(s)
-	if err != nil {
-		return
-	}
-	l := strings.Split(s, " ")
-	if len(l) == 1 {
-		kind = "socks5"
-		server = l[0]
-		return
-	}
-	if len(l) == 3 {
-		kind = "socks5"
-		server = l[0]
-		username = l[1]
-		password = l[2]
-		return
-	}
-	if len(l) == 2 {
-		kind = "server"
-		if strings.HasPrefix(l[0], "ws://") {
-			kind = "wsserver"
-		}
-		if strings.HasPrefix(l[0], "wss://") {
-			kind = "wssserver"
-		}
-		server = l[0]
-		password = l[1]
-		return
-	}
-	err = errors.New("Invalid brook link")
 	return
 }
