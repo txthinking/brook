@@ -431,6 +431,11 @@ func main() {
 					Usage: "URL path",
 					Value: "/ws",
 				},
+				&cli.Int64Flag{
+					Name:  "port",
+					Value: 443,
+					Usage: "wssserver port, default 443. Whatever this is, that always need 80 port to issue certificate for your domain",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
@@ -470,6 +475,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				s.WSSServerPort = c.Int64("port")
 				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {

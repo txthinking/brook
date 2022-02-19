@@ -21,6 +21,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -35,21 +36,22 @@ import (
 
 // WSServer.
 type WSServer struct {
-	Password    []byte
-	Domain      string
-	TCPAddr     *net.TCPAddr
-	HTTPServer  *http.Server
-	HTTPSServer *http.Server
-	TCPTimeout  int
-	UDPTimeout  int
-	Path        string
-	UDPSrc      *cache.Cache
-	BlockDomain map[string]byte
-	BlockCIDR4  []*net.IPNet
-	BlockCIDR6  []*net.IPNet
-	BlockCache  *cache.Cache
-	BlockLock   *sync.RWMutex
-	Done        chan byte
+	Password      []byte
+	Domain        string
+	TCPAddr       *net.TCPAddr
+	HTTPServer    *http.Server
+	HTTPSServer   *http.Server
+	TCPTimeout    int
+	UDPTimeout    int
+	Path          string
+	UDPSrc        *cache.Cache
+	BlockDomain   map[string]byte
+	BlockCIDR4    []*net.IPNet
+	BlockCIDR6    []*net.IPNet
+	BlockCache    *cache.Cache
+	BlockLock     *sync.RWMutex
+	Done          chan byte
+	WSSServerPort int64
 }
 
 // NewWSServer.
@@ -195,7 +197,7 @@ func (s *WSServer) ListenAndServe() error {
 	}
 	go http.ListenAndServe(":80", m.HTTPHandler(nil))
 	s.HTTPSServer = &http.Server{
-		Addr:         ":443",
+		Addr:         ":" + strconv.FormatInt(s.WSSServerPort, 10),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
