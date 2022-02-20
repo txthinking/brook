@@ -47,17 +47,9 @@ func NewPacketClient(password []byte) *PacketClient {
 	return c
 }
 
-var ClientPacket func([]byte, []byte) ([]byte, []byte, error) = func(dst, d []byte) ([]byte, []byte, error) {
-	if 12+4+len(dst)+len(d)+16 > 65507 {
-		return nil, nil, errors.New("packet too big")
-	}
-	return dst, d, nil
-}
-
 func (c *PacketClient) LocalToServer(dst, d []byte, server net.Conn, timeout int) error {
-	dst, d, err := ClientPacket(dst, d)
-	if err != nil {
-		return err
+	if 12+4+len(dst)+len(d)+16 > 65507 {
+		return errors.New("packet too big")
 	}
 	if timeout != 0 {
 		if err := server.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second)); err != nil {

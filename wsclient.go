@@ -127,13 +127,15 @@ func (x *WSClient) DialWebsocket(src string) (net.Conn, error) {
 	}
 	if x.TLSConfig != nil {
 		tc := tls.Client(c, x.TLSConfig)
-		if err := tc.Handshake(); err != nil {
-			tc.Close()
-			return nil, err
-		}
-		if err := tc.VerifyHostname(x.TLSConfig.ServerName); err != nil {
-			tc.Close()
-			return nil, err
+		if !x.TLSConfig.InsecureSkipVerify {
+			if err := tc.Handshake(); err != nil {
+				tc.Close()
+				return nil, err
+			}
+			if err := tc.VerifyHostname(x.TLSConfig.ServerName); err != nil {
+				tc.Close()
+				return nil, err
+			}
 		}
 		c = tc
 	}

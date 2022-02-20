@@ -9,7 +9,7 @@
 [🤝 Telegram](https://t.me/brookgroup)
 [🗣 News](https://t.me/txthinking_news)
 [💬 Chat](https://join.txthinking.com)
-[🩸 Youtube](https://www.youtube.com/txthinking) 
+[🩸 Youtube](https://www.youtube.com/txthinking)
 [❤️ Sponsor](https://github.com/sponsors/txthinking)
 
 ---
@@ -21,45 +21,40 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
 ❤️ A project by [txthinking.com](https://www.txthinking.com)
 
-### Install CLI via curl, and run `brook server`
+### Install CLI
 
-```
-curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
-chmod +x /usr/bin/brook
-brook server --listen :9999 --password hello
-```
+install [nami](https://github.com/txthinking/nami)
 
-> Then, your `brook server` is `YOUR_SERVER_IP:9999`, password is `hello`
-
-### Install CLI and [joker](https://github.com/txthinking/joker) via curl, and run `brook server` with [joker](https://github.com/txthinking/joker)
-
-```
-curl -L https://github.com/txthinking/joker/releases/latest/download/joker_linux_amd64 -o /usr/bin/joker
-chmod +x /usr/bin/joker
-curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
-chmod +x /usr/bin/brook
-joker brook server --listen :9999 --password hello
-```
-
-> Then, your `brook server` is `YOUR_SERVER_IP:9999`, password is `hello`
-
-### Install CLI via [nami](https://github.com/txthinking/nami), and run `brook server` with [joker](https://github.com/txthinking/joker)
+> nami will automatically download the command corresponding to your system<br/>
+> If your system is not Linux, MacOS, Windows, you can download it directly on the [release](https://github.com/txthinking/brook/releases) page
 
 ```
 bash <(curl https://bash.ooo/nami.sh)
-nami install joker brook
+```
+
+install brook, [joker](https://github.com/txthinking/joker)
+
+> [joker](https://github.com/txthinking/joker) can turn process into daemon
+
+```
+nami install brook joker
+```
+
+run `brook server`
+
+```
 joker brook server --listen :9999 --password hello
 ```
 
 > Then, your `brook server` is `YOUR_SERVER_IP:9999`, password is `hello`
 
-### Install via script
+To learn more please read the [documentation](https://txthinking.github.io/brook/#/install-cli)
+
+### Install via [brook.sh](https://bash.ooo)
 
 ```
 bash <(curl https://bash.ooo/brook.sh)
 ```
-
-[Read Document](https://txthinking.github.io/brook/#/install-cli)
 
 ### Install GUI
 

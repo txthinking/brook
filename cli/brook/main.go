@@ -45,7 +45,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20220217.dev"
+	app.Version = "20220401"
 	app.Usage = "A cross-platform strong encryption and not detectable proxy"
 	app.Authors = []*cli.Author{
 		{
@@ -119,13 +119,13 @@ func main() {
 					cli.ShowCommandHelp(c, "server")
 					return nil
 				}
-				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !filepath.IsAbs(c.String("blockDomainList")) {
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
 					return errors.New("--blockDomainList must be with absolute path")
 				}
-				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
+				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "https://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
 					return errors.New("--blockCIDR4List must be with absolute path")
 				}
-				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
+				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
 					return errors.New("--blockCIDR6List must be with absolute path")
 				}
 				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
@@ -300,13 +300,13 @@ func main() {
 					cli.ShowCommandHelp(c, "wsserver")
 					return nil
 				}
-				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !filepath.IsAbs(c.String("blockDomainList")) {
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
 					return errors.New("--blockDomainList must be with absolute path")
 				}
-				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
+				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "https://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
 					return errors.New("--blockCIDR4List must be with absolute path")
 				}
-				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
+				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
 					return errors.New("--blockCIDR6List must be with absolute path")
 				}
 				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
@@ -495,13 +495,13 @@ func main() {
 					cli.ShowCommandHelp(c, "wssserver")
 					return nil
 				}
-				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !filepath.IsAbs(c.String("blockDomainList")) {
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
 					return errors.New("--blockDomainList must be with absolute path")
 				}
-				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
+				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "https://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
 					return errors.New("--blockCIDR4List must be with absolute path")
 				}
-				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
+				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
 					return errors.New("--blockCIDR6List must be with absolute path")
 				}
 				if c.String("cert") != "" && !filepath.IsAbs(c.String("cert")) {
