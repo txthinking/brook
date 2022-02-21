@@ -47,7 +47,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 
 -   Assume the domain is `domain.com`, with port `443`, with password `hello`
 -   If there is a firewall, remember to open **TCP on port 443**
--   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`
+-   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`. [How to issue a certificate yourself](https://github.com/txthinking/mad)
 -   Make sure your `domain.com` has been resolved to your server IP successfully
 
 ```
@@ -96,7 +96,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 ## Run brook wssserver with custom certificate with [not your own domain name]
 
 -   Assume the domain is `domain.com`, with port `443`, with password `hello`
--   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`
+-   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`. [How to issue a certificate yourself](https://github.com/txthinking/mad)
 -   If there is a firewall, remember to open **TCP on port 443**
 
 ```

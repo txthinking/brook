@@ -22,7 +22,7 @@ Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学
 
 ### 安装 CLI
 
-1. 安装 [nami](https://github.com/txthinking/nami)
+1. 安装 nami
 
     > [nami](https://github.com/txthinking/nami) 会自动下载对应你系统的命令<br/>
     > 如果你的系统不是 Linux, MacOS, Windows, 你可以直接在 [release](https://github.com/txthinking/brook/releases) 页面下载
@@ -31,7 +31,7 @@ Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学
     bash <(curl https://bash.ooo/nami.sh)
     ```
 
-2. 安装 brook, [joker](https://github.com/txthinking/joker)
+2. 安装 brook, joker
 
     > [joker](https://github.com/txthinking/joker) 可以将进程变成守护进程.
 

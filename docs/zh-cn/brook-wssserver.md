@@ -47,7 +47,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 
 -   假设你的域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
 -   防火墙记得开放 **TCP 443**
--   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`
+-   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`. [如何自己签发证书](https://github.com/txthinking/mad/blob/master/readme_zh.md)
 -   确保你的域名 `domain.com` 已成功解析到你服务器的 IP
 
 ```
@@ -97,7 +97,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 
 -   假设你的域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
 -   防火墙记得开放 **TCP 443**
--   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`
+-   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`. [如何自己签发证书](https://github.com/txthinking/mad/blob/master/readme_zh.md)
 
 ```
 brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem

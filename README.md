@@ -23,7 +23,7 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
 ### Install CLI
 
-1. install [nami](https://github.com/txthinking/nami)
+1. install nami
 
     > [nami](https://github.com/txthinking/nami) will automatically download the command corresponding to your system<br/>
     > If your system is not Linux, MacOS, Windows, you can download it directly on the [release](https://github.com/txthinking/brook/releases) page
@@ -32,7 +32,7 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
     bash <(curl https://bash.ooo/nami.sh)
     ```
 
-2. install brook, [joker](https://github.com/txthinking/joker)
+2. install brook, joker
 
     > [joker](https://github.com/txthinking/joker) can turn process into daemon
 
@@ -50,7 +50,7 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
 To learn more please read the [documentation](https://txthinking.github.io/brook/#/install-cli)
 
-### Install via [brook.sh](https://bash.ooo)
+### Install via brook.sh
 
 ```
 bash <(curl https://bash.ooo/brook.sh)
