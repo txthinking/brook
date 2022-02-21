@@ -1,5 +1,5 @@
 {
-    "version": "20210701",
+    "version": "20220401",
     "text": "bash <(curl https://bash.ooo/brook.sh)",
     "link": "https://bash.ooo"
 }
