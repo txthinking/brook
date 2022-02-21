@@ -1,3 +1,5 @@
+# Brook GUI
+
 GUI(图形用户界面), Brook 图形客户端.
 
 ## macOS
@@ -6,11 +8,11 @@ GUI(图形用户界面), Brook 图形客户端.
 
 ## Windows
 
+**运行之前请先删除同目录目录下的 wintun 所有文件!!!**
+
+(Brook.exe 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器)
+
 [Brook.exe](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
-
-或
-
-[BrookLite.exe](https://github.com/txthinking/brook/releases/latest/download/BrookLite.exe) (BrookLite需要你已经安装了最新版(基于chromium的那款)的Edge浏览器)
 
 ## Android
 
@@ -25,7 +27,3 @@ GUI(图形用户界面), Brook 图形客户端.
 ## OpenWrt
 
 [brook_linux_xxx.ipk](/zh-cn/brook-tproxy-gui)
-
----
-
-以上下载链接你也能在[releases](https://github.com/txthinking/brook/releases)页面找到

@@ -22,28 +22,28 @@ Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学
 
 ### 安装 CLI
 
-安装 [nami](https://github.com/txthinking/nami)
+1. 安装 [nami](https://github.com/txthinking/nami)
 
-> nami 会自动下载对应你系统的命令<br/>
-> 如果你的系统不是 Linux, MacOS, Windows, 你可以直接在 [release](https://github.com/txthinking/brook/releases) 页面下载
+    > [nami](https://github.com/txthinking/nami) 会自动下载对应你系统的命令<br/>
+    > 如果你的系统不是 Linux, MacOS, Windows, 你可以直接在 [release](https://github.com/txthinking/brook/releases) 页面下载
 
-```
-bash <(curl https://bash.ooo/nami.sh)
-```
+    ```
+    bash <(curl https://bash.ooo/nami.sh)
+    ```
 
-安装 brook, [joker](https://github.com/txthinking/joker)
+2. 安装 brook, [joker](https://github.com/txthinking/joker)
 
-> [joker](https://github.com/txthinking/joker) 可以将进程变成守护进程.
+    > [joker](https://github.com/txthinking/joker) 可以将进程变成守护进程.
 
-```
-nami install brook joker
-```
+    ```
+    nami install brook joker
+    ```
 
-运行 `brook server`
+3. 运行 `brook server`
 
-```
-joker brook server --listen :9999 --password hello
-```
+    ```
+    joker brook server --listen :9999 --password hello
+    ```
 
 > 然后, 你的 `brook server` 是 `YOUR_SERVER_IP:9999`, 密码是 `hello`
 
@@ -68,9 +68,6 @@ NAME:
 USAGE:
    brook [global options] command [command options] [arguments...]
 
-VERSION:
-   20210701
-
 AUTHOR:
    Cloud <cloud@txthinking.com>
 
@@ -85,7 +82,6 @@ COMMANDS:
    dns             Run as dns server over brook, both TCP and UDP, [src <-> brook dns <-> brook server/wsserver/wssserver <-> dns] or [src <-> brook dns <-> dnsForBypass]
    tproxy          Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> brook tproxy <-> brook server/wsserver/wssserver <-> dst]
    link            Print brook link
-   qr              Print brook server QR code
    connect         Connect via standard sharing link (brook server & brook wsserver & brook wssserver)
    relay           Run as standalone relay, both TCP and UDP, this means access [from address] is equal to access [to address], [src <-> from address <-> to address]
    socks5          Run as standalone standard socks5 server, both TCP and UDP
@@ -109,10 +105,6 @@ COPYRIGHT:
 ```
 
 [文档](https://txthinking.github.io/brook/#/zh-cn/)
-
-## 贡献
-
-请先阅读 [CONTRIBUTING.md](https://github.com/txthinking/brook/blob/master/.github/CONTRIBUTING.md)
 
 ## 开源协议
 

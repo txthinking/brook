@@ -7,41 +7,83 @@ SRC --UDP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Pro
 
 ## Run brook wsserver
 
-Assume the port is `9999` and the password is `hello`. If there is a firewall, remember to open **TCP on port 9999**.
+-   Assume the port is `9999` and the password is `hello`
+-   If there is a firewall, remember to open **TCP on port 9999**.
 
 ```
 brook wsserver --listen :9999 --password hello
 ```
 
-Assuming your server public IP is `1.2.3.4`, your brook wsserver is `ws://1.2.3.4:9999`
-
 > You can stop it with CTRL+C<br/>
+
+#### Then
+
+**assuming your server IP is `1.2.3.4`**
+
+-   brook wsserver: `ws://1.2.3.4:9999`
+-   password: `hello`
+
+> Connect with CLI: `brook wsclient --wsserver ws://1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080`. More parameters: `brook wsclient -h`<br/>
+> Connect with GUI: add as above
+
+**get brook link**
+
+```
+brook link --server ws://1.2.3.4:9999 --password hello
+```
+
+> Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
+> Connect with GUI: add the brook link result
+
+**or with custom domain, the domain can be any domain, even if it's not your domain name**
+
+```
+brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999
+```
+
+> Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
+> Connect with GUI: add the brook link result
+
+**or get brook link with `name`**
+
+```
+brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name 'my brook wsserver'
+```
+
+> Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
+> Connect with GUI: add the brook link result
+
+#### Block domain and IP in server-side
+
+Check these parameters
+
+-   --blockDomainList
+-   --blockCIDR4List
+-   --blockCIDR6List
+-   --updateListInterval
+
 > More parameters: brook wsserver -h
 
 ---
 
-## Run in the background via `nohup`
+## Run brook wsserver as daemon via [`joker`](https://github.com/txthinking/joker) 🔥
 
-> We recommend running the command directly to make sure there are no errors before running it via nohup
-
-```
-nohup brook wsserver --listen :9999 --password hello &
-```
-
-Stop background brook
-
-```
-killall brook
-```
-
----
-
-## Run as daemon via [`joker`](https://github.com/txthinking/joker) 🔥
-
-> We recommend running the command directly to make sure there are no errors before running it with joker
+> We recommend running the command directly to make sure there are no errors
 
 ```
 joker brook wsserver --listen :9999 --password hello
+```
+
+Get the last command ID
+
+```
+joker last
+```
+
+View output and error of a command run via joker
+
+```
+joker log <ID>
 ```
 
 View running commmands via joker
@@ -52,31 +94,15 @@ joker list
 
 Stop a running command via joker
 
-> Your can get ID from output by joker list
-
 ```
 joker stop <ID>
-```
-
-View log of a command run via joker
-
-> Your can get ID from output by joker list
-
-```
-joker log <ID>
 ```
 
 ---
 
 ## Auto start at boot via [`jinbe`](https://github.com/txthinking/jinbe)
 
-> We recommend running the command directly to make sure there are no errors before running it via jinbe
-
-```
-jinbe brook wsserver --listen :9999 --password hello
-```
-
-Or with joker
+> We recommend running the command directly to make sure there are no errors
 
 ```
 jinbe joker brook wsserver --listen :9999 --password hello
@@ -89,8 +115,6 @@ jinbe list
 ```
 
 Remove a added command via jinbe
-
-> Your can get ID from output by jinbe list
 
 ```
 jinbe remove <ID>

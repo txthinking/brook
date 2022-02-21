@@ -1,2 +1,2 @@
 #!/bin/sh
-rm -rf /root/.brook.args
+rm -rf /root/.brook

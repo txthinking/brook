@@ -5,90 +5,190 @@ SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Pr
 SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --UDP--> DST
 ```
 
-## 运行 brook wssserver
+## 运行 brook wssserver 自动签发证书
 
-确保你的域名已经解析到你的服务器 IP, brook 会自动签发域名证书. 假设你的域名是 `domain.com`. 如果有防火墙, 记得允许**端口80和443的 TCP 协议**.
-
-```
-brook wssserver --domain domain.com --password hello
-```
-
-> 你可以按组合键 CTRL+C 来停止<br/>
-> 更多参数介绍: brook wssserver -h
-
-那么你的 brook wssserver 是: `wss://domain.com:443`
-
-## 使用`nohup`后台运行
-
-> 我们建议你先在前台直接运行, 确保一切都正常后, 再使用 nohup 运行
+-   假设你的域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
+-   防火墙记得开放 **TCP 80, 443**
+-   确保你的域名 `domain.com` 已成功解析到你服务器的 IP
 
 ```
-nohup brook wssserver --domain domain.com --password hello &
+brook wssserver --domainaddress domain.com:443 --password hello
 ```
 
-停止后台运行的 brook
+> 你可以按组合键 CTRL+C 来停止
+
+#### Then:
+
+-   brook wssserver: `wss://domain.com:443`
+-   password: `hello`
+
+> 用 CLI 连接: `brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080`. 更多参数: `brook wssclient -h`<br/>
+> 用 GUI 连接: 添加如上信息
+
+**获取 brook link**
 
 ```
-killall brook
+brook link --server wss://domain.com:443 --password hello
 ```
 
-## 使用[joker](https://github.com/txthinking/joker)运行守护进程 🔥
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
 
-> 我们建议你先在前台直接运行, 确保一切都正常后, 再使用 joker 运行
-
-```
-joker brook wssserver --domain domain.com --password hello
-```
-
-> 可以看得出来, 这条命令相比之前的命令只是前面多个 joker. 用 joker 守护某个进程就是这样简单
-
-查看 joker 守护的所有进程
+**or 获取 brook link with `name`**
 
 ```
-joker list
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
 ```
 
-停止 joker 守护某个进程
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
 
-> joker list 会输出所有进程 ID
+## 运行 brook wssserver 使用指定证书 [你自己拥有的域名]
+
+-   假设你的域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
+-   防火墙记得开放 **TCP 443**
+-   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`
+-   确保你的域名 `domain.com` 已成功解析到你服务器的 IP
 
 ```
-joker stop <ID>
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
 ```
 
-查看某个进程的日志
+> 你可以按组合键 CTRL+C 来停止
 
-> joker list 会输出所有进程 ID
+#### Then:
+
+**如果你的证书是信任机构签发**
+
+-   brook wssserver: `wss://domain.com:443`
+-   password: `hello`
+
+> 用 CLI 连接: `brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080`. 更多参数: `brook wssclient -h`<br/>
+> 用 GUI 连接: 添加如上信息
+
+**如果你的证书是信任机构签发, 获取 brook link**
+
+```
+brook link --server wss://domain.com:443 --password hello
+```
+
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
+
+**如果你的证书是信任机构签发, 获取 brook link with `name`**
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
+```
+
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
+
+**如果你的证书是你自己签发的, 获取 brook link with `insecure`**
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --insecure
+```
+
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
+
+## 运行 brook wssserver 使用指定证书 [你自己不拥有的域名]
+
+-   假设你的域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
+-   防火墙记得开放 **TCP 443**
+-   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+```
+
+> 你可以按组合键 CTRL+C 来停止
+
+#### Then
+
+假设你的服务器的 IP 是 `1.2.3.4`
+
+**获取 brook link**
+
+```
+brook link --server wss://domain.com:443 --password hello --address 1.2.3.4:443 --insecure
+```
+
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
+
+**or 获取 brook link with `name`**
+
+```
+brook link --server wss://domain.com:443 --password hello --address 1.2.3.4:443 --insecure --name 'my brook wssserver'
+```
+
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
+
+#### 在服务端屏蔽域名和 IP 列表
+
+查看这些参数
+
+-   --blockDomainList
+-   --blockCIDR4List
+-   --blockCIDR6List
+-   --updateListInterval
+
+> 更多参数: brook wssserver -h
+
+---
+
+## 使用[`joker`](https://github.com/txthinking/joker)运行守护进程 🔥
+
+> 我们建议你先在前台直接运行, 确保一切都正常
+
+```
+joker brook wssserver --domainaddress domain.com:443 --password hello
+```
+
+查看最后一个命令的 ID
+
+```
+joker last
+```
+
+查看某个命令的输出和错误
 
 ```
 joker log <ID>
 ```
 
+查看运行的命令列表
+
+```
+joker list
+```
+
+停止某个命令
+
+```
+joker stop <ID>
+```
+
 ---
 
-## 使用[jinbe](https://github.com/txthinking/jinbe)开机自动启动命令
+## 使用[`jinbe`](https://github.com/txthinking/jinbe)开机自动启动命令
 
-> 我们建议你先在前台直接运行, 确保一切都正常后, 再使用 jinbe 运行
-
-```
-jinbe brook wssserver --domain domain.com --password hello
-```
-
-或者同时用上 joker
+> 我们建议你先在前台直接运行, 确保一切都正常
 
 ```
-jinbe joker brook wssserver --domain domain.com --password hello
+jinbe joker brook wssserver --domainaddress domain.com:443 --password hello
 ```
 
-查看 jinbe 添加的所有开机命令
+查看添加的开机命令
 
 ```
 jinbe list
 ```
 
-移除 jinbe 添加的某个开机命令
-
-> jinbe list 会输出所有开机命令 ID
+移除某个开机命令
 
 ```
 jinbe remove <ID>

@@ -28,7 +28,9 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
+	"time"
 
 	"net/http"
 	_ "net/http/pprof"
@@ -872,19 +874,19 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "bypassDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
+					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR4List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/china_cidr4.txt",
+					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/china_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR6List",
-					Usage: "https://, http:// or local file path, like: https://txthinking.github.io/bypass/china_cidr6.txt",
+					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/china_cidr6.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.BoolFlag{
 					Name:  "enableIPv6",
@@ -916,51 +918,79 @@ func main() {
 					Name:  "insecure",
 					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
 				},
+				&cli.StringFlag{
+					Name:  "link",
+					Usage: "brook link, ignore server, password, address, insecure",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("webListen") != "" {
-					if err := os.WriteFile("/root/.brook.pid", []byte(fmt.Sprintf("%d", os.Getpid())), 0666); err != nil {
-						return err
-					}
 					web, err := fs.Sub(static, "static")
 					if err != nil {
 						return err
 					}
 					var cmd *exec.Cmd
+					lock := &sync.Mutex{}
 					m := http.NewServeMux()
 					m.Handle("/", http.FileServer(http.FS(web)))
-					m.HandleFunc("/connect", func(w http.ResponseWriter, r *http.Request) {
+					m.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
 						s, err := os.Executable()
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
 						}
-						os.WriteFile("/root/.brook.args", []byte(r.FormValue("args")), 0666)
+						lock.Lock()
+						defer lock.Unlock()
 						cmd = exec.Command("/bin/sh", "-c", s+" tproxy "+r.FormValue("args"))
+						log.Println(s + " tproxy " + r.FormValue("args"))
+						done := make(chan byte)
+						defer close(done)
+						errch := make(chan error)
 						go func() {
 							out, _ := cmd.CombinedOutput()
-							os.WriteFile("/root/.brook.tproxy.err", out, 0666)
+							select {
+							case <-done:
+								log.Println(string(out))
+							default:
+								select {
+								case <-done:
+									log.Println(string(out))
+								case errch <- errors.New(string(out)):
+								}
+							}
+							lock.Lock()
 							cmd = nil
+							lock.Unlock()
 						}()
-						w.Write([]byte("Disconnect"))
+						select {
+						case err := <-errch:
+							http.Error(w, err.Error(), 500)
+							return
+						case <-time.After(6 * time.Second):
+							w.Write([]byte("connected"))
+						}
 					})
-					m.HandleFunc("/disconnect", func(w http.ResponseWriter, r *http.Request) {
+					m.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
+						lock.Lock()
+						defer lock.Unlock()
 						if cmd == nil {
-							w.Write([]byte("Connect"))
+							w.Write([]byte("disconnected"))
 							return
 						}
 						if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
 							http.Error(w, err.Error(), 500)
 							return
 						}
-						w.Write([]byte("Connect"))
+						w.Write([]byte("disconnected"))
 					})
 					m.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+						lock.Lock()
+						defer lock.Unlock()
 						if cmd == nil {
-							w.Write([]byte("Connect"))
+							w.Write([]byte("disconnected"))
 							return
 						}
-						w.Write([]byte("Disconnect"))
+						w.Write([]byte("connected"))
 					})
 					s := &http.Server{
 						Addr:    c.String("webListen"),
@@ -989,11 +1019,47 @@ func main() {
 				if debug {
 					enableDebug()
 				}
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || (c.String("link") == "" && (c.String("server") == "" || c.String("password") == "")) {
 					cli.ShowCommandHelp(c, "tproxy")
-					return nil
+					return errors.New("")
 				}
-				s, err := brook.NewTproxy(c.String("listen"), c.String("server"), c.String("password"), c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("address"), c.Bool("insecure"))
+				if c.String("bypassDomainList") != "" && !strings.HasPrefix(c.String("bypassDomainList"), "http://") && !strings.HasPrefix(c.String("bypassDomainList"), "https://") && !filepath.IsAbs(c.String("bypassDomainList")) {
+					return errors.New("--bypassDomainList must be with absolute path")
+				}
+				if c.String("bypassCIDR4List") != "" && !strings.HasPrefix(c.String("bypassCIDR4List"), "http://") && !strings.HasPrefix(c.String("bypassCIDR4List"), "https://") && !filepath.IsAbs(c.String("bypassCIDR4List")) {
+					return errors.New("--bypassCIDR4List must be with absolute path")
+				}
+				if c.String("bypassCIDR6List") != "" && !strings.HasPrefix(c.String("bypassCIDR6List"), "http://") && !strings.HasPrefix(c.String("bypassCIDR6List"), "https://") && !filepath.IsAbs(c.String("bypassCIDR6List")) {
+					return errors.New("--bypassCIDR6List must be with absolute path")
+				}
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
+					return errors.New("--blockDomainList must be with absolute path")
+				}
+				var server, password, address string
+				var insecure bool
+				if c.String("link") == "" {
+					server = c.String("server")
+					password = c.String("password")
+					address = c.String("address")
+					insecure = c.Bool("insecure")
+				}
+				if c.String("link") != "" {
+					var kind string
+					var v url.Values
+					var err error
+					kind, server, _, password, v, err = brook.ParseLinkExtra(c.String("link"))
+					if err != nil {
+						return err
+					}
+					if kind == "socks5" {
+						return errors.New("tproxy does not support socks5 server now, try brook server/wsserver/wssserver")
+					}
+					address = v.Get("address")
+					if v.Get("insecure") == "true" {
+						insecure = true
+					}
+				}
+				s, err := brook.NewTproxy(c.String("listen"), server, password, c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"), address, insecure)
 				if err != nil {
 					return err
 				}
@@ -1018,14 +1084,14 @@ func main() {
 					},
 				})
 				if c.String("dnsListen") != "" {
-					s1, err := brook.NewDNS(c.String("dnsListen"), c.String("server"), c.String("password"), c.String("dnsForDefault"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
+					s1, err := brook.NewDNS(c.String("dnsListen"), server, password, c.String("dnsForDefault"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 					if err != nil {
 						return err
 					}
-					if (strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://")) && c.String("address") != "" {
-						s1.WSClient.ServerAddress = c.String("address")
+					if (strings.HasPrefix(server, "ws://") || strings.HasPrefix(server, "wss://")) && address != "" {
+						s1.WSClient.ServerAddress = address
 					}
-					if strings.HasPrefix(c.String("server"), "wss://") && c.Bool("insecure") {
+					if strings.HasPrefix(server, "wss://") && insecure {
 						s1.WSClient.TLSConfig.InsecureSkipVerify = true
 					}
 					g.Add(&runnergroup.Runner{
@@ -1079,14 +1145,18 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.String("server") == "" || c.String("password") == "" {
+					cli.ShowCommandHelp(c, "link")
+					return nil
+				}
 				s := "server"
-				if strings.HasPrefix(c.String("s"), "ws://") {
+				if strings.HasPrefix(c.String("server"), "ws://") {
 					s = "wsserver"
 				}
-				if strings.HasPrefix(c.String("s"), "wss://") {
+				if strings.HasPrefix(c.String("server"), "wss://") {
 					s = "wssserver"
 				}
-				if strings.HasPrefix(c.String("s"), "socks5://") {
+				if strings.HasPrefix(c.String("server"), "socks5://") {
 					s = "socks5"
 				}
 				v := url.Values{}
@@ -1098,41 +1168,6 @@ func main() {
 				}
 				v.Set("insecure", yn)
 				fmt.Println(brook.LinkExtra(s, c.String("s"), c.String("username"), c.String("password"), v))
-				return nil
-			},
-		},
-		&cli.Command{
-			Name:  "qr",
-			Usage: "Print brook server QR code",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "server",
-					Aliases: []string{"s"},
-					Usage:   "Support $ brook server,  $ brook wsserver, $ brook wssserver and socks5 server, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443, socks5://1.2.3.4:1080",
-				},
-				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "Password",
-				},
-				&cli.StringFlag{
-					Name:    "username",
-					Aliases: []string{"u"},
-					Usage:   "Username, when server is socks5 server",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				s := "server"
-				if strings.HasPrefix(c.String("s"), "ws://") {
-					s = "wsserver"
-				}
-				if strings.HasPrefix(c.String("s"), "wss://") {
-					s = "wssserver"
-				}
-				if strings.HasPrefix(c.String("s"), "socks5://") {
-					s = "socks5"
-				}
-				brook.QR(s, c.String("s"), c.String("username"), c.String("password"))
 				return nil
 			},
 		},
@@ -1153,11 +1188,6 @@ func main() {
 				&cli.StringFlag{
 					Name:  "socks5ServerIP",
 					Usage: "Only if your socks5 server IP is different from listen IP",
-				},
-				&cli.StringFlag{
-					Name:  "http",
-					Value: "127.0.0.1:8010",
-					Usage: "where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1252,6 +1282,7 @@ func main() {
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs
+					log.Println(11)
 					g.Done()
 				}()
 				return g.Wait()

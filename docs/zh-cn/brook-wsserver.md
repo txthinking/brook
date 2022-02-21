@@ -7,88 +7,114 @@ SRC --UDP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Pro
 
 ## 运行 brook wsserver
 
-假设选择端口`9999`, 密码`hello`. 如果有防火墙, 记得允许**端口9999的 TCP 协议**.
+-   假设选择端口 `9999`, 密码 `hello`
+-   如果有防火墙, 记得允许端口 `9999` 的 **TCP 协议**
 
 ```
 brook wsserver --listen :9999 --password hello
 ```
 
-假设你的服务器 IP 是 `1.2.3.4`, 那么你的 brook wsserver 是: `ws://1.2.3.4:9999`
+> 你可以按组合键 CTRL+C 来停止
 
-> 你可以按组合键 CTRL+C 来停止<br/>
-> 更多参数介绍: brook wsserver -h
+#### Then
 
-## 使用`nohup`后台运行
+**假设你的服务器 IP 是 `1.2.3.4`**
 
-> 我们建议你先在前台直接运行, 确保一切都正常后, 再使用 nohup 运行
+-   brook wsserver: `ws://1.2.3.4:9999`
+-   password: `hello`
+
+> 用 CLI 连接: `brook wsclient --wsserver ws://1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080`. 更多参数: `brook wsclient -h`<br/>
+> 用 GUI 连接: 添加如上信息
+
+**获取 brook link**
 
 ```
-nohup brook wsserver --listen :9999 --password hello &
+brook link --server ws://1.2.3.4:9999 --password hello
 ```
 
-停止后台运行的 brook
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
+
+**or with 自定义域名, 任何域名, 甚至不是你自己的域名也可以**
 
 ```
-killall brook
+brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999
 ```
 
-## 使用[joker](https://github.com/txthinking/joker)运行守护进程 🔥
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
 
-> 我们建议你先在前台直接运行, 确保一切都正常后, 再使用 joker 运行
+**or 获取 brook link with `name`**
+
+```
+brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name 'my brook wsserver'
+```
+
+> 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
+> 用 GUI 连接: 添加 brook link
+
+#### 在服务端屏蔽域名和 IP 列表
+
+查看这些参数
+
+-   --blockDomainList
+-   --blockCIDR4List
+-   --blockCIDR6List
+-   --updateListInterval
+
+> 更多参数: brook wsserver -h
+
+---
+
+## 使用[`joker`](https://github.com/txthinking/joker)运行守护进程 🔥
+
+> 我们建议你先在前台直接运行, 确保一切都正常
 
 ```
 joker brook wsserver --listen :9999 --password hello
 ```
 
-> 可以看得出来, 这条命令相比之前的命令只是前面多个 joker. 用 joker 守护某个进程就是这样简单
-
-查看 joker 守护的所有进程
+查看最后一个命令的 ID
 
 ```
-joker list
+joker last
 ```
 
-停止 joker 守护某个进程
-
-> joker list 会输出所有进程 ID
-
-```
-joker stop <ID>
-```
-
-查看某个进程的日志
-
-> joker list 会输出所有进程 ID
+查看某个命令的输出和错误
 
 ```
 joker log <ID>
 ```
 
+查看运行的命令列表
+
+```
+joker list
+```
+
+停止某个命令
+
+```
+joker stop <ID>
+```
+
 ---
 
-## 使用[jinbe](https://github.com/txthinking/jinbe)开机自动启动命令
+## 使用[`jinbe`](https://github.com/txthinking/jinbe)开机自动启动命令
 
-> 我们建议你先在前台直接运行, 确保一切都正常后, 再使用 jinbe 运行
-
-```
-jinbe brook wsserver --listen :9999 --password hello
-```
-
-或者同时用上 joker
+> 我们建议你先在前台直接运行, 确保一切都正常
 
 ```
 jinbe joker brook wsserver --listen :9999 --password hello
 ```
 
-查看 jinbe 添加的所有开机命令
+查看添加的开机命令
 
 ```
 jinbe list
 ```
 
-移除 jinbe 添加的某个开机命令
-
-> jinbe list 会输出所有开机命令 ID
+移除某个开机命令
 
 ```
 jinbe remove <ID>

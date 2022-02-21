@@ -9,3 +9,4 @@
 - Forum: https://github.com/txthinking/brook/discussions
 - Telegram: https://t.me/brookgroup
 - News: https://t.me/txthinking_news
+- Chrome Extension: [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)

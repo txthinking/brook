@@ -7,41 +7,74 @@ SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP(Brook Proto
 
 ## Run brook server
 
-Assume with port `9999` and password `hello`. If there is a firewall, remember to open **TCP and UDP on port 9999**.
+-   Assume with port `9999` and password `hello`.
+-   If there is a firewall, remember to open **TCP and UDP on port 9999**.
 
 ```
 brook server --listen :9999 --password hello
 ```
 
-Assume your server public IP is `1.2.3.4`, then your brook server is: `1.2.3.4:9999`
-
 > You can stop it with CTRL+C<br/>
+
+#### Then
+
+**assume your server IP is `1.2.3.4`**
+
+-   brook server: `1.2.3.4:9999`
+-   password: `hello`
+
+> Connect with CLI: `brook client --server 1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080`. More parameters: `brook client -h`<br/>
+> Connect with GUI: add as above
+
+**get brook link**
+
+```
+brook link --server 1.2.3.4:9999 --password hello
+```
+
+> Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
+> Connect with GUI: add the brook link result
+
+**or get brook link with `name`**
+
+```
+brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
+```
+
+> Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
+> Connect with GUI: add the brook link result
+
+#### Block domain and IP in server-side
+
+Check these parameters
+
+-   --blockDomainList
+-   --blockCIDR4List
+-   --blockCIDR6List
+-   --updateListInterval
+
 > More parameters: brook server -h
 
 ---
 
-## Run in background via `nohup`
-
-> We recommend running the command directly to make sure there are no errors before running it via nohup
-
-```
-nohup brook server --listen :9999 --password hello &
-```
-
-Stop background brook
-
-```
-killall brook
-```
-
----
-
-## Run as daemon via [`joker`](https://github.com/txthinking/joker) 🔥
+## Run brook server as daemon via [`joker`](https://github.com/txthinking/joker) 🔥
 
 > We recommend running the command directly to make sure there are no errors before running it with joker
 
 ```
 joker brook server --listen :9999 --password hello
+```
+
+Get the last command ID
+
+```
+joker last
+```
+
+View output and error of a command run via joker
+
+```
+joker log <ID>
 ```
 
 View running commmands via joker
@@ -52,18 +85,8 @@ joker list
 
 Stop a running command via joker
 
-> Your can get ID from output by joker list
-
 ```
 joker stop <ID>
-```
-
-View log of a command run via joker
-
-> Your can get ID from output by joker list
-
-```
-joker log <ID>
 ```
 
 ---
@@ -71,12 +94,6 @@ joker log <ID>
 ## Auto start at boot via [`jinbe`](https://github.com/txthinking/jinbe)
 
 > We recommend running the command directly to make sure there are no errors before running it via jinbe
-
-```
-jinbe brook server --listen :9999 --password hello
-```
-
-Or with joker
 
 ```
 jinbe joker brook server --listen :9999 --password hello
@@ -90,9 +107,6 @@ jinbe list
 
 Remove a added command via jinbe
 
-> Your can get ID from output by jinbe list
-
 ```
 jinbe remove <ID>
 ```
-

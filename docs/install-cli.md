@@ -1,22 +1,10 @@
-# Brook
+# Brook CLI
 
-## Install via curl
+## Install via nami
 
-For example, for Linux amd64, run the following commands to install
-
-```
-curl -L https://github.com/txthinking/brook/releases/latest/download/brook_linux_amd64 -o /usr/bin/brook
-chmod +x /usr/bin/brook
-```
-
-> The first command is to use curl to download the brook_linux_amd64 binary file for Linux amd64 to the /usr/bin/.<br/>
-> The second command is to use chmod to allow executable permissions.
-
-You can go to the [releases](https://github.com/txthinking/brook/releases) to download and install the latest version of brook for your system
-
----
-
-## Install via &nbsp; [nami](https://github.com/txthinking/nami)
+> [nami](https://github.com/txthinking/nami) will automatically download the command corresponding to your system.<br/>
+> If your system is Windows, run in [Git Bash](https://gitforwindows.org)<br/>
+> If your system is not Linux, MacOS, Windows, you can download it directly on the [releases](https://github.com/txthinking/brook/releases) page
 
 Install nami
 
@@ -24,19 +12,23 @@ Install nami
 bash <(curl https://bash.ooo/nami.sh)
 ```
 
-Use nami to install brook, she will automatically download the latest version for your system
+Install brook
 
 ```
 nami install brook
 ```
 
-Use nami to install [joker](https://github.com/txthinking/joker), she can run brook as deamon, **optional but recommended**
+Install joker
+
+> [joker](https://github.com/txthinking/joker) can turn process into daemon on Unix-like OS
 
 ```
 nami install joker
 ```
 
-Use nami to install [jinbe](https://github.com/txthinking/jinbe), she can add auto-start command at boot, **optional**
+Install jinbe
+
+> [jinbe](https://github.com/txthinking/jinbe), if you expect auto-start command at boot on Unix-like OS
 
 ```
 nami install jinbe
@@ -44,7 +36,7 @@ nami install jinbe
 
 ---
 
-## Install via script
+## Install via script on Linux
 
 ```
 bash <(curl https://bash.ooo/brook.sh)

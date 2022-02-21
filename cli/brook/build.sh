@@ -5,6 +5,7 @@ if [ $# -ne 1 ]; then
     exit
 fi
 
+rm -rf _
 mkdir _
 
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build                    -ldflags="-w -s" -o _/brook_darwin_amd64 .

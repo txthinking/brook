@@ -10,7 +10,13 @@ SRC --UDP--> brook socks5 --UDP--> DST
 ## Run brook socks5
 
 ```
-brook socks5 --socks5 1.2.3.4:1080
+brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
+```
+
+or with username and password
+
+```
+brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
 ```
 
 > More parameters: brook socks5 -h

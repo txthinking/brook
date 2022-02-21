@@ -23,28 +23,28 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
 
 ### Install CLI
 
-install [nami](https://github.com/txthinking/nami)
+1. install [nami](https://github.com/txthinking/nami)
 
-> nami will automatically download the command corresponding to your system<br/>
-> If your system is not Linux, MacOS, Windows, you can download it directly on the [release](https://github.com/txthinking/brook/releases) page
+    > [nami](https://github.com/txthinking/nami) will automatically download the command corresponding to your system<br/>
+    > If your system is not Linux, MacOS, Windows, you can download it directly on the [release](https://github.com/txthinking/brook/releases) page
 
-```
-bash <(curl https://bash.ooo/nami.sh)
-```
+    ```
+    bash <(curl https://bash.ooo/nami.sh)
+    ```
 
-install brook, [joker](https://github.com/txthinking/joker)
+2. install brook, [joker](https://github.com/txthinking/joker)
 
-> [joker](https://github.com/txthinking/joker) can turn process into daemon
+    > [joker](https://github.com/txthinking/joker) can turn process into daemon
 
-```
-nami install brook joker
-```
+    ```
+    nami install brook joker
+    ```
 
-run `brook server`
+3. run `brook server`
 
-```
-joker brook server --listen :9999 --password hello
-```
+    ```
+    joker brook server --listen :9999 --password hello
+    ```
 
 > Then, your `brook server` is `YOUR_SERVER_IP:9999`, password is `hello`
 
@@ -69,9 +69,6 @@ NAME:
 USAGE:
    brook [global options] command [command options] [arguments...]
 
-VERSION:
-   20210701
-
 AUTHOR:
    Cloud <cloud@txthinking.com>
 
@@ -86,7 +83,6 @@ COMMANDS:
    dns             Run as dns server over brook, both TCP and UDP, [src <-> brook dns <-> brook server/wsserver/wssserver <-> dns] or [src <-> brook dns <-> dnsForBypass]
    tproxy          Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> brook tproxy <-> brook server/wsserver/wssserver <-> dst]
    link            Print brook link
-   qr              Print brook server QR code
    connect         Connect via standard sharing link (brook server & brook wsserver & brook wssserver)
    relay           Run as standalone relay, both TCP and UDP, this means access [from address] is equal to access [to address], [src <-> from address <-> to address]
    socks5          Run as standalone standard socks5 server, both TCP and UDP
@@ -110,10 +106,6 @@ COPYRIGHT:
 ```
 
 [Read Document](https://txthinking.github.io/brook/)
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://github.com/txthinking/brook/blob/master/.github/CONTRIBUTING.md) first
 
 ## License
 
