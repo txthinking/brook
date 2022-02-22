@@ -14,6 +14,10 @@
 
 ---
 
+🎉 v20220401 `nami install nami brook` [Changelog->](https://github.com/txthinking/brook/releases/tag/v20220401)
+
+---
+
 ## What is Brook
 
 Brook is a cross-platform strong encryption and not detectable proxy.<br/>
