@@ -14,6 +14,10 @@
 
 ---
 
+🎉 v20220401 `nami install nami brook` [更新日志->](https://github.com/txthinking/brook/releases/tag/v20220401)
+
+---
+
 ## 什么是 Brook
 
 Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学.
