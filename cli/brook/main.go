@@ -1145,7 +1145,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("server") == "" || c.String("password") == "" {
+				if c.String("server") == "" {
 					cli.ShowCommandHelp(c, "link")
 					return nil
 				}
