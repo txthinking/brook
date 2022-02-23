@@ -77,9 +77,12 @@ brook://socks5?password=world&socks5=socks5%3A%2F%2F1.2.3.4%3A9999&username=hell
 ### brook link
 
 ```
-brook link --server server_address:port --password password
-brook link --server ws://wsserver_address:port --password password
-brook link --server wss://wsserver_domain:port --password password
-brook link --server socks5://server_address:port
-brook link --server socks5://server_address:port --username username --password password
+brook link --server 1.2.3.4:9999 --password password
+brook link --server [2001:4860:4860::8888]:9999 --password password
+brook link --server ws://1.2.3.4:9999 --password password
+brook link --server ws://[2001:4860:4860::8888]:9999 --password password
+brook link --server wss://domain:443 --password password
+brook link --server socks5://1.2.3.4:1080
+brook link --server socks5://[2001:4860:4860::8888]:1080
+brook link --server socks5://1.2.3.4:1080 --username username --password password
 ```
