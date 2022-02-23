@@ -16,7 +16,7 @@ brook server --listen :9999 --password hello
 
 > 你可以按组合键 CTRL+C 来停止
 
-#### Then
+#### 在客户端如何连接
 
 **假设你的服务器 IP 是 `1.2.3.4`**
 
@@ -26,7 +26,7 @@ brook server --listen :9999 --password hello
 > 用 CLI 连接: `brook client --server 1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080`. 更多参数: `brook client -h`<br/>
 > 用 GUI 连接: 添加如上信息
 
-**获取 brook link**
+**或 获取 brook link**
 
 ```
 brook link --server 1.2.3.4:9999 --password hello
@@ -35,7 +35,7 @@ brook link --server 1.2.3.4:9999 --password hello
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-**or 获取 brook link with `name`**
+**或 获取 brook link with `name`**
 
 ```
 brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
