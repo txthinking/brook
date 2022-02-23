@@ -1,30 +1,30 @@
 -   [CLI and GUI](README.md)
--   ⏤
+-   -
 -   [Install CLI](install-cli.md)
 -   [Install GUI](install-gui-client.md)
--   ⏤
+-   -
 -   [brook server](brook-server.md)
 -   [brook wsserver](brook-wsserver.md)
 -   [brook wssserver](brook-wssserver.md)
--   ⏤
+-   -
 -   [brook link](brook-link.md)
--   ⏤
+-   -
 -   [brook relayoverbrook](brook-relayoverbrook.md)
 -   [brook dns](brook-dns.md)
 -   [brook tproxy](brook-tproxy.md)
 -   [OpenWrt](brook-tproxy-gui.md)
--   ⏤
+-   -
 -   [brook relay](brook-relay.md)
 -   [brook socks5](brook-socks5.md)
 -   [brook socks5tohttp](brook-socks5tohttp.md)
 -   [brook hijackhttps](brook-hijackhttps.md)
 -   [brook pac](brook-pac.md)
--   ⏤
+-   -
 -   [IPv6](ipv6.md)
 -   [Files](files.md)
--   ⏤
+-   -
 -   [brook server protocol](brook-server-protocol.md)
 -   [brook wsserver protocol](brook-wsserver-protocol.md)
 -   [brook wssserver protocol](brook-wssserver-protocol.md)
--   ⏤
+-   -
 -   [Resources](resources.md)
