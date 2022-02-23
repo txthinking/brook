@@ -16,7 +16,7 @@ brook wsserver --listen :9999 --password hello
 
 > You can stop it with CTRL+C<br/>
 
-#### How to use
+#### How to connect on the client side
 
 **assuming your server IP is `1.2.3.4`**
 
