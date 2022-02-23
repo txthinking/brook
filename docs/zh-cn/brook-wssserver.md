@@ -5,7 +5,7 @@ SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Pr
 SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --UDP--> DST
 ```
 
-## 运行 brook wssserver 自动签发证书
+## 第一种场景: 运行 brook wssserver 自动签发证书[你自己拥有的域名]
 
 -   假设你的域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
 -   防火墙记得开放 **TCP 80, 443**
@@ -17,7 +17,7 @@ brook wssserver --domainaddress domain.com:443 --password hello
 
 > 你可以按组合键 CTRL+C 来停止
 
-#### Then:
+#### 在客户端如何连接
 
 -   brook wssserver: `wss://domain.com:443`
 -   password: `hello`
@@ -25,7 +25,7 @@ brook wssserver --domainaddress domain.com:443 --password hello
 > 用 CLI 连接: `brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080`. 更多参数: `brook wssclient -h`<br/>
 > 用 GUI 连接: 添加如上信息
 
-**获取 brook link**
+**或 获取 brook link**
 
 ```
 brook link --server wss://domain.com:443 --password hello
@@ -34,7 +34,7 @@ brook link --server wss://domain.com:443 --password hello
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-**or 获取 brook link with `name`**
+**或 获取 brook link 指定个 `name`**
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
@@ -43,7 +43,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-## 运行 brook wssserver 使用指定证书 [你自己拥有的域名]
+## 第二种场景: 运行 brook wssserver 使用指定证书 [你自己拥有的域名]
 
 -   假设你的域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
 -   防火墙记得开放 **TCP 443**
@@ -56,7 +56,7 @@ brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cer
 
 > 你可以按组合键 CTRL+C 来停止
 
-#### Then:
+#### 在客户端如何连接
 
 **如果你的证书是信任机构签发**
 
@@ -75,7 +75,7 @@ brook link --server wss://domain.com:443 --password hello
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-**如果你的证书是信任机构签发, 获取 brook link with `name`**
+**如果你的证书是信任机构签发, 获取 brook link 指定个 `name`**
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
@@ -84,7 +84,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-**如果你的证书是你自己签发的, 获取 brook link with `insecure`**
+**如果你的证书是你自己签发的, 获取 brook link 并指定 `insecure`**
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --insecure
@@ -93,7 +93,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-## 运行 brook wssserver 使用指定证书 [你自己不拥有的域名]
+## 第三种场景: 运行 brook wssserver 使用指定证书 [你自己不拥有的域名]
 
 -   假设那个域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
 -   防火墙记得开放 **TCP 443**
@@ -105,7 +105,7 @@ brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cer
 
 > 你可以按组合键 CTRL+C 来停止
 
-#### Then
+#### 在客户端如何连接
 
 假设你的服务器的 IP 是 `1.2.3.4`
 
@@ -118,7 +118,7 @@ brook link --server wss://domain.com:443 --password hello --address 1.2.3.4:443 
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-**or 获取 brook link with `name`**
+**或 获取 brook link 指定个 `name`**
 
 ```
 brook link --server wss://domain.com:443 --password hello --address 1.2.3.4:443 --insecure --name 'my brook wssserver'
