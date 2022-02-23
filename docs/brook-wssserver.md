@@ -5,7 +5,7 @@ SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Pr
 SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --UDP--> DST
 ```
 
-## Run brook wssserver with automatically certificate
+## Case 1️: Run brook wssserver with automatically certificate with [your own domain]
 
 -   Assume your domain is `domain.com`, with port `443`, with password `hello`
 -   If there is a firewall, remember to open **TCP on port 80, 443**
@@ -17,22 +17,22 @@ brook wssserver --domainaddress domain.com:443 --password hello
 
 > You can stop it with CTRL+C
 
-#### Then:
+#### How to connect on the client side
 
 -   brook wssserver: `wss://domain.com:443`
 -   password: `hello`
 
 > Connect with CLI: `brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080`. More parameters: `brook wssclient -h`<br/>
-> Connect with GUI: add as above
+> Connect with GUI: add info as above
 
-**get brook link**
+**or get brook link**
 
 ```
 brook link --server wss://domain.com:443 --password hello
 ```
 
 > Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
-> Connect with GUI: add the brook link result
+> Connect with GUI: add the brook link
 
 **or get brook link with `name`**
 
@@ -41,9 +41,9 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 ```
 
 > Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
-> Connect with GUI: add the brook link result
+> Connect with GUI: add the brook link
 
-## Run brook wssserver with custom certificate with [your own domain name]
+## Case 2: Run brook wssserver with custom certificate with [your own domain]
 
 -   Assume your domain is `domain.com`, with port `443`, with password `hello`
 -   If there is a firewall, remember to open **TCP on port 443**
@@ -56,7 +56,7 @@ brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cer
 
 > You can stop it with CTRL+C
 
-#### Then:
+#### How to connect on the client side
 
 **if your certificate is issued by a trusted authority**
 
@@ -64,7 +64,7 @@ brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cer
 -   password: `hello`
 
 > Connect with CLI: `brook wssclient --wssserver wss://domain.com:443 --password hello --socks5 127.0.0.1:1080`. More parameters: `brook wssclient -h`<br/>
-> Connect with GUI: add as above
+> Connect with GUI: add info as above
 
 **if your certificate is issued by a trusted authority, get brook link**
 
@@ -73,7 +73,7 @@ brook link --server wss://domain.com:443 --password hello
 ```
 
 > Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
-> Connect with GUI: add the brook link result
+> Connect with GUI: add the brook link
 
 **if your certificate is issued by a trusted authority, get brook link with `name`**
 
@@ -82,7 +82,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 ```
 
 > Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
-> Connect with GUI: add the brook link result
+> Connect with GUI: add the brook link
 
 **if your certificate is issued by yourself, get brook link with `insecure`**
 
@@ -91,9 +91,9 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 ```
 
 > Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
-> Connect with GUI: add the brook link result
+> Connect with GUI: add the brook link
 
-## Run brook wssserver with custom certificate with [not your own domain name]
+## Case 3: Run brook wssserver with custom certificate with [not your own domain]
 
 -   Assume the domain is `domain.com`, with port `443`, with password `hello`
 -   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`. [How to issue a certificate yourself](https://github.com/txthinking/mad)
@@ -105,7 +105,7 @@ brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cer
 
 > You can stop it with CTRL+C
 
-#### Then
+#### How to connect on the client side
 
 Assume your server IP is `1.2.3.4`
 
