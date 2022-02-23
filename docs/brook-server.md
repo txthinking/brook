@@ -16,7 +16,7 @@ brook server --listen :9999 --password hello
 
 > You can stop it with CTRL+C<br/>
 
-#### Then
+#### How to use
 
 **assume your server IP is `1.2.3.4`**
 
@@ -24,16 +24,16 @@ brook server --listen :9999 --password hello
 -   password: `hello`
 
 > Connect with CLI: `brook client --server 1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080`. More parameters: `brook client -h`<br/>
-> Connect with GUI: add as above
+> Connect with GUI: add info as above
 
-**get brook link**
+**or get brook link**
 
 ```
 brook link --server 1.2.3.4:9999 --password hello
 ```
 
 > Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
-> Connect with GUI: add the brook link result
+> Connect with GUI: add the brook link
 
 **or get brook link with `name`**
 
@@ -42,7 +42,7 @@ brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
 ```
 
 > Connect with CLI: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. More parameters: `brook connect -h`<br>
-> Connect with GUI: add the brook link result
+> Connect with GUI: add the brook link
 
 #### Block domain and IP in server-side
 
