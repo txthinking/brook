@@ -95,7 +95,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 
 ## 运行 brook wssserver 使用指定证书 [你自己不拥有的域名]
 
--   假设你的域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
+-   假设那个域名是 `domain.com`, 选择端口 `443`, 密码 `hello`
 -   防火墙记得开放 **TCP 443**
 -   The cert is `/root/cert.pem`, your cert key is `/root/certkey.pem`. [如何自己签发证书](https://github.com/txthinking/mad/blob/master/readme_zh.md)
 
