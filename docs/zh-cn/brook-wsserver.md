@@ -16,7 +16,7 @@ brook wsserver --listen :9999 --password hello
 
 > 你可以按组合键 CTRL+C 来停止
 
-#### Then
+#### 在客户端如何连接
 
 **假设你的服务器 IP 是 `1.2.3.4`**
 
@@ -26,7 +26,7 @@ brook wsserver --listen :9999 --password hello
 > 用 CLI 连接: `brook wsclient --wsserver ws://1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080`. 更多参数: `brook wsclient -h`<br/>
 > 用 GUI 连接: 添加如上信息
 
-**获取 brook link**
+**或 获取 brook link**
 
 ```
 brook link --server ws://1.2.3.4:9999 --password hello
@@ -35,7 +35,7 @@ brook link --server ws://1.2.3.4:9999 --password hello
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-**or with 自定义域名, 任何域名, 甚至不是你自己的域名也可以**
+**或 获取 brook link 指定个自定义域名, 任何域名, 甚至不是你自己的域名也可以**
 
 ```
 brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999
@@ -44,7 +44,7 @@ brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999
 > 用 CLI 连接: `brook connect --link 'brook://...' --socks5 127.0.0.1:1080`. 更多参数: `brook connect -h`<br>
 > 用 GUI 连接: 添加 brook link
 
-**or 获取 brook link with `name`**
+**或 获取 brook link 指定个 `name`**
 
 ```
 brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name 'my brook wsserver'
