@@ -1,8 +1,8 @@
 ## brook wssserver
 
 ```
-SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --TCP--> DST
-SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --UDP--> DST
+SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(TLS(Brook Protocol))--> brook wssserver --TCP--> DST
+SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(TLS(Brook Protocol))--> brook wssserver --UDP--> DST
 ```
 
 ## 第一种场景: 运行 brook wssserver 自动签发证书[你自己拥有的域名]
