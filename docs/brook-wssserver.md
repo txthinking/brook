@@ -1,8 +1,8 @@
 ## brook wssserver
 
 ```
-SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --TCP--> DST
-SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wssserver --UDP--> DST
+SRC --TCP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(TLS(Brook Protocol))--> brook wssserver --TCP--> DST
+SRC --UDP--> brook wssclient/relayoverbrook/dns/tproxy/GUI Client --TCP(TLS(Brook Protocol))--> brook wssserver --UDP--> DST
 ```
 
 ## Case 1️: Run brook wssserver with automatically certificate with [your own domain]
