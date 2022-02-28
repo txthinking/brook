@@ -29,6 +29,7 @@ import (
 	"github.com/gorilla/websocket"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/txthinking/brook/limits"
+	crypto1 "github.com/txthinking/crypto"
 	"github.com/txthinking/socks5"
 	"github.com/urfave/negroni"
 	"golang.org/x/crypto/acme/autocert"
@@ -36,24 +37,26 @@ import (
 
 // WSServer.
 type WSServer struct {
-	Password      []byte
-	Domain        string
-	TCPAddr       *net.TCPAddr
-	HTTPServer    *http.Server
-	HTTPSServer   *http.Server
-	TCPTimeout    int
-	UDPTimeout    int
-	Path          string
-	UDPSrc        *cache.Cache
-	BlockDomain   map[string]byte
-	BlockCIDR4    []*net.IPNet
-	BlockCIDR6    []*net.IPNet
-	BlockCache    *cache.Cache
-	BlockLock     *sync.RWMutex
-	Done          chan byte
-	WSSServerPort int64
-	Cert          []byte
-	CertKey       []byte
+	Password       []byte
+	Domain         string
+	TCPAddr        *net.TCPAddr
+	HTTPServer     *http.Server
+	HTTPSServer    *http.Server
+	TCPTimeout     int
+	UDPTimeout     int
+	Path           string
+	UDPSrc         *cache.Cache
+	BlockDomain    map[string]byte
+	BlockCIDR4     []*net.IPNet
+	BlockCIDR6     []*net.IPNet
+	BlockCache     *cache.Cache
+	BlockLock      *sync.RWMutex
+	Done           chan byte
+	WSSServerPort  int64
+	Cert           []byte
+	CertKey        []byte
+	WithoutBrook   bool
+	PasswordSha256 []byte
 }
 
 // NewWSServer.
@@ -97,20 +100,25 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
+	b, err := crypto1.SHA256Bytes([]byte(password))
+	if err != nil {
+		return nil, err
+	}
 	s := &WSServer{
-		Password:    []byte(password),
-		Domain:      domain,
-		TCPAddr:     taddr,
-		TCPTimeout:  tcpTimeout,
-		UDPTimeout:  udpTimeout,
-		Path:        path,
-		UDPSrc:      cs2,
-		BlockDomain: ds,
-		BlockCIDR4:  c4,
-		BlockCIDR6:  c6,
-		BlockCache:  cs3,
-		BlockLock:   lock,
-		Done:        done,
+		Password:       []byte(password),
+		Domain:         domain,
+		TCPAddr:        taddr,
+		TCPTimeout:     tcpTimeout,
+		UDPTimeout:     udpTimeout,
+		Path:           path,
+		UDPSrc:         cs2,
+		BlockDomain:    ds,
+		BlockCIDR4:     c4,
+		BlockCIDR6:     c6,
+		BlockCache:     cs3,
+		BlockLock:      lock,
+		Done:           done,
+		PasswordSha256: b,
 	}
 	if updateListInterval != 0 {
 		go func() {
@@ -250,19 +258,26 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	ss, dst, err := NewStreamServer(s.Password, c, s.TCPTimeout)
+	var ss Exchanger
+	var dst []byte
+	if !s.WithoutBrook {
+		ss, dst, err = NewStreamServer(s.Password, c, s.TCPTimeout)
+	}
+	if s.WithoutBrook {
+		ss, dst, err = NewSimpleStreamServer(s.PasswordSha256, c, s.TCPTimeout)
+	}
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	defer ss.Clean()
-	if ss.Network == "tcp" {
+	if ss.NetworkName() == "tcp" {
 		if err := s.TCPHandle(ss, dst); err != nil {
 			log.Println(err)
 		}
 	}
-	if ss.Network == "udp" {
-		ss.Timeout = s.UDPTimeout
+	if ss.NetworkName() == "udp" {
+		ss.SetTimeout(s.UDPTimeout)
 		if err := s.UDPHandle(ss, c.RemoteAddr().String(), dst); err != nil {
 			log.Println(err)
 		}
@@ -270,7 +285,7 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // TCPHandle handles request.
-func (s *WSServer) TCPHandle(ss *StreamServer, dst []byte) error {
+func (s *WSServer) TCPHandle(ss Exchanger, dst []byte) error {
 	address := socks5.ToAddress(dst[0], dst[1:len(dst)-2], dst[len(dst)-2:])
 	if Debug {
 		log.Println("dial tcp", address)
@@ -307,7 +322,7 @@ func (s *WSServer) TCPHandle(ss *StreamServer, dst []byte) error {
 }
 
 // UDPHandle handles packet.
-func (s *WSServer) UDPHandle(ss *StreamServer, src string, dstb []byte) error {
+func (s *WSServer) UDPHandle(ss Exchanger, src string, dstb []byte) error {
 	dst := socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:])
 	if Debug {
 		log.Println("dial udp", dst)

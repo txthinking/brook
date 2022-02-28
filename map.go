@@ -207,7 +207,13 @@ func (s *Map) TCPHandle(c *net.TCPConn) error {
 	dst = append(dst, a)
 	dst = append(dst, h...)
 	dst = append(dst, p...)
-	sc, err := NewStreamClient("tcp", s.Password, dst, rc, s.TCPTimeout)
+	var sc Exchanger
+	if s.WSClient == nil || !s.WSClient.WithoutBrook {
+		sc, err = NewStreamClient("tcp", s.Password, dst, rc, s.TCPTimeout)
+	}
+	if s.WSClient != nil && s.WSClient.WithoutBrook {
+		sc, err = NewSimpleStreamClient("tcp", s.WSClient.PasswordSha256, dst, rc, s.TCPTimeout)
+	}
 	if err != nil {
 		return err
 	}
@@ -316,7 +322,13 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	dstb = append(dstb, a)
 	dstb = append(dstb, h...)
 	dstb = append(dstb, p...)
-	sc, err := NewStreamClient("udp", s.Password, dstb, rc, s.UDPTimeout)
+	var sc Exchanger
+	if !s.WSClient.WithoutBrook {
+		sc, err = NewStreamClient("udp", s.Password, dstb, rc, s.UDPTimeout)
+	}
+	if s.WSClient.WithoutBrook {
+		sc, err = NewSimpleStreamClient("udp", s.WSClient.PasswordSha256, dstb, rc, s.UDPTimeout)
+	}
 	if err != nil {
 		return err
 	}

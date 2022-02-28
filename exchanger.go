@@ -12,37 +12,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-// +build !linux
-
 package brook
 
 import (
-	"errors"
+	"net"
 )
 
-// Tproxy.
-type Tproxy struct {
-}
-
-// NewTproxy.
-func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure, withoutbrook bool) (*Tproxy, error) {
-	return nil, errors.New("Only support Linux")
-}
-
-func (s *Tproxy) RunAutoScripts() error {
-	return nil
-}
-
-func (s *Tproxy) ClearAutoScripts() error {
-	return nil
-}
-
-// Run server.
-func (s *Tproxy) ListenAndServe() error {
-	return nil
-}
-
-// Shutdown server.
-func (s *Tproxy) Shutdown() error {
-	return nil
+type Exchanger interface {
+	Exchange(remote net.Conn) error
+	NetworkName() string
+	Clean()
+	SetTimeout(int)
 }

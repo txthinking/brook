@@ -220,3 +220,9 @@ func (c *StreamClient) Clean() {
 		x.BP65507.Put(c.RB)
 	}
 }
+func (s *StreamClient) NetworkName() string {
+	return s.Network
+}
+func (s *StreamClient) SetTimeout(i int) {
+	s.Timeout = i
+}

@@ -293,6 +293,10 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -315,6 +319,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				s.WithoutBrook = c.Bool("withoutBrookProtocol")
 				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -374,6 +379,10 @@ func main() {
 					Name:  "address",
 					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -401,6 +410,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				s.WithoutBrook = c.Bool("withoutBrookProtocol")
 				if c.String("address") != "" {
 					s.ServerAddress = c.String("address")
 				}
@@ -488,6 +498,10 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -520,6 +534,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				s.WithoutBrook = c.Bool("withoutBrookProtocol")
 				if c.String("cert") != "" {
 					b, err := ioutil.ReadFile(c.String("cert"))
 					if err != nil {
@@ -602,6 +617,10 @@ func main() {
 					Name:  "insecure",
 					Usage: "Client do not verify the server's certificate chain and host name",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -629,6 +648,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				s.WithoutBrook = c.Bool("withoutBrookProtocol")
 				if c.String("address") != "" {
 					s.ServerAddress = c.String("address")
 				}
@@ -709,6 +729,10 @@ func main() {
 					Name:  "insecure",
 					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -721,6 +745,9 @@ func main() {
 				s, err := brook.NewMap(c.String("from"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
+				}
+				if strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://") {
+					s.WSClient.WithoutBrook = c.Bool("withoutBrookProtocol")
 				}
 				if (strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://")) && c.String("address") != "" {
 					s.WSClient.ServerAddress = c.String("address")
@@ -801,6 +828,10 @@ func main() {
 					Name:  "insecure",
 					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -813,6 +844,9 @@ func main() {
 				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 				if err != nil {
 					return err
+				}
+				if strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://") {
+					s.WSClient.WithoutBrook = c.Bool("withoutBrookProtocol")
 				}
 				if (strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://")) && c.String("address") != "" {
 					s.WSClient.ServerAddress = c.String("address")
@@ -921,6 +955,10 @@ func main() {
 				&cli.StringFlag{
 					Name:  "link",
 					Usage: "brook link, ignore server, password, address, insecure",
+				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1036,12 +1074,13 @@ func main() {
 					return errors.New("--blockDomainList must be with absolute path")
 				}
 				var server, password, address string
-				var insecure bool
+				var insecure, withoutbrook bool
 				if c.String("link") == "" {
 					server = c.String("server")
 					password = c.String("password")
 					address = c.String("address")
 					insecure = c.Bool("insecure")
+					withoutbrook = c.Bool("withoutBrookProtocol")
 				}
 				if c.String("link") != "" {
 					var kind string
@@ -1058,8 +1097,11 @@ func main() {
 					if v.Get("insecure") == "true" {
 						insecure = true
 					}
+					if v.Get("withoutBrookProtocol") == "true" {
+						withoutbrook = true
+					}
 				}
-				s, err := brook.NewTproxy(c.String("listen"), server, password, c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"), address, insecure)
+				s, err := brook.NewTproxy(c.String("listen"), server, password, c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"), address, insecure, withoutbrook)
 				if err != nil {
 					return err
 				}
@@ -1087,6 +1129,9 @@ func main() {
 					s1, err := brook.NewDNS(c.String("dnsListen"), server, password, c.String("dnsForDefault"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 					if err != nil {
 						return err
+					}
+					if strings.HasPrefix(server, "ws://") || strings.HasPrefix(server, "wss://") {
+						s1.WSClient.WithoutBrook = withoutbrook
 					}
 					if (strings.HasPrefix(server, "ws://") || strings.HasPrefix(server, "wss://")) && address != "" {
 						s1.WSClient.ServerAddress = address
@@ -1143,6 +1188,10 @@ func main() {
 					Name:  "insecure",
 					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("server") == "" {
@@ -1167,6 +1216,11 @@ func main() {
 					yn = "true"
 				}
 				v.Set("insecure", yn)
+				yn = ""
+				if c.Bool("withoutBrookProtocol") {
+					yn = "true"
+				}
+				v.Set("withoutBrookProtocol", yn)
 				fmt.Println(brook.LinkExtra(s, c.String("s"), c.String("username"), c.String("password"), v))
 				return nil
 			},
@@ -1251,6 +1305,9 @@ func main() {
 					}
 					if v.Get("address") != "" {
 						s.ServerAddress = v.Get("address")
+					}
+					if v.Get("withoutBrookProtocol") == "true" {
+						s.WithoutBrook = true
 					}
 					if kind == "wssserver" && v.Get("insecure") == "true" {
 						s.TLSConfig.InsecureSkipVerify = true

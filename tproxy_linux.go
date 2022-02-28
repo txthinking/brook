@@ -55,7 +55,7 @@ type Tproxy struct {
 }
 
 // NewTproxy.
-func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure bool) (*Tproxy, error) {
+func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure, withoutbrook bool) (*Tproxy, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -79,6 +79,7 @@ func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url str
 		if err != nil {
 			return nil, err
 		}
+		wsc.WithoutBrook = withoutbrook
 		if strings.HasPrefix(s, "wss://") && insecure {
 			wsc.TLSConfig.InsecureSkipVerify = true
 		}
@@ -445,7 +446,13 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 	dst = append(dst, a)
 	dst = append(dst, h...)
 	dst = append(dst, p...)
-	sc, err := NewStreamClient("tcp", s.Password, dst, rc, s.TCPTimeout)
+	var sc Exchanger
+	if s.WSClient == nil || !s.WSClient.WithoutBrook {
+		sc, err = NewStreamClient("tcp", s.Password, dst, rc, s.TCPTimeout)
+	}
+	if s.WSClient != nil && s.WSClient.WithoutBrook {
+		sc, err = NewSimpleStreamClient("tcp", s.WSClient.PasswordSha256, dst, rc, s.TCPTimeout)
+	}
 	if err != nil {
 		return err
 	}
@@ -614,7 +621,13 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	dstb = append(dstb, a)
 	dstb = append(dstb, h...)
 	dstb = append(dstb, p...)
-	sc, err := NewStreamClient("udp", s.Password, dstb, rc, s.UDPTimeout)
+	var sc Exchanger
+	if !s.WSClient.WithoutBrook {
+		sc, err = NewStreamClient("udp", s.Password, dstb, rc, s.UDPTimeout)
+	}
+	if s.WSClient.WithoutBrook {
+		sc, err = NewSimpleStreamClient("udp", s.WSClient.PasswordSha256, dstb, rc, s.UDPTimeout)
+	}
 	if err != nil {
 		return err
 	}
