@@ -66,12 +66,13 @@ func NewSimpleStreamServer(password []byte, client net.Conn, timeout int) (*Simp
 		s.WB = x.BP2048.Get().([]byte)
 	}
 	if i%2 == 1 {
-		x.BP2048.Put(b)
 		s.Network = "udp"
 		s.RB = x.BP65507.Get().([]byte)
+		copy(s.RB[:l], b[:l])
+		x.BP2048.Put(b)
 		s.WB = x.BP65507.Get().([]byte)
 	}
-	return s, b[4:l], nil
+	return s, s.RB[4:l], nil
 }
 
 func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
