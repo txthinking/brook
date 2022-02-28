@@ -42,11 +42,6 @@ type StreamServer struct {
 }
 
 func NewStreamServer(password []byte, client net.Conn, timeout int) (*StreamServer, []byte, error) {
-	if timeout != 0 {
-		if err := client.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second)); err != nil {
-			return nil, nil, err
-		}
-	}
 	s := &StreamServer{Client: client, Timeout: timeout}
 	s.cn = x.BP12.Get().([]byte)
 	if _, err := io.ReadFull(s.Client, s.cn); err != nil {

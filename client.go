@@ -136,6 +136,11 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		return err
 	}
 	defer rc.Close()
+	if x.UDPTimeout != 0 {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(x.UDPTimeout) * time.Second)); err != nil {
+			return err
+		}
+	}
 	if laddr == nil {
 		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 	}

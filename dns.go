@@ -481,6 +481,11 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			return err
 		}
 		defer rc.Close()
+		if s.UDPTimeout != 0 {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+				return err
+			}
+		}
 		if laddr == nil {
 			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 		}
