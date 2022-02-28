@@ -24,3 +24,10 @@ type Exchanger interface {
 	Clean()
 	SetTimeout(int)
 }
+
+func MakeStreamServer(password []byte, c net.Conn, timeout int, withoutbrook bool) (Exchanger, []byte, error) {
+	if !withoutbrook {
+		return NewStreamServer(password, c, timeout)
+	}
+	return NewSimpleStreamServer(password, c, timeout)
+}

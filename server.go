@@ -236,7 +236,7 @@ func (s *Server) RunUDPServer() error {
 
 // TCPHandle handles request.
 func (s *Server) TCPHandle(c *net.TCPConn) error {
-	ss, dst, err := NewStreamServer(s.Password, c, s.TCPTimeout)
+	ss, dst, err := MakeStreamServer(s.Password, c, s.TCPTimeout, false)
 	if err != nil {
 		return err
 	}

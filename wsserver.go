@@ -258,14 +258,11 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	var ss Exchanger
-	var dst []byte
-	if !s.WithoutBrook {
-		ss, dst, err = NewStreamServer(s.Password, c, s.TCPTimeout)
-	}
+	b := s.Password
 	if s.WithoutBrook {
-		ss, dst, err = NewSimpleStreamServer(s.PasswordSha256, c, s.TCPTimeout)
+		b = s.PasswordSha256
 	}
+	ss, dst, err := MakeStreamServer(b, c, s.TCPTimeout, s.WithoutBrook)
 	if err != nil {
 		log.Println(err)
 		return
