@@ -331,7 +331,11 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		rc, err = Dial.DialUDP("udp", laddr, raddr)
 	}
 	if s.Dial != nil {
-		rc, err = s.Dial("udp", laddr.String(), dst)
+		la := ""
+		if laddr != nil {
+			la = laddr.String()
+		}
+		rc, err = s.Dial("udp", la, dst)
 	}
 	if err != nil {
 		return err

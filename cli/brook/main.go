@@ -48,7 +48,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20220401"
+	app.Version = "20220404"
 	app.Usage = "A cross-platform strong encryption and not detectable proxy"
 	app.Authors = []*cli.Author{
 		{
@@ -115,7 +115,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "toSocks5",
-					Usage: "Forward to socks5 server, such as 1.2.3.4:1080",
+					Usage: "Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:  "toSocks5Username",
@@ -321,7 +321,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "toSocks5",
-					Usage: "Forward to socks5 server, such as 1.2.3.4:1080",
+					Usage: "Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:  "toSocks5Username",
@@ -547,7 +547,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "toSocks5",
-					Usage: "Forward to socks5 server, such as 1.2.3.4:1080",
+					Usage: "Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:  "toSocks5Username",
@@ -1403,7 +1403,6 @@ func main() {
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs
-					log.Println(11)
 					g.Done()
 				}()
 				return g.Wait()
