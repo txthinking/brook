@@ -385,6 +385,11 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 			return err
 		}
 		defer rc.Close()
+		if s.TCPTimeout != 0 {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
+				return err
+			}
+		}
 		go func() {
 			var bf [1024 * 2]byte
 			for {
@@ -502,6 +507,11 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			return err
 		}
 		defer rc.Close()
+		if s.UDPTimeout != 0 {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+				return err
+			}
+		}
 		if laddr.Port == 0 {
 			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 		}
@@ -510,6 +520,11 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 		}
 		defer c.Close()
+		if s.UDPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+				return err
+			}
+		}
 		if _, err := rc.Write(b); err != nil {
 			return err
 		}
@@ -553,6 +568,11 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			return err
 		}
 		defer rc.Close()
+		if s.UDPTimeout != 0 {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+				return err
+			}
+		}
 		if laddr.Port == 0 {
 			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 		}
@@ -561,6 +581,11 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 		}
 		defer c.Close()
+		if s.UDPTimeout != 0 {
+			if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+				return err
+			}
+		}
 
 		a, h, p, err := socks5.ParseAddress(dst)
 		if err != nil {
@@ -600,6 +625,11 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 	defer rc.Close()
+	if s.UDPTimeout != 0 {
+		if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+			return err
+		}
+	}
 	if laddr.Port == 0 {
 		s.UDPSrc.Set(src+dst, &net.UDPAddr{
 			IP:   rc.LocalAddr().(*net.TCPAddr).IP,
@@ -612,6 +642,11 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 	}
 	defer c.Close()
+	if s.UDPTimeout != 0 {
+		if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+			return err
+		}
+	}
 
 	a, h, p, err := socks5.ParseAddress(dst)
 	if err != nil {

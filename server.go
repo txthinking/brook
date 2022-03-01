@@ -46,6 +46,7 @@ type Server struct {
 	BlockCache   *cache.Cache
 	BlockLock    *sync.RWMutex
 	Done         chan byte
+	Dial         func(network, laddr, raddr string) (net.Conn, error)
 }
 
 // NewServer.
@@ -260,7 +261,13 @@ func (s *Server) TCPHandle(c *net.TCPConn) error {
 	if BlockAddress(address, ds, c4, c6, s.BlockCache) {
 		return errors.New("block " + address)
 	}
-	rc, err := Dial.Dial("tcp", address)
+	var rc net.Conn
+	if s.Dial == nil {
+		rc, err = Dial.Dial("tcp", address)
+	}
+	if s.Dial != nil {
+		rc, err = s.Dial("tcp", "", address)
+	}
 	if err != nil {
 		return err
 	}
@@ -319,7 +326,13 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	if err != nil {
 		return err
 	}
-	rc, err := Dial.DialUDP("udp", laddr, raddr)
+	var rc net.Conn
+	if s.Dial == nil {
+		rc, err = Dial.DialUDP("udp", laddr, raddr)
+	}
+	if s.Dial != nil {
+		rc, err = s.Dial("udp", laddr.String(), dst)
+	}
 	if err != nil {
 		return err
 	}

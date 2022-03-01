@@ -38,6 +38,7 @@ import (
 
 	"github.com/txthinking/brook"
 	"github.com/txthinking/runnergroup"
+	"github.com/txthinking/socks5"
 	"github.com/urfave/cli/v2"
 )
 
@@ -112,6 +113,18 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
+				&cli.StringFlag{
+					Name:  "toSocks5",
+					Usage: "Forward to socks5 server, such as 1.2.3.4:1080",
+				},
+				&cli.StringFlag{
+					Name:  "toSocks5Username",
+					Usage: "Forward to socks5 server, username",
+				},
+				&cli.StringFlag{
+					Name:  "toSocks5Password",
+					Usage: "Forward to socks5 server, password",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -133,6 +146,15 @@ func main() {
 				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
 				if err != nil {
 					return err
+				}
+				if c.String("toSocks5") != "" {
+					c, err := socks5.NewClient(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					s.Dial = func(network, laddr, raddr string) (net.Conn, error) {
+						return c.DialWithLocalAddr(network, laddr, raddr, nil)
+					}
 				}
 				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
@@ -297,6 +319,18 @@ func main() {
 					Name:  "withoutBrookProtocol",
 					Usage: "The data will not be encrypted with brook protocol",
 				},
+				&cli.StringFlag{
+					Name:  "toSocks5",
+					Usage: "Forward to socks5 server, such as 1.2.3.4:1080",
+				},
+				&cli.StringFlag{
+					Name:  "toSocks5Username",
+					Usage: "Forward to socks5 server, username",
+				},
+				&cli.StringFlag{
+					Name:  "toSocks5Password",
+					Usage: "Forward to socks5 server, password",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -320,6 +354,15 @@ func main() {
 					return err
 				}
 				s.WithoutBrook = c.Bool("withoutBrookProtocol")
+				if c.String("toSocks5") != "" {
+					c, err := socks5.NewClient(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					s.Dial = func(network, laddr, raddr string) (net.Conn, error) {
+						return c.DialWithLocalAddr(network, laddr, raddr, nil)
+					}
+				}
 				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -502,6 +545,18 @@ func main() {
 					Name:  "withoutBrookProtocol",
 					Usage: "The data will not be encrypted with brook protocol",
 				},
+				&cli.StringFlag{
+					Name:  "toSocks5",
+					Usage: "Forward to socks5 server, such as 1.2.3.4:1080",
+				},
+				&cli.StringFlag{
+					Name:  "toSocks5Username",
+					Usage: "Forward to socks5 server, username",
+				},
+				&cli.StringFlag{
+					Name:  "toSocks5Password",
+					Usage: "Forward to socks5 server, password",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -533,6 +588,15 @@ func main() {
 				s, err := brook.NewWSServer("", c.String("password"), h, c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
 				if err != nil {
 					return err
+				}
+				if c.String("toSocks5") != "" {
+					c, err := socks5.NewClient(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					s.Dial = func(network, laddr, raddr string) (net.Conn, error) {
+						return c.DialWithLocalAddr(network, laddr, raddr, nil)
+					}
 				}
 				s.WithoutBrook = c.Bool("withoutBrookProtocol")
 				if c.String("cert") != "" {

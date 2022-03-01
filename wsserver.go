@@ -57,6 +57,7 @@ type WSServer struct {
 	CertKey        []byte
 	WithoutBrook   bool
 	PasswordSha256 []byte
+	Dial           func(network, laddr, raddr string) (net.Conn, error)
 }
 
 // NewWSServer.
@@ -302,7 +303,14 @@ func (s *WSServer) TCPHandle(ss Exchanger, dst []byte) error {
 	if BlockAddress(address, ds, c4, c6, s.BlockCache) {
 		return errors.New("block " + address)
 	}
-	rc, err := Dial.Dial("tcp", address)
+	var rc net.Conn
+	var err error
+	if s.Dial == nil {
+		rc, err = Dial.Dial("tcp", address)
+	}
+	if s.Dial != nil {
+		rc, err = s.Dial("tcp", "", address)
+	}
 	if err != nil {
 		return err
 	}
@@ -348,7 +356,13 @@ func (s *WSServer) UDPHandle(ss Exchanger, src string, dstb []byte) error {
 	if err != nil {
 		return err
 	}
-	rc, err := Dial.DialUDP("udp", laddr, raddr)
+	var rc net.Conn
+	if s.Dial == nil {
+		rc, err = Dial.DialUDP("udp", laddr, raddr)
+	}
+	if s.Dial != nil {
+		rc, err = s.Dial("udp", laddr.String(), dst)
+	}
 	if err != nil {
 		return err
 	}

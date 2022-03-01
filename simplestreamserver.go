@@ -78,11 +78,11 @@ func NewSimpleStreamServer(password []byte, client net.Conn, timeout int) (*Simp
 func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
 	defer remote.Close()
 	go func() {
+		if s.Network == "tcp" && s.Timeout == 0 {
+			io.Copy(s.Client, remote)
+			return
+		}
 		for {
-			if s.Network == "tcp" && s.Timeout == 0 {
-				io.Copy(s.Client, remote)
-				return
-			}
 			if s.Timeout != 0 {
 				if err := remote.SetDeadline(time.Now().Add(time.Duration(s.Timeout) * time.Second)); err != nil {
 					return
@@ -109,11 +109,11 @@ func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
 			}
 		}
 	}()
+	if s.Network == "tcp" && s.Timeout == 0 {
+		io.Copy(remote, s.Client)
+		return nil
+	}
 	for {
-		if s.Network == "tcp" && s.Timeout == 0 {
-			io.Copy(remote, s.Client)
-			return nil
-		}
 		if s.Timeout != 0 {
 			if err := s.Client.SetDeadline(time.Now().Add(time.Duration(s.Timeout) * time.Second)); err != nil {
 				return nil

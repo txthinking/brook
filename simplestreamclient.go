@@ -68,6 +68,10 @@ func NewSimpleStreamClient(network string, password, dst []byte, server net.Conn
 
 func (c *SimpleStreamClient) Exchange(local net.Conn) error {
 	go func() {
+		if c.Timeout == 0 && c.Network == "tcp" {
+			io.Copy(local, c.Server)
+			return
+		}
 		for {
 			if c.Timeout != 0 {
 				if err := c.Server.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
@@ -75,8 +79,6 @@ func (c *SimpleStreamClient) Exchange(local net.Conn) error {
 				}
 			}
 			if c.Network == "tcp" {
-				io.Copy(local, c.Server)
-				return
 				l, err := c.Server.Read(c.RB)
 				if err != nil {
 					return
@@ -103,6 +105,10 @@ func (c *SimpleStreamClient) Exchange(local net.Conn) error {
 			}
 		}
 	}()
+	if c.Timeout == 0 && c.Network == "tcp" {
+		io.Copy(c.Server, local)
+		return nil
+	}
 	for {
 		if c.Timeout != 0 {
 			if err := local.SetDeadline(time.Now().Add(time.Duration(c.Timeout) * time.Second)); err != nil {
@@ -110,8 +116,6 @@ func (c *SimpleStreamClient) Exchange(local net.Conn) error {
 			}
 		}
 		if c.Network == "tcp" {
-			io.Copy(c.Server, local)
-			return nil
 			l, err := local.Read(c.WB)
 			if err != nil {
 				return nil
