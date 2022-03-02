@@ -16,6 +16,7 @@ package brook
 
 import (
 	"context"
+	"crypto/x509"
 	"errors"
 	"fmt"
 	"log"
@@ -55,7 +56,7 @@ type Tproxy struct {
 }
 
 // NewTproxy.
-func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure, withoutbrook bool) (*Tproxy, error) {
+func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure, withoutbrook bool, roots *x509.CertPool) (*Tproxy, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -82,6 +83,9 @@ func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url str
 		wsc.WithoutBrook = withoutbrook
 		if strings.HasPrefix(s, "wss://") && insecure {
 			wsc.TLSConfig.InsecureSkipVerify = true
+		}
+		if strings.HasPrefix(s, "wss://") && roots != nil {
+			wsc.TLSConfig.RootCAs = roots
 		}
 		wsc.DialTCP = tproxy.DialTCP
 	}
