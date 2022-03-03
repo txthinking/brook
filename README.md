@@ -14,7 +14,7 @@
 
 ---
 
-🎉 v20220401 `nami install nami brook` [Changelog->](https://github.com/txthinking/brook/releases/tag/v20220401)
+🎉 v20220401 [Changelog->](https://github.com/txthinking/brook/releases/tag/v20220404)
 
 ---
 
