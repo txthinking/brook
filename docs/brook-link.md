@@ -30,6 +30,7 @@ brook://server?password=hello&server=1.2.3.4%3A9999
     -   `password`: password
     -   `name`: such as `my wsserver` [Optional]
     -   `address`: such as `1.2.3.4:9999` [Optional]
+    -   `withoutBrookProtocol`: `true` [Optional]
     -   Any other custom key
 
 Example
@@ -48,6 +49,8 @@ brook://wsserver?password=hello&wsserver=ws%3A%2F%2F1.2.3.4%3A9999%2Fws
     -   `name`: such as `my wssserver` [Optional]
     -   `address`: such as `1.2.3.4:9999` [Optional]
     -   `insecure`: `true` [Optional]
+    -   `withoutBrookProtocol`: `true` [Optional]
+    -   `ca`: CA content [Optional]
     -   Any other custom key
 
 Example
@@ -81,7 +84,7 @@ brook link --server 1.2.3.4:9999 --password password
 brook link --server [2001:4860:4860::8888]:9999 --password password
 brook link --server ws://1.2.3.4:9999 --password password
 brook link --server ws://[2001:4860:4860::8888]:9999 --password password
-brook link --server wss://hello.com:443 --password password --adresss 1.2.3.4:443 --insecure
+brook link --server wss://hello.com:443 --password password --address 1.2.3.4:443 --insecure
 brook link --server socks5://1.2.3.4:1080
 brook link --server socks5://[2001:4860:4860::8888]:1080
 brook link --server socks5://1.2.3.4:1080 --username username --password password

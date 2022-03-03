@@ -30,6 +30,7 @@ brook://server?password=hello&server=1.2.3.4%3A9999
     -   `password`: password
     -   `name`: such as `my wsserver` [Optional]
     -   `address`: such as `1.2.3.4:9999` [Optional]
+    -   `withoutBrookProtocol`: `true` [Optional]
     -   Any other custom key
 
 Example
@@ -48,6 +49,8 @@ brook://wsserver?password=hello&wsserver=ws%3A%2F%2F1.2.3.4%3A9999%2Fws
     -   `name`: such as `my wssserver` [Optional]
     -   `address`: such as `1.2.3.4:9999` [Optional]
     -   `insecure`: `true` [Optional]
+    -   `withoutBrookProtocol`: `true` [Optional]
+    -   `ca`: CA content [Optional]
     -   Any other custom key
 
 Example
@@ -62,8 +65,8 @@ brook://wssserver?password=hello&wssserver=wss%3A%2F%2Fdomain.com%3A443%2Fws
 -   **KIND**: `socks5`
 -   **QUERY**:
     -   `socks5`: socks5 server, such as `socks5://1.2.3.4:9999`
-    -   `username`: username, such as `hello` [Optional]
-    -   `password`: password, such as `world` [Optional]
+    -   `username`: username, such as `hello`, [Optional]
+    -   `password`: password, such as `world`, [Optional]
     -   `name`: such as `my socks5 server` [Optional]
     -   Any other custom key
 
@@ -86,3 +89,4 @@ brook link --server socks5://1.2.3.4:1080
 brook link --server socks5://[2001:4860:4860::8888]:1080
 brook link --server socks5://1.2.3.4:1080 --username username --password password
 ```
+
