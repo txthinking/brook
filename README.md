@@ -14,7 +14,7 @@
 
 ---
 
-🎉 v20220401 [Changelog->](https://github.com/txthinking/brook/releases/tag/v20220404)
+🎉 v20220404 [Changelog->](https://github.com/txthinking/brook/releases/tag/v20220404)
 
 ---
 
