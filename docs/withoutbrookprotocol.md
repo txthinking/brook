@@ -3,7 +3,7 @@
 --withoutBrookProtocol is the same as brook wsserver and brook wssserver, but without brook protocol encryption.<br/>
 So it is not recommended to use --withoutBrookProtocol together with --insecure.<br/>
 
-## Case 1: Run brook wsserver --withoutBrookProtocol + nico with trusted certificate
+## Case 1: Run brook wsserver --withoutBrookProtocol + [nico](https://github.com/txthinking/nico) with trusted certificate
 
 -   Assume your domain is `domain.com`, nico default requires port `443` and `80`, `80` for issuing certificates, with password `hello`
 -   If there is a firewall, remember to open **TCP on port 80, 443**
