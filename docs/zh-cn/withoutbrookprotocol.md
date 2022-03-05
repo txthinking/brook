@@ -3,7 +3,7 @@
 --withoutBrookProtocol 与brook wsserver 和 brook wssserver 一样, 但是不使用 brook 协议加密.<br/>
 所以不建议--withoutBrookProtocol和--insecure一起使用.
 
-## 第一种场景: 运行 brook wsserver --withoutBrookProtocol 和 nico 自动签发证书
+## 第一种场景: 运行 brook wsserver --withoutBrookProtocol 和 [nico](https://github.com/txthinking/nico) 自动签发证书
 
 -   假设你的域名是 `domain.com`, nico 需要 `443` and `80`, `80` 用于签发证书, 密码 `hello`
 -   防火墙记得开放 **TCP 80, 443**
