@@ -1,7 +1,7 @@
 ## --withoutBrookProtocol
 
---withoutBrookProtocol is the same as brook wsserver and brook wssserver, but without brook protocol encryption.<br/>
-So it is not recommended to use --withoutBrookProtocol together with --insecure.<br/>
+Brook protocol itself uses strong encryption algorithm, when brook wsserver and brook wssserver are enabled --withoutBrookProtocol means:<br/>
+**`Better performance, but data is not strongly encrypted using Brook protocol. So please use certificate encryption, and it is not recommended to use --withoutBrookProtocol and --insecure together `**
 
 ## Case 1: Run brook wsserver --withoutBrookProtocol + [nico](https://github.com/txthinking/nico) with trusted certificate
 
