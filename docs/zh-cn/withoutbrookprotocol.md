@@ -1,7 +1,7 @@
 ## --withoutBrookProtocol
 
---withoutBrookProtocol 与brook wsserver 和 brook wssserver 一样, 但是不使用 brook 协议加密.<br/>
-所以不建议--withoutBrookProtocol和--insecure一起使用.
+Brook 协议本身使用强加密算法，当 brook wsserver 和 brook wssserver 开启了 --withoutBrookProtocol 意味着：<br/>
+**`性能更好，但数据不使用 Brook 协议进行强加密。所以请使用证书加密，并且不建议--withoutBrookProtocol和--insecure一起使用`**
 
 ## 第一种场景: 运行 brook wsserver --withoutBrookProtocol 和 [nico](https://github.com/txthinking/nico) 自动签发证书
 
