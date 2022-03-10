@@ -88,5 +88,6 @@ brook link --server wss://hello.com:443 --password password --address 1.2.3.4:44
 brook link --server socks5://1.2.3.4:1080
 brook link --server socks5://[2001:4860:4860::8888]:1080
 brook link --server socks5://1.2.3.4:1080 --username username --password password
+brook link --help
 ```
 
