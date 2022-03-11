@@ -44,13 +44,13 @@ Brook's goal is to keep it **simple**, **stupid** and **not detectable**.
     nami install brook joker
     ```
 
-3. run `brook server`
+3. run `brook wsserver`
 
     ```
-    joker brook server --listen :9999 --password hello
+    joker brook wsserver --listen :9999 --password hello
     ```
 
-> Then, your `brook server` is `YOUR_SERVER_IP:9999`, password is `hello`
+> Then, your `brook wsserver` is `ws://YOUR_SERVER_IP:9999`, password is `hello`
 
 To learn more please read the [documentation](https://txthinking.github.io/brook/#/install-cli)
 

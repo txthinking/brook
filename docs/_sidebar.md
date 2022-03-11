@@ -16,6 +16,7 @@
 -   [brook hijackhttps](brook-hijackhttps.md)
 -   [brook pac](brook-pac.md)
 -   [IPv6](ipv6.md)
+-   [NAT Type](nat.md)
 -   [Files](files.md)
 -   [brook server protocol](brook-server-protocol.md)
 -   [brook wsserver protocol](brook-wsserver-protocol.md)

@@ -43,13 +43,13 @@ Brook 是一个跨平台的强加密无特征的代理软件. 偏爱 KISS 哲学
     nami install brook joker
     ```
 
-3. 运行 `brook server`
+3. 运行 `brook wsserver`
 
     ```
-    joker brook server --listen :9999 --password hello
+    joker brook wsserver --listen :9999 --password hello
     ```
 
-> 然后, 你的 `brook server` 是 `YOUR_SERVER_IP:9999`, 密码是 `hello`
+> 然后, 你的 `brook wsserver` 是 `ws://YOUR_SERVER_IP:9999`, 密码是 `hello`
 
 了解更多请阅读[文档](https://txthinking.github.io/brook/#/install-cli)
 
