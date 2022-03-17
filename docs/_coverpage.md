@@ -1,11 +1,10 @@
 # Brook
+
 <pre>
-```
 bash <(curl https://bash.ooo/nami.sh)
 nami install brook joker
 joker brook wsserver --listen :9999 --password hello
 brook link -s ws://`curl -s -4 ipip.ooo`:9999 -p hello
-```
 </pre>
 
 [GitHub](https://github.com/txthinking/brook)
