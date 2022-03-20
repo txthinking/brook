@@ -7,12 +7,13 @@
 
 [📜 Document](https://txthinking.github.io/brook/)
 [🤝 Telegram](https://t.me/brookgroup)
-[🗣 News](https://t.me/txthinking_news)
 [💬 Chat](https://join.txthinking.com)
 [🩸 Youtube](https://www.youtube.com/txthinking)
 [❤️ Sponsor](https://github.com/sponsors/txthinking)
 
 Brook is a cross-platform strong encryption and not detectable proxy. Keep it simple, stupid.
+
+[🗣 News](https://t.me/txthinking_news)
 
 ### Install brook command
 
