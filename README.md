@@ -385,7 +385,7 @@ brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
 brook pac --listen 127.0.0.1:8080 --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
 ```
 
-### brook pac creates pac 文件
+### brook pac creates pac file
 
 ```
 brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...

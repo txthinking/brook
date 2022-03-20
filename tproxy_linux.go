@@ -629,6 +629,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		return ue.Any.(func(b []byte) error)(b)
 	}
 	var rc net.Conn
+	var err error
 	if s.UDPOverTCP {
 		rc, err = tproxy.DialTCP("tcp", s.ServerTCPAddr.String())
 	}
