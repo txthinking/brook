@@ -7,7 +7,7 @@
 
 [📜 Document](https://txthinking.github.io/brook/)
 [🤝 Telegram](https://t.me/brookgroup)
-[💬 Chat](https://join.txthinking.com)
+[💬 Private](https://join.txthinking.com)
 [🩸 Youtube](https://www.youtube.com/txthinking)
 [❤️ Sponsor](https://github.com/sponsors/txthinking)
 
