@@ -5,7 +5,6 @@
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-[📜 Document](https://txthinking.github.io/brook/)
 [🤝 Telegram](https://t.me/brookgroup)
 [💬 Private](https://join.txthinking.com)
 [🩸 Youtube](https://www.youtube.com/txthinking)
@@ -13,7 +12,7 @@
 
 Brook is a cross-platform strong encryption and not detectable proxy. Keep it simple, stupid.
 
-[🗣 Announce](https://t.me/txthinking_news)
+[🗣 Subscribe Announce](https://t.me/txthinking_news)
 
 ### Install brook command
 
