@@ -53,10 +53,11 @@ type Tproxy struct {
 	Cidr6         []*net.IPNet
 	BypassCache   *cache.Cache
 	WSClient      *WSClient
+	UDPOverTCP    bool
 }
 
 // NewTproxy.
-func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure, withoutbrook bool, roots *x509.CertPool) (*Tproxy, error) {
+func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure, withoutbrook bool, roots *x509.CertPool, udpovertcp bool) (*Tproxy, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -156,6 +157,9 @@ func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url str
 		Cidr6:         c6,
 		BypassCache:   cache.New(cache.NoExpiration, cache.NoExpiration),
 		WSClient:      wsc,
+	}
+	if !strings.HasPrefix(s, "ws://") && !strings.HasPrefix(s, "wss://") {
+		t.UDPOverTCP = udpovertcp
 	}
 	return t, nil
 }
@@ -557,7 +561,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 
-	if s.WSClient == nil {
+	if s.WSClient == nil && !s.UDPOverTCP {
 		any, ok = s.UDPExchanges.Get(src + dst)
 		if ok {
 			ue := any.(*UDPExchange)
@@ -624,7 +628,13 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		ue := any.(*UDPExchange)
 		return ue.Any.(func(b []byte) error)(b)
 	}
-	rc, err := s.WSClient.DialWebsocket(laddr.String())
+	var rc net.Conn
+	if s.UDPOverTCP {
+		rc, err = tproxy.DialTCP("tcp", s.ServerTCPAddr.String())
+	}
+	if s.WSClient != nil {
+		rc, err = s.WSClient.DialWebsocket(laddr.String())
+	}
 	if err != nil {
 		return nil
 	}
@@ -661,10 +671,10 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	dstb = append(dstb, h...)
 	dstb = append(dstb, p...)
 	var sc Exchanger
-	if !s.WSClient.WithoutBrook {
+	if s.UDPOverTCP || (s.WSClient != nil && !s.WSClient.WithoutBrook) {
 		sc, err = NewStreamClient("udp", s.Password, dstb, rc, s.UDPTimeout)
 	}
-	if s.WSClient.WithoutBrook {
+	if s.WSClient != nil && s.WSClient.WithoutBrook {
 		sc, err = NewSimpleStreamClient("udp", s.WSClient.PasswordSha256, dstb, rc, s.UDPTimeout)
 	}
 	if err != nil {

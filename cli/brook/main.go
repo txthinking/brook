@@ -189,6 +189,10 @@ func main() {
 					Aliases: []string{"p"},
 					Usage:   "Brook server password",
 				},
+				&cli.BoolFlag{
+					Name:  "udpovertcp",
+					Usage: "UDP over TCP",
+				},
 				&cli.StringFlag{
 					Name:  "socks5",
 					Value: "127.0.0.1:1080",
@@ -239,6 +243,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				s.UDPOverTCP = c.Bool("udpovertcp")
 				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -802,6 +807,10 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "udpovertcp",
+					Usage: "When server is brook server, UDP over TCP",
+				},
 				&cli.StringFlag{
 					Name:  "address",
 					Usage: "When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
@@ -830,6 +839,9 @@ func main() {
 				s, err := brook.NewMap(c.String("from"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
+				}
+				if !strings.HasPrefix(c.String("server"), "ws://") && !strings.HasPrefix(c.String("server"), "wss://") {
+					s.UDPOverTCP = c.Bool("udpovertcp")
 				}
 				if strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://") {
 					s.WSClient.WithoutBrook = c.Bool("withoutBrookProtocol")
@@ -917,6 +929,10 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "udpovertcp",
+					Usage: "When server is brook server, UDP over TCP",
+				},
 				&cli.StringFlag{
 					Name:  "address",
 					Usage: "When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
@@ -945,6 +961,9 @@ func main() {
 				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 				if err != nil {
 					return err
+				}
+				if !strings.HasPrefix(c.String("server"), "ws://") && !strings.HasPrefix(c.String("server"), "wss://") {
+					s.UDPOverTCP = c.Bool("udpovertcp")
 				}
 				if strings.HasPrefix(c.String("server"), "ws://") || strings.HasPrefix(c.String("server"), "wss://") {
 					s.WSClient.WithoutBrook = c.Bool("withoutBrookProtocol")
@@ -1056,6 +1075,10 @@ func main() {
 					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "connection deadline time (s)",
+				},
+				&cli.BoolFlag{
+					Name:  "udpovertcp",
+					Usage: "When server is brook server, UDP over TCP",
 				},
 				&cli.StringFlag{
 					Name:  "address",
@@ -1191,7 +1214,7 @@ func main() {
 					return errors.New("--blockDomainList must be with absolute path")
 				}
 				var server, password, address string
-				var insecure, withoutbrook bool
+				var insecure, withoutbrook, udpovertcp bool
 				var roots *x509.CertPool
 				if c.String("link") == "" {
 					server = c.String("server")
@@ -1199,6 +1222,7 @@ func main() {
 					address = c.String("address")
 					insecure = c.Bool("insecure")
 					withoutbrook = c.Bool("withoutBrookProtocol")
+					udpovertcp = c.Bool("udpovertcp")
 					if c.String("ca") != "" {
 						b, err := ioutil.ReadFile(c.String("ca"))
 						if err != nil {
@@ -1229,6 +1253,9 @@ func main() {
 					if v.Get("withoutBrookProtocol") == "true" {
 						withoutbrook = true
 					}
+					if v.Get("udpovertcp") == "true" {
+						udpovertcp = true
+					}
 					if v.Get("ca") != "" {
 						roots = x509.NewCertPool()
 						ok := roots.AppendCertsFromPEM([]byte(v.Get("ca")))
@@ -1237,7 +1264,7 @@ func main() {
 						}
 					}
 				}
-				s, err := brook.NewTproxy(c.String("listen"), server, password, c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"), address, insecure, withoutbrook, roots)
+				s, err := brook.NewTproxy(c.String("listen"), server, password, c.Bool("enableIPv6"), c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.Int("tcpTimeout"), c.Int("udpTimeout"), address, insecure, withoutbrook, roots, udpovertcp)
 				if err != nil {
 					return err
 				}
@@ -1265,6 +1292,9 @@ func main() {
 					s1, err := brook.NewDNS(c.String("dnsListen"), server, password, c.String("dnsForDefault"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 					if err != nil {
 						return err
+					}
+					if !strings.HasPrefix(server, "ws://") && !strings.HasPrefix(server, "wss://") {
+						s1.UDPOverTCP = udpovertcp
 					}
 					if strings.HasPrefix(server, "ws://") || strings.HasPrefix(server, "wss://") {
 						s1.WSClient.WithoutBrook = withoutbrook
@@ -1319,6 +1349,10 @@ func main() {
 					Name:  "name",
 					Usage: "Give this server a name",
 				},
+				&cli.BoolFlag{
+					Name:  "udpovertcp",
+					Usage: "When server is brook server, UDP over TCP",
+				},
 				&cli.StringFlag{
 					Name:  "address",
 					Usage: "When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
@@ -1364,6 +1398,11 @@ func main() {
 					yn = "true"
 				}
 				v.Set("withoutBrookProtocol", yn)
+				yn = ""
+				if c.Bool("udpovertcp") {
+					yn = "true"
+				}
+				v.Set("udpovertcp", yn)
 				if c.String("ca") != "" {
 					b, err := ioutil.ReadFile(c.String("ca"))
 					if err != nil {
@@ -1442,6 +1481,9 @@ func main() {
 					s, err := brook.NewClient(c.String("socks5"), ip, server, password, c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
 						return err
+					}
+					if v.Get("udpovertcp") == "true" {
+						s.UDPOverTCP = true
 					}
 					g.Add(&runnergroup.Runner{
 						Start: func() error {
