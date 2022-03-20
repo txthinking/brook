@@ -5,14 +5,14 @@
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
 [![开源协议: GPL v3](https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-[📜 Document](https://txthinking.github.io/brook/)
 [🤝 Telegram](https://t.me/brookgroup)
-[🗣 News](https://t.me/txthinking_news)
 [💬 Chat](https://join.txthinking.com)
 [🩸 Youtube](https://www.youtube.com/txthinking)
 [❤️ Sponsor](https://github.com/sponsors/txthinking)
 
 Brook 是一个跨平台的强加密无特征的代理软件. Keep it simple, stupid.
+
+[🗣 订阅公告](https://t.me/txthinking_news)
 
 ### 安装 brook 命令
 
