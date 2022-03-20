@@ -148,7 +148,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 
 ### Run brook wssserver issue untrusted certificates yourself, any domain
 
-Install[mad](https://github.com/txthinking/mad)
+Install [mad](https://github.com/txthinking/mad)
 
 ```
 nami install mad
@@ -212,7 +212,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 
 ### --withoutBrookProtocol issue untrusted certificates yourself, any domain
 
-Install[mad](https://github.com/txthinking/mad)
+Install [mad](https://github.com/txthinking/mad)
 
 ```
 nami install mad
@@ -266,7 +266,7 @@ SRC --UDP--> brook socks5 --UDP--> DST
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 ```
 
-获取 brook link
+Get brook link
 
 ```
 brook link --server socks5://1.2.3.4:1080
@@ -421,7 +421,7 @@ Symmetric
 
 ### Run command as daemon via joker
 
-Install[joker](https://github.com/txthinking/joker)
+Install [joker](https://github.com/txthinking/joker)
 
 ```
 nami install joker
@@ -459,7 +459,7 @@ joker stop <ID>
 
 ### Auto start at boot viajinbe
 
-Install[jinbe](https://github.com/txthinking/jinbe)
+Install [jinbe](https://github.com/txthinking/jinbe)
 
 ```
 nami install jinbe
