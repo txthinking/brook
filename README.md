@@ -45,7 +45,7 @@ nami install brook
 [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 [Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
 [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
-[OpenWrt](/zh-cn/brook-tproxy-gui)
+[OpenWrt](#gui-for-official-openwrt)
 
 > Windows requires that the latest version of Edge(chromium-based) has been installed<br/>
 
@@ -55,8 +55,6 @@ nami install brook
 
 -   all `subcoommand`: `brook --help`
 -   command line arguments of `subommand`: `brook xxx --help`
-
-List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself
 
 ### brook rule format
 
@@ -73,6 +71,10 @@ Rules file can be used for
 -   brook tproxy: bypass, block, domain, ip
 -   OpenWrt: bypass, block, domain, ip
 -   brook: bypass, block, domain, ip
+
+### Examples
+
+List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself
 
 ### Run brook server
 
