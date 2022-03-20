@@ -70,7 +70,7 @@ Rules file can be used for
 -   brook dns: bypass, block domain
 -   brook tproxy: bypass, block, domain, ip
 -   OpenWrt: bypass, block, domain, ip
--   brook: bypass, block, domain, ip
+-   Brook GUI: bypass, block, domain, ip
 
 ### Examples
 
