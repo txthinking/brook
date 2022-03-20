@@ -1393,6 +1393,10 @@ func main() {
 					Name:  "socks5ServerIP",
 					Usage: "Only if your socks5 server IP is different from listen IP",
 				},
+				&cli.StringFlag{
+					Name:  "http",
+					Usage: "where to listen for HTTP connections",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
@@ -1814,115 +1818,6 @@ func main() {
 					g.Done()
 				}()
 				return g.Wait()
-			},
-		},
-		&cli.Command{
-			Name:  "servers",
-			Usage: "Run as multiple brook servers",
-			Flags: []cli.Flag{
-				&cli.StringSliceFlag{
-					Name:    "listenpassword",
-					Aliases: []string{"l"},
-					Usage:   "Listen address and password, like '0.0.0.0:9999 password'",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpTimeout",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				fmt.Println("$ brook servers has been removed, you may like joker:")
-				fmt.Println("$ joker brook server ...")
-				fmt.Println("$ joker brook server ...")
-				return nil
-			},
-		},
-		&cli.Command{
-			Name:  "relays",
-			Usage: "Run as multiple standalone relays",
-			Flags: []cli.Flag{
-				&cli.StringSliceFlag{
-					Name:  "fromto",
-					Usage: "Listen address and relay to address, like '0.0.0.0:9999 1.2.3.4:9999'",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpTimeout",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				fmt.Println("$ brook relays has been removed, you may like joker:")
-				fmt.Println("$ joker brook relay ...")
-				fmt.Println("$ joker brook relay ...")
-				return nil
-			},
-		},
-		&cli.Command{
-			Name:  "map",
-			Usage: "Run as mapping, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> brook <-> to address]",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "server",
-					Aliases: []string{"s"},
-					Usage:   "brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws",
-				},
-				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "password",
-				},
-				&cli.StringFlag{
-					Name:    "from",
-					Aliases: []string{"f"},
-					Usage:   "Listen address, like: 127.0.0.1:83",
-				},
-				&cli.StringFlag{
-					Name:    "to",
-					Aliases: []string{"t"},
-					Usage:   "Map to where, like: 8.8.8.8:53",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpTimeout",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				fmt.Println("$ brook map was renamed to $ brook relayoverbrook")
-				return nil
-			},
-		},
-		&cli.Command{
-			Name:  "howto",
-			Usage: "Print some useful tutorial resources",
-			Action: func(c *cli.Context) error {
-				fmt.Println("")
-				fmt.Println("Github:", "https://github.com/txthinking/brook")
-				fmt.Println("Docs:", "https://txthinking.github.io/brook")
-				fmt.Println("")
-				fmt.Println("News:", "https://t.me/txthinking_news")
-				fmt.Println("Chat:", "https://t.me/brookgroup")
-				fmt.Println("Blog:", "https://talks.txthinking.com")
-				fmt.Println("Youtube:", "https://www.youtube.com/txthinking")
-				fmt.Println("")
-				return nil
 			},
 		},
 	}

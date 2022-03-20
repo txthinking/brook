@@ -1,3 +1,0 @@
-## NAT Type
-
-Symmetric NAT
