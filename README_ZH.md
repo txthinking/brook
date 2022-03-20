@@ -45,7 +45,7 @@ nami install brook
 [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 [Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
 [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
-[OpenWrt](/zh-cn/brook-tproxy-gui)
+[OpenWrt](#官网原版-openwrt-图形客户端)
 
 > Windows 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器<br/>
 > 请使用非中国大陆 Apple ID 下载.
@@ -56,8 +56,6 @@ nami install brook
 
 -   查看所有的`子命令`: `brook --help`
 -   查看某个`子命令`的参数: `brook xxx --help`
-
-其实通过--help 查看参数帮助很方便，下面也举一些常用场景命令的例子, 注意自己替换示例中的 IP，端口，密码，域名，证书路径等参数
 
 ### brook 规则格式
 
@@ -74,6 +72,10 @@ nami install brook
 -   brook tproxy 分流，屏蔽域名
 -   OpenWrt 分流，屏蔽域名
 -   brook 图形客户端分流，屏蔽域名
+
+### 例子
+
+下面列举一些常用场景命令的例子, 注意自己替换示例中的 IP，端口，密码，域名，证书路径等参数
 
 ### 运行 brook server
 
@@ -147,7 +149,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 
 ### 运行 brook wssserver 自己签发非信任证书, 甚至不是你自己的域名也可以
 
-安装[mad](https://github.com/txthinking/mad)
+安装 [mad](https://github.com/txthinking/mad)
 
 ```
 nami install mad
@@ -211,7 +213,7 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 
 ### --withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以
 
-安装[mad](https://github.com/txthinking/mad)
+安装 [mad](https://github.com/txthinking/mad)
 
 ```
 nami install mad
@@ -420,7 +422,7 @@ Symmetric
 
 ### 使用 joker 运行守护进程
 
-使用 nami 安装[joker](https://github.com/txthinking/joker)
+使用 nami 安装 [joker](https://github.com/txthinking/joker)
 
 ```
 nami install joker
@@ -458,7 +460,7 @@ joker stop <ID>
 
 ### 使用 jinbe 添加开机自启动命令
 
-使用 nami 安装[jinbe](https://github.com/txthinking/jinbe)
+使用 nami 安装 [jinbe](https://github.com/txthinking/jinbe)
 
 ```
 nami install jinbe
