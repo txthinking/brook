@@ -12,7 +12,7 @@
 
 Brook is a cross-platform strong encryption and not detectable proxy. Keep it simple, stupid.
 
-[🗣 Subscribe Announce](https://t.me/txthinking_news)
+[🗣 Subscribe Announcement](https://t.me/txthinking_news)
 
 ### Install brook command
 
