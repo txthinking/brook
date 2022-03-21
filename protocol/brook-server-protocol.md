@@ -1,4 +1,6 @@
-# `brook server` Protocol
+# brook server protocol
+
+<!--G-R3M673HK5V-->
 
 ## Terminology
 

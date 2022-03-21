@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@master/github-markdown.css">
+        <title>withoutBrookProtocol protocol</title>
+		
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M673HK5V"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-R3M673HK5V');
+		</script>
+
+        <style>
+                .markdown-body {
+                    box-sizing: border-box;
+                    min-width: 200px;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
+                }
+
+                @media (max-width: 767px) {
+                    .markdown-body {
+                        padding: 15px;
+                    }
+                }
+		</style>
+        <body class="markdown-body"><h1><a name="withoutbrookprotocol-protocol" class="anchor" href="#withoutbrookprotocol-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>withoutBrookProtocol protocol</h1>
+
+
+<h2><a name="terminology" class="anchor" href="#terminology" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Terminology</h2>
+
+<ul>
+<li><p><strong><code>DST Address</code></strong>: The address that the application actually wants to request, address contains IP/domain and port</p>
+
+<pre><code>ATYP + IP/Domain + PORT
+</code></pre>
+
+<ul>
+<li><code>ATYP</code>: 1 byte
+
+<ul>
+<li>0x01: IPv4</li>
+<li>0x03: Domain</li>
+<li>0x04: IPv6</li>
+</ul></li>
+<li><code>IP/Domain</code>: 4/n/16 bytes
+
+<ul>
+<li>If ATYP is 0x01, then this is IPv4, 4 bytes</li>
+<li>If ATYP is 0x03, then this is domain, n bytes, and the first byte is the domain length</li>
+<li>If ATYP is 0x04, then this is IPv6, 16 bytes</li>
+</ul></li>
+<li><code>Port</code>: 2 bytes
+
+<ul>
+<li>Big Endian 16-bit unsigned integer</li>
+</ul></li>
+</ul></li>
+
+<li><p><strong><code>Password</code></strong>: User-defined password</p></li>
+
+<li><p><strong><code>SHA256</code></strong>: Defined in FIPS 180-4</p></li>
+</ul>
+<h2><a name="client-tcp-server" class="anchor" href="#client-tcp-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Client --TCP--&gt; Server</h2>
+
+<pre><code>[Standard WebSocket Protocol Header] + [SHA256(Password) + (DST Address Length+4) + Unix Timestamp + DST Address] + [DATA]...
+</code></pre>
+
+<blockquote>
+<p>The maximum length of <code>[SHA256(Password) + (DST Address Length+4) + Unix Timestamp + DST Address]</code> is 2048 bytes</p>
+</blockquote>
+
+<ul>
+<li><code>DST Address Length+4</code>: Big Endian 16-bit unsigned integer</li>
+<li><a href="https://en.wikipedia.org/wiki/Unix_time" rel="nofollow"><code>Unix Timestamp</code></a>: If it is not even, it should be increased by 1. Big Endian 32-bit unsigned integer</li>
+<li><code>DATA</code>: Actual data being proxied</li>
+</ul>
+<h2><a name="server-tcp-client" class="anchor" href="#server-tcp-client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Server --TCP--&gt; Client</h2>
+
+<pre><code>[Standard WebSocket Protocol Header] + [DATA]...
+</code></pre>
+<h2><a name="client-udp-udp-over-tcp-server" class="anchor" href="#client-udp-udp-over-tcp-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Client --UDP(UDP over TCP)--&gt; Server</h2>
+
+<pre><code>[Standard WebSocket Protocol Header] + [SHA256(Password) + (DST Address Length+4) + Unix Timestamp + DST Address] + [Fragment Length + Fragment]...
+</code></pre>
+
+<blockquote>
+<p>The maximum length of <code>[SHA256(Password) + (DST Address Length+4) + Unix Timestamp + DST Address]</code> is 2048 bytes<br/>
+The maximum length of <code>[Fragment Length + Fragment]</code> is 65507 bytes<br/></p>
+</blockquote>
+
+<ul>
+<li><code>DST Address Length+4</code>: Big Endian 16-bit unsigned integer</li>
+<li><code>Fragment Length</code>: Big Endian 16-bit unsigned integer</li>
+<li><code>Fragment</code>: Actual data being proxied</li>
+<li><a href="https://en.wikipedia.org/wiki/Unix_time" rel="nofollow"><code>Unix Timestamp</code></a>: If it is not odd, it should be increased by 1. Big Endian 32-bit unsigned integer</li>
+</ul>
+<h2><a name="server-udp-udp-over-tcp-client" class="anchor" href="#server-udp-udp-over-tcp-client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Server --UDP(UDP over TCP)--&gt; Client</h2>
+
+<pre><code>[Standard WebSocket Protocol Header] + [Fragment Length + Fragment]...
+</code></pre>
+
+<blockquote>
+<p>The maximum length of <code>[Fragment Length + Fragment]</code> is 65507 bytes<br/></p>
+</blockquote>
+
+<ul>
+<li><code>Fragment Length</code>: Big Endian 16-bit unsigned integer</li>
+<li><code>Fragment</code>: Actual data being proxied</li>
+</ul>
+</body>
+</html>

@@ -1,4 +1,6 @@
-### Brook Link
+# brook link protocol
+
+<!--G-R3M673HK5V-->
 
 ```
 brook://KIND?QUERY

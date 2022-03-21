@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@master/github-markdown.css">
+        <title>brook wsserver protocol</title>
+		
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M673HK5V"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-R3M673HK5V');
+		</script>
+
+        <style>
+                .markdown-body {
+                    box-sizing: border-box;
+                    min-width: 200px;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
+                }
+
+                @media (max-width: 767px) {
+                    .markdown-body {
+                        padding: 15px;
+                    }
+                }
+		</style>
+        <body class="markdown-body"><h1><a name="brook-wsserver-protocol" class="anchor" href="#brook-wsserver-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>brook wsserver protocol</h1>
+
+
+<h2><a name="terminology" class="anchor" href="#terminology" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Terminology</h2>
+
+<ul>
+<li><p><strong><code>DST Address</code></strong>: The address that the application actually wants to request, address contains IP/domain and port</p>
+
+<pre><code>ATYP + IP/Domain + PORT
+</code></pre>
+
+<ul>
+<li><code>ATYP</code>: 1 byte
+
+<ul>
+<li>0x01: IPv4</li>
+<li>0x03: Domain</li>
+<li>0x04: IPv6</li>
+</ul></li>
+<li><code>IP/Domain</code>: 4/n/16 bytes
+
+<ul>
+<li>If ATYP is 0x01, then this is IPv4, 4 bytes</li>
+<li>If ATYP is 0x03, then this is domain, n bytes, and the first byte is the domain length</li>
+<li>If ATYP is 0x04, then this is IPv6, 16 bytes</li>
+</ul></li>
+<li><code>Port</code>: 2 bytes
+
+<ul>
+<li>Big Endian 16-bit unsigned integer</li>
+</ul></li>
+</ul></li>
+
+<li><p><strong><code>KEY</code></strong>: AES key, 32 bytes</p>
+
+<ul>
+<li><code>KEY</code>: HKDF_SHA256(Password, Nonce, Info)
+
+<ul>
+<li><code>Password</code>: User-defined password</li>
+<li><code>Nonce</code>: 12 bytes</li>
+<li><code>Info</code>: [0x62, 0x72, 0x6f, 0x6f, 0x6b]</li>
+</ul></li>
+</ul></li>
+
+<li><p><strong><code>HKDF</code></strong>: Defined in RFC 5869</p></li>
+
+<li><p><strong><code>SHA256</code></strong>: Defined in FIPS 180-4</p></li>
+
+<li><p><strong><code>AES</code></strong>: Defined in U.S. Federal Information Processing Standards Publication 197</p></li>
+
+<li><p><strong><code>AES-GCM</code></strong>: Defined in RFC 5246, 5869</p></li>
+</ul>
+<h2><a name="client-tcp-server" class="anchor" href="#client-tcp-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Client --TCP--&gt; Server</h2>
+
+<pre><code>[Standard WebSocket Protocol Header] + Client Nonce + [AES_GCM(Fragment Length) + AES_GCM(Fragment)]...
+</code></pre>
+
+<blockquote>
+<p>The maximum length of <code>AES_GCM(Fragment Length) + AES_GCM(Fragment)</code> is 2048 bytes</p>
+</blockquote>
+
+<ul>
+<li><code>Client Nonce</code>: 12 bytes, randomly generated
+
+<ul>
+<li>The nonce should be recalculated when it is not used for the first time, the calculation method: add <code>1</code> to the first 8 bytes according to the Little Endian 64-bit unsigned integer</li>
+</ul></li>
+<li><code>Fragment Length</code>: Big Endian 16-bit unsigned integer</li>
+<li><code>Fragment</code>: Actual data being proxied
+
+<ul>
+<li><p>The first Fragment should be:</p>
+
+<pre><code>Unix Timestamp + DST Address
+</code></pre>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Unix_time" rel="nofollow"><code>Unix Timestamp</code></a>: If it is not even, it should be increased by 1. Big Endian 32-bit unsigned integer</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2><a name="server-tcp-client" class="anchor" href="#server-tcp-client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Server --TCP--&gt; Client</h2>
+
+<pre><code>[Standard WebSocket Protocol Header] + Server Nonce + [AES_GCM(Fragment Length) + AES_GCM(Fragment)]...
+</code></pre>
+
+<blockquote>
+<p>The maximum length of <code>AES_GCM(Fragment Length) + AES_GCM(Fragment)</code> is 2048 bytes</p>
+</blockquote>
+
+<ul>
+<li>Server Nonce: 12 bytes, randomly generated
+
+<ul>
+<li>The nonce should be recalculated when it is not used for the first time, the calculation method: add <code>1</code> to the first 8 bytes according to the Little Endian 64-bit unsigned integer</li>
+</ul></li>
+<li><code>Fragment Length</code>: Big Endian 16-bit unsigned integer</li>
+<li><code>Fragment</code>: Actual data being proxied</li>
+</ul>
+<h2><a name="client-udp-udp-over-tcp-server" class="anchor" href="#client-udp-udp-over-tcp-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Client --UDP(UDP over TCP)--&gt; Server</h2>
+
+<pre><code>[Standard WebSocket Protocol Header] + Client Nonce + [AES_GCM(Fragment Length) + AES_GCM(Fragment)]...
+</code></pre>
+
+<blockquote>
+<p>The maximum length of <code>AES_GCM(Fragment Length) + AES_GCM(Fragment)</code> is 65507 bytes, but the maximum length if the first one is 2048 bytes</p>
+</blockquote>
+
+<ul>
+<li><code>Client Nonce</code>: 12 bytes, randomly generated
+
+<ul>
+<li>The nonce should be recalculated when it is not used for the first time, the calculation method: add <code>1</code> to the first 8 bytes according to the Little Endian 64-bit unsigned integer</li>
+</ul></li>
+<li><code>Fragment Length</code>: Big Endian 16-bit unsigned integer</li>
+<li><code>Fragment</code>: Actual data being proxied
+
+<ul>
+<li><p>The first Fragment should be:</p>
+
+<pre><code>Unix Timestamp + DST Address
+</code></pre>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Unix_time" rel="nofollow"><code>Unix Timestamp</code></a>: If it is not odd, it should be increased by 1. Big Endian 32-bit unsigned integer</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2><a name="server-udp-udp-over-tcp-client" class="anchor" href="#server-udp-udp-over-tcp-client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Server --UDP(UDP over TCP)--&gt; Client</h2>
+
+<pre><code>[Standard WebSocket Protocol Header] + Server Nonce + [AES_GCM(Fragment Length) + AES_GCM(Fragment)]...
+</code></pre>
+
+<blockquote>
+<p>The maximum length of <code>AES_GCM(Fragment Length) + AES_GCM(Fragment)</code> is 65507 bytes</p>
+</blockquote>
+
+<ul>
+<li>Server Nonce: 12 bytes, randomly generated
+
+<ul>
+<li>The nonce should be recalculated when it is not used for the first time, the calculation method: add <code>1</code> to the first 8 bytes according to the Little Endian 64-bit unsigned integer</li>
+</ul></li>
+<li><code>Fragment Length</code>: Big Endian 16-bit unsigned integer</li>
+<li><code>Fragment</code>: Actual data being proxied</li>
+</ul>
+</body>
+</html>

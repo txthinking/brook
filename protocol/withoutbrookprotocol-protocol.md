@@ -1,4 +1,6 @@
-# `withoutBrookProtocol` Protocol
+# withoutBrookProtocol protocol
+
+<!--G-R3M673HK5V-->
 
 ## Terminology
 

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@master/github-markdown.css">
+        <title>brook link protocol</title>
+		
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M673HK5V"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-R3M673HK5V');
+		</script>
+
+        <style>
+                .markdown-body {
+                    box-sizing: border-box;
+                    min-width: 200px;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
+                }
+
+                @media (max-width: 767px) {
+                    .markdown-body {
+                        padding: 15px;
+                    }
+                }
+		</style>
+        <body class="markdown-body"><h1><a name="brook-link-protocol" class="anchor" href="#brook-link-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>brook link protocol</h1>
+
+
+
+<pre><code>brook://KIND?QUERY
+</code></pre>
+
+<ul>
+<li><strong>KIND</strong>: <code>server</code>, <code>wsserver</code>, <code>wssserver</code>, <code>socks5</code></li>
+<li><strong>QUERY</strong>: key=value, key and value should be urlencoded(RFC3986), such as <code>key0=xxx&amp;key1=xxx</code></li>
+</ul>
+<h4><a name="brook-server" class="anchor" href="#brook-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook server</h4>
+
+<ul>
+<li><strong>KIND</strong>: <code>server</code></li>
+<li><strong>QUERY</strong>:
+
+<ul>
+<li><code>server</code>: brook server, such as <code>1.2.3.4:9999</code></li>
+<li><code>password</code>: password</li>
+<li><code>udpovertcp</code>: <code>true</code> [Optional]</li>
+<li><code>name</code>: such as <code>my server</code> [Optional]</li>
+<li>Any other custom key</li>
+</ul></li>
+</ul>
+
+<p>Example</p>
+
+<pre><code>brook://server?password=hello&amp;server=1.2.3.4%3A9999
+</code></pre>
+<h4><a name="brook-wsserver" class="anchor" href="#brook-wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook wsserver</h4>
+
+<ul>
+<li><strong>KIND</strong>: <code>wsserver</code></li>
+<li><strong>QUERY</strong>:
+
+<ul>
+<li><code>wsserver</code>: brook wsserver, such as <code>ws://1.2.3.4:9999</code>, <code>ws://1.2.3.4:9999/ws</code></li>
+<li><code>password</code>: password</li>
+<li><code>name</code>: such as <code>my wsserver</code> [Optional]</li>
+<li><code>address</code>: such as <code>1.2.3.4:9999</code> [Optional]</li>
+<li><code>withoutBrookProtocol</code>: <code>true</code> [Optional]</li>
+<li>Any other custom key</li>
+</ul></li>
+</ul>
+
+<p>Example</p>
+
+<pre><code>brook://wsserver?password=hello&amp;wsserver=ws%3A%2F%2F1.2.3.4%3A9999
+brook://wsserver?password=hello&amp;wsserver=ws%3A%2F%2F1.2.3.4%3A9999%2Fws
+</code></pre>
+<h4><a name="brook-wssserver" class="anchor" href="#brook-wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook wssserver</h4>
+
+<ul>
+<li><strong>KIND</strong>: <code>wssserver</code></li>
+<li><strong>QUERY</strong>:
+
+<ul>
+<li><code>wssserver</code>: brook wssserver, such as <code>wss://domain.com:443</code>, <code>wss://domain.com:443/ws</code></li>
+<li><code>password</code>: password</li>
+<li><code>name</code>: such as <code>my wssserver</code> [Optional]</li>
+<li><code>address</code>: such as <code>1.2.3.4:9999</code> [Optional]</li>
+<li><code>insecure</code>: <code>true</code> [Optional]</li>
+<li><code>withoutBrookProtocol</code>: <code>true</code> [Optional]</li>
+<li><code>ca</code>: CA content [Optional]</li>
+<li>Any other custom key</li>
+</ul></li>
+</ul>
+
+<p>Example</p>
+
+<pre><code>brook://wssserver?password=hello&amp;wssserver=wss%3A%2F%2Fdomain.com%3A443
+brook://wssserver?password=hello&amp;wssserver=wss%3A%2F%2Fdomain.com%3A443%2Fws
+</code></pre>
+<h4><a name="socks5-server" class="anchor" href="#socks5-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+socks5 server</h4>
+
+<ul>
+<li><strong>KIND</strong>: <code>socks5</code></li>
+<li><strong>QUERY</strong>:
+
+<ul>
+<li><code>socks5</code>: socks5 server, such as <code>socks5://1.2.3.4:9999</code></li>
+<li><code>username</code>: username, such as <code>hello</code>, [Optional]</li>
+<li><code>password</code>: password, such as <code>world</code>, [Optional]</li>
+<li><code>name</code>: such as <code>my socks5 server</code> [Optional]</li>
+<li>Any other custom key</li>
+</ul></li>
+</ul>
+
+<p>Example</p>
+
+<pre><code>brook://socks5?socks5=socks5%3A%2F%2F1.2.3.4%3A9999
+brook://socks5?password=world&amp;socks5=socks5%3A%2F%2F1.2.3.4%3A9999&amp;username=hello
+</code></pre>
+</body>
+</html>

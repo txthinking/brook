@@ -1,4 +1,6 @@
-# `brook wsserver` Protocol
+# brook wsserver protocol
+
+<!--G-R3M673HK5V-->
 
 ## Terminology
 
