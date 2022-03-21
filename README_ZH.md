@@ -87,16 +87,22 @@ nami install brook
 
 ```
 SRC --TCP--> brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook server --TCP--> DST
-SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP(Brook Protocol)--> brook server --UDP--> DST
+SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook Protocol)--> brook server --UDP--> DST
 ```
-
-> 确保你本地到你服务器的 UDP 网络没有问题. 有问题就换用 brook wsserver
 
 ```
 brook server --listen :9999 --password hello
 ```
 
-获取 brook link
+获取 brook link 让 udp 走 tcp `--udpovertcp`
+
+```
+brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook server'
+```
+
+或 获取 brook link 让 udp 走 udp
+
+> 确保你本地到你服务器的 UDP 网络没有问题
 
 ```
 brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'

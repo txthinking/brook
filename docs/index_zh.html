@@ -33,7 +33,7 @@
 
 
 
-<p><a href="README.md" rel="nofollow">🇬🇧 English</a></p>
+<p><a href="index.html" rel="nofollow">🇬🇧 English</a></p>
 
 <p><a href="https://travis-ci.org/txthinking/brook" rel="nofollow"><img src="https://travis-ci.org/txthinking/brook.svg?branch=master" alt="Build Status"></a>
 <a href="http://www.gnu.org/licenses/gpl-3.0" rel="nofollow"><img src="https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-blue.svg"></a></p>
@@ -176,17 +176,22 @@ brook 规则格式</h2>
 运行 brook server</h3>
 
 <pre><code>SRC --TCP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook server --TCP--&gt; DST
-SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP(Brook Protocol)--&gt; brook server --UDP--&gt; DST
+SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook Protocol)--&gt; brook server --UDP--&gt; DST
 </code></pre>
-
-<blockquote>
-<p>确保你本地到你服务器的 UDP 网络没有问题. 有问题就换用 brook wsserver</p>
-</blockquote>
 
 <pre><code>brook server --listen :9999 --password hello
 </code></pre>
 
-<p>获取 brook link</p>
+<p>获取 brook link 让 udp 走 tcp <code>--udpovertcp</code></p>
+
+<pre><code>brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name &#39;my brook server&#39;
+</code></pre>
+
+<p>或 获取 brook link 让 udp 走 udp</p>
+
+<blockquote>
+<p>确保你本地到你服务器的 UDP 网络没有问题</p>
+</blockquote>
 
 <pre><code>brook link --server 1.2.3.4:9999 --password hello --name &#39;my brook server&#39;
 </code></pre>

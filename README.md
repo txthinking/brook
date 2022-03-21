@@ -86,16 +86,22 @@ List some examples of common scene commands, pay attention to replace the parame
 
 ```
 SRC --TCP--> brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook server --TCP--> DST
-SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP(Brook Protocol)--> brook server --UDP--> DST
+SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook Protocol)--> brook server --UDP--> DST
 ```
-
-> Make sure you have no problem with your local UDP network to your server. If there is a problem, use brook wsserver instead
 
 ```
 brook server --listen :9999 --password hello
 ```
 
-Get brook link
+Get brook link with `--udpovertcp`
+
+```
+brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook server'
+```
+
+or get brook link with udp over udp
+
+> Make sure you have no problem with your local UDP network to your server
 
 ```
 brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
