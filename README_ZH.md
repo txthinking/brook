@@ -1,5 +1,7 @@
 # Brook
 
+<!--G-R3M673HK5V-->
+
 [🇬🇧 English](README.md)
 
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
@@ -13,6 +15,10 @@
 Brook 是一个跨平台的强加密无特征的代理软件. Keep it simple, stupid.
 
 [🗣 订阅公告](https://t.me/txthinking_news)
+
+<!--TOC-->
+
+## 安装
 
 ### 安装 brook 命令
 
@@ -52,12 +58,12 @@ nami install brook
 
 这里有[brook 客户端工作原理](https://talks.txthinking.com/articles/brook.article)
 
-### brook `子命令` 和 `命令参数`
+## brook `子命令` 和 `命令参数`
 
 -   查看所有的`子命令`: `brook --help`
 -   查看某个`子命令`的参数: `brook xxx --help`
 
-### brook 规则格式
+## brook 规则格式
 
 有三种规则文件
 
@@ -73,7 +79,7 @@ nami install brook
 -   OpenWrt 分流，屏蔽域名
 -   brook 图形客户端分流，屏蔽域名
 
-### 例子
+## 例子
 
 下面列举一些常用场景命令的例子, 注意自己替换示例中的 IP，端口，密码，域名，证书路径等参数
 
@@ -179,11 +185,11 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --ca /root/ca.pem
 ```
 
-### --withoutBrookProtocol
+### withoutBrookProtocol
 
 性能更好，但数据不使用 Brook 协议进行强加密。所以请使用证书加密，并且不建议--withoutBrookProtocol 和--insecure 一起使用
 
-### --withoutBrookProtocol 自动签发信任证书
+### withoutBrookProtocol 自动签发信任证书
 
 > 注意：确保你的域名已成功解析到你服务器的 IP, 自动签发证书需要额外监听 80 端口
 
@@ -197,7 +203,7 @@ brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookPr
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
 ```
 
-### --withoutBrookProtocol 使用已有的信任机构签发的证书
+### withoutBrookProtocol 使用已有的信任机构签发的证书
 
 > 注意：确保你的域名已成功解析到你服务器的 IP
 
@@ -211,7 +217,7 @@ brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cer
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --withoutBrookProtocol
 ```
 
-### --withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以
+### withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以
 
 安装 [mad](https://github.com/txthinking/mad)
 
@@ -243,13 +249,13 @@ brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cer
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
 ```
 
-### brook server/wsserver/wssserver 服务端转发给另外的 socks5 server
+### brook server wsserver wssserver 服务端转发给另外的 socks5 server
 
 -   --toSocks5
 -   --toSocks5Username
 -   --toSocks5Password
 
-### brook server/wsserver/wssserver 在服务端屏蔽域名和 IP 列表
+### brook server wsserver wssserver 在服务端屏蔽域名和 IP 列表
 
 -   --blockDomainList
 -   --blockCIDR4List
@@ -285,7 +291,7 @@ brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password
 brook link --server socks5://1.2.3.4:1080 --username hello --password world
 ```
 
-### brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server/wsserver/wssserver 一起工作
+### brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作
 
 ```
 SRC --TCP--> brook relayoverbrook --TCP(Brook Protocol) --> brook server/wsserver/wssserver --TCP--> DST
@@ -296,7 +302,7 @@ SRC --UDP--> brook relayoverbrook --TCP/UDP(Brook Protocol) --> brook server/wss
 brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 ```
 
-### brook dns 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server/wsserver/wssserver 一起工作
+### brook dns 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作
 
 ```
 SRC --TCP--> brook dns --TCP(Brook Protocol) --> brook server/wsserver/wssserver --TCP--> DST
@@ -363,7 +369,7 @@ brook tproxy --link 'brook://...' --dnsListen :53
 6. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 7. 默認, OpenWrt 將會下發 router 的 IP 為電腦或手機的網關和 DNS
 
-### brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server/wsserver/wssserver
+### brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver
 
 ```
 SRC --TCP--> brook relay --TCP--> DST
@@ -484,6 +490,8 @@ jinbe list
 jinbe remove <ID>
 ```
 
+## Protocol
+
 ### brook server protocol
 
 [brook-server-protocol.md](protocol/brook-server-protocol.md)
@@ -496,7 +504,7 @@ jinbe remove <ID>
 
 [brook-wssserver-protocol.md](protocol/brook-wssserver-protocol.md)
 
-### --withoutBrookProtocol protocol
+### withoutBrookProtocol protocol
 
 [withoutbrookprotocol-protocol.md](protocol/withoutbrookprotocol-protocol.md)
 
@@ -504,7 +512,7 @@ jinbe remove <ID>
 
 [brook-link-protocol.md](protocol/brook-link-protocol.md)
 
-### 其他资源
+## 其他资源
 
 -   Brook 工作原理: https://talks.txthinking.com/articles/brook.article
 -   brook wsserver 搭配 Cloudflare CDN: https://www.youtube.com/watch?v=KFzS55bUk6A

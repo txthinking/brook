@@ -1,5 +1,7 @@
 # Brook
 
+<!--G-R3M673HK5V-->
+
 [🇨🇳 中文](README_ZH.md)
 
 [![Build Status](https://travis-ci.org/txthinking/brook.svg?branch=master)](https://travis-ci.org/txthinking/brook)
@@ -13,6 +15,10 @@
 Brook is a cross-platform strong encryption and not detectable proxy. Keep it simple, stupid.
 
 [🗣 Subscribe Announcement](https://t.me/txthinking_news)
+
+<!--TOC-->
+
+## Install
 
 ### Install brook command
 
@@ -51,12 +57,12 @@ nami install brook
 
 这里有[brook 客户端工作原理](https://talks.txthinking.com/articles/brook.article)
 
-### brook `subcommand` and `command line arguments`
+## brook `subcommand` and `command line arguments`
 
 -   all `subcoommand`: `brook --help`
 -   command line arguments of `subommand`: `brook xxx --help`
 
-### brook rule format
+## brook rule format
 
 There are three types of rule files
 
@@ -72,7 +78,7 @@ Rules file can be used for
 -   OpenWrt: bypass, block, domain, ip
 -   Brook GUI: bypass, block, domain, ip
 
-### Examples
+## Examples
 
 List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself
 
@@ -178,11 +184,11 @@ or get brook link with `--ca`
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --ca /root/ca.pem
 ```
 
-### --withoutBrookProtocol
+### withoutBrookProtocol
 
 Better performance, but data is not strongly encrypted using Brook protocol. So please use certificate encryption, and it is not recommended to use --withoutBrookProtocol and --insecure together
 
-### --withoutBrookProtocol automatically certificate
+### withoutBrookProtocol automatically certificate
 
 > Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80
 
@@ -196,7 +202,7 @@ Get brook link
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
 ```
 
-### --withoutBrookProtocol Use a certificate issued by an existing trust authority
+### withoutBrookProtocol Use a certificate issued by an existing trust authority
 
 > Make sure your domain has been resolved to your server IP successfully
 
@@ -210,7 +216,7 @@ Get brook link
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --withoutBrookProtocol
 ```
 
-### --withoutBrookProtocol issue untrusted certificates yourself, any domain
+### withoutBrookProtocol issue untrusted certificates yourself, any domain
 
 Install [mad](https://github.com/txthinking/mad)
 
@@ -242,13 +248,13 @@ Get brook link
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
 ```
 
-### brook server/wsserver/wssserver forward to another socks5 server on server-side
+### brook server wsserver wssserver forward to another socks5 server on server-side
 
 -   --toSocks5
 -   --toSocks5Username
 -   --toSocks5Password
 
-### brook server/wsserver/wssserver block domain and ip on server-side
+### brook server wsserver wssserver block domain and ip on server-side
 
 -   --blockDomainList
 -   --blockCIDR4List
@@ -284,7 +290,7 @@ Get brook link
 brook link --server socks5://1.2.3.4:1080 --username hello --password world
 ```
 
-### brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server/wsserver/wssserver.
+### brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.
 
 ```
 SRC --TCP--> brook relayoverbrook --TCP(Brook Protocol) --> brook server/wsserver/wssserver --TCP--> DST
@@ -457,7 +463,7 @@ Stop a running command via joker
 joker stop <ID>
 ```
 
-### Auto start at boot viajinbe
+### Auto start at boot via jinbe
 
 Install [jinbe](https://github.com/txthinking/jinbe)
 
@@ -483,6 +489,8 @@ Remove a added command via jinbe
 jinbe remove <ID>
 ```
 
+## Protocol
+
 ### brook server protocol
 
 [brook-server-protocol.md](protocol/brook-server-protocol.md)
@@ -495,7 +503,7 @@ jinbe remove <ID>
 
 [brook-wssserver-protocol.md](protocol/brook-wssserver-protocol.md)
 
-### --withoutBrookProtocol protocol
+### withoutBrookProtocol protocol
 
 [withoutbrookprotocol-protocol.md](protocol/withoutbrookprotocol-protocol.md)
 
@@ -503,7 +511,7 @@ jinbe remove <ID>
 
 [brook-link-protocol.md](protocol/brook-link-protocol.md)
 
-### 其他资源
+## Resources
 
 -   Brook GUI 工作原理: https://talks.txthinking.com/articles/brook.article
 -   brook wsserver and Cloudflare CDN: https://www.youtube.com/watch?v=KFzS55bUk6A

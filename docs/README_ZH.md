@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@master/github-markdown.css">
+        <title>Brook</title>
+		
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M673HK5V"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-R3M673HK5V');
+		</script>
+
+        <style>
+                .markdown-body {
+                    box-sizing: border-box;
+                    min-width: 200px;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
+                }
+
+                @media (max-width: 767px) {
+                    .markdown-body {
+                        padding: 15px;
+                    }
+                }
+		</style>
+        <body class="markdown-body"><h1><a name="brook" class="anchor" href="#brook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Brook</h1>
+
+
+
+<p><a href="README.md" rel="nofollow">🇬🇧 English</a></p>
+
+<p><a href="https://travis-ci.org/txthinking/brook" rel="nofollow"><img src="https://travis-ci.org/txthinking/brook.svg?branch=master" alt="Build Status"></a>
+<a href="http://www.gnu.org/licenses/gpl-3.0" rel="nofollow"><img src="https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-blue.svg"></a></p>
+
+<p><a href="https://t.me/brookgroup" rel="nofollow">🤝 Telegram</a>
+<a href="https://join.txthinking.com" rel="nofollow">💬 Chat</a>
+<a href="https://www.youtube.com/txthinking" rel="nofollow">🩸 Youtube</a>
+<a href="https://github.com/sponsors/txthinking" rel="nofollow">❤️ Sponsor</a></p>
+
+<p>Brook 是一个跨平台的强加密无特征的代理软件. Keep it simple, stupid.</p>
+
+<p><a href="https://t.me/txthinking_news" rel="nofollow">🗣 订阅公告</a></p>
+<h1><a name="table-of-contents" class="anchor" href="#table-of-contents" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Table of Contents</h1>
+
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85" rel="nofollow">安装</a>
+
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85-brook-%E5%91%BD%E4%BB%A4" rel="nofollow">安装 brook 命令</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-brook-%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow">安装 Brook 图形客户端</a></li>
+</ul></li>
+<li><a href="#brook-%E5%AD%90%E5%91%BD%E4%BB%A4-%E5%92%8C-%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0" rel="nofollow">brook 子命令 和 命令参数</a></li>
+<li><a href="#brook-%E8%A7%84%E5%88%99%E6%A0%BC%E5%BC%8F" rel="nofollow">brook 规则格式</a></li>
+<li><a href="#%E4%BE%8B%E5%AD%90" rel="nofollow">例子</a>
+
+<ul>
+<li><a href="#%E8%BF%90%E8%A1%8C-brook-server" rel="nofollow">运行 brook server</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C-brook-wsserver" rel="nofollow">运行 brook wsserver</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C-brook-wssserver-%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%8F%91%E4%BF%A1%E4%BB%BB%E8%AF%81%E4%B9%A6" rel="nofollow">运行 brook wssserver: 自动签发信任证书</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C-brook-wssserver-%E4%BD%BF%E7%94%A8%E5%B7%B2%E6%9C%89%E7%9A%84%E4%BF%A1%E4%BB%BB%E6%9C%BA%E6%9E%84%E7%AD%BE%E5%8F%91%E7%9A%84%E8%AF%81%E4%B9%A6" rel="nofollow">运行 brook wssserver 使用已有的信任机构签发的证书</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C-brook-wssserver-%E8%87%AA%E5%B7%B1%E7%AD%BE%E5%8F%91%E9%9D%9E%E4%BF%A1%E4%BB%BB%E8%AF%81%E4%B9%A6-%E7%94%9A%E8%87%B3%E4%B8%8D%E6%98%AF%E4%BD%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9F%9F%E5%90%8D%E4%B9%9F%E5%8F%AF%E4%BB%A5" rel="nofollow">运行 brook wssserver 自己签发非信任证书, 甚至不是你自己的域名也可以</a></li>
+<li><a href="#withoutbrookprotocol" rel="nofollow">withoutBrookProtocol</a></li>
+<li><a href="#withoutbrookprotocol-%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%8F%91%E4%BF%A1%E4%BB%BB%E8%AF%81%E4%B9%A6" rel="nofollow">withoutBrookProtocol 自动签发信任证书</a></li>
+<li><a href="#withoutbrookprotocol-%E4%BD%BF%E7%94%A8%E5%B7%B2%E6%9C%89%E7%9A%84%E4%BF%A1%E4%BB%BB%E6%9C%BA%E6%9E%84%E7%AD%BE%E5%8F%91%E7%9A%84%E8%AF%81%E4%B9%A6" rel="nofollow">withoutBrookProtocol 使用已有的信任机构签发的证书</a></li>
+<li><a href="#withoutbrookprotocol-%E8%87%AA%E5%B7%B1%E7%AD%BE%E5%8F%91%E9%9D%9E%E4%BF%A1%E4%BB%BB%E8%AF%81%E4%B9%A6-%E7%94%9A%E8%87%B3%E4%B8%8D%E6%98%AF%E4%BD%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9F%9F%E5%90%8D%E4%B9%9F%E5%8F%AF%E4%BB%A5" rel="nofollow">withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以</a></li>
+<li><a href="#brook-server-wsserver-wssserver-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BD%AC%E5%8F%91%E7%BB%99%E5%8F%A6%E5%A4%96%E7%9A%84-socks5-server" rel="nofollow">brook server wsserver wssserver 服务端转发给另外的 socks5 server</a></li>
+<li><a href="#brook-server-wsserver-wssserver-%E5%9C%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%B1%8F%E8%94%BD%E5%9F%9F%E5%90%8D%E5%92%8C-ip-%E5%88%97%E8%A1%A8" rel="nofollow">brook server wsserver wssserver 在服务端屏蔽域名和 IP 列表</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C-brook-socks5-%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E6%A0%87%E5%87%86-socks5-server" rel="nofollow">运行 brook socks5, 一个独立的标准 socks5 server</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C-brook-socks5-%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E6%A0%87%E5%87%86-socks5-server-%E6%8C%87%E5%AE%9A%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81" rel="nofollow">运行 brook socks5, 一个独立的标准 socks5 server, 指定用户名和密码</a></li>
+<li><a href="#brook-relayoverbrook-%E4%B8%AD%E7%BB%A7%E4%BB%BB%E4%BD%95-tcp-%E5%92%8C-udp-server-%E8%AE%A9%E5%85%B6%E8%B5%B0-brook-%E5%8D%8F%E8%AE%AE-%E5%AE%83%E4%B8%8E-brook-server-wsserver-wssserver-%E4%B8%80%E8%B5%B7%E5%B7%A5%E4%BD%9C" rel="nofollow">brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作</a></li>
+<li><a href="#brook-dns-%E7%94%A8%E6%9D%A5%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8A%A0%E5%AF%86-dns-server-tcp-and-udp-%E5%AE%83%E4%B8%8E-brook-server-wsserver-wssserver-%E4%B8%80%E8%B5%B7%E5%B7%A5%E4%BD%9C" rel="nofollow">brook dns 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作</a></li>
+<li><a href="#brook-tproxy-%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E7%BD%91%E5%85%B3%E5%9C%A8%E5%AE%98%E7%BD%91%E5%8E%9F%E7%89%88-openwrt" rel="nofollow">brook tproxy 透明代理网关在官网原版 OpenWrt</a></li>
+<li><a href="#brook-tproxy-%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E7%BD%91%E5%85%B3%E5%9C%A8-ubuntu" rel="nofollow">brook tproxy 透明代理网关在 Ubuntu</a></li>
+<li><a href="#%E5%AE%98%E7%BD%91%E5%8E%9F%E7%89%88-openwrt-%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow">官网原版 OpenWrt 图形客户端</a></li>
+<li><a href="#brook-relay-%E5%8F%AF%E4%BB%A5%E4%B8%AD%E7%BB%A7%E4%BB%BB%E4%BD%95-tcp-%E5%92%8C-udp-server-%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%8A%9F%E8%83%BD-%E5%AE%83%E4%B8%8D%E4%BE%9D%E8%B5%96-brook-server-wsserver-wssserver" rel="nofollow">brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver</a></li>
+<li><a href="#brook-socks5tohttp-%E5%B0%86-socks5-proxy-%E8%BD%AC%E6%8D%A2%E4%B8%BA-http-proxy" rel="nofollow">brook socks5tohttp 将 socks5 proxy 转换为 http proxy</a></li>
+<li><a href="#brook-pac-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA-pac-server" rel="nofollow">brook pac 创建一个 pac server</a></li>
+<li><a href="#brook-pac-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA-pac-%E6%96%87%E4%BB%B6" rel="nofollow">brook pac 创建一个 pac 文件</a></li>
+<li><a href="#ipv6" rel="nofollow">IPv6</a></li>
+<li><a href="#nat-type" rel="nofollow">NAT Type</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-joker-%E8%BF%90%E8%A1%8C%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow">使用 joker 运行守护进程</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-jinbe-%E6%B7%BB%E5%8A%A0%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4" rel="nofollow">使用 jinbe 添加开机自启动命令</a></li>
+</ul></li>
+<li><a href="#protocol" rel="nofollow">Protocol</a>
+
+<ul>
+<li><a href="#brook-server-protocol" rel="nofollow">brook server protocol</a></li>
+<li><a href="#brook-wsserver-protocol" rel="nofollow">brook wsserver protocol</a></li>
+<li><a href="#brook-wssserver-protocol" rel="nofollow">brook wssserver protocol</a></li>
+<li><a href="#withoutbrookprotocol-protocol" rel="nofollow">withoutBrookProtocol protocol</a></li>
+<li><a href="#brook-link-protocol" rel="nofollow">brook link protocol</a></li>
+</ul></li>
+<li><a href="#%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90" rel="nofollow">其他资源</a></li>
+</ul>
+<h2><a name="安装" class="anchor" href="#%E5%AE%89%E8%A3%85" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+安装</h2>
+<h3><a name="安装-brook-命令" class="anchor" href="#%E5%AE%89%E8%A3%85-brook-%E5%91%BD%E4%BB%A4" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+安装 brook 命令</h3>
+
+<blockquote>
+<p><a href="https://github.com/txthinking/nami" rel="nofollow">nami</a> 她会自动帮你下载适用你系统的最新版 brook 命令文件. 如果你的系统是 Windows, 你需要在 <a href="https://gitforwindows.org" rel="nofollow">Git Bash</a> 里面运行<br/>
+或<br/>
+如果你的系统不是 Linux, MacOS, Windows, 或不想用 nami, 你可以去 <a href="https://github.com/txthinking/brook/releases" rel="nofollow">releases</a> 自己下载命令文件<br/>
+或<br/>
+一键脚本，目前仅支持部分命令参数: <code>bash &lt;(curl https://bash.ooo/brook.sh)</code><br/>
+或<br/>
+Archlinux: <code>pacman -S brook</code><br/>
+或<br/>
+brew: <code>brew install brook</code><br/><br/>
+建议使用 root 用户运行命令<br/></p>
+</blockquote>
+
+<p>安装 nami</p>
+
+<pre><code>bash &lt;(curl https://bash.ooo/nami.sh)
+</code></pre>
+
+<p>使用 nami 安装 brook</p>
+
+<pre><code>nami install brook
+</code></pre>
+<h3><a name="安装-brook-图形客户端" class="anchor" href="#%E5%AE%89%E8%A3%85-brook-%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+安装 Brook 图形客户端</h3>
+
+<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.dmg" rel="nofollow">macOS</a>
+<a href="https://github.com/txthinking/brook/releases/latest/download/Brook.exe" rel="nofollow">Windows</a>
+<a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk" rel="nofollow">Android</a>
+<a href="https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642" rel="nofollow">iOS &amp; M1 Mac</a>
+<a href="#%E5%AE%98%E7%BD%91%E5%8E%9F%E7%89%88-openwrt-%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow">OpenWrt</a></p>
+
+<blockquote>
+<p>Windows 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器<br/>
+请使用非中国大陆 Apple ID 下载.</p>
+</blockquote>
+
+<p>这里有<a href="https://talks.txthinking.com/articles/brook.article" rel="nofollow">brook 客户端工作原理</a></p>
+<h2><a name="brook-子命令-和-命令参数" class="anchor" href="#brook-%E5%AD%90%E5%91%BD%E4%BB%A4-%E5%92%8C-%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook <code>子命令</code> 和 <code>命令参数</code></h2>
+
+<ul>
+<li>查看所有的<code>子命令</code>: <code>brook --help</code></li>
+<li>查看某个<code>子命令</code>的参数: <code>brook xxx --help</code></li>
+</ul>
+<h2><a name="brook-规则格式" class="anchor" href="#brook-%E8%A7%84%E5%88%99%E6%A0%BC%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook 规则格式</h2>
+
+<p>有三种规则文件</p>
+
+<ul>
+<li>域名列表: 一行一个域名，后缀匹配模式。可以是本地的文件，也可以是 HTTPS URL</li>
+<li>CIDR v4 列表: 一行一个 CIDR。可以是本地的文件，也可以是 HTTPS URL</li>
+<li>CIDR v6 列表: 一行一个 CIDR。可以是本地的文件，也可以是 HTTPS URL</li>
+</ul>
+
+<p>规则文件可用于</p>
+
+<ul>
+<li>服务端屏蔽域名和 IP</li>
+<li>brook dns 分流，屏蔽域名</li>
+<li>brook tproxy 分流，屏蔽域名</li>
+<li>OpenWrt 分流，屏蔽域名</li>
+<li>brook 图形客户端分流，屏蔽域名</li>
+</ul>
+<h2><a name="例子" class="anchor" href="#%E4%BE%8B%E5%AD%90" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+例子</h2>
+
+<p>下面列举一些常用场景命令的例子, 注意自己替换示例中的 IP，端口，密码，域名，证书路径等参数</p>
+<h3><a name="运行-brook-server" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+运行 brook server</h3>
+
+<pre><code>SRC --TCP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook server --TCP--&gt; DST
+SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP(Brook Protocol)--&gt; brook server --UDP--&gt; DST
+</code></pre>
+
+<blockquote>
+<p>确保你本地到你服务器的 UDP 网络没有问题. 有问题就换用 brook wsserver</p>
+</blockquote>
+
+<pre><code>brook server --listen :9999 --password hello
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server 1.2.3.4:9999 --password hello --name &#39;my brook server&#39;
+</code></pre>
+<h3><a name="运行-brook-wsserver" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+运行 brook wsserver</h3>
+
+<pre><code>SRC --TCP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook wsserver --TCP--&gt; DST
+SRC --UDP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook wsserver --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook wsserver --listen :9999 --password hello
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server ws://1.2.3.4:9999 --password hello --name &#39;my brook wsserver&#39;
+</code></pre>
+
+<p>或获取 brook link 指定个域名, 甚至不是你自己的域名也可以</p>
+
+<pre><code>brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name &#39;my brook wsserver&#39;
+</code></pre>
+<h3><a name="运行-brook-wssserver-自动签发信任证书" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-wssserver-%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%8F%91%E4%BF%A1%E4%BB%BB%E8%AF%81%E4%B9%A6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+运行 brook wssserver: 自动签发信任证书</h3>
+
+<blockquote>
+<p>注意：确保你的域名已成功解析到你服务器的 IP, 自动签发证书需要额外监听 80 端口</p>
+</blockquote>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
+</code></pre>
+<h3><a name="运行-brook-wssserver-使用已有的信任机构签发的证书" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-wssserver-%E4%BD%BF%E7%94%A8%E5%B7%B2%E6%9C%89%E7%9A%84%E4%BF%A1%E4%BB%BB%E6%9C%BA%E6%9E%84%E7%AD%BE%E5%8F%91%E7%9A%84%E8%AF%81%E4%B9%A6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+运行 brook wssserver 使用已有的信任机构签发的证书</h3>
+
+<blockquote>
+<p>注意：确保你的域名已成功解析到你服务器的 IP</p>
+</blockquote>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
+</code></pre>
+<h3><a name="运行-brook-wssserver-自己签发非信任证书-甚至不是你自己的域名也可以" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-wssserver-%E8%87%AA%E5%B7%B1%E7%AD%BE%E5%8F%91%E9%9D%9E%E4%BF%A1%E4%BB%BB%E8%AF%81%E4%B9%A6-%E7%94%9A%E8%87%B3%E4%B8%8D%E6%98%AF%E4%BD%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9F%9F%E5%90%8D%E4%B9%9F%E5%8F%AF%E4%BB%A5" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+运行 brook wssserver 自己签发非信任证书, 甚至不是你自己的域名也可以</h3>
+
+<p>安装 <a href="https://github.com/txthinking/mad" rel="nofollow">mad</a></p>
+
+<pre><code>nami install mad
+</code></pre>
+
+<p>使用 mad 生成根证书</p>
+
+<pre><code>mad ca --ca /root/ca.pem --key /root/cakey.pem
+</code></pre>
+
+<p>使用 mad 由根证书派发 domain.com 证书</p>
+
+<pre><code>mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
+</code></pre>
+
+<p>获取 brook link 使用 <code>--insecure</code></p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --address 1.2.3.4:443 --insecure
+</code></pre>
+
+<p>或 获取 brook link 使用 <code>--ca</code></p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --address 1.2.3.4:443 --ca /root/ca.pem
+</code></pre>
+<h3><a name="withoutbrookprotocol" class="anchor" href="#withoutbrookprotocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol</h3>
+
+<p>性能更好，但数据不使用 Brook 协议进行强加密。所以请使用证书加密，并且不建议--withoutBrookProtocol 和--insecure 一起使用</p>
+<h3><a name="withoutbrookprotocol-自动签发信任证书" class="anchor" href="#withoutbrookprotocol-%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%8F%91%E4%BF%A1%E4%BB%BB%E8%AF%81%E4%B9%A6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol 自动签发信任证书</h3>
+
+<blockquote>
+<p>注意：确保你的域名已成功解析到你服务器的 IP, 自动签发证书需要额外监听 80 端口</p>
+</blockquote>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookProtocol
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
+</code></pre>
+<h3><a name="withoutbrookprotocol-使用已有的信任机构签发的证书" class="anchor" href="#withoutbrookprotocol-%E4%BD%BF%E7%94%A8%E5%B7%B2%E6%9C%89%E7%9A%84%E4%BF%A1%E4%BB%BB%E6%9C%BA%E6%9E%84%E7%AD%BE%E5%8F%91%E7%9A%84%E8%AF%81%E4%B9%A6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol 使用已有的信任机构签发的证书</h3>
+
+<blockquote>
+<p>注意：确保你的域名已成功解析到你服务器的 IP</p>
+</blockquote>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --withoutBrookProtocol
+</code></pre>
+<h3><a name="withoutbrookprotocol-自己签发非信任证书-甚至不是你自己的域名也可以" class="anchor" href="#withoutbrookprotocol-%E8%87%AA%E5%B7%B1%E7%AD%BE%E5%8F%91%E9%9D%9E%E4%BF%A1%E4%BB%BB%E8%AF%81%E4%B9%A6-%E7%94%9A%E8%87%B3%E4%B8%8D%E6%98%AF%E4%BD%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9F%9F%E5%90%8D%E4%B9%9F%E5%8F%AF%E4%BB%A5" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以</h3>
+
+<p>安装 <a href="https://github.com/txthinking/mad" rel="nofollow">mad</a></p>
+
+<pre><code>nami install mad
+</code></pre>
+
+<p>使用 mad 生成根证书</p>
+
+<pre><code>mad ca --ca /root/ca.pem --key /root/cakey.pem
+</code></pre>
+
+<p>使用 mad 由根证书派发 domain.com 证书</p>
+
+<pre><code>mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
+</code></pre>
+
+<p>运行 brook wssserver</p>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
+</code></pre>
+<h3><a name="brook-server-wsserver-wssserver-服务端转发给另外的-socks5-server" class="anchor" href="#brook-server-wsserver-wssserver-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BD%AC%E5%8F%91%E7%BB%99%E5%8F%A6%E5%A4%96%E7%9A%84-socks5-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook server wsserver wssserver 服务端转发给另外的 socks5 server</h3>
+
+<ul>
+<li>--toSocks5</li>
+<li>--toSocks5Username</li>
+<li>--toSocks5Password</li>
+</ul>
+<h3><a name="brook-server-wsserver-wssserver-在服务端屏蔽域名和-ip-列表" class="anchor" href="#brook-server-wsserver-wssserver-%E5%9C%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%B1%8F%E8%94%BD%E5%9F%9F%E5%90%8D%E5%92%8C-ip-%E5%88%97%E8%A1%A8" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook server wsserver wssserver 在服务端屏蔽域名和 IP 列表</h3>
+
+<ul>
+<li>--blockDomainList</li>
+<li>--blockCIDR4List</li>
+<li>--blockCIDR6List</li>
+<li>--updateListInterval</li>
+</ul>
+<h3><a name="运行-brook-socks5-一个独立的标准-socks5-server" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-socks5-%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E6%A0%87%E5%87%86-socks5-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+运行 brook socks5, 一个独立的标准 socks5 server</h3>
+
+<pre><code>SRC --TCP--&gt; brook socks5 --TCP--&gt; DST
+SRC --UDP--&gt; brook socks5 --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server socks5://1.2.3.4:1080
+</code></pre>
+<h3><a name="运行-brook-socks5-一个独立的标准-socks5-server-指定用户名和密码" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-socks5-%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E6%A0%87%E5%87%86-socks5-server-%E6%8C%87%E5%AE%9A%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+运行 brook socks5, 一个独立的标准 socks5 server, 指定用户名和密码</h3>
+
+<pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
+</code></pre>
+
+<p>获取 brook link</p>
+
+<pre><code>brook link --server socks5://1.2.3.4:1080 --username hello --password world
+</code></pre>
+<h3><a name="brook-relayoverbrook-中继任何-tcp-和-udp-server-让其走-brook-协议-它与-brook-server-wsserver-wssserver-一起工作" class="anchor" href="#brook-relayoverbrook-%E4%B8%AD%E7%BB%A7%E4%BB%BB%E4%BD%95-tcp-%E5%92%8C-udp-server-%E8%AE%A9%E5%85%B6%E8%B5%B0-brook-%E5%8D%8F%E8%AE%AE-%E5%AE%83%E4%B8%8E-brook-server-wsserver-wssserver-%E4%B8%80%E8%B5%B7%E5%B7%A5%E4%BD%9C" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作</h3>
+
+<pre><code>SRC --TCP--&gt; brook relayoverbrook --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
+SRC --UDP--&gt; brook relayoverbrook --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
+</code></pre>
+<h3><a name="brook-dns-用来创建一个加密-dns-server-tcp-and-udp-它与-brook-server-wsserver-wssserver-一起工作" class="anchor" href="#brook-dns-%E7%94%A8%E6%9D%A5%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8A%A0%E5%AF%86-dns-server-tcp-and-udp-%E5%AE%83%E4%B8%8E-brook-server-wsserver-wssserver-%E4%B8%80%E8%B5%B7%E5%B7%A5%E4%BD%9C" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook dns 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作</h3>
+
+<pre><code>SRC --TCP--&gt; brook dns --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
+SRC --UDP--&gt; brook dns --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook dns ... --listen 127.0.0.1:53
+</code></pre>
+
+<p>规则</p>
+
+<ul>
+<li>--dns</li>
+<li>--dnsForBypass</li>
+<li>--bypassDomainList</li>
+<li>--blockDomainList</li>
+</ul>
+<h3><a name="brook-tproxy-透明代理网关在官网原版-openwrt" class="anchor" href="#brook-tproxy-%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E7%BD%91%E5%85%B3%E5%9C%A8%E5%AE%98%E7%BD%91%E5%8E%9F%E7%89%88-openwrt" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook tproxy 透明代理网关在官网原版 OpenWrt</h3>
+
+<pre><code>opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
+</code></pre>
+
+<pre><code>brook tproxy --link &#39;brook://...&#39; --dnsListen :5353
+</code></pre>
+
+<ol>
+<li>OpenWrt DNS forwardings: OpenWrt Web -&gt; Network -&gt; DHCP and DNS -&gt; General Settings -&gt; DNS forwardings -&gt; 127.0.0.1#5353</li>
+<li>OpenWrt Ignore resolve file: OpenWrt Web -&gt; Network -&gt; DHCP and DNS -&gt; Resolv and Hosts Files -&gt; Ignore resolve file</li>
+<li>默認, OpenWrt 將會下發 router 的 IP 的為電腦或手機的網關和 DNS</li>
+</ol>
+
+<p>规则</p>
+
+<ul>
+<li>--dnsForDefault</li>
+<li>--dnsForBypass</li>
+<li>--bypassDomainList</li>
+<li>--bypassCIDR4List</li>
+<li>--bypassCIDR6List</li>
+<li>--blockDomainList</li>
+</ul>
+<h3><a name="brook-tproxy-透明代理网关在-ubuntu" class="anchor" href="#brook-tproxy-%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E7%BD%91%E5%85%B3%E5%9C%A8-ubuntu" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook tproxy 透明代理网关在 Ubuntu</h3>
+
+<pre><code>systemctl stop systemd-resolved
+</code></pre>
+
+<pre><code>brook tproxy --link &#39;brook://...&#39; --dnsListen :53
+</code></pre>
+
+<ol>
+<li>You may need to manually configure the computer or mobile gateway and DNS.</li>
+</ol>
+<h3><a name="官网原版-openwrt-图形客户端" class="anchor" href="#%E5%AE%98%E7%BD%91%E5%8E%9F%E7%89%88-openwrt-%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+官网原版 OpenWrt 图形客户端</h3>
+
+<blockquote>
+<p><strong>依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy</strong></p>
+</blockquote>
+
+<p><strong>端口 9999, 1080, 5353 将会被使用</strong>. 它与 brook server, brook wsserver, brook wssserver 一起工作.</p>
+
+<ol>
+<li>下載適合你系統的<a href="https://github.com/txthinking/brook/releases" rel="nofollow">ipk</a>文件</li>
+<li>上傳並安裝: OpenWrt Web -&gt; System -&gt; Software -&gt; Upload Package...</li>
+<li>刷新頁面, 頂部菜單會出現 Brook 按鈕</li>
+<li>OpenWrt Web -&gt; Brook -&gt; 輸入後點擊 Connect</li>
+<li>OpenWrt DNS forwardings: OpenWrt Web -&gt; Network -&gt; DHCP and DNS -&gt; General Settings -&gt; DNS forwardings -&gt; 127.0.0.1#5353</li>
+<li>OpenWrt Ignore resolve file: OpenWrt Web -&gt; Network -&gt; DHCP and DNS -&gt; Resolv and Hosts Files -&gt; Ignore resolve file</li>
+<li>默認, OpenWrt 將會下發 router 的 IP 為電腦或手機的網關和 DNS</li>
+</ol>
+<h3><a name="brook-relay-可以中继任何-tcp-和-udp-server-这是一个独立的功能-它不依赖-brook-server-wsserver-wssserver" class="anchor" href="#brook-relay-%E5%8F%AF%E4%BB%A5%E4%B8%AD%E7%BB%A7%E4%BB%BB%E4%BD%95-tcp-%E5%92%8C-udp-server-%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%8A%9F%E8%83%BD-%E5%AE%83%E4%B8%8D%E4%BE%9D%E8%B5%96-brook-server-wsserver-wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver</h3>
+
+<pre><code>SRC --TCP--&gt; brook relay --TCP--&gt; DST
+SRC --UDP--&gt; brook relay --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook relay --from :9999 --to 1.2.3.4:9999
+</code></pre>
+<h3><a name="brook-socks5tohttp-将-socks5-proxy-转换为-http-proxy" class="anchor" href="#brook-socks5tohttp-%E5%B0%86-socks5-proxy-%E8%BD%AC%E6%8D%A2%E4%B8%BA-http-proxy" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook socks5tohttp 将 socks5 proxy 转换为 http proxy</h3>
+
+<pre><code>brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
+</code></pre>
+<h3><a name="brook-pac-创建一个-pac-server" class="anchor" href="#brook-pac-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA-pac-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook pac 创建一个 pac server</h3>
+
+<pre><code>brook pac --listen 127.0.0.1:8080 --proxy &#39;SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT&#39; --bypassDomainList ...
+</code></pre>
+<h3><a name="brook-pac-创建一个-pac-文件" class="anchor" href="#brook-pac-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA-pac-%E6%96%87%E4%BB%B6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook pac 创建一个 pac 文件</h3>
+
+<pre><code>brook pac --file proxy.pac --proxy &#39;SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT&#39; --bypassDomainList ...
+</code></pre>
+<h3><a name="ipv6" class="anchor" href="#ipv6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+IPv6</h3>
+
+<table>
+<thead>
+<tr>
+<th>Command/Client</th>
+<th>Remark</th>
+<th>Support IPv4</th>
+<th>Support IPv6</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>brook server</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook client</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook wsserver</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook wsclient</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook wssserver</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook wssclient</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook relayoverbrook</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook dns</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook tproxy</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes/2</td>
+</tr>
+
+<tr>
+<td>brook connect</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook relay</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook socks5</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook socks5tohttp</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook hijackhttps</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>macOS Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>Windows Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes/2</td>
+</tr>
+
+<tr>
+<td>iOS Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>Android Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>OpenWrt Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes/2</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="nat-type" class="anchor" href="#nat-type" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+NAT Type</h3>
+
+<p>Symmetric</p>
+<h3><a name="使用-joker-运行守护进程" class="anchor" href="#%E4%BD%BF%E7%94%A8-joker-%E8%BF%90%E8%A1%8C%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+使用 joker 运行守护进程</h3>
+
+<p>使用 nami 安装 <a href="https://github.com/txthinking/joker" rel="nofollow">joker</a></p>
+
+<pre><code>nami install joker
+</code></pre>
+
+<p>使用 joker 运行 brook 守护进程, 只需要在原来命令前面加上 joker</p>
+
+<pre><code>joker brook ...
+</code></pre>
+
+<p>查看最后一个命令的 ID</p>
+
+<pre><code>joker last
+</code></pre>
+
+<p>查看某个命令的输出和错误</p>
+
+<pre><code>joker log &lt;ID&gt;
+</code></pre>
+
+<p>查看运行的命令列表</p>
+
+<pre><code>joker list
+</code></pre>
+
+<p>停止某个命令</p>
+
+<pre><code>joker stop &lt;ID&gt;
+</code></pre>
+<h3><a name="使用-jinbe-添加开机自启动命令" class="anchor" href="#%E4%BD%BF%E7%94%A8-jinbe-%E6%B7%BB%E5%8A%A0%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+使用 jinbe 添加开机自启动命令</h3>
+
+<p>使用 nami 安装 <a href="https://github.com/txthinking/jinbe" rel="nofollow">jinbe</a></p>
+
+<pre><code>nami install jinbe
+</code></pre>
+
+<p>使用 jinbe 添加开机自启动命令，只需要在原来命令前面加上 jinbe</p>
+
+<pre><code>jinbe joker brook ...
+</code></pre>
+
+<p>查看添加的开机命令</p>
+
+<pre><code>jinbe list
+</code></pre>
+
+<p>移除某个开机命令</p>
+
+<pre><code>jinbe remove &lt;ID&gt;
+</code></pre>
+<h2><a name="protocol" class="anchor" href="#protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Protocol</h2>
+<h3><a name="brook-server-protocol" class="anchor" href="#brook-server-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook server protocol</h3>
+
+<p><a href="protocol/brook-server-protocol.md" rel="nofollow">brook-server-protocol.md</a></p>
+<h3><a name="brook-wsserver-protocol" class="anchor" href="#brook-wsserver-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook wsserver protocol</h3>
+
+<p><a href="protocol/brook-wsserver-protocol.md" rel="nofollow">brook-wsserver-protocol.md</a></p>
+<h3><a name="brook-wssserver-protocol" class="anchor" href="#brook-wssserver-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook wssserver protocol</h3>
+
+<p><a href="protocol/brook-wssserver-protocol.md" rel="nofollow">brook-wssserver-protocol.md</a></p>
+<h3><a name="withoutbrookprotocol-protocol" class="anchor" href="#withoutbrookprotocol-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol protocol</h3>
+
+<p><a href="protocol/withoutbrookprotocol-protocol.md" rel="nofollow">withoutbrookprotocol-protocol.md</a></p>
+<h3><a name="brook-link-protocol" class="anchor" href="#brook-link-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook link protocol</h3>
+
+<p><a href="protocol/brook-link-protocol.md" rel="nofollow">brook-link-protocol.md</a></p>
+<h2><a name="其他资源" class="anchor" href="#%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+其他资源</h2>
+
+<ul>
+<li>Brook 工作原理: <a href="https://talks.txthinking.com/articles/brook.article" rel="nofollow">https://talks.txthinking.com/articles/brook.article</a></li>
+<li>brook wsserver 搭配 Cloudflare CDN: <a href="https://www.youtube.com/watch?v=KFzS55bUk6A" rel="nofollow">https://www.youtube.com/watch?v=KFzS55bUk6A</a></li>
+<li>用 nico 将 brook wsserver 包装成任意 https 网站: <a href="https://talks.txthinking.com/articles/nico-brook-wsserver.article" rel="nofollow">https://talks.txthinking.com/articles/nico-brook-wsserver.article</a></li>
+<li>Brook, Shadowsocks, V2ray 协议层面的区别: <a href="https://www.youtube.com/watch?v=WZSfZU6rgbQ" rel="nofollow">https://www.youtube.com/watch?v=WZSfZU6rgbQ</a></li>
+<li>博客: <a href="https://talks.txthinking.com" rel="nofollow">https://talks.txthinking.com</a></li>
+<li>Youtube 频道: <a href="https://www.youtube.com/txthinking" rel="nofollow">https://www.youtube.com/txthinking</a></li>
+<li>规则列表: <a href="https://github.com/txthinking/bypass" rel="nofollow">https://github.com/txthinking/bypass</a></li>
+<li><a href="https://ipip.ooo" rel="nofollow">https://ipip.ooo</a></li>
+<li>论坛: <a href="https://github.com/txthinking/brook/discussions" rel="nofollow">https://github.com/txthinking/brook/discussions</a></li>
+<li>Telegram 群: <a href="https://t.me/brookgroup" rel="nofollow">https://t.me/brookgroup</a></li>
+<li>News: <a href="https://t.me/txthinking_news" rel="nofollow">https://t.me/txthinking_news</a></li>
+<li>Chrome Extension: <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
+</ul>
+</body>
+</html>

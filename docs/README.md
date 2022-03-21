@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@master/github-markdown.css">
+        <title>Brook</title>
+		
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M673HK5V"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-R3M673HK5V');
+		</script>
+
+        <style>
+                .markdown-body {
+                    box-sizing: border-box;
+                    min-width: 200px;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
+                }
+
+                @media (max-width: 767px) {
+                    .markdown-body {
+                        padding: 15px;
+                    }
+                }
+		</style>
+        <body class="markdown-body"><h1><a name="brook" class="anchor" href="#brook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Brook</h1>
+
+
+
+<p><a href="README_ZH.md" rel="nofollow">🇨🇳 中文</a></p>
+
+<p><a href="https://travis-ci.org/txthinking/brook" rel="nofollow"><img src="https://travis-ci.org/txthinking/brook.svg?branch=master" alt="Build Status"></a>
+<a href="http://www.gnu.org/licenses/gpl-3.0" rel="nofollow"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg"></a></p>
+
+<p><a href="https://t.me/brookgroup" rel="nofollow">🤝 Telegram</a>
+<a href="https://join.txthinking.com" rel="nofollow">💬 Private</a>
+<a href="https://www.youtube.com/txthinking" rel="nofollow">🩸 Youtube</a>
+<a href="https://github.com/sponsors/txthinking" rel="nofollow">❤️ Sponsor</a></p>
+
+<p>Brook is a cross-platform strong encryption and not detectable proxy. Keep it simple, stupid.</p>
+
+<p><a href="https://t.me/txthinking_news" rel="nofollow">🗣 Subscribe Announcement</a></p>
+<h1><a name="table-of-contents" class="anchor" href="#table-of-contents" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Table of Contents</h1>
+
+<ul>
+<li><a href="#install" rel="nofollow">Install</a>
+
+<ul>
+<li><a href="#install-brook-command" rel="nofollow">Install brook command</a></li>
+<li><a href="#install-brook-gui-client" rel="nofollow">Install Brook GUI client</a></li>
+</ul></li>
+<li><a href="#brook-subcommand-and-command-line-arguments" rel="nofollow">brook subcommand and command line arguments</a></li>
+<li><a href="#brook-rule-format" rel="nofollow">brook rule format</a></li>
+<li><a href="#examples" rel="nofollow">Examples</a>
+
+<ul>
+<li><a href="#run-brook-server" rel="nofollow">Run brook server</a></li>
+<li><a href="#run-brook-wsserver" rel="nofollow">Run brook wsserver</a></li>
+<li><a href="#run-brook-wssserver-automatically-certificate" rel="nofollow">Run brook wssserver: automatically certificate</a></li>
+<li><a href="#run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority" rel="nofollow">Run brook wssserver Use a certificate issued by an existing trust authority</a></li>
+<li><a href="#run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain" rel="nofollow">Run brook wssserver issue untrusted certificates yourself, any domain</a></li>
+<li><a href="#withoutbrookprotocol" rel="nofollow">withoutBrookProtocol</a></li>
+<li><a href="#withoutbrookprotocol-automatically-certificate" rel="nofollow">withoutBrookProtocol automatically certificate</a></li>
+<li><a href="#withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority" rel="nofollow">withoutBrookProtocol Use a certificate issued by an existing trust authority</a></li>
+<li><a href="#withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain" rel="nofollow">withoutBrookProtocol issue untrusted certificates yourself, any domain</a></li>
+<li><a href="#brook-server-wsserver-wssserver-forward-to-another-socks5-server-on-server-side" rel="nofollow">brook server wsserver wssserver forward to another socks5 server on server-side</a></li>
+<li><a href="#brook-server-wsserver-wssserver-block-domain-and-ip-on-server-side" rel="nofollow">brook server wsserver wssserver block domain and ip on server-side</a></li>
+<li><a href="#run-brook-socks5-a-stand-alone-standard-socks5-server" rel="nofollow">Run brook socks5, A stand-alone standard socks5 server</a></li>
+<li><a href="#run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server" rel="nofollow">Run brook socks5 with username and password. A stand-alone standard socks5 server</a></li>
+<li><a href="#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" rel="nofollow">brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.</a></li>
+<li><a href="#brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-serverwsserverwssserver" rel="nofollow">brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server/wsserver/wssserver.</a></li>
+<li><a href="#brook-tproxy-transparent-proxy-gateway-on-official-openwrt" rel="nofollow">brook tproxy Transparent Proxy Gateway on official OpenWrt</a></li>
+<li><a href="#brook-tproxy-transparent-proxy-gateway-on-ubuntu" rel="nofollow">brook tproxy Transparent Proxy Gateway on Ubuntu</a></li>
+<li><a href="#gui-for-official-openwrt" rel="nofollow">GUI for official OpenWrt</a></li>
+<li><a href="#brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server" rel="nofollow">brook relay can relay a address to a remote address. It can relay any tcp and udp server</a></li>
+<li><a href="#brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy" rel="nofollow">brook socks5tohttp can convert a socks5 to a http proxy</a></li>
+<li><a href="#brook-pac-creates-pac-server" rel="nofollow">brook pac creates pac server</a></li>
+<li><a href="#brook-pac-creates-pac-file" rel="nofollow">brook pac creates pac file</a></li>
+<li><a href="#ipv6" rel="nofollow">IPv6</a></li>
+<li><a href="#nat-type" rel="nofollow">NAT Type</a></li>
+<li><a href="#run-command-as-daemon-via-joker" rel="nofollow">Run command as daemon via joker</a></li>
+<li><a href="#auto-start-at-boot-via-jinbe" rel="nofollow">Auto start at boot via jinbe</a></li>
+</ul></li>
+<li><a href="#protocol" rel="nofollow">Protocol</a>
+
+<ul>
+<li><a href="#brook-server-protocol" rel="nofollow">brook server protocol</a></li>
+<li><a href="#brook-wsserver-protocol" rel="nofollow">brook wsserver protocol</a></li>
+<li><a href="#brook-wssserver-protocol" rel="nofollow">brook wssserver protocol</a></li>
+<li><a href="#withoutbrookprotocol-protocol" rel="nofollow">withoutBrookProtocol protocol</a></li>
+<li><a href="#brook-link-protocol" rel="nofollow">brook link protocol</a></li>
+</ul></li>
+<li><a href="#resources" rel="nofollow">Resources</a></li>
+</ul>
+<h2><a name="install" class="anchor" href="#install" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Install</h2>
+<h3><a name="install-brook-command" class="anchor" href="#install-brook-command" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Install brook command</h3>
+
+<blockquote>
+<p><a href="https://github.com/txthinking/nami" rel="nofollow">nami</a> can automatically download the command corresponding to your system. If on Windows, run in <a href="https://gitforwindows.org" rel="nofollow">Git Bash</a><br/>
+or<br/>
+If your system is not Linux, MacOS, Windows, or don&#39;t want nami, you can download it directly on the <a href="https://github.com/txthinking/brook/releases" rel="nofollow">releases</a> page<br/>
+or<br/>
+the fucking one-click script: <code>bash &lt;(curl https://bash.ooo/brook.sh)</code><br/>
+or<br/>
+Archlinux: <code>pacman -S brook</code><br/>
+or<br/>
+brew: <code>brew install brook</code><br/><br/>
+recommend run command with root<br/></p>
+</blockquote>
+
+<p>Install nami</p>
+
+<pre><code>bash &lt;(curl https://bash.ooo/nami.sh)
+</code></pre>
+
+<p>Install brook</p>
+
+<pre><code>nami install brook
+</code></pre>
+<h3><a name="install-brook-gui-client" class="anchor" href="#install-brook-gui-client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Install Brook GUI client</h3>
+
+<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.dmg" rel="nofollow">macOS</a>
+<a href="https://github.com/txthinking/brook/releases/latest/download/Brook.exe" rel="nofollow">Windows</a>
+<a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk" rel="nofollow">Android</a>
+<a href="https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642" rel="nofollow">iOS &amp; M1 Mac</a>
+<a href="#gui-for-official-openwrt" rel="nofollow">OpenWrt</a></p>
+
+<blockquote>
+<p>Windows requires that the latest version of Edge(chromium-based) has been installed<br/></p>
+</blockquote>
+
+<p>这里有<a href="https://talks.txthinking.com/articles/brook.article" rel="nofollow">brook 客户端工作原理</a></p>
+<h2><a name="brook-subcommand-and-command-line-arguments" class="anchor" href="#brook-subcommand-and-command-line-arguments" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook <code>subcommand</code> and <code>command line arguments</code></h2>
+
+<ul>
+<li>all <code>subcoommand</code>: <code>brook --help</code></li>
+<li>command line arguments of <code>subommand</code>: <code>brook xxx --help</code></li>
+</ul>
+<h2><a name="brook-rule-format" class="anchor" href="#brook-rule-format" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook rule format</h2>
+
+<p>There are three types of rule files</p>
+
+<ul>
+<li>domain list: One domain name per line, the suffix matches mode. Can be a local file or an HTTPS URL</li>
+<li>CIDR v4 list: One CIDR per line, which can be a local file or an HTTPS URL</li>
+<li>CIDR v6 list: One CIDR per line, which can be a local file or an HTTPS URL</li>
+</ul>
+
+<p>Rules file can be used for</p>
+
+<ul>
+<li>Server-side: blocking domain name and IP</li>
+<li>brook dns: bypass, block domain</li>
+<li>brook tproxy: bypass, block, domain, ip</li>
+<li>OpenWrt: bypass, block, domain, ip</li>
+<li>Brook GUI: bypass, block, domain, ip</li>
+</ul>
+<h2><a name="examples" class="anchor" href="#examples" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Examples</h2>
+
+<p>List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself</p>
+<h3><a name="run-brook-server" class="anchor" href="#run-brook-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Run brook server</h3>
+
+<pre><code>SRC --TCP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook server --TCP--&gt; DST
+SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP(Brook Protocol)--&gt; brook server --UDP--&gt; DST
+</code></pre>
+
+<blockquote>
+<p>Make sure you have no problem with your local UDP network to your server. If there is a problem, use brook wsserver instead</p>
+</blockquote>
+
+<pre><code>brook server --listen :9999 --password hello
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server 1.2.3.4:9999 --password hello --name &#39;my brook server&#39;
+</code></pre>
+<h3><a name="run-brook-wsserver" class="anchor" href="#run-brook-wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Run brook wsserver</h3>
+
+<pre><code>SRC --TCP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook wsserver --TCP--&gt; DST
+SRC --UDP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook wsserver --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook wsserver --listen :9999 --password hello
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server ws://1.2.3.4:9999 --password hello --name &#39;my brook wsserver&#39;
+</code></pre>
+
+<p>or get brook link with domain, even if that&#39;s not your domain</p>
+
+<pre><code>brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name &#39;my brook wsserver&#39;
+</code></pre>
+<h3><a name="run-brook-wssserver-automatically-certificate" class="anchor" href="#run-brook-wssserver-automatically-certificate" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Run brook wssserver: automatically certificate</h3>
+
+<blockquote>
+<p>Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80</p>
+</blockquote>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
+</code></pre>
+<h3><a name="run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority" class="anchor" href="#run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Run brook wssserver Use a certificate issued by an existing trust authority</h3>
+
+<blockquote>
+<p>Make sure your domain has been resolved to your server IP successfully</p>
+</blockquote>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
+</code></pre>
+<h3><a name="run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain" class="anchor" href="#run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Run brook wssserver issue untrusted certificates yourself, any domain</h3>
+
+<p>Install <a href="https://github.com/txthinking/mad" rel="nofollow">mad</a></p>
+
+<pre><code>nami install mad
+</code></pre>
+
+<p>Generate root ca</p>
+
+<pre><code>mad ca --ca /root/ca.pem --key /root/cakey.pem
+</code></pre>
+
+<p>Generate domain cert by root ca</p>
+
+<pre><code>mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
+</code></pre>
+
+<p>Get brook link with <code>--insecure</code></p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --address 1.2.3.4:443 --insecure
+</code></pre>
+
+<p>or get brook link with <code>--ca</code></p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --address 1.2.3.4:443 --ca /root/ca.pem
+</code></pre>
+<h3><a name="withoutbrookprotocol" class="anchor" href="#withoutbrookprotocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol</h3>
+
+<p>Better performance, but data is not strongly encrypted using Brook protocol. So please use certificate encryption, and it is not recommended to use --withoutBrookProtocol and --insecure together</p>
+<h3><a name="withoutbrookprotocol-automatically-certificate" class="anchor" href="#withoutbrookprotocol-automatically-certificate" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol automatically certificate</h3>
+
+<blockquote>
+<p>Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80</p>
+</blockquote>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookProtocol
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
+</code></pre>
+<h3><a name="withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority" class="anchor" href="#withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol Use a certificate issued by an existing trust authority</h3>
+
+<blockquote>
+<p>Make sure your domain has been resolved to your server IP successfully</p>
+</blockquote>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --withoutBrookProtocol
+</code></pre>
+<h3><a name="withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain" class="anchor" href="#withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol issue untrusted certificates yourself, any domain</h3>
+
+<p>Install <a href="https://github.com/txthinking/mad" rel="nofollow">mad</a></p>
+
+<pre><code>nami install mad
+</code></pre>
+
+<p>Generate root ca</p>
+
+<pre><code>mad ca --ca /root/ca.pem --key /root/cakey.pem
+</code></pre>
+
+<p>Generate domain cert by root ca</p>
+
+<pre><code>mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
+</code></pre>
+
+<p>Run brook wssserver</p>
+
+<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
+</code></pre>
+<h3><a name="brook-server-wsserver-wssserver-forward-to-another-socks5-server-on-server-side" class="anchor" href="#brook-server-wsserver-wssserver-forward-to-another-socks5-server-on-server-side" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook server wsserver wssserver forward to another socks5 server on server-side</h3>
+
+<ul>
+<li>--toSocks5</li>
+<li>--toSocks5Username</li>
+<li>--toSocks5Password</li>
+</ul>
+<h3><a name="brook-server-wsserver-wssserver-block-domain-and-ip-on-server-side" class="anchor" href="#brook-server-wsserver-wssserver-block-domain-and-ip-on-server-side" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook server wsserver wssserver block domain and ip on server-side</h3>
+
+<ul>
+<li>--blockDomainList</li>
+<li>--blockCIDR4List</li>
+<li>--blockCIDR6List</li>
+<li>--updateListInterval</li>
+</ul>
+<h3><a name="run-brook-socks5-a-stand-alone-standard-socks5-server" class="anchor" href="#run-brook-socks5-a-stand-alone-standard-socks5-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Run brook socks5, A stand-alone standard socks5 server</h3>
+
+<pre><code>SRC --TCP--&gt; brook socks5 --TCP--&gt; DST
+SRC --UDP--&gt; brook socks5 --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server socks5://1.2.3.4:1080
+</code></pre>
+<h3><a name="run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server" class="anchor" href="#run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Run brook socks5 with username and password. A stand-alone standard socks5 server</h3>
+
+<pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
+</code></pre>
+
+<p>Get brook link</p>
+
+<pre><code>brook link --server socks5://1.2.3.4:1080 --username hello --password world
+</code></pre>
+<h3><a name="brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" class="anchor" href="#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.</h3>
+
+<pre><code>SRC --TCP--&gt; brook relayoverbrook --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
+SRC --UDP--&gt; brook relayoverbrook --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
+</code></pre>
+<h3><a name="brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" class="anchor" href="#brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server/wsserver/wssserver.</h3>
+
+<pre><code>SRC --TCP--&gt; brook dns --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
+SRC --UDP--&gt; brook dns --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook dns ... --listen 127.0.0.1:53
+</code></pre>
+
+<p>Rule</p>
+
+<ul>
+<li>--dns</li>
+<li>--dnsForBypass</li>
+<li>--bypassDomainList</li>
+<li>--blockDomainList</li>
+</ul>
+<h3><a name="brook-tproxy-transparent-proxy-gateway-on-official-openwrt" class="anchor" href="#brook-tproxy-transparent-proxy-gateway-on-official-openwrt" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook tproxy Transparent Proxy Gateway on official OpenWrt</h3>
+
+<pre><code>opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
+</code></pre>
+
+<pre><code>brook tproxy --link &#39;brook://...&#39; --dnsListen :5353
+</code></pre>
+
+<ol>
+<li>OpenWrt DNS forwardings: OpenWrt Web -&gt; Network -&gt; DHCP and DNS -&gt; General Settings -&gt; DNS forwardings -&gt; 127.0.0.1#5353</li>
+<li>OpenWrt Ignore resolve file: OpenWrt Web -&gt; Network -&gt; DHCP and DNS -&gt; Resolv and Hosts Files -&gt; Ignore resolve file</li>
+<li>By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles</li>
+</ol>
+
+<p>Rule</p>
+
+<ul>
+<li>--dnsForDefault</li>
+<li>--dnsForBypass</li>
+<li>--bypassDomainList</li>
+<li>--bypassCIDR4List</li>
+<li>--bypassCIDR6List</li>
+<li>--blockDomainList</li>
+</ul>
+<h3><a name="brook-tproxy-transparent-proxy-gateway-on-ubuntu" class="anchor" href="#brook-tproxy-transparent-proxy-gateway-on-ubuntu" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook tproxy Transparent Proxy Gateway on Ubuntu</h3>
+
+<pre><code>systemctl stop systemd-resolved
+</code></pre>
+
+<pre><code>brook tproxy --link &#39;brook://...&#39; --dnsListen :53
+</code></pre>
+
+<ol>
+<li>You may need to manually configure the computer or mobile gateway and DNS.</li>
+</ol>
+<h3><a name="gui-for-official-openwrt" class="anchor" href="#gui-for-official-openwrt" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+GUI for official OpenWrt</h3>
+
+<blockquote>
+<p><strong>Dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy</strong></p>
+</blockquote>
+
+<p>port 9999, 1080, 5353 will be used. It work with brook server, brook wsserver and brook wssserver.</p>
+
+<ol>
+<li>Download the <a href="https://github.com/txthinking/brook/releases" rel="nofollow">ipk</a> file for your router</li>
+<li>Upload and install: OpenWrt Web -&gt; System -&gt; Software -&gt; Upload Package...</li>
+<li>Refresh page, the Brook menu will appear at the top</li>
+<li>OpenWrt Web -&gt; Brook -&gt; type and Connect</li>
+<li>And OpenWrt DNS forwardings: OpenWrt Web -&gt; Network -&gt; DHCP and DNS -&gt; General Settings -&gt; DNS forwardings -&gt; 127.0.0.1#5353</li>
+<li>And OpenWrt Ignore resolve file: OpenWrt Web -&gt; Network -&gt; DHCP and DNS -&gt; Resolv and Hosts Files -&gt; Ignore resolve file</li>
+<li>By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles</li>
+</ol>
+<h3><a name="brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server" class="anchor" href="#brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook relay can relay a address to a remote address. It can relay any tcp and udp server</h3>
+
+<pre><code>SRC --TCP--&gt; brook relay --TCP--&gt; DST
+SRC --UDP--&gt; brook relay --UDP--&gt; DST
+</code></pre>
+
+<pre><code>brook relay --from :9999 --to 1.2.3.4:9999
+</code></pre>
+<h3><a name="brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy" class="anchor" href="#brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook socks5tohttp can convert a socks5 to a http proxy</h3>
+
+<pre><code>brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
+</code></pre>
+<h3><a name="brook-pac-creates-pac-server" class="anchor" href="#brook-pac-creates-pac-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook pac creates pac server</h3>
+
+<pre><code>brook pac --listen 127.0.0.1:8080 --proxy &#39;SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT&#39; --bypassDomainList ...
+</code></pre>
+<h3><a name="brook-pac-creates-pac-file" class="anchor" href="#brook-pac-creates-pac-file" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook pac creates pac file</h3>
+
+<pre><code>brook pac --file proxy.pac --proxy &#39;SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT&#39; --bypassDomainList ...
+</code></pre>
+<h3><a name="ipv6" class="anchor" href="#ipv6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+IPv6</h3>
+
+<table>
+<thead>
+<tr>
+<th>Command/Client</th>
+<th>Remark</th>
+<th>Support IPv4</th>
+<th>Support IPv6</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>brook server</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook client</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook wsserver</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook wsclient</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook wssserver</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook wssclient</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook relayoverbrook</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook dns</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook tproxy</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes/2</td>
+</tr>
+
+<tr>
+<td>brook connect</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook relay</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook socks5</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook socks5tohttp</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>brook hijackhttps</td>
+<td>CLI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>macOS Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>Windows Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes/2</td>
+</tr>
+
+<tr>
+<td>iOS Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>Android Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>OpenWrt Client</td>
+<td>GUI</td>
+<td>Yes</td>
+<td>Yes/2</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="nat-type" class="anchor" href="#nat-type" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+NAT Type</h3>
+
+<p>Symmetric</p>
+<h3><a name="run-command-as-daemon-via-joker" class="anchor" href="#run-command-as-daemon-via-joker" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Run command as daemon via joker</h3>
+
+<p>Install <a href="https://github.com/txthinking/joker" rel="nofollow">joker</a></p>
+
+<pre><code>nami install joker
+</code></pre>
+
+<p>To run the brook daemon with joker, just prefix the original command with joker</p>
+
+<pre><code>joker brook ...
+</code></pre>
+
+<p>Get the last command ID</p>
+
+<pre><code>joker last
+</code></pre>
+
+<p>View output and error of a command run via joker</p>
+
+<pre><code>joker log &lt;ID&gt;
+</code></pre>
+
+<p>View running commmands via joker</p>
+
+<pre><code>joker list
+</code></pre>
+
+<p>Stop a running command via joker</p>
+
+<pre><code>joker stop &lt;ID&gt;
+</code></pre>
+<h3><a name="auto-start-at-boot-via-jinbe" class="anchor" href="#auto-start-at-boot-via-jinbe" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Auto start at boot via jinbe</h3>
+
+<p>Install <a href="https://github.com/txthinking/jinbe" rel="nofollow">jinbe</a></p>
+
+<pre><code>nami install jinbe
+</code></pre>
+
+<p>To use jinbe to add a self-starting command at boot, just add jinbe in front of the original command</p>
+
+<pre><code>jinbe joker brook ...
+</code></pre>
+
+<p>View added commmands via jinbe</p>
+
+<pre><code>jinbe list
+</code></pre>
+
+<p>Remove a added command via jinbe</p>
+
+<pre><code>jinbe remove &lt;ID&gt;
+</code></pre>
+<h2><a name="protocol" class="anchor" href="#protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Protocol</h2>
+<h3><a name="brook-server-protocol" class="anchor" href="#brook-server-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook server protocol</h3>
+
+<p><a href="protocol/brook-server-protocol.md" rel="nofollow">brook-server-protocol.md</a></p>
+<h3><a name="brook-wsserver-protocol" class="anchor" href="#brook-wsserver-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook wsserver protocol</h3>
+
+<p><a href="protocol/brook-wsserver-protocol.md" rel="nofollow">brook-wsserver-protocol.md</a></p>
+<h3><a name="brook-wssserver-protocol" class="anchor" href="#brook-wssserver-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook wssserver protocol</h3>
+
+<p><a href="protocol/brook-wssserver-protocol.md" rel="nofollow">brook-wssserver-protocol.md</a></p>
+<h3><a name="withoutbrookprotocol-protocol" class="anchor" href="#withoutbrookprotocol-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol protocol</h3>
+
+<p><a href="protocol/withoutbrookprotocol-protocol.md" rel="nofollow">withoutbrookprotocol-protocol.md</a></p>
+<h3><a name="brook-link-protocol" class="anchor" href="#brook-link-protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook link protocol</h3>
+
+<p><a href="protocol/brook-link-protocol.md" rel="nofollow">brook-link-protocol.md</a></p>
+<h2><a name="resources" class="anchor" href="#resources" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Resources</h2>
+
+<ul>
+<li>Brook GUI 工作原理: <a href="https://talks.txthinking.com/articles/brook.article" rel="nofollow">https://talks.txthinking.com/articles/brook.article</a></li>
+<li>brook wsserver and Cloudflare CDN: <a href="https://www.youtube.com/watch?v=KFzS55bUk6A" rel="nofollow">https://www.youtube.com/watch?v=KFzS55bUk6A</a></li>
+<li>用 nico 将 brook wsserver 包装成任意 https 网站: <a href="https://talks.txthinking.com/articles/nico-brook-wsserver.article" rel="nofollow">https://talks.txthinking.com/articles/nico-brook-wsserver.article</a></li>
+<li>Brook, Shadowsocks, V2ray 协议层面的区别: <a href="https://www.youtube.com/watch?v=WZSfZU6rgbQ" rel="nofollow">https://www.youtube.com/watch?v=WZSfZU6rgbQ</a></li>
+<li>Blog: <a href="https://talks.txthinking.com" rel="nofollow">https://talks.txthinking.com</a></li>
+<li>Youtube: <a href="https://www.youtube.com/txthinking" rel="nofollow">https://www.youtube.com/txthinking</a></li>
+<li>Rule list demo: <a href="https://github.com/txthinking/bypass" rel="nofollow">https://github.com/txthinking/bypass</a></li>
+<li><a href="https://ipip.ooo" rel="nofollow">https://ipip.ooo</a></li>
+<li>Discuss: <a href="https://github.com/txthinking/brook/discussions" rel="nofollow">https://github.com/txthinking/brook/discussions</a></li>
+<li>Telegram: <a href="https://t.me/brookgroup" rel="nofollow">https://t.me/brookgroup</a></li>
+<li>News: <a href="https://t.me/txthinking_news" rel="nofollow">https://t.me/txthinking_news</a></li>
+<li>Chrome Extension: <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
+</ul>
+</body>
+</html>
