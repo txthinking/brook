@@ -432,7 +432,7 @@ brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080;
 
 Symmetric
 
-### 使用 joker 运行守护进程
+## 使用 joker 运行守护进程
 
 使用 nami 安装 [joker](https://github.com/txthinking/joker)
 
@@ -470,7 +470,7 @@ joker list
 joker stop <ID>
 ```
 
-### 使用 jinbe 添加开机自启动命令
+## 使用 jinbe 添加开机自启动命令
 
 使用 nami 安装 [jinbe](https://github.com/txthinking/jinbe)
 

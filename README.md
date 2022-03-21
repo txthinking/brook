@@ -431,7 +431,7 @@ brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080;
 
 Symmetric
 
-### Run command as daemon via joker
+## Run command as daemon via joker
 
 Install [joker](https://github.com/txthinking/joker)
 
@@ -469,7 +469,7 @@ Stop a running command via joker
 joker stop <ID>
 ```
 
-### Auto start at boot via jinbe
+## Auto start at boot via jinbe
 
 Install [jinbe](https://github.com/txthinking/jinbe)
 
