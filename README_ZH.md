@@ -56,7 +56,7 @@ nami install brook
 > Windows 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器<br/>
 > 请使用非中国大陆 Apple ID 下载.
 
-这里有[brook 客户端工作原理](https://talks.txthinking.com/articles/brook.article)
+这里有 [brook 图形客户端工作原理](https://talks.txthinking.com/articles/brook.article)
 
 ## brook `子命令` 和 `命令参数`
 
