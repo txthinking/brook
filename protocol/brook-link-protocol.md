@@ -13,6 +13,7 @@ brook://KIND?QUERY
 -   **QUERY**:
     -   `server`: brook server, such as `1.2.3.4:9999`
     -   `password`: password
+    -   `udpovertcp`: `true` [Optional]
     -   `name`: such as `my server` [Optional]
     -   Any other custom key
 
