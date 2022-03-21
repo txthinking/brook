@@ -75,7 +75,7 @@ Table of Contents</h1>
 <li><a href="#run-brook-socks5-a-stand-alone-standard-socks5-server" rel="nofollow">Run brook socks5, A stand-alone standard socks5 server</a></li>
 <li><a href="#run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server" rel="nofollow">Run brook socks5 with username and password. A stand-alone standard socks5 server</a></li>
 <li><a href="#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" rel="nofollow">brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.</a></li>
-<li><a href="#brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-serverwsserverwssserver" rel="nofollow">brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server/wsserver/wssserver.</a></li>
+<li><a href="#brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" rel="nofollow">brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.</a></li>
 <li><a href="#brook-tproxy-transparent-proxy-gateway-on-official-openwrt" rel="nofollow">brook tproxy Transparent Proxy Gateway on official OpenWrt</a></li>
 <li><a href="#brook-tproxy-transparent-proxy-gateway-on-ubuntu" rel="nofollow">brook tproxy Transparent Proxy Gateway on Ubuntu</a></li>
 <li><a href="#gui-for-official-openwrt" rel="nofollow">GUI for official OpenWrt</a></li>
@@ -139,7 +139,7 @@ Install Brook GUI client</h3>
 <p>Windows requires that the latest version of Edge(chromium-based) has been installed<br/></p>
 </blockquote>
 
-<p>这里有<a href="https://talks.txthinking.com/articles/brook.article" rel="nofollow">brook 客户端工作原理</a></p>
+<p>这里有 <a href="https://talks.txthinking.com/articles/brook.article" rel="nofollow">brook GUI 客户端工作原理</a></p>
 <h2><a name="brook-subcommand-and-command-line-arguments" class="anchor" href="#brook-subcommand-and-command-line-arguments" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook <code>subcommand</code> and <code>command line arguments</code></h2>
 
@@ -378,7 +378,7 @@ SRC --UDP--&gt; brook relayoverbrook --TCP/UDP(Brook Protocol) --&gt; brook serv
 <pre><code>brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 </code></pre>
 <h3><a name="brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" class="anchor" href="#brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server/wsserver/wssserver.</h3>
+brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.</h3>
 
 <pre><code>SRC --TCP--&gt; brook dns --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
 SRC --UDP--&gt; brook dns --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
