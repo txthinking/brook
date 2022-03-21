@@ -307,7 +307,7 @@ SRC --UDP--> brook relayoverbrook --TCP/UDP(Brook Protocol) --> brook server/wss
 brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 ```
 
-### brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server/wsserver/wssserver.
+### brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.
 
 ```
 SRC --TCP--> brook dns --TCP(Brook Protocol) --> brook server/wsserver/wssserver --TCP--> DST
