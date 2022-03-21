@@ -55,7 +55,7 @@ nami install brook
 
 > Windows requires that the latest version of Edge(chromium-based) has been installed<br/>
 
-这里有[brook 客户端工作原理](https://talks.txthinking.com/articles/brook.article)
+这里有 [brook GUI 客户端工作原理](https://talks.txthinking.com/articles/brook.article)
 
 ## brook `subcommand` and `command line arguments`
 
