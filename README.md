@@ -26,7 +26,7 @@ Brook is a cross-platform strong encryption and not detectable proxy. Keep it si
 > or<br/>
 > If your system is not Linux, MacOS, Windows, or don't want nami, you can download it directly on the [releases](https://github.com/txthinking/brook/releases) page<br/>
 > or<br/>
-> the fucking one-click script: `bash <(curl https://bash.ooo/brook.sh)`<br/>
+> the script but only some parameters are supported: `bash <(curl https://bash.ooo/brook.sh)`<br/>
 > or<br/>
 > Archlinux: `pacman -S brook`<br/>
 > or<br/>
