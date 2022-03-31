@@ -88,29 +88,36 @@ func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url str
 		if strings.HasPrefix(s, "wss://") && roots != nil {
 			wsc.TLSConfig.RootCAs = roots
 		}
-		wsc.DialTCP = tproxy.DialTCP
-	}
-	r := &net.Resolver{
-		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-			c, err := net.Dial(network, "8.8.8.8:53")
-			if err != nil {
-				c, err = net.Dial(network, "[2001:4860:4860::8888]:53")
-			}
-			return c, err
-		},
 	}
 	h, p, err := net.SplitHostPort(hp)
 	if err != nil {
 		return nil, err
 	}
-	l, err := r.LookupIP(context.Background(), "ip4", h)
-	if err != nil {
-		return nil, err
+	ip := ""
+	r := &net.Resolver{
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			return net.Dial(network, "[2001:4860:4860::8888]:53")
+		},
 	}
-	if len(l) == 0 {
-		return nil, errors.New("Can not find server IPv4")
+	l, err := r.LookupIP(context.Background(), "ip6", h)
+	if err == nil && len(l) > 0 && l[0].To4() == nil {
+		ip = l[0].String()
 	}
-	hp = net.JoinHostPort(l[0].String(), p)
+	if ip == "" {
+		r := &net.Resolver{
+			Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+				return net.Dial(network, "8.8.8.8:53")
+			},
+		}
+		l, err := r.LookupIP(context.Background(), "ip4", h)
+		if err == nil && len(l) > 0 && l[0].To4() != nil {
+			ip = l[0].String()
+		}
+	}
+	if ip == "" {
+		return nil, errors.New("Can not find server IP")
+	}
+	hp = net.JoinHostPort(ip, p)
 	if wsc != nil {
 		wsc.ServerAddress = hp
 	}
@@ -436,7 +443,7 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 	var rc net.Conn
 	var err error
 	if s.WSClient == nil {
-		rc, err = tproxy.DialTCP("tcp", s.ServerTCPAddr.String())
+		rc, err = Dial.Dial("tcp", s.ServerTCPAddr.String())
 	}
 	if s.WSClient != nil {
 		rc, err = s.WSClient.DialWebsocket("")
@@ -484,22 +491,6 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	if ok {
 		laddr = any.(*net.UDPAddr)
 	}
-	if laddr == nil {
-		if addr.IP.To4() != nil {
-			laddr = &net.UDPAddr{
-				IP:   net.IPv4zero,
-				Port: 0,
-				Zone: addr.Zone,
-			}
-		}
-		if addr.IP.To4() == nil {
-			laddr = &net.UDPAddr{
-				IP:   net.IPv6zero,
-				Port: 0,
-				Zone: addr.Zone,
-			}
-		}
-	}
 
 	if ListHasIP(s.Cidr4, s.Cidr6, daddr.IP, s.BypassCache) {
 		any, ok := s.UDPExchanges.Get(src + dst)
@@ -512,7 +503,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 		rc, err := Dial.DialUDP("udp", laddr, daddr)
 		if err != nil {
-			return err
+			return errors.New(fmt.Sprintf("1: src: %s dst: %s %s", laddr, daddr.String(), err.Error()))
 		}
 		defer rc.Close()
 		if s.UDPTimeout != 0 {
@@ -520,12 +511,12 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 				return err
 			}
 		}
-		if laddr.Port == 0 {
+		if laddr == nil {
 			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 		}
 		c, err := tproxy.DialUDP("udp", daddr, addr)
 		if err != nil {
-			return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
+			return errors.New(fmt.Sprintf("2: src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 		}
 		defer c.Close()
 		if s.UDPTimeout != 0 {
@@ -567,13 +558,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			ue := any.(*UDPExchange)
 			return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
 		}
-		rc, err := tproxy.DialUDP("udp", laddr, s.ServerUDPAddr)
+		rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
 		if err != nil {
-			if strings.Contains(err.Error(), "address already in use") {
-				// we dont choose lock, so ignore this error
-				return nil
-			}
-			return err
+			return errors.New(fmt.Sprintf("3: src: %s dst: %s %s", laddr, s.ServerUDPAddr.String(), err.Error()))
 		}
 		defer rc.Close()
 		if s.UDPTimeout != 0 {
@@ -581,12 +568,12 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 				return err
 			}
 		}
-		if laddr.Port == 0 {
+		if laddr == nil {
 			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 		}
 		c, err := tproxy.DialUDP("udp", daddr, addr)
 		if err != nil {
-			return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
+			return errors.New(fmt.Sprintf("4: src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 		}
 		defer c.Close()
 		if s.UDPTimeout != 0 {
@@ -631,13 +618,25 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	var rc net.Conn
 	var err error
 	if s.UDPOverTCP {
-		rc, err = tproxy.DialTCP("tcp", s.ServerTCPAddr.String())
+		var laddrt *net.TCPAddr
+		if laddr != nil {
+			laddrt = &net.TCPAddr{
+				IP:   laddr.IP,
+				Port: laddr.Port,
+				Zone: laddr.Zone,
+			}
+		}
+		rc, err = Dial.DialTCP("tcp", laddrt, s.ServerTCPAddr)
 	}
 	if s.WSClient != nil {
-		rc, err = s.WSClient.DialWebsocket(laddr.String())
+		las := ""
+		if laddr != nil {
+			las = laddr.String()
+		}
+		rc, err = s.WSClient.DialWebsocket(las)
 	}
 	if err != nil {
-		return nil
+		return errors.New(fmt.Sprintf("5: src: %s dst: %s %s", laddr, s.ServerTCPAddr, err.Error()))
 	}
 	defer rc.Close()
 	if s.UDPTimeout != 0 {
@@ -645,7 +644,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			return err
 		}
 	}
-	if laddr.Port == 0 {
+	if laddr == nil {
 		s.UDPSrc.Set(src+dst, &net.UDPAddr{
 			IP:   rc.LocalAddr().(*net.TCPAddr).IP,
 			Port: rc.LocalAddr().(*net.TCPAddr).Port,
@@ -654,7 +653,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	}
 	c, err := tproxy.DialUDP("udp", daddr, addr)
 	if err != nil {
-		return errors.New(fmt.Sprintf("src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
+		return errors.New(fmt.Sprintf("6: src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 	}
 	defer c.Close()
 	if s.UDPTimeout != 0 {

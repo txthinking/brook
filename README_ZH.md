@@ -328,6 +328,8 @@ brook dns ... --listen 127.0.0.1:53
 
 ### brook tproxy 透明代理网关在官网原版 OpenWrt
 
+**无需操作 iptables！**
+
 ```
 opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
 ```
@@ -351,6 +353,8 @@ brook tproxy --link 'brook://...' --dnsListen :5353
 
 ### brook tproxy 透明代理网关在 Ubuntu
 
+**无需操作 iptables！**
+
 ```
 systemctl stop systemd-resolved
 ```
@@ -359,11 +363,14 @@ systemctl stop systemd-resolved
 brook tproxy --link 'brook://...' --dnsListen :53
 ```
 
-1. You may need to manually configure the computer or mobile gateway and DNS.
+1. 配置其他机器的网关和 DNS 为这台机器的 IP 即可
+2. 如果你运行在虚拟机里并且宿主机使用的是无线网卡, 可能不能工作。
 
 ### 官网原版 OpenWrt 图形客户端
 
 > **依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
+
+**无需操作 iptables！**
 
 **端口 9999, 1080, 5353 将会被使用**. 它与 brook server, brook wsserver, brook wssserver 一起工作.
 
@@ -416,17 +423,17 @@ brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080;
 | brook wssclient      | CLI    | Yes          | Yes          |
 | brook relayoverbrook | CLI    | Yes          | Yes          |
 | brook dns            | CLI    | Yes          | Yes          |
-| brook tproxy         | CLI    | Yes          | Yes/2        |
+| brook tproxy         | CLI    | Yes          | Yes          |
 | brook connect        | CLI    | Yes          | Yes          |
 | brook relay          | CLI    | Yes          | Yes          |
 | brook socks5         | CLI    | Yes          | Yes          |
 | brook socks5tohttp   | CLI    | Yes          | Yes          |
 | brook hijackhttps    | CLI    | Yes          | Yes          |
 | macOS Client         | GUI    | Yes          | Yes          |
-| Windows Client       | GUI    | Yes          | Yes/2        |
+| Windows Client       | GUI    | Yes          | Yes/?        |
 | iOS Client           | GUI    | Yes          | Yes          |
 | Android Client       | GUI    | Yes          | Yes          |
-| OpenWrt Client       | GUI    | Yes          | Yes/2        |
+| OpenWrt Client       | GUI    | Yes          | Yes          |
 
 ### NAT Type
 

@@ -327,6 +327,8 @@ Rule
 
 ### brook tproxy Transparent Proxy Gateway on official OpenWrt
 
+**No need to manipulate iptables!**
+
 ```
 opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
 ```
@@ -350,6 +352,8 @@ Rule
 
 ### brook tproxy Transparent Proxy Gateway on Ubuntu
 
+**No need to manipulate iptables!**
+
 ```
 systemctl stop systemd-resolved
 ```
@@ -359,10 +363,13 @@ brook tproxy --link 'brook://...' --dnsListen :53
 ```
 
 1. You may need to manually configure the computer or mobile gateway and DNS.
+2. If you are running in a virtual machine and the host is using a wireless card, it may not work.
 
 ### GUI for official OpenWrt
 
 > **Dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
+
+**No need to manipulate iptables!**
 
 port 9999, 1080, 5353 will be used. It work with brook server, brook wsserver and brook wssserver.
 
@@ -415,17 +422,17 @@ brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080;
 | brook wssclient      | CLI    | Yes          | Yes          |
 | brook relayoverbrook | CLI    | Yes          | Yes          |
 | brook dns            | CLI    | Yes          | Yes          |
-| brook tproxy         | CLI    | Yes          | Yes/2        |
+| brook tproxy         | CLI    | Yes          | Yes          |
 | brook connect        | CLI    | Yes          | Yes          |
 | brook relay          | CLI    | Yes          | Yes          |
 | brook socks5         | CLI    | Yes          | Yes          |
 | brook socks5tohttp   | CLI    | Yes          | Yes          |
 | brook hijackhttps    | CLI    | Yes          | Yes          |
 | macOS Client         | GUI    | Yes          | Yes          |
-| Windows Client       | GUI    | Yes          | Yes/2        |
+| Windows Client       | GUI    | Yes          | Yes/?        |
 | iOS Client           | GUI    | Yes          | Yes          |
 | Android Client       | GUI    | Yes          | Yes          |
-| OpenWrt Client       | GUI    | Yes          | Yes/2        |
+| OpenWrt Client       | GUI    | Yes          | Yes          |
 
 ### NAT Type
 

@@ -1021,7 +1021,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address, DO NOT contain IP, just like: ':1080'",
+					Usage:   "Listen address, DO NOT contain IP, just like: ':1080'. No need to operate iptables by default!",
 					Value:   ":1080",
 				},
 				&cli.StringFlag{
@@ -1060,7 +1060,7 @@ func main() {
 				},
 				&cli.BoolFlag{
 					Name:  "doNotRunScripts",
-					Usage: "This will not change iptables and others",
+					Usage: "This will not change iptables and others if you want to do by yourself",
 				},
 				&cli.StringFlag{
 					Name:  "webListen",

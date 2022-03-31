@@ -398,6 +398,8 @@ SRC --UDP--&gt; brook dns --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver
 <h3><a name="brook-tproxy-transparent-proxy-gateway-on-official-openwrt" class="anchor" href="#brook-tproxy-transparent-proxy-gateway-on-official-openwrt" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook tproxy Transparent Proxy Gateway on official OpenWrt</h3>
 
+<p><strong>No need to manipulate iptables!</strong></p>
+
 <pre><code>opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
 </code></pre>
 
@@ -423,6 +425,8 @@ brook tproxy Transparent Proxy Gateway on official OpenWrt</h3>
 <h3><a name="brook-tproxy-transparent-proxy-gateway-on-ubuntu" class="anchor" href="#brook-tproxy-transparent-proxy-gateway-on-ubuntu" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook tproxy Transparent Proxy Gateway on Ubuntu</h3>
 
+<p><strong>No need to manipulate iptables!</strong></p>
+
 <pre><code>systemctl stop systemd-resolved
 </code></pre>
 
@@ -431,6 +435,7 @@ brook tproxy Transparent Proxy Gateway on Ubuntu</h3>
 
 <ol>
 <li>You may need to manually configure the computer or mobile gateway and DNS.</li>
+<li>If you are running in a virtual machine and the host is using a wireless card, it may not work.</li>
 </ol>
 <h3><a name="gui-for-official-openwrt" class="anchor" href="#gui-for-official-openwrt" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 GUI for official OpenWrt</h3>
@@ -438,6 +443,8 @@ GUI for official OpenWrt</h3>
 <blockquote>
 <p><strong>Dependencies: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy</strong></p>
 </blockquote>
+
+<p><strong>No need to manipulate iptables!</strong></p>
 
 <p>port 9999, 1080, 5353 will be used. It work with brook server, brook wsserver and brook wssserver.</p>
 
@@ -548,7 +555,7 @@ IPv6</h3>
 <td>brook tproxy</td>
 <td>CLI</td>
 <td>Yes</td>
-<td>Yes/2</td>
+<td>Yes</td>
 </tr>
 
 <tr>
@@ -597,7 +604,7 @@ IPv6</h3>
 <td>Windows Client</td>
 <td>GUI</td>
 <td>Yes</td>
-<td>Yes/2</td>
+<td>Yes/?</td>
 </tr>
 
 <tr>
@@ -618,7 +625,7 @@ IPv6</h3>
 <td>OpenWrt Client</td>
 <td>GUI</td>
 <td>Yes</td>
-<td>Yes/2</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>

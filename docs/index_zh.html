@@ -399,6 +399,8 @@ SRC --UDP--&gt; brook dns --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver
 <h3><a name="brook-tproxy-透明代理网关在官网原版-openwrt" class="anchor" href="#brook-tproxy-%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E7%BD%91%E5%85%B3%E5%9C%A8%E5%AE%98%E7%BD%91%E5%8E%9F%E7%89%88-openwrt" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook tproxy 透明代理网关在官网原版 OpenWrt</h3>
 
+<p><strong>无需操作 iptables！</strong></p>
+
 <pre><code>opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
 </code></pre>
 
@@ -424,6 +426,8 @@ brook tproxy 透明代理网关在官网原版 OpenWrt</h3>
 <h3><a name="brook-tproxy-透明代理网关在-ubuntu" class="anchor" href="#brook-tproxy-%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E7%BD%91%E5%85%B3%E5%9C%A8-ubuntu" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook tproxy 透明代理网关在 Ubuntu</h3>
 
+<p><strong>无需操作 iptables！</strong></p>
+
 <pre><code>systemctl stop systemd-resolved
 </code></pre>
 
@@ -431,7 +435,8 @@ brook tproxy 透明代理网关在 Ubuntu</h3>
 </code></pre>
 
 <ol>
-<li>You may need to manually configure the computer or mobile gateway and DNS.</li>
+<li>配置其他机器的网关和 DNS 为这台机器的 IP 即可</li>
+<li>如果你运行在虚拟机里并且宿主机使用的是无线网卡, 可能不能工作。</li>
 </ol>
 <h3><a name="官网原版-openwrt-图形客户端" class="anchor" href="#%E5%AE%98%E7%BD%91%E5%8E%9F%E7%89%88-openwrt-%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 官网原版 OpenWrt 图形客户端</h3>
@@ -439,6 +444,8 @@ brook tproxy 透明代理网关在 Ubuntu</h3>
 <blockquote>
 <p><strong>依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy</strong></p>
 </blockquote>
+
+<p><strong>无需操作 iptables！</strong></p>
 
 <p><strong>端口 9999, 1080, 5353 将会被使用</strong>. 它与 brook server, brook wsserver, brook wssserver 一起工作.</p>
 
@@ -549,7 +556,7 @@ IPv6</h3>
 <td>brook tproxy</td>
 <td>CLI</td>
 <td>Yes</td>
-<td>Yes/2</td>
+<td>Yes</td>
 </tr>
 
 <tr>
@@ -598,7 +605,7 @@ IPv6</h3>
 <td>Windows Client</td>
 <td>GUI</td>
 <td>Yes</td>
-<td>Yes/2</td>
+<td>Yes/?</td>
 </tr>
 
 <tr>
@@ -619,7 +626,7 @@ IPv6</h3>
 <td>OpenWrt Client</td>
 <td>GUI</td>
 <td>Yes</td>
-<td>Yes/2</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
