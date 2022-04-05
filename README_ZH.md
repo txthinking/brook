@@ -28,10 +28,11 @@ Brook 是一个跨平台的强加密无特征的代理软件. Keep it simple, st
 > 或<br/>
 > 一键脚本，目前仅支持部分命令参数: `bash <(curl https://bash.ooo/brook.sh)`<br/>
 > 或<br/>
-> Archlinux: `pacman -S brook`<br/>
+> 使用网上其他同学写的脚本<br/>
 > 或<br/>
-> brew: `brew install brook`<br/><br/>
-> 建议使用 root 用户运行命令<br/>
+> Archlinux: `pacman -S brook` (可能不是最新版本)<br/>
+> 或<br/>
+> brew: `brew install brook` (可能不是最新版本)<br/>
 
 安装 nami
 
@@ -365,6 +366,14 @@ brook tproxy --link 'brook://...' --dnsListen :53
 
 1. 配置其他机器的网关和 DNS 为这台机器的 IP 即可
 2. 如果你运行在虚拟机里并且宿主机使用的是无线网卡, 可能不能工作。
+
+### brook tproxy 透明代理网关在 macOS
+
+[https://talks.txthinking.com/articles/brook-gateway-on-macos.article](https://talks.txthinking.com/articles/brook-gateway-on-macos.article)
+
+### brook tproxy 透明代理网关在 Windows
+
+[https://talks.txthinking.com/articles/brook-gateway-on-windows.article](https://talks.txthinking.com/articles/brook-gateway-on-windows.article)
 
 ### 官网原版 OpenWrt 图形客户端
 

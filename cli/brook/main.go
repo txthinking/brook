@@ -1386,23 +1386,21 @@ func main() {
 					s = "socks5"
 				}
 				v := url.Values{}
-				v.Set("name", c.String("name"))
-				v.Set("address", c.String("address"))
-				yn := ""
+				if c.String("name") != "" {
+					v.Set("name", c.String("name"))
+				}
+				if c.String("address") != "" {
+					v.Set("address", c.String("address"))
+				}
 				if c.Bool("insecure") {
-					yn = "true"
+					v.Set("insecure", "true")
 				}
-				v.Set("insecure", yn)
-				yn = ""
 				if c.Bool("withoutBrookProtocol") {
-					yn = "true"
+					v.Set("withoutBrookProtocol", "true")
 				}
-				v.Set("withoutBrookProtocol", yn)
-				yn = ""
 				if c.Bool("udpovertcp") {
-					yn = "true"
+					v.Set("udpovertcp", "true")
 				}
-				v.Set("udpovertcp", yn)
 				if c.String("ca") != "" {
 					b, err := ioutil.ReadFile(c.String("ca"))
 					if err != nil {

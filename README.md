@@ -28,10 +28,11 @@ Brook is a cross-platform strong encryption and not detectable proxy. Keep it si
 > or<br/>
 > the script but only some parameters are supported: `bash <(curl https://bash.ooo/brook.sh)`<br/>
 > or<br/>
-> Archlinux: `pacman -S brook`<br/>
+> scripts written by others<br/>
 > or<br/>
-> brew: `brew install brook`<br/><br/>
-> recommend run command with root<br/>
+> Archlinux: `pacman -S brook` (may be outdated)<br/>
+> or<br/>
+> brew: `brew install brook` (may be outdated)<br/>
 
 Install nami
 
@@ -364,6 +365,14 @@ brook tproxy --link 'brook://...' --dnsListen :53
 
 1. You may need to manually configure the computer or mobile gateway and DNS.
 2. If you are running in a virtual machine and the host is using a wireless card, it may not work.
+
+### brook tproxy Transparent Proxy Gateway on macOS
+
+[https://talks.txthinking.com/articles/brook-gateway-on-macos-en.article](https://talks.txthinking.com/articles/brook-gateway-on-macos-en.article)
+
+### brook tproxy Transparent Proxy Gateway on Windows
+
+[https://talks.txthinking.com/articles/brook-gateway-on-windows-en.article](https://talks.txthinking.com/articles/brook-gateway-on-windows-en.article)
 
 ### GUI for official OpenWrt
 
