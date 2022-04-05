@@ -503,6 +503,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 		rc, err := Dial.DialUDP("udp", laddr, daddr)
 		if err != nil {
+			if strings.Contains(err.Error(), "address already in use") {
+				return nil
+			}
 			return errors.New(fmt.Sprintf("1: src: %s dst: %s %s", laddr, daddr.String(), err.Error()))
 		}
 		defer rc.Close()
@@ -516,6 +519,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 		c, err := tproxy.DialUDP("udp", daddr, addr)
 		if err != nil {
+			if strings.Contains(err.Error(), "address already in use") {
+				return nil
+			}
 			return errors.New(fmt.Sprintf("2: src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 		}
 		defer c.Close()
@@ -560,6 +566,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 		rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
 		if err != nil {
+			if strings.Contains(err.Error(), "address already in use") {
+				return nil
+			}
 			return errors.New(fmt.Sprintf("3: src: %s dst: %s %s", laddr, s.ServerUDPAddr.String(), err.Error()))
 		}
 		defer rc.Close()
@@ -573,6 +582,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 		c, err := tproxy.DialUDP("udp", daddr, addr)
 		if err != nil {
+			if strings.Contains(err.Error(), "address already in use") {
+				return nil
+			}
 			return errors.New(fmt.Sprintf("4: src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 		}
 		defer c.Close()
@@ -636,6 +648,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		rc, err = s.WSClient.DialWebsocket(las)
 	}
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			return nil
+		}
 		return errors.New(fmt.Sprintf("5: src: %s dst: %s %s", laddr, s.ServerTCPAddr, err.Error()))
 	}
 	defer rc.Close()
@@ -653,6 +668,9 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 	}
 	c, err := tproxy.DialUDP("udp", daddr, addr)
 	if err != nil {
+		if strings.Contains(err.Error(), "address already in use") {
+			return nil
+		}
 		return errors.New(fmt.Sprintf("6: src: %s dst: %s %s", daddr.String(), addr.String(), err.Error()))
 	}
 	defer c.Close()
