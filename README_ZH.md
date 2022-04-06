@@ -180,6 +180,12 @@ mad ca --ca /root/ca.pem --key /root/cakey.pem
 mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
 ```
 
+运行 brook
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+```
+
 获取 brook link 使用 `--insecure`
 
 ```
@@ -367,9 +373,13 @@ brook tproxy --link 'brook://...' --dnsListen :53
 1. 配置其他机器的网关和 DNS 为这台机器的 IP 即可
 2. 如果你运行在虚拟机里并且宿主机使用的是无线网卡, 可能不能工作。
 
-### brook tproxy 透明代理网关在 macOS
+### brook tproxy 透明代理网关在 M1 macOS
 
-[https://talks.txthinking.com/articles/brook-gateway-on-macos.article](https://talks.txthinking.com/articles/brook-gateway-on-macos.article)
+[https://talks.txthinking.com/articles/brook-gateway-on-m1-macos.article](https://talks.txthinking.com/articles/brook-gateway-on-m1-macos.article)
+
+### brook tproxy 透明代理网关在 Intel macOS
+
+[https://talks.txthinking.com/articles/brook-gateway-on-intel-macos.article](https://talks.txthinking.com/articles/brook-gateway-on-intel-macos.article)
 
 ### brook tproxy 透明代理网关在 Windows
 

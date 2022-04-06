@@ -179,6 +179,12 @@ Generate domain cert by root ca
 mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
 ```
 
+Run brook
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+```
+
 Get brook link with `--insecure`
 
 ```
@@ -366,9 +372,13 @@ brook tproxy --link 'brook://...' --dnsListen :53
 1. You may need to manually configure the computer or mobile gateway and DNS.
 2. If you are running in a virtual machine and the host is using a wireless card, it may not work.
 
-### brook tproxy Transparent Proxy Gateway on macOS
+### brook tproxy Transparent Proxy Gateway on M1 macOS
 
-[https://talks.txthinking.com/articles/brook-gateway-on-macos-en.article](https://talks.txthinking.com/articles/brook-gateway-on-macos-en.article)
+[https://talks.txthinking.com/articles/brook-gateway-on-m1-macos-en.article](https://talks.txthinking.com/articles/brook-gateway-on-m1-macos-en.article)
+
+### brook tproxy Transparent Proxy Gateway on Intel macOS
+
+[https://talks.txthinking.com/articles/brook-gateway-on-intel-macos-en.article](https://talks.txthinking.com/articles/brook-gateway-on-intel-macos-en.article)
 
 ### brook tproxy Transparent Proxy Gateway on Windows
 
