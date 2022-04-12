@@ -156,34 +156,25 @@ func ReadList(url string) ([]string, error) {
 			Timeout: 9 * time.Second,
 			Transport: &http.Transport{
 				DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
-					r := &net.Resolver{
-						Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-							c, err := net.Dial(network, "8.8.8.8:53")
-							if err != nil {
-								c, err = net.Dial(network, "[2001:4860:4860::8888]:53")
-							}
-							return c, err
-						},
-					}
 					h, p, err := net.SplitHostPort(addr)
 					if err != nil {
 						return nil, err
 					}
-					l, err := r.LookupIP(ctx, "ip4", h)
-					if err == nil && len(l) > 0 {
-						c, err := net.Dial(network, net.JoinHostPort(l[0].String(), p))
+					s, err := Resolve6(h)
+					if err == nil {
+						c, err := net.Dial(network, net.JoinHostPort(s, p))
 						if err == nil {
 							return c, nil
 						}
 					}
-					l, err = r.LookupIP(ctx, "ip6", h)
-					if err == nil && len(l) > 0 {
-						c, err := net.Dial(network, net.JoinHostPort(l[0].String(), p))
+					s, err = Resolve4(h)
+					if err == nil {
+						c, err := net.Dial(network, net.JoinHostPort(s, p))
 						if err == nil {
 							return c, nil
 						}
 					}
-					return nil, errors.New("Can not fetch " + addr + ", maybe dns or network error")
+					return nil, errors.New("Can not fetch " + addr)
 				},
 			},
 		}

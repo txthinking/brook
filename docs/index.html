@@ -437,6 +437,8 @@ brook tproxy Transparent Proxy Gateway on Ubuntu</h3>
 <p><strong>No need to manipulate iptables!</strong></p>
 
 <pre><code>systemctl stop systemd-resolved
+systemctl disable systemd-resolved
+echo nameserver 8.8.8.8 &gt; /etc/resolv.conf
 </code></pre>
 
 <pre><code>brook tproxy --link &#39;brook://...&#39; --dnsListen :53

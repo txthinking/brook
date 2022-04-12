@@ -364,6 +364,8 @@ brook tproxy --link 'brook://...' --dnsListen :5353
 
 ```
 systemctl stop systemd-resolved
+systemctl disable systemd-resolved
+echo nameserver 8.8.8.8 > /etc/resolv.conf
 ```
 
 ```

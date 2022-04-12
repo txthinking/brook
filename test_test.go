@@ -16,16 +16,14 @@ package brook
 
 import (
 	"log"
-	"net/url"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
-	v := url.Values{}
-	v.Set("label", "hello")
-	v.Set("label1", "world")
-	s := LinkExtra("wsserver", "ws://1.2.3.4:9999", "", "hello", v)
-	log.Println(s)
-	k, a, b, c, v, _ := ParseLinkExtra(s)
-	log.Println(k, a, b, c, v)
+	log.Println(Resolve6("ipip.ooo"))
+	log.Println(Resolve4("ipip.ooo"))
+	log.Println(Resolve6("2001:4860:4860::8888"))
+	log.Println(Resolve6("8.8.8.8"))
+	log.Println(Resolve4("2001:4860:4860::8888"))
+	log.Println(Resolve4("8.8.8.8"))
 }

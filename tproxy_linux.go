@@ -15,7 +15,6 @@
 package brook
 
 import (
-	"context"
 	"crypto/x509"
 	"errors"
 	"fmt"
@@ -93,26 +92,9 @@ func NewTproxy(addr, s, password string, enableIPv6 bool, cidr4url, cidr6url str
 	if err != nil {
 		return nil, err
 	}
-	ip := ""
-	r := &net.Resolver{
-		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-			return net.Dial(network, "[2001:4860:4860::8888]:53")
-		},
-	}
-	l, err := r.LookupIP(context.Background(), "ip6", h)
-	if err == nil && len(l) > 0 && l[0].To4() == nil {
-		ip = l[0].String()
-	}
+	ip, _ := Resolve6(h)
 	if ip == "" {
-		r := &net.Resolver{
-			Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-				return net.Dial(network, "8.8.8.8:53")
-			},
-		}
-		l, err := r.LookupIP(context.Background(), "ip4", h)
-		if err == nil && len(l) > 0 && l[0].To4() != nil {
-			ip = l[0].String()
-		}
+		ip, _ = Resolve4(h)
 	}
 	if ip == "" {
 		return nil, errors.New("Can not find server IP")
