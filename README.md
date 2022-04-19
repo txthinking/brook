@@ -54,8 +54,8 @@ nami install brook
 [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 [OpenWrt](#gui-for-official-openwrt)
 
-> Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
-> Windows Security Virus & threat protection: Settings -> Update & Security -> Windows Security -> Virus & threat protection -> Virus & threat protection settings -> manage settings -> Exclusions -> Add or remove exclusions -> Add an exclusion -> File -> Select Brook.exe<br/>
+> 1. Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
+> 2. Windows Security Virus & threat protection: Settings -> Update & Security -> Windows Security -> Virus & threat protection -> Virus & threat protection settings -> manage settings -> Exclusions -> Add or remove exclusions -> Add an exclusion -> File -> Select Brook.exe<br/>
 
 这里有 [brook GUI 客户端工作原理](https://talks.txthinking.com/articles/brook.article)
 
