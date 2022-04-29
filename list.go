@@ -200,3 +200,52 @@ func ReadList(url string) ([]string, error) {
 	ss := strings.Split(string(data), "\n")
 	return ss, nil
 }
+
+func ReadData(url string) ([]byte, error) {
+	var data []byte
+	var err error
+	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
+		c := &http.Client{
+			Timeout: 9 * time.Second,
+			Transport: &http.Transport{
+				DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+					h, p, err := net.SplitHostPort(addr)
+					if err != nil {
+						return nil, err
+					}
+					s, err := Resolve6(h)
+					if err == nil {
+						c, err := net.Dial(network, net.JoinHostPort(s, p))
+						if err == nil {
+							return c, nil
+						}
+					}
+					s, err = Resolve4(h)
+					if err == nil {
+						c, err := net.Dial(network, net.JoinHostPort(s, p))
+						if err == nil {
+							return c, nil
+						}
+					}
+					return nil, errors.New("Can not fetch " + addr)
+				},
+			},
+		}
+		r, err := c.Get(url)
+		if err != nil {
+			return nil, err
+		}
+		defer r.Body.Close()
+		data, err = ioutil.ReadAll(r.Body)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+		data, err = ioutil.ReadFile(url)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return data, nil
+}
