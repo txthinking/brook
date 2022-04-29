@@ -253,7 +253,7 @@ func (s *Server) RunUDPServer() error {
 func (s *Server) TCPHandle(ss Exchanger, dst []byte) error {
 	address := socks5.ToAddress(dst[0], dst[1:len(dst)-2], dst[len(dst)-2:])
 	if Debug {
-		log.Println("dial tcp", address)
+		log.Println("TCP", address)
 	}
 	var ds map[string]byte
 	var c4 []*net.IPNet
@@ -296,7 +296,7 @@ func (s *Server) TCPHandle(ss Exchanger, dst []byte) error {
 func (s *Server) UDPOverTCPHandle(ss Exchanger, src string, dstb []byte) error {
 	dst := socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:])
 	if Debug {
-		log.Println("dial udp", dst)
+		log.Println("UDP", dst)
 	}
 	var ds map[string]byte
 	var c4 []*net.IPNet
@@ -368,7 +368,7 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return nil
 	}
 	if Debug {
-		log.Println("dial udp", dst)
+		log.Println("UDP", dst)
 	}
 	var ds map[string]byte
 	var c4 []*net.IPNet

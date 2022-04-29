@@ -162,7 +162,7 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 		has := false
 		for _, v := range r.Question {
 			if Debug {
-				log.Println("dns query", network, v.Qtype, v.Name)
+				log.Println("DNS", network, v.Qtype, v.Name)
 			}
 		}
 		if len(r.Question) > 0 && r.Question[0].Qtype == dns.TypeA {
@@ -175,7 +175,7 @@ func (s *HijackHTTPS) DNSHandle(network string) dns.Handler {
 		}
 		if !has {
 			if Debug {
-				log.Println("dns hijack", r.Question[0].Name)
+				log.Println("DNS", "HIJACK", r.Question[0].Name)
 			}
 			m := &dns.Msg{}
 			m.SetReply(r)
@@ -356,7 +356,7 @@ func (s *HijackHTTPS) HTTPSHandle(c net.Conn) error {
 	}
 
 	if Debug {
-		log.Println("hijack", dm, "assume that socket is TCP and dst port is 443")
+		log.Println("HIJACK", dm, "assume that socket is TCP and dst port is 443")
 	}
 	rc, err := s.Dial.Dial("tcp", net.JoinHostPort(dm, "443"))
 	if err != nil {

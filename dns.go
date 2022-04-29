@@ -218,7 +218,7 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	has := false
 	for _, v := range m.Question {
 		if Debug {
-			log.Println("dns query", "tcp", v.Qtype, v.Name)
+			log.Println("DNS", "TCP", v.Qtype, v.Name)
 		}
 		if (v.Qtype == dns.TypeAAAA || v.Qtype == dns.TypeA || v.Qtype == dns.TypeHTTPS) && len(v.Name) > 0 && ListHasDomain(s.BlockDomain, v.Name[0:len(v.Name)-1], s.BlockCache) {
 			if v.Qtype == dns.TypeA || v.Qtype == dns.TypeHTTPS {
@@ -276,7 +276,7 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	mb = append(lb, mb...)
 	if has {
 		if Debug {
-			log.Println("in bypass list", "tcp", m.Question[0].Name)
+			log.Println("DNS", "TCP", "BAPASS", m.Question[0].Name)
 		}
 		rc, err := Dial.Dial("tcp", s.DNSServerForBypass)
 		if err != nil {
@@ -386,7 +386,7 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	has := false
 	for _, v := range m.Question {
 		if Debug {
-			log.Println("dns query", "udp", v.Qtype, v.Name)
+			log.Println("DNS", "UDP", v.Qtype, v.Name)
 		}
 		if (v.Qtype == dns.TypeAAAA || v.Qtype == dns.TypeA || v.Qtype == dns.TypeHTTPS) && len(v.Name) > 0 && ListHasDomain(s.BlockDomain, v.Name[0:len(v.Name)-1], s.BlockCache) {
 			if v.Qtype == dns.TypeA || v.Qtype == dns.TypeHTTPS {
@@ -431,7 +431,7 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	}
 	if has {
 		if Debug {
-			log.Println("in bypass list", "udp", m.Question[0].Name)
+			log.Println("DNS", "UDP", "BYPASS", m.Question[0].Name)
 		}
 		conn, err := Dial.Dial("udp", s.DNSServerForBypass)
 		if err != nil {
@@ -470,7 +470,7 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
 		}
 		if Debug {
-			log.Println("dial udp", dst)
+			log.Println("UDP", dst)
 		}
 		var laddr *net.UDPAddr
 		any, ok = s.UDPSrc.Get(src + dst)
@@ -524,7 +524,7 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return ue.Any.(func(b []byte) error)(b)
 	}
 	if Debug {
-		log.Println("dial udp", dst)
+		log.Println("UDP", dst)
 	}
 	var laddr *net.UDPAddr
 	any, ok = s.UDPSrc.Get(src + dst)

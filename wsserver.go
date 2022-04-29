@@ -286,7 +286,7 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *WSServer) TCPHandle(ss Exchanger, dst []byte) error {
 	address := socks5.ToAddress(dst[0], dst[1:len(dst)-2], dst[len(dst)-2:])
 	if Debug {
-		log.Println("dial tcp", address)
+		log.Println("TCP", address)
 	}
 	var ds map[string]byte
 	var c4 []*net.IPNet
@@ -330,7 +330,7 @@ func (s *WSServer) TCPHandle(ss Exchanger, dst []byte) error {
 func (s *WSServer) UDPHandle(ss Exchanger, src string, dstb []byte) error {
 	dst := socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:])
 	if Debug {
-		log.Println("dial udp", dst)
+		log.Println("UDP", dst)
 	}
 	var ds map[string]byte
 	var c4 []*net.IPNet

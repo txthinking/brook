@@ -61,7 +61,7 @@ func (x *Client) ListenAndServe() error {
 func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
 	if r.Cmd == socks5.CmdConnect {
 		if Debug {
-			log.Println("dial tcp", r.Address())
+			log.Println("TCP", r.Address())
 		}
 		rc, err := Dial.Dial("tcp", x.ServerAddress)
 		if err != nil {
@@ -124,7 +124,7 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 		return ue.Any.(*PacketClient).LocalToServer(ue.Dst, d.Data, ue.Conn, x.UDPTimeout)
 	}
 	if Debug {
-		log.Println("dial udp", dst)
+		log.Println("UDP", dst)
 	}
 	var laddr *net.UDPAddr
 	any, ok = s.UDPSrc.Get(src + dst)
@@ -183,7 +183,7 @@ func (x *Client) UDPOverTCPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5
 		return ue.Any.(func(b []byte) error)(d.Data)
 	}
 	if Debug {
-		log.Println("dial udp", dst)
+		log.Println("UDP", dst)
 	}
 	var laddr *net.UDPAddr
 	any, ok = s.UDPSrc.Get(src + dst)

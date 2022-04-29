@@ -57,7 +57,7 @@ nami install brook
 > 1. Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
 > 2. Windows Security Virus & threat protection: Settings -> Update & Security -> Windows Security -> Virus & threat protection -> Virus & threat protection settings -> manage settings -> Exclusions -> Add or remove exclusions -> Add an exclusion -> File -> Select Brook.exe<br/>
 
-这里有 [brook GUI 客户端工作原理](https://talks.txthinking.com/articles/brook.article)
+[How the Brook GUI works](https://talks.txthinking.com/articles/brook-en.article)
 
 ## brook `subcommand` and `command line arguments`
 
