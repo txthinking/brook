@@ -48,10 +48,10 @@ nami install brook
 
 ### 安装 Brook 图形客户端
 
+[iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+[Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
 [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
-[Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
-[iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 [OpenWrt](#官网原版-openwrt-图形客户端)
 
 > 1. Windows: 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器<br/>

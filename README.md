@@ -48,10 +48,10 @@ nami install brook
 
 ### Install Brook GUI client
 
+[iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+[Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
 [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
-[Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
-[iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 [OpenWrt](#gui-for-official-openwrt)
 
 > 1. Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
