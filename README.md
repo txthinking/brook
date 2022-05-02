@@ -548,10 +548,7 @@ jinbe remove <ID>
 
 ## Resources
 
--   Brook GUI 工作原理: https://talks.txthinking.com/articles/brook.article
--   brook wsserver and Cloudflare CDN: https://www.youtube.com/watch?v=KFzS55bUk6A
--   用 nico 将 brook wsserver 包装成任意 https 网站: https://talks.txthinking.com/articles/nico-brook-wsserver.article
--   Brook, Shadowsocks, V2ray 协议层面的区别: https://www.youtube.com/watch?v=WZSfZU6rgbQ
+-   How the Brook GUI works: https://talks.txthinking.com/articles/brook-en.article
 -   Blog: https://talks.txthinking.com
 -   Youtube: https://www.youtube.com/txthinking
 -   Rule list demo: https://github.com/txthinking/bypass
