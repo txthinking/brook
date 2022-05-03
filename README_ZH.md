@@ -53,6 +53,7 @@ nami install brook
 [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 [OpenWrt](#官网原版-openwrt-图形客户端)
+[Linux CLI 或 tun2brook](https://github.com/txthinking/tun2brook)
 
 > 1. Windows: 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器<br/>
 > 2. Windows 安全中心 病毒和威胁防护: 设置 -> 更新和安全 -> Windows 安全中心 -> 病毒和威胁防护 -> “病毒和威胁防护” 设置 -> 管理设置 -> 排除项 -> 添加或删除排除项 -> 添加排除项 文件 -> 选择 Brook.exe <br/>

@@ -53,6 +53,7 @@ nami install brook
 [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 [OpenWrt](#gui-for-official-openwrt)
+[Linux CLI or tun2brook](https://github.com/txthinking/tun2brook)
 
 > 1. Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
 > 2. Windows Security Virus & threat protection: Settings -> Update & Security -> Windows Security -> Virus & threat protection -> Virus & threat protection settings -> manage settings -> Exclusions -> Add or remove exclusions -> Add an exclusion -> File -> Select Brook.exe<br/>
