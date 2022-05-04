@@ -12,7 +12,7 @@
 [🩸 Youtube](https://www.youtube.com/txthinking)
 [❤️ Sponsor](https://github.com/sponsors/txthinking)
 
-Brook 是一个跨平台的强加密无特征的代理软件. Keep it simple, stupid.
+Brook 是一个跨平台, 强加密, 无特征, 不仅仅是代理. Keep it simple, stupid.
 
 [🗣 订阅公告](https://t.me/txthinking_news)
 
