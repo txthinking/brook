@@ -50,6 +50,7 @@ nami install brook
 
 [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 [Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
+[Google Play](https://play.google.com/store/apps/details?id=com.soulsinger)(No difference from Brook.apk)
 [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 [OpenWrt](#gui-for-official-openwrt)
