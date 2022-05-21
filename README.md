@@ -48,16 +48,14 @@ nami install brook
 
 ### Install Brook GUI client
 
-[iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
-[Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
-[Google Play](https://play.google.com/store/apps/details?id=com.soulsinger)(No difference from Brook.apk)
-[macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
-[Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
-[OpenWrt](#gui-for-official-openwrt)
-[Linux CLI or tun2brook](https://github.com/txthinking/tun2brook)
-
-> 1. Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
-> 2. Windows Security Virus & threat protection: Settings -> Update & Security -> Windows Security -> Virus & threat protection -> Virus & threat protection settings -> manage settings -> Exclusions -> Add or remove exclusions -> Add an exclusion -> File -> Select Brook.exe<br/>
+-   [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+-   [Android: Brook.apk](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
+-   [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
+-   [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
+    -   Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
+    -   Windows Security Virus & threat protection: Settings -> Update & Security -> Windows Security -> Virus & threat protection -> Virus & threat protection settings -> manage settings -> Exclusions -> Add or remove exclusions -> Add an exclusion -> File -> Select Brook.exe<br/>
+-   [OpenWrt](#gui-for-official-openwrt)
+-   [Linux CLI or tun2brook](https://github.com/txthinking/tun2brook)
 
 [How the Brook GUI works](https://talks.txthinking.com/articles/brook-en.article)
 
