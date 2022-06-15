@@ -19,6 +19,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"strings"
 	"sync"
 	"time"
 
@@ -325,6 +326,13 @@ func (s *Server) UDPOverTCPHandle(ss Exchanger, src string, dstb []byte) error {
 	var rc net.Conn
 	if s.Dial == nil {
 		rc, err = Dial.DialUDP("udp", laddr, raddr)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = Dial.DialUDP("udp", nil, raddr)
+			laddr = nil
+		}
 	}
 	if s.Dial != nil {
 		la := ""
@@ -332,6 +340,13 @@ func (s *Server) UDPOverTCPHandle(ss Exchanger, src string, dstb []byte) error {
 			la = laddr.String()
 		}
 		rc, err = s.Dial("udp", la, dst)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = s.Dial("udp", "", dst)
+			laddr = nil
+		}
 	}
 	if err != nil {
 		return err
@@ -397,6 +412,13 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	var rc net.Conn
 	if s.Dial == nil {
 		rc, err = Dial.DialUDP("udp", laddr, raddr)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = Dial.DialUDP("udp", nil, raddr)
+			laddr = nil
+		}
 	}
 	if s.Dial != nil {
 		la := ""
@@ -404,6 +426,13 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			la = laddr.String()
 		}
 		rc, err = s.Dial("udp", la, dst)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = s.Dial("udp", "", dst)
+			laddr = nil
+		}
 	}
 	if err != nil {
 		return err

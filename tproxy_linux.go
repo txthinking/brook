@@ -485,10 +485,14 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 		rc, err := Dial.DialUDP("udp", laddr, daddr)
 		if err != nil {
-			if strings.Contains(err.Error(), "address already in use") {
-				return nil
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
 			}
-			return errors.New(fmt.Sprintf("1: src: %s dst: %s %s", laddr, daddr.String(), err.Error()))
+			rc, err = Dial.DialUDP("udp", nil, daddr)
+			if err != nil {
+				return err
+			}
+			laddr = nil
 		}
 		defer rc.Close()
 		if s.UDPTimeout != 0 {
@@ -548,10 +552,14 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		}
 		rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
 		if err != nil {
-			if strings.Contains(err.Error(), "address already in use") {
-				return nil
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
 			}
-			return errors.New(fmt.Sprintf("3: src: %s dst: %s %s", laddr, s.ServerUDPAddr.String(), err.Error()))
+			rc, err = Dial.DialUDP("udp", nil, s.ServerUDPAddr)
+			if err != nil {
+				return err
+			}
+			laddr = nil
 		}
 		defer rc.Close()
 		if s.UDPTimeout != 0 {
@@ -621,6 +629,13 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			}
 		}
 		rc, err = Dial.DialTCP("tcp", laddrt, s.ServerTCPAddr)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = Dial.DialTCP("tcp", nil, s.ServerTCPAddr)
+			laddr = nil
+		}
 	}
 	if s.WSClient != nil {
 		las := ""
@@ -628,11 +643,15 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 			las = laddr.String()
 		}
 		rc, err = s.WSClient.DialWebsocket(las)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = s.WSClient.DialWebsocket("")
+			laddr = nil
+		}
 	}
 	if err != nil {
-		if strings.Contains(err.Error(), "address already in use") {
-			return nil
-		}
 		return errors.New(fmt.Sprintf("5: src: %s dst: %s %s", laddr, s.ServerTCPAddr, err.Error()))
 	}
 	defer rc.Close()

@@ -27,6 +27,7 @@ import (
 	"log"
 	"net"
 	"net/url"
+	"strings"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
@@ -274,7 +275,14 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 	}
 	rc, err := x.DialWebsocket(la)
 	if err != nil {
-		return err
+		if !strings.Contains(err.Error(), "address already in use") {
+			return err
+		}
+		rc, err = x.DialWebsocket("")
+		if err != nil {
+			return err
+		}
+		laddr = nil
 	}
 	defer rc.Close()
 	if laddr == nil {

@@ -245,7 +245,14 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		}
 		rc, err := Dial.DialUDP("udp", laddr, s.ServerUDPAddr)
 		if err != nil {
-			return err
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = Dial.DialUDP("udp", nil, s.ServerUDPAddr)
+			if err != nil {
+				return err
+			}
+			laddr = nil
 		}
 		defer rc.Close()
 		if s.UDPTimeout != 0 {
@@ -309,6 +316,13 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			}
 		}
 		rc, err = Dial.DialTCP("tcp", la, s.ServerTCPAddr)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = Dial.DialTCP("tcp", nil, s.ServerTCPAddr)
+			laddr = nil
+		}
 	}
 	if s.WSClient != nil {
 		la := ""
@@ -316,6 +330,13 @@ func (s *Map) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			la = laddr.String()
 		}
 		rc, err = s.WSClient.DialWebsocket(la)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = s.WSClient.DialWebsocket("")
+			laddr = nil
+		}
 	}
 	if err != nil {
 		return err
