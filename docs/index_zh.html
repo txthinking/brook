@@ -193,18 +193,14 @@ SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Broo
 <pre><code>brook server --listen :9999 --password hello
 </code></pre>
 
-<p>获取 brook link 让 udp 走 tcp <code>--udpovertcp</code></p>
-
-<pre><code>brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name &#39;my brook server&#39;
-</code></pre>
-
-<p>或 获取 brook link 让 udp 走 udp</p>
-
-<blockquote>
-<p>确保你本地到你服务器的 UDP 网络没有问题</p>
-</blockquote>
+<p>获取 brook link</p>
 
 <pre><code>brook link --server 1.2.3.4:9999 --password hello --name &#39;my brook server&#39;
+</code></pre>
+
+<p>或 获取 brook link 让 udp 走 tcp <code>--udpovertcp</code></p>
+
+<pre><code>brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name &#39;my brook server&#39;
 </code></pre>
 <h3><a name="运行-brook-wsserver" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 运行 brook wsserver</h3>

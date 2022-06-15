@@ -49,7 +49,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20220515"
+	app.Version = "20220707"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{

@@ -189,18 +189,14 @@ SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Broo
 <pre><code>brook server --listen :9999 --password hello
 </code></pre>
 
-<p>Get brook link with <code>--udpovertcp</code></p>
-
-<pre><code>brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name &#39;my brook server&#39;
-</code></pre>
-
-<p>or get brook link with udp over udp</p>
-
-<blockquote>
-<p>Make sure you have no problem with your local UDP network to your server</p>
-</blockquote>
+<p>Get brook link</p>
 
 <pre><code>brook link --server 1.2.3.4:9999 --password hello --name &#39;my brook server&#39;
+</code></pre>
+
+<p>or get brook link with <code>--udpovertcp</code></p>
+
+<pre><code>brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name &#39;my brook server&#39;
 </code></pre>
 <h3><a name="run-brook-wsserver" class="anchor" href="#run-brook-wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Run brook wsserver</h3>

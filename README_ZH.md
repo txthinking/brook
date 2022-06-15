@@ -48,15 +48,15 @@ nami install brook
 
 ### 安装 Brook 图形客户端
 
-- [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
-    - iOS & M1 Mac: 请使用非中国大陆 Apple ID 下载
-- [Android: Brook.apk](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
-- [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
-- [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
-    - Windows: 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器
-    - Windows 安全中心 病毒和威胁防护: 设置 -> 更新和安全 -> Windows 安全中心 -> 病毒和威胁防护 -> “病毒和威胁防护” 设置 -> 管理设置 -> 排除项 -> 添加或删除排除项 -> 添加排除项 文件 -> 选择 Brook.exe
-- [OpenWrt](#官网原版-openwrt-图形客户端)
-- [tun2brook](https://github.com/txthinking/tun2brook)
+-   [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+    -   iOS & M1 Mac: 请使用非中国大陆 Apple ID 下载
+-   [Android: Brook.apk](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
+-   [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
+-   [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
+    -   Windows: 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器
+    -   Windows 安全中心 病毒和威胁防护: 设置 -> 更新和安全 -> Windows 安全中心 -> 病毒和威胁防护 -> “病毒和威胁防护” 设置 -> 管理设置 -> 排除项 -> 添加或删除排除项 -> 添加排除项 文件 -> 选择 Brook.exe
+-   [OpenWrt](#官网原版-openwrt-图形客户端)
+-   [tun2brook](https://github.com/txthinking/tun2brook)
 
 [Brook GUI 工作原理](https://talks.txthinking.com/articles/brook.article)
 
@@ -96,18 +96,16 @@ SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook P
 brook server --listen :9999 --password hello
 ```
 
-获取 brook link 让 udp 走 tcp `--udpovertcp`
-
-```
-brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook server'
-```
-
-或 获取 brook link 让 udp 走 udp
-
-> 确保你本地到你服务器的 UDP 网络没有问题
+获取 brook link
 
 ```
 brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
+```
+
+或 获取 brook link 让 udp 走 tcp `--udpovertcp`
+
+```
+brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook server'
 ```
 
 ### 运行 brook wsserver
