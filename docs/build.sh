@@ -3,12 +3,12 @@
 # nami install markdown
 
 markdown ../README.md index.html
-gsed -i 's/README_ZH\.md/index_zh.html/' index.html
-gsed -i 's/\.md/.html/' index.html
+sed -i 's/README_ZH\.md/index_zh.html/' index.html
+sed -i 's/\.md/.html/' index.html
 
 markdown ../README_ZH.md index_zh.html
-gsed -i 's/README\.md/index.html/' index_zh.html
-gsed -i 's/\.md/.html/' index_zh.html
+sed -i 's/README\.md/index.html/' index_zh.html
+sed -i 's/\.md/.html/' index_zh.html
 
 rm -rf protocol
 mkdir protocol

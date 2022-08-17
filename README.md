@@ -1,5 +1,6 @@
 # Brook
 
+<!--THEME:github-->
 <!--G-R3M673HK5V-->
 
 [🇨🇳 中文](README_ZH.md)
@@ -8,8 +9,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 [🤝 Telegram](https://t.me/brookgroup)
-[💬 Private](https://join.txthinking.com)
-[🩸 Youtube](https://www.youtube.com/txthinking)
+[🩸 YouTube](https://www.youtube.com/txthinking)
 [❤️ Sponsor](https://github.com/sponsors/txthinking)
 
 A cross-platform network tool designed for developers.
@@ -55,9 +55,9 @@ nami install brook
     -   Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
     -   Windows Security Virus & threat protection: Settings -> Update & Security -> Windows Security -> Virus & threat protection -> Virus & threat protection settings -> manage settings -> Exclusions -> Add or remove exclusions -> Add an exclusion -> File -> Select Brook.exe<br/>
 -   [OpenWrt](#gui-for-official-openwrt)
--   [Linux CLI or tun2brook](https://github.com/txthinking/tun2brook)
+-   Linux: brook cli + [Socks5 Configurator](https://chrome.google.com/webstore/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb) or [tun2brook](https://github.com/txthinking/tun2brook)
 
-[How the Brook GUI works](https://talks.txthinking.com/articles/brook-en.article)
+[How the Brook GUI works](https://www.txthinking.com/talks/articles/brook-en.article)
 
 ## brook `subcommand` and `command line arguments`
 
@@ -375,15 +375,15 @@ brook tproxy --link 'brook://...' --dnsListen :53
 
 ### brook tproxy Transparent Proxy Gateway on M1 macOS
 
-[https://talks.txthinking.com/articles/brook-gateway-on-m1-macos-en.article](https://talks.txthinking.com/articles/brook-gateway-on-m1-macos-en.article)
+[https://www.txthinking.com/talks/articles/brook-gateway-on-m1-macos-en.article](https://www.txthinking.com/talks/articles/brook-gateway-on-m1-macos-en.article)
 
 ### brook tproxy Transparent Proxy Gateway on Intel macOS
 
-[https://talks.txthinking.com/articles/brook-gateway-on-intel-macos-en.article](https://talks.txthinking.com/articles/brook-gateway-on-intel-macos-en.article)
+[https://www.txthinking.com/talks/articles/brook-gateway-on-intel-macos-en.article](https://www.txthinking.com/talks/articles/brook-gateway-on-intel-macos-en.article)
 
 ### brook tproxy Transparent Proxy Gateway on Windows
 
-[https://talks.txthinking.com/articles/brook-gateway-on-windows-en.article](https://talks.txthinking.com/articles/brook-gateway-on-windows-en.article)
+[https://www.txthinking.com/talks/articles/brook-gateway-on-windows-en.article](https://www.txthinking.com/talks/articles/brook-gateway-on-windows-en.article)
 
 ### GUI for official OpenWrt
 
@@ -546,9 +546,9 @@ jinbe remove <ID>
 
 ## Resources
 
--   How the Brook GUI works: https://talks.txthinking.com/articles/brook-en.article
--   Blog: https://talks.txthinking.com
--   Youtube: https://www.youtube.com/txthinking
+-   How the Brook GUI works: https://www.txthinking.com/talks/articles/brook-en.article
+-   Blog: https://www.txthinking.com/talks
+-   YouTube: https://www.youtube.com/txthinking
 -   Rule list demo: https://github.com/txthinking/bypass
 -   https://ipip.ooo
 -   Discuss: https://github.com/txthinking/brook/discussions

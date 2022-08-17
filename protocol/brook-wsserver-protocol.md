@@ -1,5 +1,6 @@
 # brook wsserver protocol
 
+<!--THEME:github-->
 <!--G-R3M673HK5V-->
 
 ## Terminology

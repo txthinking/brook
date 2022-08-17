@@ -1,5 +1,6 @@
 # Brook
 
+<!--THEME:github-->
 <!--G-R3M673HK5V-->
 
 [🇬🇧 English](README.md)
@@ -8,8 +9,7 @@
 [![开源协议: GPL v3](https://img.shields.io/badge/%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 [🤝 Telegram](https://t.me/brookgroup)
-[💬 Chat](https://join.txthinking.com)
-[🩸 Youtube](https://www.youtube.com/txthinking)
+[🩸 YouTube](https://www.youtube.com/txthinking)
 [❤️ Sponsor](https://github.com/sponsors/txthinking)
 
 一个为开发者设计的跨平台网络工具.
@@ -56,9 +56,9 @@ nami install brook
     -   Windows: 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器
     -   Windows 安全中心 病毒和威胁防护: 设置 -> 更新和安全 -> Windows 安全中心 -> 病毒和威胁防护 -> “病毒和威胁防护” 设置 -> 管理设置 -> 排除项 -> 添加或删除排除项 -> 添加排除项 文件 -> 选择 Brook.exe
 -   [OpenWrt](#官网原版-openwrt-图形客户端)
--   [tun2brook](https://github.com/txthinking/tun2brook)
+-   Linux: brook cli + [Socks5 Configurator](https://chrome.google.com/webstore/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb) 或 [tun2brook](https://github.com/txthinking/tun2brook)
 
-[Brook GUI 工作原理](https://talks.txthinking.com/articles/brook.article)
+[Brook GUI 工作原理](https://www.txthinking.com/talks/articles/brook.article)
 
 ## brook `子命令` 和 `命令参数`
 
@@ -376,15 +376,15 @@ brook tproxy --link 'brook://...' --dnsListen :53
 
 ### brook tproxy 透明代理网关在 M1 macOS
 
-[https://talks.txthinking.com/articles/brook-gateway-on-m1-macos.article](https://talks.txthinking.com/articles/brook-gateway-on-m1-macos.article)
+[https://www.txthinking.com/talks/articles/brook-gateway-on-m1-macos.article](https://www.txthinking.com/talks/articles/brook-gateway-on-m1-macos.article)
 
 ### brook tproxy 透明代理网关在 Intel macOS
 
-[https://talks.txthinking.com/articles/brook-gateway-on-intel-macos.article](https://talks.txthinking.com/articles/brook-gateway-on-intel-macos.article)
+[https://www.txthinking.com/talks/articles/brook-gateway-on-intel-macos.article](https://www.txthinking.com/talks/articles/brook-gateway-on-intel-macos.article)
 
 ### brook tproxy 透明代理网关在 Windows
 
-[https://talks.txthinking.com/articles/brook-gateway-on-windows.article](https://talks.txthinking.com/articles/brook-gateway-on-windows.article)
+[https://www.txthinking.com/talks/articles/brook-gateway-on-windows.article](https://www.txthinking.com/talks/articles/brook-gateway-on-windows.article)
 
 ### 官网原版 OpenWrt 图形客户端
 
@@ -547,9 +547,9 @@ jinbe remove <ID>
 
 ## 其他资源
 
--   Brook 工作原理: https://talks.txthinking.com/articles/brook.article
--   博客: https://talks.txthinking.com
--   Youtube 频道: https://www.youtube.com/txthinking
+-   Brook 工作原理: https://www.txthinking.com/talks/articles/brook.article
+-   博客: https://www.txthinking.com/talks/
+-   YouTube 频道: https://www.youtube.com/txthinking
 -   规则列表: https://github.com/txthinking/bypass
 -   https://ipip.ooo
 -   论坛: https://github.com/txthinking/brook/discussions
