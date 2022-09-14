@@ -26,7 +26,7 @@
 > 或<br/>
 > 如果你的系统不是 Linux, MacOS, Windows, 或不想用 nami, 你可以去 [releases](https://github.com/txthinking/brook/releases) 自己下载命令文件<br/>
 > 或<br/>
-> 一键脚本，目前仅支持部分命令参数: `bash <(curl https://bash.ooo/brook.sh)`<br/>
+> 一键脚本: `bash <(curl https://bash.ooo/brook.sh)`<br/>
 > 或<br/>
 > 使用网上其他同学写的脚本<br/>
 > 或<br/>
@@ -96,7 +96,12 @@ SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook P
 brook server --listen :9999 --password hello
 ```
 
-获取 brook link
+然后
+
+- server: `1.2.3.4:9999`
+- password: `hello`
+
+或 获取 brook link
 
 ```
 brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
@@ -119,13 +124,18 @@ SRC --UDP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Pro
 brook wsserver --listen :9999 --password hello
 ```
 
-获取 brook link
+然后
+
+- server: `ws://1.2.3.4:9999`
+- password: `hello`
+
+或 获取 brook link
 
 ```
 brook link --server ws://1.2.3.4:9999 --password hello --name 'my brook wsserver'
 ```
 
-或获取 brook link 指定个域名, 甚至不是你自己的域名也可以
+或 获取 brook link 指定个域名, 甚至不是你自己的域名也可以
 
 ```
 brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name 'my brook wsserver'
@@ -139,7 +149,12 @@ brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 
 brook wssserver --domainaddress domain.com:443 --password hello
 ```
 
-获取 brook link
+然后
+
+- server: `wss://domain.com:443`
+- password: `hello`
+
+或 获取 brook link
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
@@ -153,7 +168,12 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
 ```
 
-获取 brook link
+然后
+
+- server: `wss://domain.com:443`
+- password: `hello`
+
+或 获取 brook link
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
@@ -285,7 +305,11 @@ SRC --UDP--> brook socks5 --UDP--> DST
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 ```
 
-获取 brook link
+然后
+
+- server: `1.2.3.4:1080`
+
+或 获取 brook link
 
 ```
 brook link --server socks5://1.2.3.4:1080
@@ -297,7 +321,13 @@ brook link --server socks5://1.2.3.4:1080
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
 ```
 
-获取 brook link
+然后
+
+- server: `1.2.3.4:1080`
+- username: `hello`
+- password: `world`
+
+或 获取 brook link
 
 ```
 brook link --server socks5://1.2.3.4:1080 --username hello --password world

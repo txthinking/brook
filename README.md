@@ -26,7 +26,7 @@ A cross-platform network tool designed for developers.
 > or<br/>
 > If your system is not Linux, MacOS, Windows, or don't want nami, you can download it directly on the [releases](https://github.com/txthinking/brook/releases) page<br/>
 > or<br/>
-> the script but only some parameters are supported: `bash <(curl https://bash.ooo/brook.sh)`<br/>
+> the one line install script: `bash <(curl https://bash.ooo/brook.sh)`<br/>
 > or<br/>
 > scripts written by others<br/>
 > or<br/>
@@ -95,7 +95,12 @@ SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook P
 brook server --listen :9999 --password hello
 ```
 
-Get brook link
+then
+
+-   server: `1.2.3.4:9999`
+-   password: `hello`
+
+or get brook link
 
 ```
 brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
@@ -118,7 +123,12 @@ SRC --UDP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Pro
 brook wsserver --listen :9999 --password hello
 ```
 
-Get brook link
+then
+
+-   server: `ws://1.2.3.4:9999`
+-   password: `hello`
+
+or get brook link
 
 ```
 brook link --server ws://1.2.3.4:9999 --password hello --name 'my brook wsserver'
@@ -138,7 +148,12 @@ brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 
 brook wssserver --domainaddress domain.com:443 --password hello
 ```
 
-Get brook link
+then
+
+-   server: `wss://domain.com:443`
+-   password: `hello`
+
+or get brook link
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
@@ -152,7 +167,12 @@ brook link --server wss://domain.com:443 --password hello --name 'my brook wssse
 brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
 ```
 
-Get brook link
+then
+
+-   server: `wss://domain.com:443`
+-   password: `hello`
+
+or get brook link
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
@@ -184,7 +204,7 @@ Run brook
 brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
 ```
 
-Get brook link with `--insecure`
+get brook link with `--insecure`
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --insecure
@@ -208,7 +228,7 @@ Better performance, but data is not strongly encrypted using Brook protocol. So 
 brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookProtocol
 ```
 
-Get brook link
+get brook link
 
 ```
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
@@ -222,7 +242,7 @@ brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
 brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
 ```
 
-Get brook link
+get brook link
 
 ```
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --withoutBrookProtocol
@@ -284,7 +304,11 @@ SRC --UDP--> brook socks5 --UDP--> DST
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 ```
 
-Get brook link
+then
+
+-   server: `1.2.3.4:1080`
+
+or get brook link
 
 ```
 brook link --server socks5://1.2.3.4:1080
@@ -296,7 +320,13 @@ brook link --server socks5://1.2.3.4:1080
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
 ```
 
-Get brook link
+then
+
+-   server: `1.2.3.4:1080`
+-   username: `hello`
+-   password: `world`
+
+or get brook link
 
 ```
 brook link --server socks5://1.2.3.4:1080 --username hello --password world

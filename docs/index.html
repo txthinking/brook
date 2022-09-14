@@ -1150,7 +1150,7 @@ Install brook command</h3>
 or<br/>
 If your system is not Linux, MacOS, Windows, or don&#39;t want nami, you can download it directly on the <a href="https://github.com/txthinking/brook/releases" rel="nofollow">releases</a> page<br/>
 or<br/>
-the script but only some parameters are supported: <code>bash &lt;(curl https://bash.ooo/brook.sh)</code><br/>
+the one line install script: <code>bash &lt;(curl https://bash.ooo/brook.sh)</code><br/>
 or<br/>
 scripts written by others<br/>
 or<br/>
@@ -1227,7 +1227,14 @@ SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Broo
 <pre><code>brook server --listen :9999 --password hello
 </code></pre>
 
-<p>Get brook link</p>
+<p>then</p>
+
+<ul>
+<li>server: <code>1.2.3.4:9999</code></li>
+<li>password: <code>hello</code></li>
+</ul>
+
+<p>or get brook link</p>
 
 <pre><code>brook link --server 1.2.3.4:9999 --password hello --name &#39;my brook server&#39;
 </code></pre>
@@ -1246,7 +1253,14 @@ SRC --UDP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook 
 <pre><code>brook wsserver --listen :9999 --password hello
 </code></pre>
 
-<p>Get brook link</p>
+<p>then</p>
+
+<ul>
+<li>server: <code>ws://1.2.3.4:9999</code></li>
+<li>password: <code>hello</code></li>
+</ul>
+
+<p>or get brook link</p>
 
 <pre><code>brook link --server ws://1.2.3.4:9999 --password hello --name &#39;my brook wsserver&#39;
 </code></pre>
@@ -1265,7 +1279,14 @@ Run brook wssserver: automatically certificate</h3>
 <pre><code>brook wssserver --domainaddress domain.com:443 --password hello
 </code></pre>
 
-<p>Get brook link</p>
+<p>then</p>
+
+<ul>
+<li>server: <code>wss://domain.com:443</code></li>
+<li>password: <code>hello</code></li>
+</ul>
+
+<p>or get brook link</p>
 
 <pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
 </code></pre>
@@ -1279,7 +1300,14 @@ Run brook wssserver Use a certificate issued by an existing trust authority</h3>
 <pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
 </code></pre>
 
-<p>Get brook link</p>
+<p>then</p>
+
+<ul>
+<li>server: <code>wss://domain.com:443</code></li>
+<li>password: <code>hello</code></li>
+</ul>
+
+<p>or get brook link</p>
 
 <pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
 </code></pre>
@@ -1306,7 +1334,7 @@ Run brook wssserver issue untrusted certificates yourself, any domain</h3>
 <pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
 </code></pre>
 
-<p>Get brook link with <code>--insecure</code></p>
+<p>get brook link with <code>--insecure</code></p>
 
 <pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --address 1.2.3.4:443 --insecure
 </code></pre>
@@ -1329,7 +1357,7 @@ withoutBrookProtocol automatically certificate</h3>
 <pre><code>brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookProtocol
 </code></pre>
 
-<p>Get brook link</p>
+<p>get brook link</p>
 
 <pre><code>brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
 </code></pre>
@@ -1343,7 +1371,7 @@ withoutBrookProtocol Use a certificate issued by an existing trust authority</h3
 <pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
 </code></pre>
 
-<p>Get brook link</p>
+<p>get brook link</p>
 
 <pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --withoutBrookProtocol
 </code></pre>
@@ -1401,7 +1429,13 @@ SRC --UDP--&gt; brook socks5 --UDP--&gt; DST
 <pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 </code></pre>
 
-<p>Get brook link</p>
+<p>then</p>
+
+<ul>
+<li>server: <code>1.2.3.4:1080</code></li>
+</ul>
+
+<p>or get brook link</p>
 
 <pre><code>brook link --server socks5://1.2.3.4:1080
 </code></pre>
@@ -1411,7 +1445,15 @@ Run brook socks5 with username and password. A stand-alone standard socks5 serve
 <pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
 </code></pre>
 
-<p>Get brook link</p>
+<p>then</p>
+
+<ul>
+<li>server: <code>1.2.3.4:1080</code></li>
+<li>username: <code>hello</code></li>
+<li>password: <code>world</code></li>
+</ul>
+
+<p>or get brook link</p>
 
 <pre><code>brook link --server socks5://1.2.3.4:1080 --username hello --password world
 </code></pre>

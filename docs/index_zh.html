@@ -1150,7 +1150,7 @@ Table of Contents</h1>
 或<br/>
 如果你的系统不是 Linux, MacOS, Windows, 或不想用 nami, 你可以去 <a href="https://github.com/txthinking/brook/releases" rel="nofollow">releases</a> 自己下载命令文件<br/>
 或<br/>
-一键脚本，目前仅支持部分命令参数: <code>bash &lt;(curl https://bash.ooo/brook.sh)</code><br/>
+一键脚本: <code>bash &lt;(curl https://bash.ooo/brook.sh)</code><br/>
 或<br/>
 使用网上其他同学写的脚本<br/>
 或<br/>
@@ -1231,7 +1231,14 @@ SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Broo
 <pre><code>brook server --listen :9999 --password hello
 </code></pre>
 
-<p>获取 brook link</p>
+<p>然后</p>
+
+<ul>
+<li>server: <code>1.2.3.4:9999</code></li>
+<li>password: <code>hello</code></li>
+</ul>
+
+<p>或 获取 brook link</p>
 
 <pre><code>brook link --server 1.2.3.4:9999 --password hello --name &#39;my brook server&#39;
 </code></pre>
@@ -1250,12 +1257,19 @@ SRC --UDP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook 
 <pre><code>brook wsserver --listen :9999 --password hello
 </code></pre>
 
-<p>获取 brook link</p>
+<p>然后</p>
+
+<ul>
+<li>server: <code>ws://1.2.3.4:9999</code></li>
+<li>password: <code>hello</code></li>
+</ul>
+
+<p>或 获取 brook link</p>
 
 <pre><code>brook link --server ws://1.2.3.4:9999 --password hello --name &#39;my brook wsserver&#39;
 </code></pre>
 
-<p>或获取 brook link 指定个域名, 甚至不是你自己的域名也可以</p>
+<p>或 获取 brook link 指定个域名, 甚至不是你自己的域名也可以</p>
 
 <pre><code>brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name &#39;my brook wsserver&#39;
 </code></pre>
@@ -1269,7 +1283,14 @@ SRC --UDP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook 
 <pre><code>brook wssserver --domainaddress domain.com:443 --password hello
 </code></pre>
 
-<p>获取 brook link</p>
+<p>然后</p>
+
+<ul>
+<li>server: <code>wss://domain.com:443</code></li>
+<li>password: <code>hello</code></li>
+</ul>
+
+<p>或 获取 brook link</p>
 
 <pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
 </code></pre>
@@ -1283,7 +1304,14 @@ SRC --UDP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook 
 <pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
 </code></pre>
 
-<p>获取 brook link</p>
+<p>然后</p>
+
+<ul>
+<li>server: <code>wss://domain.com:443</code></li>
+<li>password: <code>hello</code></li>
+</ul>
+
+<p>或 获取 brook link</p>
 
 <pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
 </code></pre>
@@ -1405,7 +1433,13 @@ SRC --UDP--&gt; brook socks5 --UDP--&gt; DST
 <pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 </code></pre>
 
-<p>获取 brook link</p>
+<p>然后</p>
+
+<ul>
+<li>server: <code>1.2.3.4:1080</code></li>
+</ul>
+
+<p>或 获取 brook link</p>
 
 <pre><code>brook link --server socks5://1.2.3.4:1080
 </code></pre>
@@ -1415,7 +1449,15 @@ SRC --UDP--&gt; brook socks5 --UDP--&gt; DST
 <pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
 </code></pre>
 
-<p>获取 brook link</p>
+<p>然后</p>
+
+<ul>
+<li>server: <code>1.2.3.4:1080</code></li>
+<li>username: <code>hello</code></li>
+<li>password: <code>world</code></li>
+</ul>
+
+<p>或 获取 brook link</p>
 
 <pre><code>brook link --server socks5://1.2.3.4:1080 --username hello --password world
 </code></pre>
