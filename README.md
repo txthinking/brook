@@ -87,11 +87,6 @@ List some examples of common scene commands, pay attention to replace the parame
 ### Run brook server
 
 ```
-SRC --TCP--> brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook server --TCP--> DST
-SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook Protocol)--> brook server --UDP--> DST
-```
-
-```
 brook server --listen :9999 --password hello
 ```
 
@@ -113,11 +108,6 @@ brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook 
 ```
 
 ### Run brook wsserver
-
-```
-SRC --TCP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wsserver --TCP--> DST
-SRC --UDP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wsserver --UDP--> DST
-```
 
 ```
 brook wsserver --listen :9999 --password hello
@@ -296,11 +286,6 @@ brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
 ### Run brook socks5, A stand-alone standard socks5 server
 
 ```
-SRC --TCP--> brook socks5 --TCP--> DST
-SRC --UDP--> brook socks5 --UDP--> DST
-```
-
-```
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 ```
 
@@ -335,20 +320,10 @@ brook link --server socks5://1.2.3.4:1080 --username hello --password world
 ### brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.
 
 ```
-SRC --TCP--> brook relayoverbrook --TCP(Brook Protocol) --> brook server/wsserver/wssserver --TCP--> DST
-SRC --UDP--> brook relayoverbrook --TCP/UDP(Brook Protocol) --> brook server/wsserver/wssserver --UDP--> DST
-```
-
-```
 brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 ```
 
 ### brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.
-
-```
-SRC --TCP--> brook dns --TCP(Brook Protocol) --> brook server/wsserver/wssserver --TCP--> DST
-SRC --UDP--> brook dns --TCP/UDP(Brook Protocol) --> brook server/wsserver/wssserver --UDP--> DST
-```
 
 ```
 brook dns ... --listen 127.0.0.1:53
@@ -432,11 +407,6 @@ port 9999, 1080, 5353 will be used. It work with brook server, brook wsserver an
 7. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
 
 ### brook relay can relay a address to a remote address. It can relay any tcp and udp server
-
-```
-SRC --TCP--> brook relay --TCP--> DST
-SRC --UDP--> brook relay --UDP--> DST
-```
 
 ```
 brook relay --from :9999 --to 1.2.3.4:9999

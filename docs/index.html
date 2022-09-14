@@ -1220,10 +1220,6 @@ Examples</h2>
 <h3><a name="run-brook-server" class="anchor" href="#run-brook-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Run brook server</h3>
 
-<pre><code>SRC --TCP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook server --TCP--&gt; DST
-SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook Protocol)--&gt; brook server --UDP--&gt; DST
-</code></pre>
-
 <pre><code>brook server --listen :9999 --password hello
 </code></pre>
 
@@ -1245,10 +1241,6 @@ SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Broo
 </code></pre>
 <h3><a name="run-brook-wsserver" class="anchor" href="#run-brook-wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Run brook wsserver</h3>
-
-<pre><code>SRC --TCP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook wsserver --TCP--&gt; DST
-SRC --UDP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook wsserver --UDP--&gt; DST
-</code></pre>
 
 <pre><code>brook wsserver --listen :9999 --password hello
 </code></pre>
@@ -1422,10 +1414,6 @@ brook server wsserver wssserver block domain and ip on server-side</h3>
 <h3><a name="run-brook-socks5-a-stand-alone-standard-socks5-server" class="anchor" href="#run-brook-socks5-a-stand-alone-standard-socks5-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Run brook socks5, A stand-alone standard socks5 server</h3>
 
-<pre><code>SRC --TCP--&gt; brook socks5 --TCP--&gt; DST
-SRC --UDP--&gt; brook socks5 --UDP--&gt; DST
-</code></pre>
-
 <pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 </code></pre>
 
@@ -1460,18 +1448,10 @@ Run brook socks5 with username and password. A stand-alone standard socks5 serve
 <h3><a name="brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" class="anchor" href="#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.</h3>
 
-<pre><code>SRC --TCP--&gt; brook relayoverbrook --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
-SRC --UDP--&gt; brook relayoverbrook --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
-</code></pre>
-
 <pre><code>brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 </code></pre>
 <h3><a name="brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" class="anchor" href="#brook-dns-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook dns can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.</h3>
-
-<pre><code>SRC --TCP--&gt; brook dns --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
-SRC --UDP--&gt; brook dns --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
-</code></pre>
 
 <pre><code>brook dns ... --listen 127.0.0.1:53
 </code></pre>
@@ -1562,10 +1542,6 @@ GUI for official OpenWrt</h3>
 </ol>
 <h3><a name="brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server" class="anchor" href="#brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook relay can relay a address to a remote address. It can relay any tcp and udp server</h3>
-
-<pre><code>SRC --TCP--&gt; brook relay --TCP--&gt; DST
-SRC --UDP--&gt; brook relay --UDP--&gt; DST
-</code></pre>
 
 <pre><code>brook relay --from :9999 --to 1.2.3.4:9999
 </code></pre>

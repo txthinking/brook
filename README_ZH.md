@@ -88,11 +88,6 @@ nami install brook
 ### 运行 brook server
 
 ```
-SRC --TCP--> brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook server --TCP--> DST
-SRC --UDP--> brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook Protocol)--> brook server --UDP--> DST
-```
-
-```
 brook server --listen :9999 --password hello
 ```
 
@@ -114,11 +109,6 @@ brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook 
 ```
 
 ### 运行 brook wsserver
-
-```
-SRC --TCP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wsserver --TCP--> DST
-SRC --UDP--> brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--> brook wsserver --UDP--> DST
-```
 
 ```
 brook wsserver --listen :9999 --password hello
@@ -297,11 +287,6 @@ brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
 ### 运行 brook socks5, 一个独立的标准 socks5 server
 
 ```
-SRC --TCP--> brook socks5 --TCP--> DST
-SRC --UDP--> brook socks5 --UDP--> DST
-```
-
-```
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 ```
 
@@ -336,20 +321,10 @@ brook link --server socks5://1.2.3.4:1080 --username hello --password world
 ### brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作
 
 ```
-SRC --TCP--> brook relayoverbrook --TCP(Brook Protocol) --> brook server/wsserver/wssserver --TCP--> DST
-SRC --UDP--> brook relayoverbrook --TCP/UDP(Brook Protocol) --> brook server/wsserver/wssserver --UDP--> DST
-```
-
-```
 brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 ```
 
 ### brook dns 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作
-
-```
-SRC --TCP--> brook dns --TCP(Brook Protocol) --> brook server/wsserver/wssserver --TCP--> DST
-SRC --UDP--> brook dns --TCP/UDP(Brook Protocol) --> brook server/wsserver/wssserver --UDP--> DST
-```
 
 ```
 brook dns ... --listen 127.0.0.1:53
@@ -433,11 +408,6 @@ brook tproxy --link 'brook://...' --dnsListen :53
 7. 默認, OpenWrt 將會下發 router 的 IP 為電腦或手機的網關和 DNS
 
 ### brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver
-
-```
-SRC --TCP--> brook relay --TCP--> DST
-SRC --UDP--> brook relay --UDP--> DST
-```
 
 ```
 brook relay --from :9999 --to 1.2.3.4:9999

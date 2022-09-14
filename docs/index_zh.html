@@ -1224,10 +1224,6 @@ brook 规则格式</h2>
 <h3><a name="运行-brook-server" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 运行 brook server</h3>
 
-<pre><code>SRC --TCP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook server --TCP--&gt; DST
-SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Brook Protocol)--&gt; brook server --UDP--&gt; DST
-</code></pre>
-
 <pre><code>brook server --listen :9999 --password hello
 </code></pre>
 
@@ -1249,10 +1245,6 @@ SRC --UDP--&gt; brook client/relayoverbrook/dns/tproxy/GUI Client --UDP/TCP(Broo
 </code></pre>
 <h3><a name="运行-brook-wsserver" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 运行 brook wsserver</h3>
-
-<pre><code>SRC --TCP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook wsserver --TCP--&gt; DST
-SRC --UDP--&gt; brook wsclient/relayoverbrook/dns/tproxy/GUI Client --TCP(Brook Protocol)--&gt; brook wsserver --UDP--&gt; DST
-</code></pre>
 
 <pre><code>brook wsserver --listen :9999 --password hello
 </code></pre>
@@ -1426,10 +1418,6 @@ brook server wsserver wssserver 在服务端屏蔽域名和 IP 列表</h3>
 <h3><a name="运行-brook-socks5-一个独立的标准-socks5-server" class="anchor" href="#%E8%BF%90%E8%A1%8C-brook-socks5-%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E6%A0%87%E5%87%86-socks5-server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 运行 brook socks5, 一个独立的标准 socks5 server</h3>
 
-<pre><code>SRC --TCP--&gt; brook socks5 --TCP--&gt; DST
-SRC --UDP--&gt; brook socks5 --UDP--&gt; DST
-</code></pre>
-
 <pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
 </code></pre>
 
@@ -1464,18 +1452,10 @@ SRC --UDP--&gt; brook socks5 --UDP--&gt; DST
 <h3><a name="brook-relayoverbrook-中继任何-tcp-和-udp-server-让其走-brook-协议-它与-brook-server-wsserver-wssserver-一起工作" class="anchor" href="#brook-relayoverbrook-%E4%B8%AD%E7%BB%A7%E4%BB%BB%E4%BD%95-tcp-%E5%92%8C-udp-server-%E8%AE%A9%E5%85%B6%E8%B5%B0-brook-%E5%8D%8F%E8%AE%AE-%E5%AE%83%E4%B8%8E-brook-server-wsserver-wssserver-%E4%B8%80%E8%B5%B7%E5%B7%A5%E4%BD%9C" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作</h3>
 
-<pre><code>SRC --TCP--&gt; brook relayoverbrook --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
-SRC --UDP--&gt; brook relayoverbrook --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
-</code></pre>
-
 <pre><code>brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 </code></pre>
 <h3><a name="brook-dns-用来创建一个加密-dns-server-tcp-and-udp-它与-brook-server-wsserver-wssserver-一起工作" class="anchor" href="#brook-dns-%E7%94%A8%E6%9D%A5%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8A%A0%E5%AF%86-dns-server-tcp-and-udp-%E5%AE%83%E4%B8%8E-brook-server-wsserver-wssserver-%E4%B8%80%E8%B5%B7%E5%B7%A5%E4%BD%9C" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook dns 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作</h3>
-
-<pre><code>SRC --TCP--&gt; brook dns --TCP(Brook Protocol) --&gt; brook server/wsserver/wssserver --TCP--&gt; DST
-SRC --UDP--&gt; brook dns --TCP/UDP(Brook Protocol) --&gt; brook server/wsserver/wssserver --UDP--&gt; DST
-</code></pre>
 
 <pre><code>brook dns ... --listen 127.0.0.1:53
 </code></pre>
@@ -1566,10 +1546,6 @@ brook tproxy 透明代理网关在 Windows</h3>
 </ol>
 <h3><a name="brook-relay-可以中继任何-tcp-和-udp-server-这是一个独立的功能-它不依赖-brook-server-wsserver-wssserver" class="anchor" href="#brook-relay-%E5%8F%AF%E4%BB%A5%E4%B8%AD%E7%BB%A7%E4%BB%BB%E4%BD%95-tcp-%E5%92%8C-udp-server-%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%8A%9F%E8%83%BD-%E5%AE%83%E4%B8%8D%E4%BE%9D%E8%B5%96-brook-server-wsserver-wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver</h3>
-
-<pre><code>SRC --TCP--&gt; brook relay --TCP--&gt; DST
-SRC --UDP--&gt; brook relay --UDP--&gt; DST
-</code></pre>
 
 <pre><code>brook relay --from :9999 --to 1.2.3.4:9999
 </code></pre>
