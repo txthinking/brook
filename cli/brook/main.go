@@ -49,7 +49,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20220707"
+	app.Version = "20221010"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{
@@ -1444,6 +1444,18 @@ func main() {
 					Value: 60,
 					Usage: "connection deadline time (s)",
 				},
+				&cli.StringFlag{
+					Name:  "dialSocks5",
+					Usage: "If you already have a socks5, such as 127.0.0.1:1081, and want [src <-> listen socks5 <-> $ brook connect <-> dialSocks5 <-> $ brook server/wsserver/wssserver <-> dst]",
+				},
+				&cli.StringFlag{
+					Name:  "dialSocks5Username",
+					Usage: "Optional",
+				},
+				&cli.StringFlag{
+					Name:  "dialSocks5Password",
+					Usage: "Optional",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if debug {
@@ -1473,6 +1485,13 @@ func main() {
 				}
 				if kind == "socks5" {
 					return errors.New("connect doesn't support socks5 link, you may want $ brook socks5tohttp")
+				}
+				if c.String("dialSocks5") != "" {
+					d, err := brook.NewSocks5Dial1(c.String("dialSocks5"), c.String("dialSocks5Username"), c.String("dialSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					brook.Dial1 = d
 				}
 				g := runnergroup.New()
 				if kind == "server" {
@@ -1858,6 +1877,102 @@ func main() {
 					g.Done()
 				}()
 				return g.Wait()
+			},
+		},
+		&cli.Command{
+			Name:  "testsocks5",
+			Usage: "Test UDP and TCP of socks5 server",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "socks5",
+					Aliases: []string{"s"},
+					Usage:   "like: 127.0.0.1:1080",
+				},
+				&cli.StringFlag{
+					Name:    "username",
+					Aliases: []string{"u"},
+					Usage:   "Socks5 username",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Socks5 password",
+				},
+				&cli.StringFlag{
+					Name:  "dns",
+					Value: "8.8.8.8:53",
+					Usage: "DNS server for connecting",
+				},
+				&cli.StringFlag{
+					Name:  "domain",
+					Value: "http3.ooo",
+					Usage: "Domain for query",
+				},
+				&cli.StringFlag{
+					Name:  "a",
+					Value: "137.184.237.95",
+					Usage: "A record of domain",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("socks5") == "" {
+					cli.ShowCommandHelp(c, "testsocks5")
+					return nil
+				}
+				return brook.Socks5Test(c.String("socks5"), c.String("username"), c.String("password"), c.String("domain"), c.String("a"), c.String("dns"))
+			},
+		},
+		&cli.Command{
+			Name:  "testbrook",
+			Usage: "Test UDP and TCP of brook server/wsserver/wssserver",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "link",
+					Aliases: []string{"l"},
+					Usage:   "brook://...  brook server/wsserver/wssserver",
+				},
+				&cli.StringFlag{
+					Name:  "socks5",
+					Value: "127.0.0.1:11080",
+					Usage: "Temporarily listening socks5",
+				},
+				&cli.StringFlag{
+					Name:  "dns",
+					Value: "8.8.8.8:53",
+					Usage: "DNS server for connecting",
+				},
+				&cli.StringFlag{
+					Name:  "domain",
+					Value: "http3.ooo",
+					Usage: "Domain for query",
+				},
+				&cli.StringFlag{
+					Name:  "a",
+					Value: "137.184.237.95",
+					Usage: "A record of domain",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("link") == "" {
+					cli.ShowCommandHelp(c, "testbrook")
+					return nil
+				}
+				socks5.Debug = true
+				fmt.Println("Run brook connect to listen", c.String("socks5"))
+				var cmd *exec.Cmd
+				var err error
+				go func() {
+					cmd = exec.Command("brook", "connect", "--link", c.String("link"), "--socks5", c.String("socks5"))
+					b, _ := cmd.CombinedOutput()
+					err = errors.New(string(b))
+				}()
+				time.Sleep(3 * time.Second)
+				if err != nil {
+					return err
+				}
+				err1 := brook.Socks5Test(c.String("socks5"), "", "", c.String("domain"), c.String("a"), c.String("dns"))
+				_ = cmd.Process.Signal(syscall.SIGTERM)
+				return err1
 			},
 		},
 	}

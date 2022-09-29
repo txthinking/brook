@@ -20,6 +20,7 @@ import (
 )
 
 var Dial x.Dialer = x.DefaultDial
+var Dial1 x.Dialer1
 
 var Debug bool = false
 

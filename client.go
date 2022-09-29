@@ -64,7 +64,14 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		if Debug {
 			log.Println("TCP", r.Address())
 		}
-		rc, err := Dial.Dial("tcp", x.ServerAddress)
+		var rc net.Conn
+		var err error
+		if Dial1 != nil {
+			rc, err = Dial1.Dial("tcp", x.ServerAddress)
+		}
+		if Dial1 == nil {
+			rc, err = Dial.Dial("tcp", x.ServerAddress)
+		}
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
@@ -136,12 +143,23 @@ func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagr
 	if err != nil {
 		return err
 	}
-	rc, err := Dial.DialUDP("udp", laddr, raddr)
+	var rc net.Conn
+	if Dial1 != nil {
+		rc, err = Dial1.DialUDP("udp", laddr, raddr)
+	}
+	if Dial1 == nil {
+		rc, err = Dial.DialUDP("udp", laddr, raddr)
+	}
 	if err != nil {
 		if !strings.Contains(err.Error(), "address already in use") {
 			return err
 		}
-		rc, err = Dial.DialUDP("udp", nil, raddr)
+		if Dial1 != nil {
+			rc, err = Dial1.DialUDP("udp", nil, raddr)
+		}
+		if Dial1 == nil {
+			rc, err = Dial.DialUDP("udp", nil, raddr)
+		}
 		if err != nil {
 			return err
 		}
@@ -210,12 +228,23 @@ func (x *Client) UDPOverTCPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5
 	if err != nil {
 		return err
 	}
-	rc, err := Dial.DialTCP("tcp", laddr1, raddr1)
+	var rc net.Conn
+	if Dial1 != nil {
+		rc, err = Dial1.DialTCP("tcp", laddr1, raddr1)
+	}
+	if Dial1 == nil {
+		rc, err = Dial.DialTCP("tcp", laddr1, raddr1)
+	}
 	if err != nil {
 		if !strings.Contains(err.Error(), "address already in use") {
 			return err
 		}
-		rc, err = Dial.DialTCP("tcp", nil, raddr1)
+		if Dial1 != nil {
+			rc, err = Dial1.DialTCP("tcp", nil, raddr1)
+		}
+		if Dial1 == nil {
+			rc, err = Dial.DialTCP("tcp", nil, raddr1)
+		}
 		if err != nil {
 			return err
 		}

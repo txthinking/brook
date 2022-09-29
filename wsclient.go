@@ -49,7 +49,6 @@ type WSClient struct {
 	TCPListen      *net.TCPListener
 	Path           string
 	UDPExchanges   *cache.Cache
-	DialTCP        func(network, addr string) (net.Conn, error)
 	WithoutBrook   bool
 	PasswordSha256 []byte
 }
@@ -119,10 +118,10 @@ func (x *WSClient) DialWebsocket(src string) (net.Conn, error) {
 		return nil, err
 	}
 	var c net.Conn
-	if x.DialTCP != nil {
-		c, err = x.DialTCP("tcp", a)
+	if Dial1 != nil {
+		c, err = Dial1.DialTCP("tcp", laddr, raddr)
 	}
-	if x.DialTCP == nil {
+	if Dial1 == nil {
 		c, err = Dial.DialTCP("tcp", laddr, raddr)
 	}
 	if err != nil {
