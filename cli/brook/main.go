@@ -1911,7 +1911,7 @@ func main() {
 				&cli.StringFlag{
 					Name:  "a",
 					Value: "137.184.237.95",
-					Usage: "A record of domain",
+					Usage: "The A record of domain",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1919,6 +1919,7 @@ func main() {
 					cli.ShowCommandHelp(c, "testsocks5")
 					return nil
 				}
+				socks5.Debug = true
 				return brook.Socks5Test(c.String("socks5"), c.String("username"), c.String("password"), c.String("domain"), c.String("a"), c.String("dns"))
 			},
 		},
@@ -1949,7 +1950,7 @@ func main() {
 				&cli.StringFlag{
 					Name:  "a",
 					Value: "137.184.237.95",
-					Usage: "A record of domain",
+					Usage: "The A record of domain",
 				},
 			},
 			Action: func(c *cli.Context) error {
