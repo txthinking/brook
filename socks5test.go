@@ -55,11 +55,11 @@ func Socks5Test(s, u, p, domain, a, ds string) error {
 		return err
 	}
 	if len(m.Answer) == 0 {
-		return err
+		return errors.New("no answer")
 	}
 	v, ok := m.Answer[0].(*dns.A)
 	if !ok {
-		return err
+		return errors.New("invalid answer")
 	}
 	if v.A.String() != a {
 		fmt.Println("Expect", a, "but got", v.A.String())
