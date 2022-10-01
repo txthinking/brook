@@ -51,6 +51,7 @@ nami install brook
 -   [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
     -   iOS & M1 Mac: 请使用非中国大陆 Apple ID 下载
 -   [Android: Brook.apk](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
+-   [Google Play](https://play.google.com/store/apps/details?id=com.soulsinger)
 -   [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 -   [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
     -   Windows: 需要你已经安装了最新版(基于 chromium 的那款)的 Edge 浏览器
@@ -550,9 +551,9 @@ jinbe remove <ID>
 -   Brook 工作原理: https://www.txthinking.com/talks/articles/brook.article
 -   博客: https://www.txthinking.com/talks/
 -   YouTube 频道: https://www.youtube.com/txthinking
--   规则列表: https://github.com/txthinking/bypass
--   https://ipip.ooo
 -   论坛: https://github.com/txthinking/brook/discussions
 -   Telegram 群: https://t.me/brookgroup
 -   公告: https://t.me/txthinking_news
 -   Chrome Extension: [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
+-   规则列表事例: https://github.com/txthinking/bypass
+-   https://http3.ooo

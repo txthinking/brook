@@ -50,6 +50,7 @@ nami install brook
 
 -   [iOS & M1 Mac](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 -   [Android: Brook.apk](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
+-   [Google Play](https://play.google.com/store/apps/details?id=com.soulsinger)
 -   [macOS](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 -   [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
     -   Windows: requires that the latest version of Edge(chromium-based) has been installed<br/>
@@ -549,9 +550,9 @@ jinbe remove <ID>
 -   How the Brook GUI works: https://www.txthinking.com/talks/articles/brook-en.article
 -   Blog: https://www.txthinking.com/talks
 -   YouTube: https://www.youtube.com/txthinking
--   Rule list demo: https://github.com/txthinking/bypass
--   https://ipip.ooo
 -   Discuss: https://github.com/txthinking/brook/discussions
 -   Telegram: https://t.me/brookgroup
 -   News: https://t.me/txthinking_news
 -   Chrome Extension: [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
+-   Rule list demo: https://github.com/txthinking/bypass
+-   https://http3.ooo
