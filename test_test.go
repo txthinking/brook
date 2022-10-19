@@ -20,10 +20,14 @@ import (
 )
 
 func TestTest(t *testing.T) {
-	log.Println(Resolve6("ipip.ooo"))
-	log.Println(Resolve4("ipip.ooo"))
+	log.Println(Resolve6("http3.ooo"))
+	log.Println(Resolve4("http3.ooo"))
 	log.Println(Resolve6("2001:4860:4860::8888"))
 	log.Println(Resolve6("8.8.8.8"))
 	log.Println(Resolve4("2001:4860:4860::8888"))
 	log.Println(Resolve4("8.8.8.8"))
+	log.Println(Resolve6("a"))
+	log.Println(Resolve4("a"))
+	log.Println(Resolve6("mtalk.google.com"))
+	log.Println(Resolve4("mtalk.google.com"))
 }

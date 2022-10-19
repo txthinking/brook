@@ -20,8 +20,8 @@ func Resolve6(host string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if len(r.Answer) > 0 {
-		if t, ok := r.Answer[0].(*dns.AAAA); ok {
+	for _, v := range r.Answer {
+		if t, ok := v.(*dns.AAAA); ok {
 			return t.AAAA.String(), nil
 		}
 	}
@@ -41,8 +41,8 @@ func Resolve4(host string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if len(r.Answer) > 0 {
-		if t, ok := r.Answer[0].(*dns.A); ok {
+	for _, v := range r.Answer {
+		if t, ok := v.(*dns.A); ok {
 			return t.A.String(), nil
 		}
 	}
