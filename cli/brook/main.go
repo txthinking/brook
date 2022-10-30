@@ -883,8 +883,8 @@ func main() {
 			},
 		},
 		&cli.Command{
-			Name:  "dns",
-			Usage: "Run as dns server over brook, both TCP and UDP, [src <-> $ brook dns <-> $ brook server/wsserver/wssserver <-> dns] or [src <-> $ brook dns <-> dnsForBypass]",
+			Name:  "dnsoverbrook",
+			Usage: "Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnsoverbrook <-> $ brook server/wsserver/wssserver <-> dns] or [src <-> $ brook dnsoverbrook <-> dnsForBypass]",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -955,7 +955,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "dns")
+					cli.ShowCommandHelp(c, "dnsoverbrook")
 					return nil
 				}
 				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))

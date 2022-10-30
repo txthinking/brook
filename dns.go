@@ -16,6 +16,7 @@ package brook
 
 import (
 	"encoding/binary"
+	"errors"
 	"log"
 	"net"
 	"strings"
@@ -215,58 +216,69 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
+	if m.Question[0].Qtype == dns.TypeHTTPS || m.Question[0].Qtype == dns.TypeSVCB {
+		m1 := &dns.Msg{}
+		m1.SetReply(m)
+		m1.Authoritative = true
+		m1.Answer = append(m1.Answer, &dns.SOA{
+			Hdr:     dns.RR_Header{Name: m.Question[0].Name, Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: 60},
+			Ns:      "txthinking.com.",
+			Mbox:    "cloud.txthinking.com.",
+			Serial:  uint32((time.Now().Year() * 10000) + (int(time.Now().Month()) * 100) + (time.Now().Day())*100),
+			Refresh: 21600,
+			Retry:   3600,
+			Expire:  259200,
+			Minttl:  300,
+		})
+		m1b, err := m1.PackBuffer(nil)
+		if err != nil {
+			return err
+		}
+		lb := make([]byte, 2)
+		binary.BigEndian.PutUint16(lb, uint16(len(m1b)))
+		m1b = append(lb, m1b...)
+		if _, err := c.Write(m1b); err != nil {
+			return err
+		}
+		return nil
+	}
 	has := false
 	for _, v := range m.Question {
-		if Debug {
-			log.Println("DNS", "TCP", v.Qtype, v.Name)
-		}
-		if (v.Qtype == dns.TypeAAAA || v.Qtype == dns.TypeA || v.Qtype == dns.TypeHTTPS) && len(v.Name) > 0 && ListHasDomain(s.BlockDomain, v.Name[0:len(v.Name)-1], s.BlockCache) {
-			if v.Qtype == dns.TypeA || v.Qtype == dns.TypeHTTPS {
-				m1 := &dns.Msg{}
-				m1.SetReply(m)
-				m1.Authoritative = true
-				m1.Answer = append(m1.Answer, &dns.A{
-					Hdr: dns.RR_Header{Name: v.Name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
-					A:   net.IPv4zero,
-				})
-				m1b, err := m1.PackBuffer(nil)
-				if err != nil {
-					return err
-				}
-				lb := make([]byte, 2)
-				binary.BigEndian.PutUint16(lb, uint16(len(m1b)))
-				m1b = append(lb, m1b...)
-				if _, err := c.Write(m1b); err != nil {
-					return err
-				}
-				return nil
-			}
-			if v.Qtype == dns.TypeAAAA {
-				m1 := &dns.Msg{}
-				m1.SetReply(m)
-				m1.Authoritative = true
-				m1.Answer = append(m1.Answer, &dns.AAAA{
-					Hdr:  dns.RR_Header{Name: v.Name, Rrtype: dns.TypeAAAA, Class: dns.ClassINET, Ttl: 60},
-					AAAA: net.IPv6zero,
-				})
-				m1b, err := m1.PackBuffer(nil)
-				if err != nil {
-					return err
-				}
-				lb := make([]byte, 2)
-				binary.BigEndian.PutUint16(lb, uint16(len(m1b)))
-				m1b = append(lb, m1b...)
-				if _, err := c.Write(m1b); err != nil {
-					return err
-				}
-				return nil
-			}
-		}
-		if len(v.Name) > 0 && ListHasDomain(s.BypassDomains, v.Name[0:len(v.Name)-1], s.BypassCache) {
+		if len(v.Name) > 0 && ListHasDomain(s.BlockDomain, v.Name[0:len(v.Name)-1], s.BlockCache) {
 			has = true
 			break
 		}
 	}
+	if has {
+		if Debug {
+			log.Println("DNS", "BLOCK", m.Question[0].Name, dns.Type(m.Question[0].Qtype).String())
+		}
+		m1 := &dns.Msg{}
+		m1.SetReply(m)
+		m1.Authoritative = true
+		m1.Answer = append(m1.Answer, &dns.SOA{
+			Hdr:     dns.RR_Header{Name: m.Question[0].Name, Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: 60},
+			Ns:      "txthinking.com.",
+			Mbox:    "cloud.txthinking.com.",
+			Serial:  uint32((time.Now().Year() * 10000) + (int(time.Now().Month()) * 100) + (time.Now().Day())*100),
+			Refresh: 21600,
+			Retry:   3600,
+			Expire:  259200,
+			Minttl:  300,
+		})
+		m1b, err := m1.PackBuffer(nil)
+		if err != nil {
+			return err
+		}
+		lb := make([]byte, 2)
+		binary.BigEndian.PutUint16(lb, uint16(len(m1b)))
+		m1b = append(lb, m1b...)
+		if _, err := c.Write(m1b); err != nil {
+			return err
+		}
+		return nil
+	}
+
 	mb, err := m.Pack()
 	if err != nil {
 		return err
@@ -274,9 +286,17 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	lb := make([]byte, 2)
 	binary.BigEndian.PutUint16(lb, uint16(len(mb)))
 	mb = append(lb, mb...)
+
+	has = false
+	for _, v := range m.Question {
+		if len(v.Name) > 0 && ListHasDomain(s.BypassDomains, v.Name[0:len(v.Name)-1], s.BypassCache) {
+			has = true
+			break
+		}
+	}
 	if has {
 		if Debug {
-			log.Println("DNS", "TCP", "BAPASS", m.Question[0].Name)
+			log.Println("DNS", "DIRECT", m.Question[0].Name, dns.Type(m.Question[0].Qtype).String())
 		}
 		rc, err := Dial.Dial("tcp", s.DNSServerForBypass)
 		if err != nil {
@@ -324,6 +344,9 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 			}
 		}
 		return nil
+	}
+	if Debug {
+		log.Println("DNS", "PROXY", m.Question[0].Name, dns.Type(m.Question[0].Qtype).String())
 	}
 	var rc net.Conn
 	if s.WSClient == nil {
@@ -383,80 +406,138 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	if err := m.Unpack(b); err != nil {
 		return err
 	}
+	if len(m.Question) == 0 {
+		return errors.New("no question")
+	}
+	if m.Question[0].Qtype == dns.TypeHTTPS || m.Question[0].Qtype == dns.TypeSVCB {
+		m1 := &dns.Msg{}
+		m1.SetReply(m)
+		m1.Authoritative = true
+		m1.Answer = append(m1.Answer, &dns.SOA{
+			Hdr:     dns.RR_Header{Name: m.Question[0].Name, Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: 60},
+			Ns:      "txthinking.com.",
+			Mbox:    "cloud.txthinking.com.",
+			Serial:  uint32((time.Now().Year() * 10000) + (int(time.Now().Month()) * 100) + (time.Now().Day())*100),
+			Refresh: 21600,
+			Retry:   3600,
+			Expire:  259200,
+			Minttl:  300,
+		})
+		m1b, err := m1.PackBuffer(nil)
+		if err != nil {
+			return err
+		}
+		if _, err := s.UDPConn.WriteToUDP(m1b, addr); err != nil {
+			return err
+		}
+		return nil
+	}
 	has := false
 	for _, v := range m.Question {
-		if Debug {
-			log.Println("DNS", "UDP", v.Qtype, v.Name)
-		}
-		if (v.Qtype == dns.TypeAAAA || v.Qtype == dns.TypeA || v.Qtype == dns.TypeHTTPS) && len(v.Name) > 0 && ListHasDomain(s.BlockDomain, v.Name[0:len(v.Name)-1], s.BlockCache) {
-			if v.Qtype == dns.TypeA || v.Qtype == dns.TypeHTTPS {
-				m1 := &dns.Msg{}
-				m1.SetReply(m)
-				m1.Authoritative = true
-				m1.Answer = append(m1.Answer, &dns.A{
-					Hdr: dns.RR_Header{Name: v.Name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
-					A:   net.IPv4zero,
-				})
-				m1b, err := m1.PackBuffer(nil)
-				if err != nil {
-					return err
-				}
-				if _, err := s.UDPConn.WriteToUDP(m1b, addr); err != nil {
-					return err
-				}
-				return nil
-			}
-			if v.Qtype == dns.TypeAAAA {
-				m1 := &dns.Msg{}
-				m1.SetReply(m)
-				m1.Authoritative = true
-				m1.Answer = append(m1.Answer, &dns.AAAA{
-					Hdr:  dns.RR_Header{Name: v.Name, Rrtype: dns.TypeAAAA, Class: dns.ClassINET, Ttl: 60},
-					AAAA: net.IPv6zero,
-				})
-				m1b, err := m1.PackBuffer(nil)
-				if err != nil {
-					return err
-				}
-				if _, err := s.UDPConn.WriteToUDP(m1b, addr); err != nil {
-					return err
-				}
-				return nil
-			}
-		}
-		if len(v.Name) > 0 && ListHasDomain(s.BypassDomains, v.Name[0:len(v.Name)-1], s.BypassCache) {
+		if len(v.Name) > 0 && ListHasDomain(s.BlockDomain, v.Name[0:len(v.Name)-1], s.BlockCache) {
 			has = true
 			break
 		}
 	}
 	if has {
 		if Debug {
-			log.Println("DNS", "UDP", "BYPASS", m.Question[0].Name)
+			log.Println("DNS", "BLOCK", m.Question[0].Name, dns.Type(m.Question[0].Qtype).String())
 		}
-		conn, err := Dial.Dial("udp", s.DNSServerForBypass)
-		if err != nil {
-			return err
-		}
-		defer conn.Close()
-		if s.UDPTimeout != 0 {
-			if err := conn.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
-				return err
-			}
-		}
-		co := &dns.Conn{Conn: conn}
-		if err := co.WriteMsg(m); err != nil {
-			return err
-		}
-		m1, err := co.ReadMsg()
-		if err != nil {
-			return err
-		}
-		m1b, err := m1.Pack()
+		m1 := &dns.Msg{}
+		m1.SetReply(m)
+		m1.Authoritative = true
+		m1.Answer = append(m1.Answer, &dns.SOA{
+			Hdr:     dns.RR_Header{Name: m.Question[0].Name, Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: 60},
+			Ns:      "txthinking.com.",
+			Mbox:    "cloud.txthinking.com.",
+			Serial:  uint32((time.Now().Year() * 10000) + (int(time.Now().Month()) * 100) + (time.Now().Day())*100),
+			Refresh: 21600,
+			Retry:   3600,
+			Expire:  259200,
+			Minttl:  300,
+		})
+		m1b, err := m1.PackBuffer(nil)
 		if err != nil {
 			return err
 		}
 		if _, err := s.UDPConn.WriteToUDP(m1b, addr); err != nil {
 			return err
+		}
+		return nil
+	}
+
+	has = false
+	for _, v := range m.Question {
+		if len(v.Name) > 0 && ListHasDomain(s.BypassDomains, v.Name[0:len(v.Name)-1], s.BypassCache) {
+			has = true
+			break
+		}
+	}
+	if has {
+		src := addr.String()
+		dst := s.DNSServerForBypass
+		any, ok := s.UDPExchanges.Get(src + dst)
+		if ok {
+			ue := any.(*UDPExchange)
+			if _, err := ue.Conn.Write(b); err != nil {
+				return err
+			}
+			return nil
+		}
+		if Debug {
+			log.Println("DNS", "DIRECT", m.Question[0].Name, dns.Type(m.Question[0].Qtype).String())
+		}
+		var laddr *net.UDPAddr
+		any, ok = s.UDPSrc.Get(src + dst)
+		if ok {
+			laddr = any.(*net.UDPAddr)
+		}
+		raddr, err := net.ResolveUDPAddr("udp", s.DNSServerForBypass)
+		if err != nil {
+			return err
+		}
+		rc, err := Dial.DialUDP("udp", laddr, raddr)
+		if err != nil {
+			if !strings.Contains(err.Error(), "address already in use") {
+				return err
+			}
+			rc, err = Dial.DialUDP("udp", nil, raddr)
+			if err != nil {
+				return err
+			}
+			laddr = nil
+		}
+		defer rc.Close()
+		if s.UDPTimeout != 0 {
+			if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+				return err
+			}
+		}
+		if laddr == nil {
+			s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
+		}
+		if _, err := rc.Write(b); err != nil {
+			return err
+		}
+		ue := &UDPExchange{
+			Conn: rc,
+		}
+		s.UDPExchanges.Set(src+dst, ue, -1)
+		defer s.UDPExchanges.Delete(src + dst)
+		var b0 [65507]byte
+		for {
+			if s.UDPTimeout != 0 {
+				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
+					break
+				}
+			}
+			n, err := rc.Read(b0[:])
+			if err != nil {
+				break
+			}
+			if _, err := s.UDPConn.WriteToUDP(b0[0:n], addr); err != nil {
+				break
+			}
 		}
 		return nil
 	}
@@ -470,7 +551,7 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 			return ue.Any.(*PacketClient).LocalToServer(ue.Dst, b, ue.Conn, s.UDPTimeout)
 		}
 		if Debug {
-			log.Println("UDP", dst)
+			log.Println("DNS", "PROXY", m.Question[0].Name, dns.Type(m.Question[0].Qtype).String())
 		}
 		var laddr *net.UDPAddr
 		any, ok = s.UDPSrc.Get(src + dst)
@@ -531,7 +612,7 @@ func (s *DNS) UDPHandle(addr *net.UDPAddr, b []byte) error {
 		return ue.Any.(func(b []byte) error)(b)
 	}
 	if Debug {
-		log.Println("UDP", dst)
+		log.Println("DNS", "PROXY", m.Question[0].Name, dns.Type(m.Question[0].Qtype).String())
 	}
 	var laddr *net.UDPAddr
 	any, ok = s.UDPSrc.Get(src + dst)
