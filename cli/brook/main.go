@@ -1641,6 +1641,10 @@ func main() {
 					Name:  "password",
 					Usage: "Password, optional",
 				},
+				&cli.BoolFlag{
+					Name:  "limitUDP",
+					Usage: "The server MAY use this information to limit access to the UDP association",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
@@ -1678,6 +1682,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				s.Server.LimitUDP = c.Bool("limitUDP")
 				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
