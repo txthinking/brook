@@ -27,6 +27,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -73,10 +74,17 @@ func main() {
 			Destination: &debugAddress,
 		},
 	}
+	app.EnableBashCompletion = true
 	app.Commands = []*cli.Command{
 		&cli.Command{
 			Name:  "server",
 			Usage: "Run as brook server, both TCP and UDP",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -91,24 +99,28 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+				},
+				&cli.StringSliceFlag{
+					Name:  "blockGeoIP",
+					Usage: "Block IP by Geo country code, such as US",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
@@ -132,8 +144,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("listen") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "server")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
 					return errors.New("--blockDomainList must be with absolute path")
@@ -144,7 +155,7 @@ func main() {
 				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
 					return errors.New("--blockCIDR6List must be with absolute path")
 				}
-				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
+				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"), c.StringSlice("blockGeoIP"))
 				if err != nil {
 					return err
 				}
@@ -178,6 +189,12 @@ func main() {
 		&cli.Command{
 			Name:  "client",
 			Usage: "Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook client <-> $ brook server <-> dst]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -196,7 +213,7 @@ func main() {
 				&cli.StringFlag{
 					Name:  "socks5",
 					Value: "127.0.0.1:1080",
-					Usage: "where to listen for SOCKS5 connections",
+					Usage: "Where to listen for SOCKS5 connections",
 				},
 				&cli.StringFlag{
 					Name:  "socks5ServerIP",
@@ -204,17 +221,17 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Usage: "where to listen for HTTP connections",
+					Usage: "Where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -222,8 +239,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("socks5") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "client")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
@@ -279,6 +295,12 @@ func main() {
 		&cli.Command{
 			Name:  "wsserver",
 			Usage: "Run as brook wsserver, both TCP and UDP, it will start a standard http server and websocket server",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -298,24 +320,28 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+				},
+				&cli.StringSliceFlag{
+					Name:  "blockGeoIP",
+					Usage: "Block IP by Geo country code, such as US",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
@@ -343,8 +369,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("listen") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "wsserver")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
 					return errors.New("--blockDomainList must be with absolute path")
@@ -355,7 +380,7 @@ func main() {
 				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
 					return errors.New("--blockCIDR6List must be with absolute path")
 				}
-				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
+				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"), c.StringSlice("blockGeoIP"))
 				if err != nil {
 					return err
 				}
@@ -390,6 +415,12 @@ func main() {
 		&cli.Command{
 			Name:  "wsclient",
 			Usage: "Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook wsclient <-> $ brook wsserver <-> dst]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "wsserver",
@@ -404,7 +435,7 @@ func main() {
 				&cli.StringFlag{
 					Name:  "socks5",
 					Value: "127.0.0.1:1080",
-					Usage: "where to listen for SOCKS5 connections",
+					Usage: "Where to listen for SOCKS5 connections",
 				},
 				&cli.StringFlag{
 					Name:  "socks5ServerIP",
@@ -412,17 +443,17 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Usage: "where to listen for HTTP connections",
+					Usage: "Where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "address",
@@ -438,8 +469,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("socks5") == "" || c.String("wsserver") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "wsclient")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
@@ -498,6 +528,12 @@ func main() {
 		&cli.Command{
 			Name:  "wssserver",
 			Usage: "Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:  "domainaddress",
@@ -524,24 +560,28 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+				},
+				&cli.StringSliceFlag{
+					Name:  "blockGeoIP",
+					Usage: "Block IP by Geo country code, such as US",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
@@ -569,8 +609,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("domainaddress") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "wssserver")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
 					return errors.New("--blockDomainList must be with absolute path")
@@ -591,7 +630,7 @@ func main() {
 				if err != nil {
 					return err
 				}
-				s, err := brook.NewWSServer("", c.String("password"), h, c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"))
+				s, err := brook.NewWSServer("", c.String("password"), h, c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"), c.StringSlice("blockGeoIP"))
 				if err != nil {
 					return err
 				}
@@ -645,6 +684,12 @@ func main() {
 		&cli.Command{
 			Name:  "wssclient",
 			Usage: "Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook wssclient <-> $ brook wssserver <-> dst]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "wssserver",
@@ -659,7 +704,7 @@ func main() {
 				&cli.StringFlag{
 					Name:  "socks5",
 					Value: "127.0.0.1:1080",
-					Usage: "where to listen for SOCKS5 connections",
+					Usage: "Where to listen for SOCKS5 connections",
 				},
 				&cli.StringFlag{
 					Name:  "socks5ServerIP",
@@ -667,17 +712,17 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Usage: "where to listen for HTTP connections",
+					Usage: "Where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "address",
@@ -701,8 +746,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "wssclient")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
@@ -776,6 +820,12 @@ func main() {
 		&cli.Command{
 			Name:  "relayoverbrook",
 			Usage: "Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook server/wsserver/wssserver <-> to address]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -785,11 +835,11 @@ func main() {
 				&cli.StringFlag{
 					Name:    "password",
 					Aliases: []string{"p"},
-					Usage:   "password",
+					Usage:   "Password",
 				},
 				&cli.StringFlag{
 					Name:    "from",
-					Aliases: []string{"f"},
+					Aliases: []string{"f", "l"},
 					Usage:   "Listen address: like ':9999'",
 				},
 				&cli.StringFlag{
@@ -800,12 +850,12 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.BoolFlag{
 					Name:  "udpovertcp",
@@ -833,8 +883,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("from") == "" || c.String("to") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "relayoverbrook")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				s, err := brook.NewMap(c.String("from"), c.String("to"), c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
@@ -883,8 +932,14 @@ func main() {
 			},
 		},
 		&cli.Command{
-			Name:  "dnsoverbrook",
-			Usage: "Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnsoverbrook <-> $ brook server/wsserver/wssserver <-> dns] or [src <-> $ brook dnsoverbrook <-> dnsForBypass]",
+			Name:  "dnsserveroverbrook",
+			Usage: "Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbrook <-> $ brook server/wsserver/wssserver <-> dns] or [src <-> $ brook dnsserveroverbrook <-> dnsForBypass]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -894,7 +949,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "password",
 					Aliases: []string{"p"},
-					Usage:   "password",
+					Usage:   "Password",
 				},
 				&cli.StringFlag{
 					Name:    "listen",
@@ -913,21 +968,21 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "bypassDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file path. Like: https://txthinking.github.io/bypass/apple_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file path. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.BoolFlag{
 					Name:  "udpovertcp",
@@ -955,8 +1010,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
-					cli.ShowCommandHelp(c, "dnsoverbrook")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 				if err != nil {
@@ -1007,6 +1061,12 @@ func main() {
 		&cli.Command{
 			Name:  "tproxy",
 			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver <-> dst]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
@@ -1040,23 +1100,23 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "bypassDomainList",
-					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
+					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/apple_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR4List",
-					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/china_cidr4.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/apple_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR6List",
-					Usage: "https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/china_cidr6.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/apple_cidr6.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "https://, http:// or local file absolute path. Suffix match mode. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt",
 				},
 				&cli.BoolFlag{
 					Name:  "enableIPv6",
-					Usage: "Your local and server must support IPv6",
+					Usage: "Your local and server must support IPv6 both",
 				},
 				&cli.BoolFlag{
 					Name:  "doNotRunScripts",
@@ -1069,12 +1129,12 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.BoolFlag{
 					Name:  "udpovertcp",
@@ -1088,10 +1148,6 @@ func main() {
 					Name:  "insecure",
 					Usage: "When server is brook wssserver, client do not verify the server's certificate chain and host name",
 				},
-				&cli.StringFlag{
-					Name:  "link",
-					Usage: "brook link, ignore server, password, address, insecure",
-				},
 				&cli.BoolFlag{
 					Name:  "withoutBrookProtocol",
 					Usage: "When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol",
@@ -1099,6 +1155,10 @@ func main() {
 				&cli.StringFlag{
 					Name:  "ca",
 					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
+				},
+				&cli.StringFlag{
+					Name:  "link",
+					Usage: "brook link. This will ignore server, password, udpovertcp, address, insecure, withoutBrookProtocol, ca",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1198,7 +1258,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("listen") == "" || (c.String("link") == "" && (c.String("server") == "" || c.String("password") == "")) {
-					cli.ShowCommandHelp(c, "tproxy")
+					_ = cli.ShowSubcommandHelp(c)
 					return errors.New("")
 				}
 				if c.String("bypassDomainList") != "" && !strings.HasPrefix(c.String("bypassDomainList"), "http://") && !strings.HasPrefix(c.String("bypassDomainList"), "https://") && !filepath.IsAbs(c.String("bypassDomainList")) {
@@ -1328,12 +1388,18 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "link",
-			Usage: "Print brook link",
+			Usage: "Generate brook link",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "Support $ brook server, $ brook wsserver, $ brook wssserver and socks5 server, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080",
+					Usage:   "Support brook server, brook wsserver, brook wssserver, socks5 server. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -1372,8 +1438,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("server") == "" {
-					cli.ShowCommandHelp(c, "link")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				s := "server"
 				if strings.HasPrefix(c.String("server"), "ws://") {
@@ -1414,17 +1479,23 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "connect",
-			Usage: "Connect via standard sharing link (brook server & brook wsserver & brook wssserver)",
+			Usage: "Connect to brook link (brook server & brook wsserver & brook wssserver)",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "link",
 					Aliases: []string{"l"},
-					Usage:   "specify the sharing link",
+					Usage:   "brook link, you can get it via $ brook link",
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
 					Value: "127.0.0.1:1080",
-					Usage: "where to listen for SOCKS5 connections",
+					Usage: "Where to listen for SOCKS5 connections",
 				},
 				&cli.StringFlag{
 					Name:  "socks5ServerIP",
@@ -1432,17 +1503,17 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Usage: "where to listen for HTTP connections",
+					Usage: "Where to listen for HTTP connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "dialSocks5",
@@ -1462,8 +1533,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("link") == "" {
-					cli.ShowCommandHelp(c, "connect")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
@@ -1568,10 +1638,16 @@ func main() {
 		&cli.Command{
 			Name:  "relay",
 			Usage: "Run as standalone relay, both TCP and UDP, this means access [from address] is equal to access [to address], [src <-> from address <-> to address]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "from",
-					Aliases: []string{"f"},
+					Aliases: []string{"f", "l"},
 					Usage:   "Listen address: like ':9999'",
 				},
 				&cli.StringFlag{
@@ -1582,12 +1658,12 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1595,8 +1671,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("from") == "" || c.String("to") == "" {
-					cli.ShowCommandHelp(c, "relay")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				s, err := brook.NewRelay(c.String("from"), c.String("to"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
@@ -1623,6 +1698,12 @@ func main() {
 		&cli.Command{
 			Name:  "socks5",
 			Usage: "Run as standalone standard socks5 server, both TCP and UDP",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -1648,12 +1729,12 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "connection deadline time (s)",
+					Usage: "Connection deadline time (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1661,8 +1742,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("listen") == "" {
-					cli.ShowCommandHelp(c, "socks5")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				h, _, err := net.SplitHostPort(c.String("listen"))
 				if err != nil {
@@ -1704,6 +1784,12 @@ func main() {
 		&cli.Command{
 			Name:  "socks5tohttp",
 			Usage: "Convert socks5 to http proxy, [src <-> listen address(http proxy) <-> socks5 address <-> dst]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "socks5",
@@ -1726,7 +1812,7 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "connection tcp timeout (s)",
+					Usage: "Connection tcp timeout (s)",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1734,8 +1820,7 @@ func main() {
 					enableDebug()
 				}
 				if c.String("listen") == "" || c.String("socks5") == "" {
-					cli.ShowCommandHelp(c, "socks5tohttp")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				s, err := brook.NewSocks5ToHTTP(c.String("listen"), c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.Int("tcpTimeout"))
 				if err != nil {
@@ -1760,80 +1845,14 @@ func main() {
 			},
 		},
 		&cli.Command{
-			Name:  "hijackhttps",
-			Usage: "Hijack domains and assume is TCP/TLS/443. Requesting these domains from anywhere in the system will be hijacked . [src <-> $ brook hijackhttps <-> socks5 server] or [src <-> direct]",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "socks5",
-					Aliases: []string{"s"},
-					Usage:   "Socks5 server address, like: 127.0.0.1:1080",
-				},
-				&cli.StringFlag{
-					Name:  "socks5username",
-					Usage: "Socks5 username, optional",
-				},
-				&cli.StringFlag{
-					Name:  "socks5password",
-					Usage: "Socks5 password, optional",
-				},
-				&cli.StringFlag{
-					Name:  "listenIP",
-					Usage: "127.0.0.1 or ::1, will create a DNS server(udp 53 port) with it, and listen tcp 443 port on it",
-					Value: "127.0.0.1",
-				},
-				&cli.StringFlag{
-					Name:  "dnsForBypass",
-					Usage: "DNS server for resolving domains in bypass list",
-					Value: "223.5.5.5:53",
-				},
-				&cli.StringFlag{
-					Name:  "bypassDomainList",
-					Usage: "https://, http:// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
-				},
-				&cli.IntFlag{
-					Name:  "tcpTimeout",
-					Value: 0,
-					Usage: "connection deadline time (s)",
-				},
-				&cli.IntFlag{
-					Name:  "udpTimeout",
-					Value: 60,
-					Usage: "connection deadline time (s)",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
-				if c.String("socks5") == "" {
-					cli.ShowCommandHelp(c, "hijackhttps")
-					return nil
-				}
-				s, err := brook.NewHijackHTTPS(c.String("socks5"), c.String("socks5username"), c.String("socks5password"), c.String("listenIP"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-				if err != nil {
-					return err
-				}
-				g := runnergroup.New()
-				g.Add(&runnergroup.Runner{
-					Start: func() error {
-						return s.ListenAndServe()
-					},
-					Stop: func() error {
-						return s.Shutdown()
-					},
-				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
-			},
-		},
-		&cli.Command{
 			Name:  "pac",
 			Usage: "Run as PAC server or save PAC to file",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "listen",
@@ -1849,7 +1868,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "bypassDomainList",
 					Aliases: []string{"b"},
-					Usage:   "domain list url, http(s):// or local file path. Suffix match mode. Like: https://txthinking.github.io/bypass/china_domain.txt",
+					Usage:   "One domain per line, suffix match mode. http(s):// or local file path. Like: https://txthinking.github.io/bypass/apple_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:    "file",
@@ -1859,8 +1878,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" && c.String("file") == "" {
-					cli.ShowCommandHelp(c, "pac")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				s := brook.NewPAC(c.String("listen"), c.String("file"), c.String("proxy"), c.String("bypassDomainList"))
 				if c.String("file") != "" {
@@ -1887,11 +1905,17 @@ func main() {
 		&cli.Command{
 			Name:  "testsocks5",
 			Usage: "Test UDP and TCP of socks5 server",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "socks5",
 					Aliases: []string{"s"},
-					Usage:   "like: 127.0.0.1:1080",
+					Usage:   "Like: 127.0.0.1:1080",
 				},
 				&cli.StringFlag{
 					Name:    "username",
@@ -1921,8 +1945,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("socks5") == "" {
-					cli.ShowCommandHelp(c, "testsocks5")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				socks5.Debug = true
 				return brook.Socks5Test(c.String("socks5"), c.String("username"), c.String("password"), c.String("domain"), c.String("a"), c.String("dns"))
@@ -1931,11 +1954,17 @@ func main() {
 		&cli.Command{
 			Name:  "testbrook",
 			Usage: "Test UDP and TCP of brook server/wsserver/wssserver",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "link",
 					Aliases: []string{"l"},
-					Usage:   "brook://...  brook server/wsserver/wssserver",
+					Usage:   "brook link. Get it via $ brook link",
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
@@ -1960,8 +1989,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("link") == "" {
-					cli.ShowCommandHelp(c, "testbrook")
-					return nil
+					return cli.ShowSubcommandHelp(c)
 				}
 				socks5.Debug = true
 				fmt.Println("Run brook connect to listen", c.String("socks5"))
@@ -1979,6 +2007,100 @@ func main() {
 				err1 := brook.Socks5Test(c.String("socks5"), "", "", c.String("domain"), c.String("a"), c.String("dns"))
 				_ = cmd.Process.Signal(syscall.SIGTERM)
 				return err1
+			},
+		},
+		&cli.Command{
+			Name:  "markdown",
+			Usage: "Generate markdown page",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Action: func(c *cli.Context) error {
+				s, err := c.App.ToMarkdown()
+				if err != nil {
+					return err
+				}
+				fmt.Println(s)
+				return nil
+			},
+		},
+		&cli.Command{
+			Name:  "completion",
+			Usage: "Generate shell completions",
+			Action: func(c *cli.Context) error {
+				l := c.App.VisibleCommands()
+				if strings.Contains(os.Getenv("SHELL"), "zsh") {
+					s := `
+_cli_zsh_autocomplete() {
+  local -a opts
+  local cur
+  cur=${words[-1]}
+  if [[ "$cur" == "-"* ]]; then
+    opts=("${(@f)$(${words[@]:0:#words[@]-1} ${cur} --generate-bash-completion)}")
+  else
+    opts=("${(@f)$(${words[@]:0:#words[@]-1} --generate-bash-completion)}")
+  fi
+
+  if [[ "${opts[1]}" != "" ]]; then
+    _describe 'values' opts
+  else
+    _files
+  fi
+}
+compdef _cli_zsh_autocomplete brook
+`
+					for _, v := range l {
+						s += "compdef _cli_zsh_autocomplete brook " + v.Name + "\n"
+					}
+					if err := os.WriteFile("brook_zsh_autocomplete", []byte(s), 0644); err != nil {
+						return err
+					}
+					fmt.Println("Generated")
+					fmt.Println("\tbrook_zsh_autocomplete")
+					fmt.Println("To enable auto-completion for the current shell session")
+					fmt.Println("\t$ source brook_zsh_autocomplete")
+					fmt.Println("To enable persistent auto-completion, add this line to your .zsh")
+					fmt.Println("\t$ source /path/to/brook_zsh_autocomplete")
+					return nil
+				}
+				s := `#! /bin/bash
+_cli_bash_autocomplete() {
+  if [[ "${COMP_WORDS[0]}" != "source" ]]; then
+    local cur opts base
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    if [[ "$cur" == "-"* ]]; then
+      opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} ${cur} --generate-bash-completion )
+    else
+      opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} --generate-bash-completion )
+    fi
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+  fi
+}
+complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
+`
+				for _, v := range l {
+					s += "complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook " + v.Name + "\n"
+				}
+				if err := os.WriteFile("brook_bash_autocomplete", []byte(s), 0644); err != nil {
+					return err
+				}
+				fmt.Println("Generated:")
+				fmt.Println("\tbrook_bash_autocomplete")
+				fmt.Println("To enable auto-completion for the current shell session")
+				fmt.Println("\t$ source brook_bash_autocomplete")
+				if runtime.GOOS == "darwin" {
+					fmt.Println("To enable persistent auto-completion, add this line to your .bash_profile")
+				}
+				if runtime.GOOS != "darwin" {
+					fmt.Println("To enable persistent auto-completion, add this line to your .bashrc")
+				}
+				fmt.Println("\t$ source /path/to/brook_bash_autocomplete")
+				return nil
 			},
 		},
 	}

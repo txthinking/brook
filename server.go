@@ -44,6 +44,7 @@ type Server struct {
 	BlockDomain  map[string]byte
 	BlockCIDR4   []*net.IPNet
 	BlockCIDR6   []*net.IPNet
+	BlockGeoIP   []string
 	BlockCache   *cache.Cache
 	BlockLock    *sync.RWMutex
 	Done         chan byte
@@ -51,7 +52,7 @@ type Server struct {
 }
 
 // NewServer.
-func NewServer(addr, password string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64) (*Server, error) {
+func NewServer(addr, password string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64, blockGeoIP []string) (*Server, error) {
 	taddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -104,6 +105,7 @@ func NewServer(addr, password string, tcpTimeout, udpTimeout int, blockDomainLis
 		BlockDomain:  ds,
 		BlockCIDR4:   c4,
 		BlockCIDR6:   c6,
+		BlockGeoIP:   blockGeoIP,
 		BlockCache:   cs3,
 		BlockLock:    lock,
 		Done:         done,
@@ -268,7 +270,7 @@ func (s *Server) TCPHandle(ss Exchanger, dst []byte) error {
 	if s.BlockLock != nil {
 		s.BlockLock.RUnlock()
 	}
-	if BlockAddress(address, ds, c4, c6, s.BlockCache) {
+	if BlockAddress(address, ds, c4, c6, s.BlockCache, s.BlockGeoIP) {
 		return errors.New("block " + address)
 	}
 	var rc net.Conn
@@ -311,7 +313,7 @@ func (s *Server) UDPOverTCPHandle(ss Exchanger, src string, dstb []byte) error {
 	if s.BlockLock != nil {
 		s.BlockLock.RUnlock()
 	}
-	if BlockAddress(dst, ds, c4, c6, s.BlockCache) {
+	if BlockAddress(dst, ds, c4, c6, s.BlockCache, s.BlockGeoIP) {
 		return errors.New("block " + dst)
 	}
 	var laddr *net.UDPAddr
@@ -397,7 +399,7 @@ func (s *Server) UDPHandle(addr *net.UDPAddr, b []byte) error {
 	if s.BlockLock != nil {
 		s.BlockLock.RUnlock()
 	}
-	if BlockAddress(dst, ds, c4, c6, s.BlockCache) {
+	if BlockAddress(dst, ds, c4, c6, s.BlockCache, s.BlockGeoIP) {
 		return errors.New("block " + dst)
 	}
 	var laddr *net.UDPAddr

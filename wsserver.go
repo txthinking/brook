@@ -50,6 +50,7 @@ type WSServer struct {
 	BlockDomain    map[string]byte
 	BlockCIDR4     []*net.IPNet
 	BlockCIDR6     []*net.IPNet
+	BlockGeoIP     []string
 	BlockCache     *cache.Cache
 	BlockLock      *sync.RWMutex
 	Done           chan byte
@@ -62,7 +63,7 @@ type WSServer struct {
 }
 
 // NewWSServer.
-func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64) (*WSServer, error) {
+func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64, blockGeoIP []string) (*WSServer, error) {
 	var taddr *net.TCPAddr
 	var err error
 	if domain == "" {
@@ -117,6 +118,7 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 		BlockDomain:    ds,
 		BlockCIDR4:     c4,
 		BlockCIDR6:     c6,
+		BlockGeoIP:     blockGeoIP,
 		BlockCache:     cs3,
 		BlockLock:      lock,
 		Done:           done,
@@ -301,7 +303,7 @@ func (s *WSServer) TCPHandle(ss Exchanger, dst []byte) error {
 	if s.BlockLock != nil {
 		s.BlockLock.RUnlock()
 	}
-	if BlockAddress(address, ds, c4, c6, s.BlockCache) {
+	if BlockAddress(address, ds, c4, c6, s.BlockCache, s.BlockGeoIP) {
 		return errors.New("block " + address)
 	}
 	var rc net.Conn
@@ -345,7 +347,7 @@ func (s *WSServer) UDPHandle(ss Exchanger, src string, dstb []byte) error {
 	if s.BlockLock != nil {
 		s.BlockLock.RUnlock()
 	}
-	if BlockAddress(dst, ds, c4, c6, s.BlockCache) {
+	if BlockAddress(dst, ds, c4, c6, s.BlockCache, s.BlockGeoIP) {
 		return errors.New("block " + dst)
 	}
 	var laddr *net.UDPAddr

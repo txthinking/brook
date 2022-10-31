@@ -26,22 +26,22 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
+	"github.com/phuslu/iploc"
 )
 
-func BlockAddress(address string, ds map[string]byte, c4, c6 []*net.IPNet, c *cache.Cache) bool {
-	if ds == nil && c4 == nil && c6 == nil {
+func BlockAddress(address string, ds map[string]byte, c4, c6 []*net.IPNet, c *cache.Cache, geo []string) bool {
+	if ds == nil && c4 == nil && c6 == nil && len(geo) == 0 {
 		return false
 	}
 	h, _, err := net.SplitHostPort(address)
 	if err != nil {
-		log.Println(err)
-		return false
+		return true
 	}
 	i := net.ParseIP(h)
 	if i == nil {
 		return ListHasDomain(ds, h, c)
 	}
-	return ListHasIP(c4, c6, i, c)
+	return ListHasIP(c4, c6, i, c, geo)
 }
 
 func ListHasDomain(ds map[string]byte, domain string, c *cache.Cache) bool {
@@ -75,14 +75,28 @@ func ListHasDomain(ds map[string]byte, domain string, c *cache.Cache) bool {
 	return false
 }
 
-func ListHasIP(c4, c6 []*net.IPNet, i net.IP, c *cache.Cache) bool {
-	if c4 == nil && c6 == nil {
+func ListHasIP(c4, c6 []*net.IPNet, i net.IP, c *cache.Cache, geo []string) bool {
+	if c4 == nil && c6 == nil && len(geo) == 0 {
 		return false
 	}
 	if c != nil {
 		any, ok := c.Get(i.String())
 		if ok {
 			return any.(bool)
+		}
+	}
+	if len(geo) != 0 {
+		b := iploc.Country(i)
+		if b != nil {
+			bs := string(b)
+			for _, v := range geo {
+				if v == bs {
+					if c != nil {
+						c.Set(i.String(), true, 24*time.Hour)
+					}
+					return true
+				}
+			}
 		}
 	}
 	if i.To4() != nil {
