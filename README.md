@@ -12,7 +12,7 @@ nami install joker brook
 joker brook server -l :9999 -p hello
 ```
 
----
+## Client
 
 [GUI Client](https://txthinking.github.io/brook/)
 
