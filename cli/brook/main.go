@@ -2010,26 +2010,16 @@ func main() {
 			},
 		},
 		&cli.Command{
-			Name:  "markdown",
-			Usage: "Generate markdown page",
-			BashComplete: func(c *cli.Context) {
-				l := c.Command.VisibleFlags()
-				for _, v := range l {
-					fmt.Println("--" + v.Names()[0])
-				}
-			},
-			Action: func(c *cli.Context) error {
-				s, err := c.App.ToMarkdown()
-				if err != nil {
-					return err
-				}
-				fmt.Println(s)
-				return nil
-			},
-		},
-		&cli.Command{
 			Name:  "completion",
 			Usage: "Generate shell completions",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "file",
+					Aliases: []string{"f"},
+					Usage:   "Write to file",
+					Value:   "brook_autocomplete",
+				},
+			},
 			Action: func(c *cli.Context) error {
 				l := c.App.VisibleCommands()
 				if strings.Contains(os.Getenv("SHELL"), "zsh") {
@@ -2055,15 +2045,15 @@ compdef _cli_zsh_autocomplete brook
 					for _, v := range l {
 						s += "compdef _cli_zsh_autocomplete brook " + v.Name + "\n"
 					}
-					if err := os.WriteFile("brook_zsh_autocomplete", []byte(s), 0644); err != nil {
+					if err := os.WriteFile(c.String("file"), []byte(s), 0644); err != nil {
 						return err
 					}
 					fmt.Println("Generated")
-					fmt.Println("\tbrook_zsh_autocomplete")
+					fmt.Println("\t" + c.String("file"))
 					fmt.Println("To enable auto-completion for the current shell session")
-					fmt.Println("\t$ source brook_zsh_autocomplete")
+					fmt.Println("\t$ source " + c.String("file"))
 					fmt.Println("To enable persistent auto-completion, add this line to your .zsh")
-					fmt.Println("\t$ source /path/to/brook_zsh_autocomplete")
+					fmt.Println("\t$ source /path/to/" + c.String("file"))
 					return nil
 				}
 				s := `#! /bin/bash
@@ -2086,20 +2076,82 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 				for _, v := range l {
 					s += "complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook " + v.Name + "\n"
 				}
-				if err := os.WriteFile("brook_bash_autocomplete", []byte(s), 0644); err != nil {
+				if err := os.WriteFile(c.String("file"), []byte(s), 0644); err != nil {
 					return err
 				}
 				fmt.Println("Generated:")
-				fmt.Println("\tbrook_bash_autocomplete")
+				fmt.Println("\t" + c.String("file"))
 				fmt.Println("To enable auto-completion for the current shell session")
-				fmt.Println("\t$ source brook_bash_autocomplete")
+				fmt.Println("\t$ source " + c.String("file"))
 				if runtime.GOOS == "darwin" {
 					fmt.Println("To enable persistent auto-completion, add this line to your .bash_profile")
 				}
 				if runtime.GOOS != "darwin" {
 					fmt.Println("To enable persistent auto-completion, add this line to your .bashrc")
 				}
-				fmt.Println("\t$ source /path/to/brook_bash_autocomplete")
+				fmt.Println("\t$ source /path/to/" + c.String("file"))
+				return nil
+			},
+		},
+		&cli.Command{
+			Name:  "markdown",
+			Usage: "Generate markdown page",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "file",
+					Aliases: []string{"f"},
+					Usage:   "Write to file, default print to stdout",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				s, err := c.App.ToMarkdown()
+				if err != nil {
+					return err
+				}
+				if c.String("file") != "" {
+					if err := os.WriteFile(c.String("file"), []byte(s), 0644); err != nil {
+						return err
+					}
+					return nil
+				}
+				fmt.Println(s)
+				return nil
+			},
+		},
+		&cli.Command{
+			Name:  "manpage",
+			Usage: "Generate man.1 page",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "file",
+					Aliases: []string{"f"},
+					Usage:   "Write to file, default print to stdout. You should put to /usr/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				s, err := c.App.ToManWithSection(1)
+				if err != nil {
+					return err
+				}
+				if c.String("file") != "" {
+					if err := os.WriteFile(c.String("file"), []byte(s), 0644); err != nil {
+						return err
+					}
+					return nil
+				}
+				fmt.Println(s)
 				return nil
 			},
 		},
