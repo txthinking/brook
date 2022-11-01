@@ -2,6 +2,8 @@
 
 A cross-platform network tool designed for developers.
 
+## [Document](https://txthinking.github.io/brook/)
+
 ## Getting Started
 
 ```
@@ -27,4 +29,3 @@ CLI Client
 
 `brook client -s 1.2.3.4:9999 -p hello`
 
-## [Document](https://txthinking.github.io/brook/)
