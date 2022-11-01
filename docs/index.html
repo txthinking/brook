@@ -103,6 +103,7 @@
             </ul>
         </nav>
         <main class="container">
+            <center><h1>{{ zh ? '一个为开发者设计的跨平台网络工具' : 'A cross-platform network tool designed for developers' }}</h1></center>
             <div style="display: flex; justify-content: center; flex-wrap: wrap">
                 <div><button :class="p!=0 ? 'contrast outline' : ''" @click="()=>this.p=0">{{ zh ? '快速上手' : 'Getting Started' }}</button></div>
             </div>
