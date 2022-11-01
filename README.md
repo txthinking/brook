@@ -23,7 +23,7 @@ joker brook server -l :9999 -p hello
 - brook server: `1.2.3.4:9999`
 - password:      `hello`
 
-CLI Client
+[CLI Client](https://txthinking.github.io/brook/)
 
 > create socks5://127.0.0.1:1080
 
