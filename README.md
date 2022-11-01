@@ -2,7 +2,7 @@
 
 A cross-platform network tool designed for developers.
 
-## [Document](https://txthinking.github.io/brook/)
+## [Document ->](https://txthinking.github.io/brook/)
 
 ## Getting Started
 
