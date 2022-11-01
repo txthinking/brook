@@ -36,11 +36,11 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 Run as brook server, both TCP and UDP
 
-**--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt
+**--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
 
-**--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt
+**--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
 
-**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt
+**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
 **--blockGeoIP**="": Block IP by Geo country code, such as US
 
@@ -84,11 +84,11 @@ Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 
 
 Run as brook wsserver, both TCP and UDP, it will start a standard http server and websocket server
 
-**--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt
+**--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
 
-**--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt
+**--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
 
-**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt
+**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
 **--blockGeoIP**="": Block IP by Geo country code, such as US
 
@@ -138,11 +138,11 @@ Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks
 
 Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server
 
-**--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt
+**--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
 
-**--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt
+**--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
 
-**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt
+**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
 **--blockGeoIP**="": Block IP by Geo country code, such as US
 
@@ -228,9 +228,9 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 **--address**="": When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
-**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file path. Like: https://txthinking.github.io/bypass/sample_block.txt
+**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
-**--bypassDomainList**="": One domain per line, suffix match mode. https://, http:// or local file path. Like: https://txthinking.github.io/bypass/apple_domain.txt
+**--bypassDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
 **--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
 
@@ -260,13 +260,13 @@ Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ broo
 
 **--address**="": When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
-**--blockDomainList**="": One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt
+**--blockDomainList**="": One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
-**--bypassCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/apple_cidr4.txt
+**--bypassCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
 
-**--bypassCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/apple_cidr6.txt
+**--bypassCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
 
-**--bypassDomainList**="": One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/apple_domain.txt
+**--bypassDomainList**="": One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
 **--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
 
@@ -356,6 +356,26 @@ Run as standalone relay, both TCP and UDP, this means access [from address] is e
 
 **--udpTimeout**="": Connection deadline time (s) (default: 60)
 
+## dnsserver
+
+Run as standalone dns server, both TCP and UDP
+
+**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+
+**--blockGeoIP**="": Block IP by Geo country code, such as US
+
+**--disableIPv4DomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+
+**--disableIPv6DomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+
+**--dns**="": DNS server which forward to (default: 8.8.8.8:53)
+
+**--listen, -l**="": Listen address, like: 127.0.0.1:53
+
+**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+
+**--udpTimeout**="": Connection deadline time (s) (default: 60)
+
 ## socks5
 
 Run as standalone standard socks5 server, both TCP and UDP
@@ -392,7 +412,7 @@ Convert socks5 to http proxy, [src <-> listen address(http proxy) <-> socks5 add
 
 Run as PAC server or save PAC to file
 
-**--bypassDomainList, -b**="": One domain per line, suffix match mode. http(s):// or local file path. Like: https://txthinking.github.io/bypass/apple_domain.txt
+**--bypassDomainList, -b**="": One domain per line, suffix match mode. http(s):// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
 **--file, -f**="": Save PAC to file, this will ignore listen address
 

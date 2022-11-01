@@ -10,8 +10,10 @@ A cross-platform network tool designed for developers.
 bash <(curl https://bash.ooo/nami.sh)
 ```
 ```
-nami install joker brook
-joker brook server -l :9999 -p hello
+nami install brook
+```
+```
+brook server -l :9999 -p hello
 ```
 
 ## Client

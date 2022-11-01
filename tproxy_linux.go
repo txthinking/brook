@@ -376,7 +376,7 @@ func (s *Tproxy) Shutdown() error {
 
 // TCPHandle handles request.
 func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
-	if ListHasIP(s.Cidr4, s.Cidr6, c.LocalAddr().(*net.TCPAddr).IP, s.BypassCache) {
+	if ListHasIP(s.Cidr4, s.Cidr6, c.LocalAddr().(*net.TCPAddr).IP, s.BypassCache, nil) {
 		rc, err := Dial.Dial("tcp", c.LocalAddr().String())
 		if err != nil {
 			return err
@@ -474,7 +474,7 @@ func (s *Tproxy) UDPHandle(addr, daddr *net.UDPAddr, b []byte) error {
 		laddr = any.(*net.UDPAddr)
 	}
 
-	if ListHasIP(s.Cidr4, s.Cidr6, daddr.IP, s.BypassCache) {
+	if ListHasIP(s.Cidr4, s.Cidr6, daddr.IP, s.BypassCache, nil) {
 		any, ok := s.UDPExchanges.Get(src + dst)
 		if ok {
 			ue := any.(*UDPExchange)

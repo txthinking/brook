@@ -50,7 +50,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20221010"
+	app.Version = "20221212"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{
@@ -108,15 +108,15 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt",
 				},
 				&cli.StringSliceFlag{
 					Name:  "blockGeoIP",
@@ -329,15 +329,15 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt",
 				},
 				&cli.StringSliceFlag{
 					Name:  "blockGeoIP",
@@ -569,15 +569,15 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr4.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/demo_block_cidr6.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt",
 				},
 				&cli.StringSliceFlag{
 					Name:  "blockGeoIP",
@@ -968,11 +968,11 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "bypassDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file path. Like: https://txthinking.github.io/bypass/apple_domain.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file path. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1011,6 +1011,12 @@ func main() {
 				}
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
+				}
+				if c.String("bypassDomainList") != "" && !strings.HasPrefix(c.String("bypassDomainList"), "http://") && !strings.HasPrefix(c.String("bypassDomainList"), "https://") && !filepath.IsAbs(c.String("bypassDomainList")) {
+					return errors.New("--bypassDomainList must be with absolute path")
+				}
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
+					return errors.New("--blockDomainList must be with absolute path")
 				}
 				s, err := brook.NewDNS(c.String("listen"), c.String("server"), c.String("password"), c.String("dns"), c.String("dnsForBypass"), c.String("bypassDomainList"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"))
 				if err != nil {
@@ -1100,19 +1106,19 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "bypassDomainList",
-					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/apple_domain.txt",
+					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR4List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/apple_cidr4.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR6List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/apple_cidr6.txt",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/sample_block.txt",
+					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
 				&cli.BoolFlag{
 					Name:  "enableIPv6",
@@ -1696,6 +1702,91 @@ func main() {
 			},
 		},
 		&cli.Command{
+			Name:  "dnsserver",
+			Usage: "Run as standalone dns server, both TCP and UDP",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Listen address, like: 127.0.0.1:53",
+				},
+				&cli.StringFlag{
+					Name:  "dns",
+					Usage: "DNS server which forward to",
+					Value: "8.8.8.8:53",
+				},
+				&cli.StringFlag{
+					Name:  "disableIPv4DomainList",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
+				},
+				&cli.StringFlag{
+					Name:  "disableIPv6DomainList",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockDomainList",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
+				},
+				&cli.StringSliceFlag{
+					Name:  "blockGeoIP",
+					Usage: "Block IP by Geo country code, such as US",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 0,
+					Usage: "Connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpTimeout",
+					Value: 60,
+					Usage: "Connection deadline time (s)",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if debug {
+					enableDebug()
+				}
+				if c.String("listen") == "" {
+					return cli.ShowSubcommandHelp(c)
+				}
+				if c.String("disableIPv4DomainList") != "" && !strings.HasPrefix(c.String("disableIPv4DomainList"), "http://") && !strings.HasPrefix(c.String("disableIPv4DomainList"), "https://") && !filepath.IsAbs(c.String("disableIPv4DomainList")) {
+					return errors.New("--disableIPv4DomainList must be with absolute path")
+				}
+				if c.String("disableIPv6DomainList") != "" && !strings.HasPrefix(c.String("disableIPv6DomainList"), "http://") && !strings.HasPrefix(c.String("disableIPv6DomainList"), "https://") && !filepath.IsAbs(c.String("disableIPv6DomainList")) {
+					return errors.New("--disableIPv6DomainList must be with absolute path")
+				}
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
+					return errors.New("--blockDomainList must be with absolute path")
+				}
+				s, err := brook.NewDNSServer(c.String("listen"), c.String("dns"), c.String("disableIPv4DomainList"), c.String("disableIPv6DomainList"), c.String("blockDomainList"), c.StringSlice("blockGeoIP"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
+				}
+				g := runnergroup.New()
+				g.Add(&runnergroup.Runner{
+					Start: func() error {
+						return s.ListenAndServe()
+					},
+					Stop: func() error {
+						return s.Shutdown()
+					},
+				})
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					g.Done()
+				}()
+				return g.Wait()
+			},
+		},
+		&cli.Command{
 			Name:  "socks5",
 			Usage: "Run as standalone standard socks5 server, both TCP and UDP",
 			BashComplete: func(c *cli.Context) {
@@ -1868,7 +1959,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "bypassDomainList",
 					Aliases: []string{"b"},
-					Usage:   "One domain per line, suffix match mode. http(s):// or local file path. Like: https://txthinking.github.io/bypass/apple_domain.txt",
+					Usage:   "One domain per line, suffix match mode. http(s):// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
 				&cli.StringFlag{
 					Name:    "file",
@@ -1879,6 +1970,9 @@ func main() {
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" && c.String("file") == "" {
 					return cli.ShowSubcommandHelp(c)
+				}
+				if c.String("bypassDomainList") != "" && !strings.HasPrefix(c.String("bypassDomainList"), "http://") && !strings.HasPrefix(c.String("bypassDomainList"), "https://") && !filepath.IsAbs(c.String("bypassDomainList")) {
+					return errors.New("--bypassDomainList must be with absolute path")
 				}
 				s := brook.NewPAC(c.String("listen"), c.String("file"), c.String("proxy"), c.String("bypassDomainList"))
 				if c.String("file") != "" {

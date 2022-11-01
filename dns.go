@@ -216,6 +216,9 @@ func (s *DNS) TCPHandle(c *net.TCPConn) error {
 	if err != nil {
 		return err
 	}
+	if len(m.Question) == 0 {
+		return errors.New("no question")
+	}
 	if m.Question[0].Qtype == dns.TypeHTTPS || m.Question[0].Qtype == dns.TypeSVCB {
 		m1 := &dns.Msg{}
 		m1.SetReply(m)

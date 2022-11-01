@@ -1,7 +1,7 @@
 Package: brook
-Version: 20220401
+Version: 20221212
 Architecture: all
 Maintainer: cloud <cloud@txthinking.com>
 Homepage: https://github.com/txthinking/brook
-Description: Brook is a cross-platform strong encryption and not detectable proxy
+Description: A cross-platform network tool designed for developers
 Depends: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
