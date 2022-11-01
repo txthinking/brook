@@ -55,7 +55,7 @@
                             this.p = 3;
                             this.ing3 = true;
                             try {
-                                var r = await fetch("/cli.md");
+                                var r = await fetch("cli.md");
                                 if (r.status != 200) {
                                     throw r.status;
                                 }
@@ -72,7 +72,7 @@
                             this.p = 7;
                             this.ing7 = true;
                             try {
-                                var r = await fetch(this.zh ? "/example-zh.md" : '/example.md');
+                                var r = await fetch(this.zh ? "example-zh.md" : 'example.md');
                                 if (r.status != 200) {
                                     throw r.status;
                                 }
