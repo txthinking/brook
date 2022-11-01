@@ -12,6 +12,8 @@ nami install joker brook
 joker brook server -l :9999 -p hello
 ```
 
+---
+
 [GUI Client](https://txthinking.github.io/brook/)
 
 > replace 1.2.3.4 with your server IP
