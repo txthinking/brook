@@ -2,16 +2,16 @@
 
 A cross-platform network tool designed for developers.
 
-## [Document ->](https://txthinking.github.io/brook/)
-
 ## Getting Started
 
 ```
 bash <(curl https://bash.ooo/nami.sh)
 ```
+
 ```
 nami install brook
 ```
+
 ```
 brook server -l :9999 -p hello
 ```
@@ -22,8 +22,8 @@ brook server -l :9999 -p hello
 
 > replace 1.2.3.4 with your server IP
 
-- brook server: `1.2.3.4:9999`
-- password:      `hello`
+-   brook server: `1.2.3.4:9999`
+-   password: `hello`
 
 [CLI Client](https://txthinking.github.io/brook/)
 
@@ -31,3 +31,11 @@ brook server -l :9999 -p hello
 
 `brook client -s 1.2.3.4:9999 -p hello`
 
+## Documentation
+
+[**Documentation**](https://txthinking.github.io/brook/)
+
+-   [Talks](https://www.txthinking.com/talks/)
+-   [YouTube](https://www.youtube.com/txthinking)
+-   [News](https://t.me/s/txthinking_news)
+-   [Telegram](https://t.me/brookgroup)
