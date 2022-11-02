@@ -72,7 +72,7 @@
                             this.p = 7;
                             this.ing7 = true;
                             try {
-                                var r = await fetch(this.zh ? "example-zh.md" : 'example.md');
+                                var r = await fetch(this.zh ? "example-zh.md" : "example.md");
                                 if (r.status != 200) {
                                     throw r.status;
                                 }
@@ -88,7 +88,7 @@
             });
         </script>
     </head>
-    <body style="margin:0">
+    <body style="margin: 0">
         <nav class="container-fluid" style="background-color: #000000">
             <ul>
                 <li>
@@ -159,6 +159,7 @@ joker brook server -l :9999 -p hello</code></pre>
                         <h6><a href="https://github.com/txthinking/brook" target="_blank">brook</a></h6>
                     </div>
                     <pre><code>nami install brook</code></pre>
+                    <hr />
                     <div>
                         <h6><a href="https://github.com/txthinking/joker" target="_blank">joker</a> <i style="font-size: 10px">{{ zh ? '守护进程' : 'daemon' }}</i></h6>
                     </div>
@@ -171,15 +172,19 @@ joker brook server -l :9999 -p hello</code></pre>
                         <h6><a href="https://github.com/txthinking/tun2brook" target="_blank">tun2brook</a> <i style="font-size: 10px">{{ zh ? '客户端侧代理系统所有流量' : 'proxy all traffic on client-side' }}</i></h6>
                     </div>
                     <pre><code>nami install tun2brook</code></pre>
-                    <hr/>
+                    <hr />
                     <div>
-                        <h6><a href="https://github.com/Homebrew/brew" target="_blank">via brew</a></h6>
-                    </div>
-                    <pre><code>brew install brook</code></pre>
-                    <div>
-                        <h6><a href="https://archlinux.org" target="_blank">via pacman</a></h6>
+                        <h6>
+                            <a href="https://archlinux.org" target="_blank">via pacman</a> <a style="text-decoration: none" href="https://github.com/felixonmars" target="_blank"><i style="font-size: 10px">{{ zh ? '由 felixonmars 维护' : 'maintained by felixonmars' }}</i></a>
+                        </h6>
                     </div>
                     <pre><code>pacman -S brook</code></pre>
+                    <div>
+                        <h6>
+                            <a href="https://github.com/Homebrew/brew" target="_blank">via brew</a> <a style="text-decoration: none" href="https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/brook.rb" target="_blank"><i style="font-size: 10px">{{ zh ? '维护者' : 'maintainers' }}</i></a>
+                        </h6>
+                    </div>
+                    <pre><code>brew install brook</code></pre>
                 </article>
             </div>
             <div v-if="p==2">
@@ -232,11 +237,7 @@ joker brook server -l :9999 -p hello</code></pre>
             <div class="dm" v-if="p==4">
                 <article>
                     <div>
-                        <h6>{{ zh ? '安装' : 'Install' }} <a href="https://github.com/txthinking/joker" target="_blank">joker</a></h6>
-                    </div>
-                    <pre><code>nami install joker</code></pre>
-                    <div>
-                        <h6>{{ zh ? '使用 joker 运行 brook 守护进程' : 'To run the brook daemon with joker' }}</h6>
+                        <h6>{{ zh ? '使用 joker 运行 brook 守护进程' : 'Run the brook daemon with joker' }}</h6>
                     </div>
                     <pre><code>joker brook server -l :9999 -p hello</code></pre>
                     <div>
@@ -260,11 +261,7 @@ joker brook server -l :9999 -p hello</code></pre>
             <div class="dm" v-if="p==5">
                 <article>
                     <div>
-                        <h6>{{ zh ? '安装' : 'Install' }} <a href="https://github.com/txthinking/jinbe" target="_blank">jinbe</a></h6>
-                    </div>
-                    <pre><code>nami install jinbe</code></pre>
-                    <div>
-                        <h6>{{ zh ? '添加开机自启命令' : 'Add a auto-start command at boot' }}</h6>
+                        <h6>{{ zh ? '添加开机自启命令' : 'Add one auto-start command at boot' }}</h6>
                     </div>
                     <pre><code>jinbe joker brook server -l :9999 -p hello</code></pre>
                     <div>
@@ -272,7 +269,7 @@ joker brook server -l :9999 -p hello</code></pre>
                     </div>
                     <pre><code>jinbe list</code></pre>
                     <div>
-                        <h6>{{ zh ? '移除某个开机命令' : 'Remove a added command' }}</h6>
+                        <h6>{{ zh ? '移除某个开机命令' : 'Remove one added command' }}</h6>
                     </div>
                     <pre><code>jinbe remove ID</code></pre>
                 </article>
