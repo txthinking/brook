@@ -1485,7 +1485,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "connect",
-			Usage: "Connect to brook link (brook server & brook wsserver & brook wssserver)",
+			Usage: "Run as client and connect to brook link, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook connect <-> $ brook server/wsserver/wssserver <-> dst]",
 			BashComplete: func(c *cli.Context) {
 				l := c.Command.VisibleFlags()
 				for _, v := range l {

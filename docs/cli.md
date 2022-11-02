@@ -324,7 +324,7 @@ Generate brook link
 
 ## connect
 
-Connect to brook link (brook server & brook wsserver & brook wssserver)
+Run as client and connect to brook link, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook connect <-> $ brook server/wsserver/wssserver <-> dst]
 
 **--dialSocks5**="": If you already have a socks5, such as 127.0.0.1:1081, and want [src <-> listen socks5 <-> $ brook connect <-> dialSocks5 <-> $ brook server/wsserver/wssserver <-> dst]
 
