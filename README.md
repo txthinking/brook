@@ -33,7 +33,7 @@ brook server -l :9999 -p hello
 
 ## Documentation
 
-[**Documentation**](https://txthinking.github.io/brook/)
+For more features, please check the [**Documentation**](https://txthinking.github.io/brook/).
 
 -   [Talks](https://www.txthinking.com/talks/)
 -   [YouTube](https://www.youtube.com/txthinking)
