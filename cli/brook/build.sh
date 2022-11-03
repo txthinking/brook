@@ -90,10 +90,5 @@ mv brook.ipk ../cli/brook/_/brook_linux_ppc64le.ipk
 
 cd ../cli/brook/
 
-if [ "$1" = "dev" ]
-then
-    exit
-fi
-
-# nami release github.com/txthinking/brook $1 _
+nami release github.com/txthinking/brook $1 _
 rm -rf _
