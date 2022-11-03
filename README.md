@@ -2,7 +2,7 @@
 
 A cross-platform network tool designed for developers.
 
-## Getting Started
+## Server
 
 ```
 bash <(curl https://bash.ooo/nami.sh)
