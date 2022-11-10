@@ -8,7 +8,7 @@ require (
 	github.com/mdp/qrterminal v1.0.1
 	github.com/miekg/dns v1.1.43
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/phuslu/iploc v1.0.20220930
+	github.com/phuslu/iploc v1.0.20221110
 	github.com/tdewolff/minify v2.3.6+incompatible
 	github.com/txthinking/crypto v0.0.0-20210716135230-de9624a415a4
 	github.com/txthinking/runnergroup v0.0.0-20210608031112-152c7c4432bf
