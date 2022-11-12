@@ -2231,7 +2231,7 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 				&cli.StringFlag{
 					Name:    "file",
 					Aliases: []string{"f"},
-					Usage:   "Write to file, default print to stdout. You should put to /usr/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos",
+					Usage:   "Write to file, default print to stdout. You should put to /path/to/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos",
 				},
 			},
 			Action: func(c *cli.Context) error {
