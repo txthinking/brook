@@ -64,7 +64,7 @@ Run as brook server, both TCP and UDP
 
 Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook client <-> $ brook server <-> dst]
 
-**--http**="": Where to listen for HTTP connections
+**--http**="": Where to listen for HTTP proxy connections
 
 **--password, -p**="": Brook server password
 
@@ -118,7 +118,7 @@ Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks
 
 **--address**="": Specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
-**--http**="": Where to listen for HTTP connections
+**--http**="": Where to listen for HTTP proxy connections
 
 **--password, -p**="": Brook wsserver password
 
@@ -178,7 +178,7 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 
 **--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
 
-**--http**="": Where to listen for HTTP connections
+**--http**="": Where to listen for HTTP proxy connections
 
 **--insecure**: Client do not verify the server's certificate chain and host name
 
@@ -332,7 +332,7 @@ Run as client and connect to brook link, both TCP and UDP, to start a socks5 pro
 
 **--dialSocks5Username**="": Optional
 
-**--http**="": Where to listen for HTTP connections
+**--http**="": Where to listen for HTTP proxy connections
 
 **--link, -l**="": brook link, you can get it via $ brook link
 
@@ -450,13 +450,27 @@ Test UDP and TCP of brook server/wsserver/wssserver
 
 **-a**="": The A record of domain (default: 137.184.237.95)
 
+## echoserver
+
+Echo server, echo UDP and TCP address of routes
+
+**--listen, -l**="": Listen address, like: ':7777'
+
+## echoclient
+
+Connect to echoserver, echo UDP and TCP address of routes
+
+**--server, -s**="": Echo server address, such as 1.2.3.4:7777
+
+**--times**="": Times of interactions (default: 1)
+
 ## completion
 
 Generate shell completions
 
 **--file, -f**="": Write to file (default: brook_autocomplete)
 
-## markdown
+## mdpage
 
 Generate markdown page
 
@@ -472,9 +486,8 @@ Shows a list of commands or help for one command
 
 Generate man.1 page
 
-**--file, -f**="": Write to file, default print to stdout. You should put to /usr/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos
+**--file, -f**="": Write to file, default print to stdout. You should put to /path/to/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos
 
 ## help, h
 
 Shows a list of commands or help for one command
-
