@@ -29,13 +29,41 @@ func Socks5Test(s, u, p, domain, a, ds string) error {
 		return err
 	}
 
+	fmt.Println("Testing TCP: query " + domain + " A on " + ds)
+	c := &dns.Client{Net: "tcp"}
+	tc, err := s5c.Dial("tcp", ds)
+	if err != nil {
+		return err
+	}
+	defer tc.Close()
+	m := &dns.Msg{}
+	m.RecursionDesired = true
+	m.SetQuestion(domain+".", dns.TypeA)
+	m, _, err = c.ExchangeWithConn(m, &dns.Conn{Conn: tc})
+	if err != nil {
+		return err
+	}
+	if len(m.Answer) == 0 {
+		return errors.New("no answer")
+	}
+	v, ok := m.Answer[0].(*dns.A)
+	if !ok {
+		return errors.New("invalid answer")
+	}
+	if v.A.String() != a {
+		fmt.Println("Expect", a, "but got", v.A.String())
+	}
+	if v.A.String() == a {
+		fmt.Println("TCP: OK")
+	}
+
 	fmt.Println("Testing UDP: query " + domain + " A on " + ds)
 	uc, err := s5c.Dial("udp", ds)
 	if err != nil {
 		return err
 	}
 	defer uc.Close()
-	m := &dns.Msg{}
+	m = &dns.Msg{}
 	m.RecursionDesired = true
 	m.SetQuestion(domain+".", dns.TypeA)
 	b, err := m.Pack()
@@ -57,34 +85,6 @@ func Socks5Test(s, u, p, domain, a, ds string) error {
 	if len(m.Answer) == 0 {
 		return errors.New("no answer")
 	}
-	v, ok := m.Answer[0].(*dns.A)
-	if !ok {
-		return errors.New("invalid answer")
-	}
-	if v.A.String() != a {
-		fmt.Println("Expect", a, "but got", v.A.String())
-	}
-	if v.A.String() == a {
-		fmt.Println("UDP: OK")
-	}
-
-	fmt.Println("Testing TCP: query " + domain + " A on " + ds)
-	c := &dns.Client{Net: "tcp"}
-	tc, err := s5c.Dial("tcp", ds)
-	if err != nil {
-		return err
-	}
-	defer tc.Close()
-	m = &dns.Msg{}
-	m.RecursionDesired = true
-	m.SetQuestion(domain+".", dns.TypeA)
-	m, _, err = c.ExchangeWithConn(m, &dns.Conn{Conn: tc})
-	if err != nil {
-		return err
-	}
-	if len(m.Answer) == 0 {
-		return errors.New("no answer")
-	}
 	v, ok = m.Answer[0].(*dns.A)
 	if !ok {
 		return errors.New("invalid answer")
@@ -93,7 +93,7 @@ func Socks5Test(s, u, p, domain, a, ds string) error {
 		fmt.Println("Expect", a, "but got", v.A.String())
 	}
 	if v.A.String() == a {
-		fmt.Println("TCP: OK")
+		fmt.Println("UDP: OK")
 	}
 	return nil
 }

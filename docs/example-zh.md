@@ -259,7 +259,8 @@ brook dnsserveroverbrook ... --listen 127.0.0.1:53
 **无需操作 iptables！**
 
 ```
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy
+opkg update
+opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket
 ```
 
 ```
@@ -310,7 +311,10 @@ brook tproxy --link 'brook://...' --dnsListen :53
 
 ### 官网原版 OpenWrt 图形客户端
 
-> **依赖: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy**
+```
+opkg update
+opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket
+```
 
 **无需操作 iptables！**
 

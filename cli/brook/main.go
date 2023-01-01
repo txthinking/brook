@@ -50,7 +50,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20221212"
+	app.Version = "20230101"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{
@@ -221,7 +221,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Usage: "Where to listen for HTTP connections",
+					Usage: "Where to listen for HTTP proxy connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -443,7 +443,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Usage: "Where to listen for HTTP connections",
+					Usage: "Where to listen for HTTP proxy connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -712,7 +712,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Usage: "Where to listen for HTTP connections",
+					Usage: "Where to listen for HTTP proxy connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1509,7 +1509,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "http",
-					Usage: "Where to listen for HTTP connections",
+					Usage: "Where to listen for HTTP proxy connections",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -2090,7 +2090,12 @@ func main() {
 				var cmd *exec.Cmd
 				var err error
 				go func() {
-					cmd = exec.Command("brook", "connect", "--link", c.String("link"), "--socks5", c.String("socks5"))
+					var s string
+					s, err = os.Executable()
+					if err != nil {
+						return
+					}
+					cmd = exec.Command(s, "connect", "--link", c.String("link"), "--socks5", c.String("socks5"))
 					b, _ := cmd.CombinedOutput()
 					err = errors.New(string(b))
 				}()
@@ -2101,6 +2106,76 @@ func main() {
 				err1 := brook.Socks5Test(c.String("socks5"), "", "", c.String("domain"), c.String("a"), c.String("dns"))
 				_ = cmd.Process.Signal(syscall.SIGTERM)
 				return err1
+			},
+		},
+		&cli.Command{
+			Name:  "echoserver",
+			Usage: "Echo server, echo UDP and TCP address of routes",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "listen",
+					Aliases: []string{"l"},
+					Usage:   "Listen address, like: ':7777'",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("listen") == "" {
+					return cli.ShowSubcommandHelp(c)
+				}
+				s, err := brook.NewEchoServer(c.String("listen"))
+				if err != nil {
+					return err
+				}
+				g := runnergroup.New()
+				g.Add(&runnergroup.Runner{
+					Start: func() error {
+						return s.ListenAndServe()
+					},
+					Stop: func() error {
+						return s.Shutdown()
+					},
+				})
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					g.Done()
+				}()
+				return g.Wait()
+			},
+		},
+		&cli.Command{
+			Name:  "echoclient",
+			Usage: "Connect to echoserver, echo UDP and TCP address of routes",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "Echo server address, such as 1.2.3.4:7777",
+				},
+				&cli.IntFlag{
+					Name:  "times",
+					Value: 1,
+					Usage: "Times of interactions",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("server") == "" {
+					return cli.ShowSubcommandHelp(c)
+				}
+				return brook.EchoClient(c.String("server"), c.Int("times"))
 			},
 		},
 		&cli.Command{
@@ -2188,7 +2263,7 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 			},
 		},
 		&cli.Command{
-			Name:  "markdown",
+			Name:  "mdpage",
 			Usage: "Generate markdown page",
 			BashComplete: func(c *cli.Context) {
 				l := c.Command.VisibleFlags()

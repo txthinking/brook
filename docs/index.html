@@ -175,7 +175,7 @@ joker brook server -l :9999 -p hello</code></pre>
                     <hr />
                     <div>
                         <h6>
-                            via pacman <a style="text-decoration: none" href="https://github.com/felixonmars" target="_blank"><i style="font-size: 10px">{{ zh ? '由 felixonmars 维护' : 'maintained by felixonmars' }}</i></a>
+                            via pacman <a style="text-decoration: none" href="https://archlinux.org/packages/community/x86_64/brook/" target="_blank"><i style="font-size: 10px">{{ zh ? '由 felixonmars 维护' : 'maintained by felixonmars' }}</i></a>
                         </h6>
                     </div>
                     <pre><code>pacman -S brook</code></pre>
@@ -217,16 +217,19 @@ joker brook server -l :9999 -p hello</code></pre>
                                 <div style="font-size: 12px">Windows EXE</div>
                             </div></a
                         >
-                        <a href="https://github.com/txthinking/brook/releases" target="_blank"
+                        <div style="display:flex;flex-direction:column;align-items:center;">
+                        <a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin" target="_blank"
+                            ><div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
+                                <img src="./images/linux.png" style="width: 50px; height: 50px" />
+                                <div style="font-size: 12px">Linux GUI</div>
+                            </div></a
+                        >
+                        <i data-tooltip="Tested on Ubuntu 22.04. Other systems may need to install dependencies according to the output" style="font-size:9px">deps</i>
+                        </div>
+                        <a href="https://github.com/txthinking/brook/blob/master/docs/example.md#gui-for-official-openwrt" target="_blank"
                             ><div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
                                 <img src="./images/openwrt.png" style="width: 50px; height: 50px" />
                                 <div style="font-size: 12px">OpenWrt IPK</div>
-                            </div></a
-                        >
-                        <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" target="_blank"
-                            ><div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
-                                <img src="./images/sc.png" style="width: 50px; height: 50px" />
-                                <div style="font-size: 12px">Chrome EXT</div>
                             </div></a
                         >
                     </div>
@@ -284,9 +287,9 @@ joker brook server -l :9999 -p hello</code></pre>
                 <article v-html="p7c"></article>
             </div>
         </main>
-        <footer class="container" style="font-size: 14px; color: #919191">
+        <footer class="container" style="font-size: 14px">
             <center>
-                <p style="font-size: 14px; color: #919191"><a style="font-size: 14px; color: #919191" href="https://github.com/txthinking/brook/tree/master/protocol">Protocol</a></p>
+                <p style="font-size: 14px"><a style="font-size: 14px" href="https://github.com/txthinking/brook/tree/master/protocol">Undetectable Protocol</a></p>
             </center>
         </footer>
     </body>
