@@ -50,7 +50,7 @@ var debugAddress string
 func main() {
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20230101"
+	app.Version = "20230122"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{
@@ -2320,6 +2320,37 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 					}
 					return nil
 				}
+				fmt.Println(s)
+				return nil
+			},
+		},
+		&cli.Command{
+			Name:   "ChineseNewYear",
+			Hidden: true,
+			Action: func(c *cli.Context) error {
+				s := `
+This version number 20230122 coincides with the date of Chinese New Year 20230101.
+So this hidden command is to wish everyone a happy new year.
+In the chinese shi er sheng xiao, this year is tu nian:
+
+                      /|      __
+*             +      / |   ,-~ /             +
+     .              Y :|  //  /                .         *
+         .          | jj /( .^     *
+               *    >-"~"-v"              .        *        .
+*                  /       Y
+   .     .        jo  o    |     .            +
+                 ( ~T~     j                     +     .
+      +           >._-' _./         +
+               /| ;-"~ _  l
+  .           / l/ ,-"~    \     +
+              \//\/      .- \
+       +       Y        /    Y
+               l       I     !
+               ]\      _\    /"\
+              (" ~----( ~   Y.  )
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~
+`
 				fmt.Println(s)
 				return nil
 			},
