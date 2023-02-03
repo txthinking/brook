@@ -17,6 +17,8 @@ package tproxy
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
+	"log"
 	"net"
 	"os"
 	"strconv"
@@ -24,6 +26,7 @@ import (
 	"unsafe"
 
 	"github.com/txthinking/x"
+	"golang.org/x/sys/unix"
 )
 
 func ListenUDP(network string, laddr *net.UDPAddr) (*net.UDPConn, error) {
@@ -40,11 +43,20 @@ func ListenUDP(network string, laddr *net.UDPAddr) (*net.UDPConn, error) {
 	defer f.Close()
 
 	fd := int(f.Fd())
-	if err := syscall.SetsockoptInt(fd, syscall.SOL_IP, syscall.IP_TRANSPARENT, 1); err != nil {
-		return nil, err
-	}
-	if err = syscall.SetsockoptInt(fd, syscall.SOL_IP, syscall.IP_RECVORIGDSTADDR, 1); err != nil {
-		return nil, err
+	if laddr.IP.To4() != nil {
+		if err := syscall.SetsockoptInt(fd, syscall.SOL_IP, syscall.IP_TRANSPARENT, 1); err != nil {
+			return nil, err
+		}
+		if err = syscall.SetsockoptInt(fd, syscall.SOL_IP, syscall.IP_RECVORIGDSTADDR, 1); err != nil {
+			return nil, err
+		}
+	} else {
+		if err := syscall.SetsockoptInt(fd, syscall.SOL_IPV6, unix.IPV6_TRANSPARENT, 1); err != nil {
+			return nil, err
+		}
+		if err = syscall.SetsockoptInt(fd, syscall.SOL_IPV6, unix.IPV6_ORIGDSTADDR, 1); err != nil {
+			return nil, err
+		}
 	}
 	tmp, err := net.FileConn(f)
 	if err != nil {
@@ -53,132 +65,119 @@ func ListenUDP(network string, laddr *net.UDPAddr) (*net.UDPConn, error) {
 	return tmp.(*net.UDPConn), nil
 }
 
-func ReadFromUDP(conn *net.UDPConn, b []byte) (int, *net.UDPAddr, *net.UDPAddr, error) {
-	oob := make([]byte, 1024)
+func ReadFromUDP(conn *net.UDPConn, oob, b []byte) (int, *net.UDPAddr, *net.UDPAddr, error) {
 	n, oobn, _, addr, err := conn.ReadMsgUDP(b, oob)
 	if err != nil {
 		return 0, nil, nil, err
 	}
-
 	msgs, err := syscall.ParseSocketControlMessage(oob[:oobn])
 	if err != nil {
 		return 0, nil, nil, err
 	}
-
-	var originalDst *net.UDPAddr
 	for _, msg := range msgs {
-		if msg.Header.Level != syscall.SOL_IP || msg.Header.Type != syscall.IP_RECVORIGDSTADDR {
-			continue
-		}
-		originalDstRaw := &syscall.RawSockaddrInet4{}
-		if err := binary.Read(bytes.NewReader(msg.Data), binary.LittleEndian, originalDstRaw); err != nil {
-			return 0, nil, nil, err
-		}
-
-		switch originalDstRaw.Family {
-		case syscall.AF_INET:
-			pp := (*syscall.RawSockaddrInet4)(unsafe.Pointer(originalDstRaw))
-			p := (*[2]byte)(unsafe.Pointer(&pp.Port))
-			originalDst = &net.UDPAddr{
+		if msg.Header.Level == syscall.SOL_IP && msg.Header.Type == syscall.IP_RECVORIGDSTADDR {
+			pp := &unix.RawSockaddrInet4{}
+			ai := *(*uint16)(unsafe.Pointer(&msg.Data[unsafe.Offsetof(pp.Family)]))
+			if ai != unix.AF_INET {
+				return 0, nil, nil, errors.New("!AF_INET")
+			}
+			if err = binary.Read(bytes.NewReader(msg.Data), binary.BigEndian, pp); err != nil {
+				return 0, nil, nil, err
+			}
+			dst := &net.UDPAddr{
 				IP:   net.IPv4(pp.Addr[0], pp.Addr[1], pp.Addr[2], pp.Addr[3]),
-				Port: int(p[0])<<8 + int(p[1]),
+				Port: int(pp.Port),
 			}
-		case syscall.AF_INET6:
-			pp := (*syscall.RawSockaddrInet6)(unsafe.Pointer(originalDstRaw))
-			p := (*[2]byte)(unsafe.Pointer(&pp.Port))
-			originalDst = &net.UDPAddr{
+			return n, addr, dst, nil
+		}
+		if msg.Header.Level == unix.SOL_IPV6 && msg.Header.Type == unix.IPV6_ORIGDSTADDR {
+			log.Println(333)
+			pp := &unix.RawSockaddrInet6{}
+			ai := *(*uint16)(unsafe.Pointer(&msg.Data[unsafe.Offsetof(pp.Family)]))
+			if ai != unix.AF_INET6 {
+				return 0, nil, nil, errors.New("!AF_INET6")
+			}
+			scopeId := *(*uint32)(unsafe.Pointer(&msg.Data[unsafe.Offsetof(pp.Scope_id)]))
+			if err = binary.Read(bytes.NewReader(msg.Data), binary.BigEndian, pp); err != nil {
+				return 0, nil, nil, err
+			}
+			dst := &net.UDPAddr{
 				IP:   net.IP(pp.Addr[:]),
-				Port: int(p[0])<<8 + int(p[1]),
-				Zone: strconv.Itoa(int(pp.Scope_id)),
+				Port: int(pp.Port),
+				Zone: strconv.Itoa(int(scopeId)),
 			}
-		default:
-			return 0, nil, nil, nil
+			return n, addr, dst, nil
 		}
 	}
-	if originalDst == nil {
-		return 0, nil, nil, nil
-	}
-	return n, addr, originalDst, nil
+	return 0, nil, nil, nil
 }
 
 func DialUDP(network string, laddr *net.UDPAddr, raddr *net.UDPAddr) (*net.UDPConn, error) {
-	remoteSocketAddress, err := udpAddrToSocketAddr(raddr)
+	var laddrs, raddrs syscall.Sockaddr
+	var ai int
+	if laddr.IP.To4() != nil {
+		lip := [4]byte{}
+		copy(lip[:], laddr.IP.To4())
+		laddrs = &syscall.SockaddrInet4{Addr: lip, Port: laddr.Port}
+		rip := [4]byte{}
+		copy(rip[:], raddr.IP.To4())
+		raddrs = &syscall.SockaddrInet4{Addr: rip, Port: raddr.Port}
+		ai = syscall.AF_INET
+	}
+	if laddr.IP.To4() == nil {
+		lip := [16]byte{}
+		copy(lip[:], laddr.IP.To16())
+		zoneID, err := strconv.ParseUint(laddr.Zone, 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		laddrs = &syscall.SockaddrInet6{Addr: lip, Port: laddr.Port, ZoneId: uint32(zoneID)}
+		rip := [16]byte{}
+		copy(rip[:], raddr.IP.To16())
+		zoneID, err = strconv.ParseUint(raddr.Zone, 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		raddrs = &syscall.SockaddrInet6{Addr: rip, Port: raddr.Port, ZoneId: uint32(zoneID)}
+		ai = syscall.AF_INET6
+	}
+	fd, err := syscall.Socket(ai, syscall.SOCK_DGRAM, 0)
 	if err != nil {
 		return nil, err
 	}
-
-	localSocketAddress, err := udpAddrToSocketAddr(laddr)
-	if err != nil {
-		return nil, err
-	}
-
-	fd, err := syscall.Socket(udpAddrFamily(network, laddr, raddr), syscall.SOCK_DGRAM, 0)
-	if err != nil {
-		return nil, err
-	}
-
 	if err := syscall.SetsockoptInt(fd, syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1); err != nil {
 		syscall.Close(fd)
 		return nil, err
 	}
-
-	if err := syscall.SetsockoptInt(fd, syscall.SOL_IP, syscall.IP_TRANSPARENT, 1); err != nil {
+	if err := syscall.SetsockoptInt(fd, syscall.SOL_SOCKET, unix.SO_REUSEPORT, 1); err != nil {
 		syscall.Close(fd)
 		return nil, err
 	}
-
-	if err := syscall.Bind(fd, localSocketAddress); err != nil {
+	if ai == syscall.AF_INET {
+		if err := syscall.SetsockoptInt(fd, syscall.SOL_IP, syscall.IP_TRANSPARENT, 1); err != nil {
+			syscall.Close(fd)
+			return nil, err
+		}
+	}
+	if ai == syscall.AF_INET6 {
+		if err := syscall.SetsockoptInt(fd, syscall.SOL_IPV6, unix.IPV6_TRANSPARENT, 1); err != nil {
+			syscall.Close(fd)
+			return nil, err
+		}
+	}
+	if err := syscall.Bind(fd, laddrs); err != nil {
 		syscall.Close(fd)
 		return nil, err
 	}
-
-	if err := syscall.Connect(fd, remoteSocketAddress); err != nil {
+	if err := syscall.Connect(fd, raddrs); err != nil {
 		syscall.Close(fd)
 		return nil, err
 	}
-
 	f := os.NewFile(uintptr(fd), string(x.RandomNumber()))
 	defer f.Close()
-
 	c, err := net.FileConn(f)
 	if err != nil {
 		return nil, err
 	}
 	return c.(*net.UDPConn), nil
-}
-
-func udpAddrToSocketAddr(addr *net.UDPAddr) (syscall.Sockaddr, error) {
-	switch {
-	case addr.IP.To4() != nil:
-		ip := [4]byte{}
-		copy(ip[:], addr.IP.To4())
-
-		return &syscall.SockaddrInet4{Addr: ip, Port: addr.Port}, nil
-
-	default:
-		ip := [16]byte{}
-		copy(ip[:], addr.IP.To16())
-
-		zoneID, err := strconv.ParseUint(addr.Zone, 10, 32)
-		if err != nil {
-			return nil, err
-		}
-
-		return &syscall.SockaddrInet6{Addr: ip, Port: addr.Port, ZoneId: uint32(zoneID)}, nil
-	}
-}
-
-func udpAddrFamily(net string, laddr, raddr *net.UDPAddr) int {
-	switch net[len(net)-1] {
-	case '4':
-		return syscall.AF_INET
-	case '6':
-		return syscall.AF_INET6
-	}
-
-	if (laddr == nil || laddr.IP.To4() != nil) &&
-		(raddr == nil || raddr.IP.To4() != nil) {
-		return syscall.AF_INET
-	}
-	return syscall.AF_INET6
 }
