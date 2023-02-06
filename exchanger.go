@@ -15,6 +15,7 @@
 package brook
 
 import (
+	"io"
 	"net"
 )
 
@@ -25,9 +26,14 @@ type Exchanger interface {
 	SetTimeout(int)
 }
 
-func MakeStreamServer(password []byte, c net.Conn, timeout int, withoutbrook bool) (Exchanger, []byte, error) {
-	if !withoutbrook {
-		return NewStreamServer(password, c, timeout)
-	}
-	return NewSimpleStreamServer(password, c, timeout)
+type PacketServerT interface {
+	RemoteToClient(remote net.Conn, timeout int, dst []byte, toclient io.Writer) error
+	Clean()
+}
+
+type PacketClientT interface {
+	LocalToServer(dst, d []byte, server net.Conn, timeout int) error
+	RunServerToLocal(server net.Conn, timeout int, tolocal func(dst, d []byte) (int, error)) error
+	ServerToLocal(server net.Conn, timeout int, tolocal func(dst, d []byte) (int, error)) error
+	Clean()
 }

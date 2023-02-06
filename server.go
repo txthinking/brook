@@ -206,7 +206,7 @@ func (s *Server) RunTCPServer() error {
 					return
 				}
 			}
-			ss, dst, err := MakeStreamServer(s.Password, c, s.TCPTimeout, false)
+			ss, dst, err := NewStreamServer(s.Password, c, s.TCPTimeout)
 			if err != nil {
 				log.Println(err)
 				return

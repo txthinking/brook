@@ -18,35 +18,33 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"io"
 	"log"
 	"net"
 	"net/http"
-	"strconv"
+	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 	cache "github.com/patrickmn/go-cache"
+	"github.com/quic-go/quic-go"
 	"github.com/txthinking/brook/limits"
 	crypto1 "github.com/txthinking/crypto"
+	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
-	"github.com/urfave/negroni"
 	"golang.org/x/crypto/acme/autocert"
 )
 
-// WSServer.
-type WSServer struct {
+type QUICServer struct {
 	Password       []byte
 	Domain         string
-	TCPAddr        *net.TCPAddr
-	HTTPServer     *http.Server
-	HTTPSServer    *http.Server
+	Addr           string
 	TCPTimeout     int
 	UDPTimeout     int
-	Path           string
 	UDPSrc         *cache.Cache
+	UDPExchanges   *cache.Cache
 	BlockDomain    map[string]byte
 	BlockCIDR4     []*net.IPNet
 	BlockCIDR6     []*net.IPNet
@@ -54,24 +52,16 @@ type WSServer struct {
 	BlockCache     *cache.Cache
 	BlockLock      *sync.RWMutex
 	Done           chan byte
-	WSSServerPort  int64
 	Cert           []byte
 	CertKey        []byte
+	Dial           func(network, laddr, raddr string) (net.Conn, error)
+	RunnerGroup    *runnergroup.RunnerGroup
 	WithoutBrook   bool
 	PasswordSha256 []byte
-	Dial           func(network, laddr, raddr string) (net.Conn, error)
 }
 
-// NewWSServer.
-func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64, blockGeoIP []string) (*WSServer, error) {
-	var taddr *net.TCPAddr
+func NewQUICServer(addr, password, domain string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64, blockGeoIP []string) (*QUICServer, error) {
 	var err error
-	if domain == "" {
-		taddr, err = net.ResolveTCPAddr("tcp", addr)
-		if err != nil {
-			return nil, err
-		}
-	}
 	var ds map[string]byte
 	if blockDomainList != "" {
 		ds, err = ReadDomainList(blockDomainList)
@@ -93,6 +83,7 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 			return nil, err
 		}
 	}
+	cs := cache.New(cache.NoExpiration, cache.NoExpiration)
 	cs2 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	cs3 := cache.New(cache.NoExpiration, cache.NoExpiration)
 	var lock *sync.RWMutex
@@ -103,18 +94,32 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
+	if runtime.GOOS == "linux" {
+		c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
+		b, err := c.CombinedOutput()
+		if err != nil {
+			log.Println("Try to raise UDP Receive Buffer Size, got", err, string(b))
+		}
+	}
+	if runtime.GOOS == "darwin" {
+		c := exec.Command("sysctl", "-w", "kern.ipc.maxsockbuf=3014656")
+		b, err := c.CombinedOutput()
+		if err != nil {
+			log.Println("Try to raise UDP Receive Buffer Size, got", err, string(b))
+		}
+	}
 	b, err := crypto1.SHA256Bytes([]byte(password))
 	if err != nil {
 		return nil, err
 	}
-	s := &WSServer{
+	s := &QUICServer{
 		Password:       []byte(password),
 		Domain:         domain,
-		TCPAddr:        taddr,
+		Addr:           addr,
 		TCPTimeout:     tcpTimeout,
 		UDPTimeout:     udpTimeout,
-		Path:           path,
 		UDPSrc:         cs2,
+		UDPExchanges:   cs,
 		BlockDomain:    ds,
 		BlockCIDR4:     c4,
 		BlockCIDR6:     c6,
@@ -122,6 +127,7 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 		BlockCache:     cs3,
 		BlockLock:      lock,
 		Done:           done,
+		RunnerGroup:    runnergroup.New(),
 		PasswordSha256: b,
 	}
 	if updateListInterval != 0 {
@@ -172,37 +178,7 @@ func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int
 	return s, nil
 }
 
-// Run server.
-func (s *WSServer) ListenAndServe() error {
-	r := mux.NewRouter()
-	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(404)
-		return
-	})
-	r.Methods("GET").Path(s.Path).Handler(s)
-
-	n := negroni.New()
-	n.Use(negroni.NewRecovery())
-	if Debug {
-		n.Use(negroni.NewLogger())
-	}
-	n.UseFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		w.Header().Set("Server", "nginx")
-		next(w, r)
-	})
-	n.UseHandler(r)
-
-	if s.Domain == "" {
-		s.HTTPServer = &http.Server{
-			Addr:           s.TCPAddr.String(),
-			ReadTimeout:    5 * time.Second,
-			WriteTimeout:   10 * time.Second,
-			IdleTimeout:    120 * time.Second,
-			MaxHeaderBytes: 1 << 20,
-			Handler:        n,
-		}
-		return s.HTTPServer.ListenAndServe()
-	}
+func (s *QUICServer) ListenAndServe() error {
 	var t *tls.Config
 	if s.Cert == nil || s.CertKey == nil {
 		m := autocert.Manager{
@@ -211,85 +187,114 @@ func (s *WSServer) ListenAndServe() error {
 			HostPolicy: autocert.HostWhitelist(s.Domain),
 			Email:      "cloud@txthinking.com",
 		}
-		go func() {
-			log.Println(http.ListenAndServe(":80", m.HTTPHandler(nil)))
-		}()
-		t = &tls.Config{GetCertificate: m.GetCertificate}
+		server := &http.Server{Addr: ":80", Handler: m.HTTPHandler(nil)}
+		s.RunnerGroup.Add(&runnergroup.Runner{
+			Start: func() error {
+				return server.ListenAndServe()
+			},
+			Stop: func() error {
+				return server.Shutdown(context.Background())
+			},
+		})
+		t = &tls.Config{GetCertificate: m.GetCertificate, ServerName: s.Domain, NextProtos: []string{"h3"}}
 	}
 	if s.Cert != nil && s.CertKey != nil {
 		ct, err := tls.X509KeyPair(s.Cert, s.CertKey)
 		if err != nil {
 			return err
 		}
-		t = &tls.Config{Certificates: []tls.Certificate{ct}, ServerName: s.Domain}
+		t = &tls.Config{Certificates: []tls.Certificate{ct}, ServerName: s.Domain, NextProtos: []string{"h3"}}
 	}
-	s.HTTPSServer = &http.Server{
-		Addr:         ":" + strconv.FormatInt(s.WSSServerPort, 10),
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  120 * time.Second,
-		Handler:      n,
-		TLSConfig:    t,
+	l, err := quic.ListenAddr(s.Addr, t, &quic.Config{MaxIdleTimeout: time.Duration(s.UDPTimeout) * time.Second, EnableDatagrams: true})
+	if err != nil {
+		return err
 	}
+	s.RunnerGroup.Add(&runnergroup.Runner{
+		Start: func() error {
+			for {
+				c, err := l.Accept(context.Background())
+				if err != nil {
+					return err
+				}
+				go func(c quic.Connection) {
+					defer c.CloseWithError(0, "defer")
+					for {
+						st, err := c.AcceptStream(context.Background())
+						if err != nil {
+							return
+						}
+						go func(c net.Conn) {
+							defer c.Close()
+							if s.TCPTimeout != 0 {
+								if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
+									log.Println(err)
+									return
+								}
+							}
+							var ss Exchanger
+							var dst []byte
+							if !s.WithoutBrook {
+								ss, dst, err = NewStreamServer(s.Password, c, s.TCPTimeout)
+							}
+							if s.WithoutBrook {
+								ss, dst, err = NewSimpleStreamServer(s.PasswordSha256, c, s.TCPTimeout)
+							}
+							if err != nil {
+								log.Println(err)
+								return
+							}
+							defer ss.Clean()
+							if err := s.TCPHandle(ss, dst); err != nil {
+								log.Println(err)
+							}
+						}(&QUICConn{
+							Conn:   c,
+							Stream: st,
+							LAddr: &net.TCPAddr{
+								IP:   c.LocalAddr().(*net.UDPAddr).IP,
+								Port: c.LocalAddr().(*net.UDPAddr).Port,
+								Zone: c.LocalAddr().(*net.UDPAddr).Zone,
+							},
+							RAddr: &net.TCPAddr{
+								IP:   c.RemoteAddr().(*net.UDPAddr).IP,
+								Port: c.RemoteAddr().(*net.UDPAddr).Port,
+								Zone: c.RemoteAddr().(*net.UDPAddr).Zone,
+							},
+						})
+					}
+				}(c)
+				if c.ConnectionState().SupportsDatagrams {
+					go func(c quic.Connection) {
+						defer c.CloseWithError(0, "defer")
+						for {
+							b, err := c.ReceiveMessage()
+							if err != nil {
+								return
+							}
+							go func(addr net.Addr, b []byte, c quic.Connection) {
+								if err := s.UDPHandle(addr, b, c); err != nil {
+									log.Println(err)
+									return
+								}
+							}(c.RemoteAddr(), b, c)
+						}
+					}(c)
+				}
+			}
+			return nil
+		},
+		Stop: func() error {
+			return l.Close()
+		},
+	})
 	go func() {
 		time.Sleep(1 * time.Second)
-		c := &http.Client{
-			Timeout: 10 * time.Second,
-		}
-		_, _ = c.Get("https://" + s.Domain + s.Path)
+		_, _ = quic.DialAddr(net.JoinHostPort(s.Domain, s.Addr[1:]), &tls.Config{NextProtos: []string{"h3"}}, nil)
 	}()
-	return s.HTTPSServer.ListenAndServeTLS("", "")
+	return s.RunnerGroup.Wait()
 }
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  65507,
-	WriteBufferSize: 65507,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
-}
-
-func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		return
-	}
-	c := conn.UnderlyingConn()
-	defer c.Close()
-	if s.TCPTimeout != 0 {
-		if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-			log.Println(err)
-			return
-		}
-	}
-	var ss Exchanger
-	var dst []byte
-	if !s.WithoutBrook {
-		ss, dst, err = NewStreamServer(s.Password, c, s.TCPTimeout)
-	}
-	if s.WithoutBrook {
-		ss, dst, err = NewSimpleStreamServer(s.PasswordSha256, c, s.TCPTimeout)
-	}
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	defer ss.Clean()
-	if ss.NetworkName() == "tcp" {
-		if err := s.TCPHandle(ss, dst); err != nil {
-			log.Println(err)
-		}
-	}
-	if ss.NetworkName() == "udp" {
-		ss.SetTimeout(s.UDPTimeout)
-		if err := s.UDPHandle(ss, c.RemoteAddr().String(), dst); err != nil {
-			log.Println(err)
-		}
-	}
-}
-
-// TCPHandle handles request.
-func (s *WSServer) TCPHandle(ss Exchanger, dst []byte) error {
+func (s *QUICServer) TCPHandle(ss Exchanger, dst []byte) error {
 	address := socks5.ToAddress(dst[0], dst[1:len(dst)-2], dst[len(dst)-2:])
 	if Debug {
 		log.Println("TCP", address)
@@ -332,9 +337,29 @@ func (s *WSServer) TCPHandle(ss Exchanger, dst []byte) error {
 	return nil
 }
 
-// UDPHandle handles packet.
-func (s *WSServer) UDPHandle(ss Exchanger, src string, dstb []byte) error {
+func (s *QUICServer) UDPHandle(addr net.Addr, b []byte, qc quic.Connection) error {
+	src := addr.String()
+	var dstb, d []byte
+	var w WriterFunc
+	var err error
+	if !s.WithoutBrook {
+		dstb, d, w, err = PacketClientToRemote(s.Password, b)
+	}
+	if s.WithoutBrook {
+		dstb, d, w, err = SimplePacketClientToRemote(s.PasswordSha256, b)
+	}
+	if err != nil {
+		return err
+	}
 	dst := socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:])
+	any, ok := s.UDPExchanges.Get(src + dst)
+	if ok {
+		ue := any.(*UDPExchange)
+		if _, err := ue.Any.(io.Writer).Write(d); err != nil {
+			return err
+		}
+		return nil
+	}
 	if Debug {
 		log.Println("UDP", dst)
 	}
@@ -354,7 +379,7 @@ func (s *WSServer) UDPHandle(ss Exchanger, src string, dstb []byte) error {
 		return errors.New("block " + dst)
 	}
 	var laddr *net.UDPAddr
-	any, ok := s.UDPSrc.Get(src + dst)
+	any, ok = s.UDPSrc.Get(src + dst)
 	if ok {
 		laddr = any.(*net.UDPAddr)
 	}
@@ -399,17 +424,41 @@ func (s *WSServer) UDPHandle(ss Exchanger, src string, dstb []byte) error {
 	if laddr == nil {
 		s.UDPSrc.Set(src+dst, rc.LocalAddr().(*net.UDPAddr), -1)
 	}
-	if err := ss.Exchange(rc); err != nil {
-		return nil
+	wer := w(rc.Write)
+	if _, err := wer.Write(d); err != nil {
+		return err
+	}
+	ue := &UDPExchange{
+		Any: wer,
+	}
+	s.UDPExchanges.Set(src+dst, ue, -1)
+	defer s.UDPExchanges.Delete(src + dst)
+	var ps PacketServerT
+	if !s.WithoutBrook {
+		ps = NewPacketServer(s.Password)
+	}
+	if s.WithoutBrook {
+		ps = NewSimplePacketServer(s.PasswordSha256)
+	}
+	defer ps.Clean()
+	err = ps.RemoteToClient(rc, s.UDPTimeout, dstb, w(func(b []byte) (int, error) {
+		if len(b) > 1197 {
+			err := errors.New("quic max datagram size is 1197")
+			log.Println(err)
+			return 0, err
+		}
+		if err := qc.SendMessage(b); err != nil {
+			return 0, err
+		}
+		return len(b), nil
+	}))
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
-// Shutdown server.
-func (s *WSServer) Shutdown() error {
+func (s *QUICServer) Shutdown() error {
 	close(s.Done)
-	if s.Domain == "" {
-		return s.HTTPServer.Shutdown(context.Background())
-	}
-	return s.HTTPSServer.Shutdown(context.Background())
+	return s.RunnerGroup.Done()
 }

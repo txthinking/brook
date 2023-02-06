@@ -818,6 +818,260 @@ func main() {
 			},
 		},
 		&cli.Command{
+			Name:  "quicserver",
+			Usage: "Run as brook quicserver, both TCP and UDP",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "domainaddress",
+					Usage: "Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used",
+				},
+				&cli.StringFlag{
+					Name:  "cert",
+					Usage: "The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically",
+				},
+				&cli.StringFlag{
+					Name:  "certkey",
+					Usage: "The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 0,
+					Usage: "Connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpTimeout",
+					Value: 60,
+					Usage: "Connection deadline time (s)",
+				},
+				&cli.StringFlag{
+					Name:  "blockDomainList",
+					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockCIDR4List",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt",
+				},
+				&cli.StringFlag{
+					Name:  "blockCIDR6List",
+					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt",
+				},
+				&cli.StringSliceFlag{
+					Name:  "blockGeoIP",
+					Usage: "Block IP by Geo country code, such as US",
+				},
+				&cli.Int64Flag{
+					Name:  "updateListInterval",
+					Usage: "Update list interval, second. default 0, only read one time on start",
+				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if debug {
+					enableDebug()
+				}
+				if c.String("domainaddress") == "" || c.String("password") == "" {
+					return cli.ShowSubcommandHelp(c)
+				}
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
+					return errors.New("--blockDomainList must be with absolute path")
+				}
+				if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "https://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
+					return errors.New("--blockCIDR4List must be with absolute path")
+				}
+				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
+					return errors.New("--blockCIDR6List must be with absolute path")
+				}
+				if c.String("cert") != "" && !filepath.IsAbs(c.String("cert")) {
+					return errors.New("--cert must be with absolute path")
+				}
+				if c.String("certkey") != "" && !filepath.IsAbs(c.String("certkey")) {
+					return errors.New("--certkey must be with absolute path")
+				}
+				h, p, err := net.SplitHostPort(c.String("domainaddress"))
+				if err != nil {
+					return err
+				}
+				s, err := brook.NewQUICServer(":"+p, c.String("password"), h, c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"), c.StringSlice("blockGeoIP"))
+				if err != nil {
+					return err
+				}
+				s.WithoutBrook = c.Bool("withoutBrookProtocol")
+				if c.String("cert") != "" {
+					b, err := ioutil.ReadFile(c.String("cert"))
+					if err != nil {
+						return err
+					}
+					s.Cert = b
+				}
+				if c.String("certkey") != "" {
+					b, err := ioutil.ReadFile(c.String("certkey"))
+					if err != nil {
+						return err
+					}
+					s.CertKey = b
+				}
+				g := runnergroup.New()
+				g.Add(&runnergroup.Runner{
+					Start: func() error {
+						return s.ListenAndServe()
+					},
+					Stop: func() error {
+						return s.Shutdown()
+					},
+				})
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					g.Done()
+				}()
+				return g.Wait()
+			},
+		},
+		&cli.Command{
+			Name:  "quicclient",
+			Usage: "Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook quicclient <-> $ brook quicserver <-> dst]",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "quicserver",
+					Aliases: []string{"s"},
+					Usage:   "Brook quicserver address, like: quic://google.com:443. Do not omit the port under any circumstances",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Brook quicserver password",
+				},
+				&cli.StringFlag{
+					Name:  "socks5",
+					Value: "127.0.0.1:1080",
+					Usage: "Where to listen for SOCKS5 connections",
+				},
+				&cli.StringFlag{
+					Name:  "socks5ServerIP",
+					Usage: "Only if your socks5 server IP is different from listen IP",
+				},
+				&cli.StringFlag{
+					Name:  "http",
+					Usage: "Where to listen for HTTP proxy connections",
+				},
+				&cli.IntFlag{
+					Name:  "tcpTimeout",
+					Value: 0,
+					Usage: "Connection deadline time (s)",
+				},
+				&cli.IntFlag{
+					Name:  "udpTimeout",
+					Value: 60,
+					Usage: "Connection deadline time (s)",
+				},
+				&cli.StringFlag{
+					Name:  "address",
+					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.StringFlag{
+					Name:  "ca",
+					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
+				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if debug {
+					enableDebug()
+				}
+				if c.String("socks5") == "" || c.String("quicserver") == "" || c.String("password") == "" {
+					return cli.ShowSubcommandHelp(c)
+				}
+				h, p, err := net.SplitHostPort(c.String("socks5"))
+				if err != nil {
+					return err
+				}
+				if h == "" && c.String("socks5ServerIP") == "" {
+					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
+				}
+				var ip string
+				if h != "" {
+					ip = h
+				}
+				if c.String("socks5ServerIP") != "" {
+					ip = c.String("socks5ServerIP")
+				}
+				s, err := brook.NewQUICClient(c.String("socks5"), ip, c.String("quicserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
+				}
+				s.WithoutBrook = c.Bool("withoutBrookProtocol")
+				if c.String("address") != "" {
+					s.ServerAddress = c.String("address")
+				}
+				if c.String("ca") != "" {
+					b, err := ioutil.ReadFile(c.String("ca"))
+					if err != nil {
+						return err
+					}
+					roots := x509.NewCertPool()
+					ok := roots.AppendCertsFromPEM(b)
+					if !ok {
+						return errors.New("failed to parse root certificate")
+					}
+					s.TLSConfig.RootCAs = roots
+				}
+				g := runnergroup.New()
+				g.Add(&runnergroup.Runner{
+					Start: func() error {
+						return s.ListenAndServe()
+					},
+					Stop: func() error {
+						return s.Shutdown()
+					},
+				})
+				if c.String("http") != "" {
+					h, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(ip, p), "", "", c.Int("tcpTimeout"))
+					if err != nil {
+						return err
+					}
+					g.Add(&runnergroup.Runner{
+						Start: func() error {
+							return h.ListenAndServe()
+						},
+						Stop: func() error {
+							return h.Shutdown()
+						},
+					})
+				}
+				go func() {
+					sigs := make(chan os.Signal, 1)
+					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+					<-sigs
+					g.Done()
+				}()
+				return g.Wait()
+			},
+		},
+		&cli.Command{
 			Name:  "relayoverbrook",
 			Usage: "Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook server/wsserver/wssserver <-> to address]",
 			BashComplete: func(c *cli.Context) {
