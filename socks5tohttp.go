@@ -26,13 +26,17 @@ import (
 )
 
 type Socks5ToHTTP struct {
-	Addr           *net.TCPAddr
-	Socks5Address  string
-	Socks5Username string
-	Socks5Password string
-	Dial           proxy.Dialer
-	TCPTimeout     int
-	Listen         *net.TCPListener
+	Addr       *net.TCPAddr
+	Dial       proxy.Dialer
+	TCPTimeout int
+	Listen     *net.TCPListener
+}
+
+type _pd struct {
+}
+
+func (p *_pd) Dial(network, addr string) (c net.Conn, err error) {
+	return DialTCP(network, "", addr)
 }
 
 func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, tcpTimeout int) (*Socks5ToHTTP, error) {
@@ -43,7 +47,7 @@ func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, tc
 			Password: socks5password,
 		}
 	}
-	dial, err := proxy.SOCKS5("tcp", socks5addr, auth, Dial)
+	dial, err := proxy.SOCKS5("tcp", socks5addr, auth, &_pd{})
 	if err != nil {
 		return nil, err
 	}
@@ -55,12 +59,9 @@ func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, tc
 		log.Println("Try to raise system limits, got", err)
 	}
 	return &Socks5ToHTTP{
-		Addr:           ta,
-		Socks5Address:  socks5addr,
-		Socks5Username: socks5username,
-		Socks5Password: socks5password,
-		Dial:           dial,
-		TCPTimeout:     tcpTimeout,
+		Addr:       ta,
+		Dial:       dial,
+		TCPTimeout: tcpTimeout,
 	}, nil
 }
 

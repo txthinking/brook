@@ -25,6 +25,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/txthinking/socks5"
 	"github.com/txthinking/x"
 	"golang.org/x/crypto/hkdf"
 )
@@ -38,33 +39,40 @@ type StreamServer struct {
 	RB      []byte
 	WB      []byte
 	Timeout int
-	Network string
+	network string
+	src     string
+	dst     string
 }
 
-func NewStreamServer(password []byte, client net.Conn, timeout int) (*StreamServer, []byte, error) {
-	s := &StreamServer{Client: client, Timeout: timeout}
+func NewStreamServer(password []byte, src string, client net.Conn, timeout, udptimeout int) (Exchanger, error) {
+	if timeout != 0 {
+		if err := client.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second)); err != nil {
+			return nil, err
+		}
+	}
+	s := &StreamServer{Client: client, Timeout: timeout, src: src}
 	s.cn = x.BP12.Get().([]byte)
 	if _, err := io.ReadFull(s.Client, s.cn); err != nil {
 		x.BP12.Put(s.cn)
-		return nil, nil, err
+		return nil, err
 	}
 	ck := x.BP32.Get().([]byte)
 	if _, err := io.ReadFull(hkdf.New(sha256.New, password, s.cn, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), ck); err != nil {
 		x.BP12.Put(s.cn)
 		x.BP32.Put(ck)
-		return nil, nil, err
+		return nil, err
 	}
 	cb, err := aes.NewCipher(ck)
 	if err != nil {
 		x.BP12.Put(s.cn)
 		x.BP32.Put(ck)
-		return nil, nil, err
+		return nil, err
 	}
 	x.BP32.Put(ck)
 	s.ca, err = cipher.NewGCM(cb)
 	if err != nil {
 		x.BP12.Put(s.cn)
-		return nil, nil, err
+		return nil, err
 	}
 
 	s.RB = x.BP2048.Get().([]byte)
@@ -72,20 +80,21 @@ func NewStreamServer(password []byte, client net.Conn, timeout int) (*StreamServ
 	if err != nil {
 		x.BP12.Put(s.cn)
 		x.BP2048.Put(s.RB)
-		return nil, nil, err
+		return nil, err
 	}
 	i := int64(binary.BigEndian.Uint32(s.RB[2+16 : 2+16+4]))
 	if time.Now().Unix()-i > 60 {
 		x.BP12.Put(s.cn)
 		x.BP2048.Put(s.RB)
 		WaitReadErr(s.Client)
-		return nil, nil, errors.New("Expired request")
+		return nil, errors.New("Expired request")
 	}
 	if i%2 == 0 {
-		s.Network = "tcp"
+		s.network = "tcp"
 	}
 	if i%2 == 1 {
-		s.Network = "udp"
+		s.network = "udp"
+		s.Timeout = udptimeout
 	}
 
 	s.sn = x.BP12.Get().([]byte)
@@ -93,7 +102,7 @@ func NewStreamServer(password []byte, client net.Conn, timeout int) (*StreamServ
 		x.BP12.Put(s.cn)
 		x.BP2048.Put(s.RB)
 		x.BP12.Put(s.sn)
-		return nil, nil, err
+		return nil, err
 	}
 	sk := x.BP32.Get().([]byte)
 	if _, err := io.ReadFull(hkdf.New(sha256.New, password, s.sn, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), sk); err != nil {
@@ -101,14 +110,14 @@ func NewStreamServer(password []byte, client net.Conn, timeout int) (*StreamServ
 		x.BP2048.Put(s.RB)
 		x.BP12.Put(s.sn)
 		x.BP32.Put(sk)
-		return nil, nil, err
+		return nil, err
 	}
 	if _, err := s.Client.Write(s.sn); err != nil {
 		x.BP12.Put(s.cn)
 		x.BP2048.Put(s.RB)
 		x.BP12.Put(s.sn)
 		x.BP32.Put(sk)
-		return nil, nil, err
+		return nil, err
 	}
 	sb, err := aes.NewCipher(sk)
 	if err != nil {
@@ -116,7 +125,7 @@ func NewStreamServer(password []byte, client net.Conn, timeout int) (*StreamServ
 		x.BP2048.Put(s.RB)
 		x.BP12.Put(s.sn)
 		x.BP32.Put(sk)
-		return nil, nil, err
+		return nil, err
 	}
 	x.BP32.Put(sk)
 	s.sa, err = cipher.NewGCM(sb)
@@ -124,24 +133,24 @@ func NewStreamServer(password []byte, client net.Conn, timeout int) (*StreamServ
 		x.BP12.Put(s.cn)
 		x.BP2048.Put(s.RB)
 		x.BP12.Put(s.sn)
-		return nil, nil, err
+		return nil, err
 	}
 
-	if s.Network == "tcp" {
+	if s.network == "tcp" {
 		s.WB = x.BP2048.Get().([]byte)
 	}
-	if s.Network == "udp" {
+	if s.network == "udp" {
 		RB := x.BP65507.Get().([]byte)
 		copy(RB[2+16+4:2+16+l], s.RB[2+16+4:2+16+l])
 		x.BP2048.Put(s.RB)
 		s.RB = RB
 		s.WB = x.BP65507.Get().([]byte)
 	}
-	return s, s.RB[2+16+4 : 2+16+l], nil
+	s.dst = socks5.ToAddress(s.RB[2+16+4], s.RB[2+16+4+1:2+16+l-2], s.RB[2+16+l-2:])
+	return ServerGate(s)
 }
 
 func (s *StreamServer) Exchange(remote net.Conn) error {
-	defer remote.Close()
 	go func() {
 		for {
 			if s.Timeout != 0 {
@@ -210,18 +219,24 @@ func (s *StreamServer) Read() (int, error) {
 func (s *StreamServer) Clean() {
 	x.BP12.Put(s.cn)
 	x.BP12.Put(s.sn)
-	if s.Network == "tcp" {
+	if s.network == "tcp" {
 		x.BP2048.Put(s.WB)
 		x.BP2048.Put(s.RB)
 	}
-	if s.Network == "udp" {
+	if s.network == "udp" {
 		x.BP65507.Put(s.WB)
 		x.BP65507.Put(s.RB)
 	}
 }
-func (s *StreamServer) NetworkName() string {
-	return s.Network
+
+func (s *StreamServer) Network() string {
+	return s.network
 }
-func (s *StreamServer) SetTimeout(i int) {
-	s.Timeout = i
+
+func (s *StreamServer) Src() string {
+	return s.src
+}
+
+func (s *StreamServer) Dst() string {
+	return s.dst
 }

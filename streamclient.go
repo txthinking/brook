@@ -25,29 +25,35 @@ import (
 	"net"
 	"time"
 
+	"github.com/txthinking/socks5"
 	"github.com/txthinking/x"
 	"golang.org/x/crypto/hkdf"
 )
 
 type StreamClient struct {
-	Server        net.Conn
-	cn            []byte
-	ca            cipher.AEAD
-	sn            []byte
-	sa            cipher.AEAD
-	RB            []byte
-	WB            []byte
-	Timeout       int
-	Network       string
-	RemoteAddress net.Addr
-	Cache         []byte
+	Server  net.Conn
+	cn      []byte
+	ca      cipher.AEAD
+	sn      []byte
+	sa      cipher.AEAD
+	RB      []byte
+	WB      []byte
+	Timeout int
+	network string
+	src     string
+	dst     string
 }
 
-func NewStreamClient(network string, password, dst []byte, server net.Conn, timeout int) (*StreamClient, error) {
+func NewStreamClient(network string, password []byte, src string, server net.Conn, timeout int, dst []byte) (Exchanger, error) {
+	if timeout != 0 {
+		if err := server.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second)); err != nil {
+			return nil, err
+		}
+	}
 	if len(dst) > 2048-2-16-4-16 {
 		return nil, errors.New("dst too long")
 	}
-	c := &StreamClient{Network: network, Server: server, Timeout: timeout, Cache: make([]byte, 0)}
+	c := &StreamClient{network: network, Server: server, Timeout: timeout, src: src, dst: socks5.ToAddress(dst[0], dst[1:len(dst)-2], dst[len(dst)-2:])}
 
 	c.cn = x.BP12.Get().([]byte)
 	if _, err := io.ReadFull(rand.Reader, c.cn); err != nil {
@@ -80,10 +86,10 @@ func NewStreamClient(network string, password, dst []byte, server net.Conn, time
 
 	c.WB = x.BP2048.Get().([]byte)
 	i := time.Now().Unix()
-	if c.Network == "tcp" && i%2 != 0 {
+	if c.network == "tcp" && i%2 != 0 {
 		i += 1
 	}
-	if c.Network == "udp" && i%2 != 1 {
+	if c.network == "udp" && i%2 != 1 {
 		i += 1
 	}
 	binary.BigEndian.PutUint32(c.WB[2+16:2+16+4], uint32(i))
@@ -125,17 +131,15 @@ func NewStreamClient(network string, password, dst []byte, server net.Conn, time
 		x.BP12.Put(c.sn)
 		return nil, err
 	}
-
-	if c.Network == "tcp" {
+	if c.network == "tcp" {
 		c.RB = x.BP2048.Get().([]byte)
 	}
-	if c.Network == "udp" {
+	if c.network == "udp" {
 		x.BP2048.Put(c.WB)
 		c.WB = x.BP65507.Get().([]byte)
 		c.RB = x.BP65507.Get().([]byte)
 	}
-
-	return c, nil
+	return ClientGate(c)
 }
 
 func (c *StreamClient) Exchange(local net.Conn) error {
@@ -206,18 +210,24 @@ func (c *StreamClient) ReadL() (int, error) {
 func (c *StreamClient) Clean() {
 	x.BP12.Put(c.cn)
 	x.BP12.Put(c.sn)
-	if c.Network == "tcp" {
+	if c.network == "tcp" {
 		x.BP2048.Put(c.WB)
 		x.BP2048.Put(c.RB)
 	}
-	if c.Network == "udp" {
+	if c.network == "udp" {
 		x.BP65507.Put(c.WB)
 		x.BP65507.Put(c.RB)
 	}
 }
-func (s *StreamClient) NetworkName() string {
-	return s.Network
+
+func (s *StreamClient) Network() string {
+	return s.network
 }
-func (s *StreamClient) SetTimeout(i int) {
-	s.Timeout = i
+
+func (s *StreamClient) Src() string {
+	return s.src
+}
+
+func (s *StreamClient) Dst() string {
+	return s.dst
 }

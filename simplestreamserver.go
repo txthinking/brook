@@ -22,63 +22,72 @@ import (
 	"net"
 	"time"
 
+	"github.com/txthinking/socks5"
 	"github.com/txthinking/x"
 )
 
 type SimpleStreamServer struct {
 	Client  net.Conn
 	Timeout int
-	Network string
 	RB      []byte
 	WB      []byte
+	network string
+	src     string
+	dst     string
 }
 
-func NewSimpleStreamServer(password []byte, client net.Conn, timeout int) (*SimpleStreamServer, []byte, error) {
-	s := &SimpleStreamServer{Client: client, Timeout: timeout}
+func NewSimpleStreamServer(password []byte, src string, client net.Conn, timeout, udptimeout int) (Exchanger, error) {
+	if timeout != 0 {
+		if err := client.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second)); err != nil {
+			return nil, err
+		}
+	}
+	s := &SimpleStreamServer{Client: client, Timeout: timeout, src: src}
 	b := x.BP2048.Get().([]byte)
 	if _, err := io.ReadFull(s.Client, b[:32+2]); err != nil {
 		x.BP2048.Put(b)
-		return nil, nil, err
+		return nil, err
 	}
 	if bytes.Compare(password, b[:32]) != 0 {
 		x.BP2048.Put(b)
 		WaitReadErr(s.Client)
-		return nil, nil, errors.New("Password is wrong")
+		return nil, errors.New("Password is wrong")
 	}
 	l := int(binary.BigEndian.Uint16(b[32:34]))
 	if l > 2048 {
 		x.BP2048.Put(b)
-		return nil, nil, errors.New("data too long")
+		return nil, errors.New("data too long")
 	}
 	if _, err := io.ReadFull(s.Client, b[:l]); err != nil {
 		x.BP2048.Put(b)
-		return nil, nil, err
+		return nil, err
 	}
 	i := int64(binary.BigEndian.Uint32(b[:4]))
 	if time.Now().Unix()-i > 60 {
 		x.BP2048.Put(b)
 		WaitReadErr(s.Client)
-		return nil, nil, errors.New("Expired request")
+		return nil, errors.New("Expired request")
 	}
 	if i%2 == 0 {
-		s.Network = "tcp"
+		s.network = "tcp"
 		s.RB = b
 		s.WB = x.BP2048.Get().([]byte)
 	}
 	if i%2 == 1 {
-		s.Network = "udp"
+		s.network = "udp"
+		s.Timeout = udptimeout
 		s.RB = x.BP65507.Get().([]byte)
 		copy(s.RB[:l], b[:l])
 		x.BP2048.Put(b)
 		s.WB = x.BP65507.Get().([]byte)
 	}
-	return s, s.RB[4:l], nil
+	s.dst = socks5.ToAddress(s.RB[4], s.RB[4+1:l-2], s.RB[l-2:])
+	return ServerGate(s)
 }
 
 func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
-	defer remote.Close()
 	go func() {
-		if s.Network == "tcp" && s.Timeout == 0 {
+		if s.network == "tcp" && s.Timeout == 0 {
 			io.Copy(s.Client, remote)
 			return
 		}
@@ -88,7 +97,7 @@ func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
 					return
 				}
 			}
-			if s.Network == "tcp" {
+			if s.network == "tcp" {
 				l, err := remote.Read(s.WB)
 				if err != nil {
 					return
@@ -97,7 +106,7 @@ func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
 					return
 				}
 			}
-			if s.Network == "udp" {
+			if s.network == "udp" {
 				l, err := remote.Read(s.WB[2:])
 				if err != nil {
 					return
@@ -109,7 +118,7 @@ func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
 			}
 		}
 	}()
-	if s.Network == "tcp" && s.Timeout == 0 {
+	if s.network == "tcp" && s.Timeout == 0 {
 		io.Copy(remote, s.Client)
 		return nil
 	}
@@ -119,7 +128,7 @@ func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
 				return nil
 			}
 		}
-		if s.Network == "tcp" {
+		if s.network == "tcp" {
 			l, err := s.Client.Read(s.RB)
 			if err != nil {
 				return nil
@@ -128,7 +137,7 @@ func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
 				return nil
 			}
 		}
-		if s.Network == "udp" {
+		if s.network == "udp" {
 			if _, err := io.ReadFull(s.Client, s.RB[:2]); err != nil {
 				return nil
 			}
@@ -147,19 +156,25 @@ func (s *SimpleStreamServer) Exchange(remote net.Conn) error {
 	return nil
 }
 
-func (s *SimpleStreamServer) NetworkName() string {
-	return s.Network
+func (s *SimpleStreamServer) Network() string {
+	return s.network
 }
+
+func (s *SimpleStreamServer) Src() string {
+	return s.src
+}
+
+func (s *SimpleStreamServer) Dst() string {
+	return s.dst
+}
+
 func (s *SimpleStreamServer) Clean() {
-	if s.Network == "tcp" {
+	if s.network == "tcp" {
 		x.BP2048.Put(s.WB)
 		x.BP2048.Put(s.RB)
 	}
-	if s.Network == "udp" {
+	if s.network == "udp" {
 		x.BP65507.Put(s.WB)
 		x.BP65507.Put(s.RB)
 	}
-}
-func (s *SimpleStreamServer) SetTimeout(i int) {
-	s.Timeout = i
 }

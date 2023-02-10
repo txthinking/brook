@@ -23,12 +23,24 @@ import (
 	"github.com/quic-go/quic-go"
 )
 
-func QUICDialUDP(laddr, raddr *net.UDPAddr, host string, tc *tls.Config, idleTime int) (net.Conn, error) {
-	rc, err := ListenUDP("udp", laddr)
+func QUICDialUDP(src, dst, addr, host string, tc *tls.Config, idleTime int) (net.Conn, error) {
+	var rc *net.UDPConn
+	var err error
+	if src == "" || dst == "" {
+		rc, err = ListenUDP("udp", nil)
+	}
+	if src != "" && dst != "" {
+		rc, err = NATListenUDP("udp", src, dst)
+	}
 	if err != nil {
 		return nil, err
 	}
-	rc1, err := quic.Dial(rc, raddr, host, tc, &quic.Config{MaxIdleTimeout: time.Duration(idleTime) * time.Second, EnableDatagrams: true})
+	raddr, err := Resolve("udp", addr)
+	if err != nil {
+		rc.Close()
+		return nil, err
+	}
+	rc1, err := quic.Dial(rc, raddr.(*net.UDPAddr), host, tc, &quic.Config{MaxIdleTimeout: time.Duration(idleTime) * time.Second, EnableDatagrams: true})
 	if err != nil {
 		rc.Close()
 		return nil, err
@@ -41,12 +53,24 @@ func QUICDialUDP(laddr, raddr *net.UDPAddr, host string, tc *tls.Config, idleTim
 	}, nil
 }
 
-func QUICDialTCP(raddr *net.UDPAddr, host string, tc *tls.Config, idleTime int) (net.Conn, error) {
-	rc, err := ListenUDP("udp", nil)
+func QUICDialTCP(src, dst, addr, host string, tc *tls.Config, idleTime int) (net.Conn, error) {
+	var rc *net.UDPConn
+	var err error
+	if src == "" || dst == "" {
+		rc, err = ListenUDP("udp", nil)
+	}
+	if src != "" && dst != "" {
+		rc, err = NATListenUDP("udp", src, dst)
+	}
 	if err != nil {
 		return nil, err
 	}
-	rc1, err := quic.Dial(rc, raddr, host, tc, &quic.Config{MaxIdleTimeout: time.Duration(idleTime) * time.Second})
+	raddr, err := Resolve("udp", addr)
+	if err != nil {
+		rc.Close()
+		return nil, err
+	}
+	rc1, err := quic.Dial(rc, raddr.(*net.UDPAddr), host, tc, &quic.Config{MaxIdleTimeout: time.Duration(idleTime) * time.Second})
 	if err != nil {
 		rc.Close()
 		return nil, err

@@ -15,25 +15,25 @@
 package brook
 
 import (
-	"io"
 	"net"
 )
 
 type Exchanger interface {
+	Network() string
+	Src() string
+	Dst() string
 	Exchange(remote net.Conn) error
-	NetworkName() string
-	Clean()
-	SetTimeout(int)
-}
-
-type PacketServerT interface {
-	RemoteToClient(remote net.Conn, timeout int, dst []byte, toclient io.Writer) error
 	Clean()
 }
 
-type PacketClientT interface {
-	LocalToServer(dst, d []byte, server net.Conn, timeout int) error
-	RunServerToLocal(server net.Conn, timeout int, tolocal func(dst, d []byte) (int, error)) error
-	ServerToLocal(server net.Conn, timeout int, tolocal func(dst, d []byte) (int, error)) error
-	Clean()
+type UDPServerConnFactory interface {
+	Handle(addr *net.UDPAddr, b, p []byte, w func([]byte) (int, error), timeout int) (net.Conn, []byte, error)
+}
+
+var ServerGate func(ex Exchanger) (Exchanger, error) = func(ex Exchanger) (Exchanger, error) {
+	return ex, nil
+}
+
+var ClientGate func(ex Exchanger) (Exchanger, error) = func(ex Exchanger) (Exchanger, error) {
+	return ex, nil
 }

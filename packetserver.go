@@ -19,9 +19,8 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
-	"encoding/binary"
-	"errors"
 	"io"
+	"log"
 	"net"
 	"time"
 
@@ -31,103 +30,96 @@ import (
 )
 
 type PacketServer struct {
-	password []byte
-	wb       []byte
+	Client   net.Conn
+	Password []byte
+	RB       []byte
+	WB       []byte
+	Timeout  int
+	src      string
+	dst      string
+	dstl     int
 }
 
-type WriterFunc func(func([]byte) (int, error)) io.Writer
-type WriteFunc func([]byte) (int, error)
-
-func (f WriteFunc) Write(b []byte) (int, error) {
-	return f(b)
+func NewPacketServer(password []byte, src string, client net.Conn, timeout int, dst []byte) (Exchanger, error) {
+	s := &PacketServer{Password: password, Client: client, Timeout: timeout, src: src}
+	s.RB = x.BP65507.Get().([]byte)
+	s.WB = x.BP65507.Get().([]byte)
+	s.dstl = copy(s.WB[12:12+len(dst)], dst)
+	s.dst = socks5.ToAddress(dst[0], dst[1:s.dstl-2], dst[s.dstl-2:])
+	return ServerGate(s)
 }
 
-func NewPacketServer(password []byte) *PacketServer {
-	s := &PacketServer{password: password}
-	s.wb = x.BP65507.Get().([]byte)
-	return s
-}
-
-func (s *PacketServer) RemoteToClient(remote net.Conn, timeout int, dst []byte, toclient io.Writer) error {
-	for {
-		if timeout != 0 {
-			if err := remote.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second)); err != nil {
-				return err
+func (s *PacketServer) Exchange(remote net.Conn) error {
+	go func() {
+		for {
+			if s.Timeout != 0 {
+				if err := remote.SetDeadline(time.Now().Add(time.Duration(s.Timeout) * time.Second)); err != nil {
+					return
+				}
+			}
+			l, err := remote.Read(s.WB[12+s.dstl : 65507-16])
+			if err != nil {
+				return
+			}
+			if _, err := io.ReadFull(rand.Reader, s.WB[:12]); err != nil {
+				log.Println(err)
+				return
+			}
+			sk := x.BP32.Get().([]byte)
+			if _, err := io.ReadFull(hkdf.New(sha256.New, s.Password, s.WB[:12], []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), sk); err != nil {
+				x.BP32.Put(sk)
+				log.Println(err)
+				return
+			}
+			sb, err := aes.NewCipher(sk)
+			if err != nil {
+				x.BP32.Put(sk)
+				log.Println(err)
+				return
+			}
+			x.BP32.Put(sk)
+			sa, err := cipher.NewGCM(sb)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			sa.Seal(s.WB[:12], s.WB[:12], s.WB[12:12+s.dstl+l], nil)
+			_, err = s.Client.Write(s.WB[:12+s.dstl+l+16])
+			if err != nil {
+				return
 			}
 		}
-		l, err := remote.Read(s.wb[12+len(dst) : 65507-16])
+	}()
+	for {
+		if s.Timeout != 0 {
+			if err := s.Client.SetDeadline(time.Now().Add(time.Duration(s.Timeout) * time.Second)); err != nil {
+				return nil
+			}
+		}
+		l, err := s.Client.Read(s.RB)
 		if err != nil {
 			return nil
 		}
-		if _, err := io.ReadFull(rand.Reader, s.wb[:12]); err != nil {
-			return err
-		}
-		sk := x.BP32.Get().([]byte)
-		if _, err := io.ReadFull(hkdf.New(sha256.New, s.password, s.wb[:12], []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), sk); err != nil {
-			x.BP32.Put(sk)
-			return err
-		}
-		sb, err := aes.NewCipher(sk)
-		if err != nil {
-			x.BP32.Put(sk)
-			return err
-		}
-		x.BP32.Put(sk)
-		sa, err := cipher.NewGCM(sb)
-		if err != nil {
-			return err
-		}
-		copy(s.wb[12:12+len(dst)], dst)
-		sa.Seal(s.wb[:12], s.wb[:12], s.wb[12:12+len(dst)+l], nil)
-		_, err = toclient.Write(s.wb[:12+len(dst)+l+16])
-		if err != nil {
-			return err
+		if _, err := remote.Write(s.RB[:l]); err != nil {
+			return nil
 		}
 	}
 	return nil
 }
 
-var ServerPacket func([]byte, []byte) ([]byte, []byte, WriterFunc, error) = func(dst, b []byte) ([]byte, []byte, WriterFunc, error) {
-	f := func(f func([]byte) (int, error)) io.Writer {
-		return WriteFunc(f)
-	}
-	return dst, b, f, nil
-}
-
-func PacketClientToRemote(p, b []byte) ([]byte, []byte, WriterFunc, error) {
-	if len(b) < 12+4+16 {
-		return nil, nil, nil, errors.New("data too small")
-	}
-	ck := x.BP32.Get().([]byte)
-	if _, err := io.ReadFull(hkdf.New(sha256.New, p, b[:12], []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), ck); err != nil {
-		x.BP32.Put(ck)
-		return nil, nil, nil, err
-	}
-
-	cb, err := aes.NewCipher(ck)
-	if err != nil {
-		x.BP32.Put(ck)
-		return nil, nil, nil, err
-	}
-	x.BP32.Put(ck)
-	ca, err := cipher.NewGCM(cb)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	if _, err := ca.Open(b[:12], b[:12], b[12:], nil); err != nil {
-		return nil, nil, nil, err
-	}
-	i := int64(binary.BigEndian.Uint32(b[12 : 12+4]))
-	if time.Now().Unix()-i > 60 {
-		return nil, nil, nil, errors.New("Expired request")
-	}
-	_, h, _, err := socks5.ParseBytesAddress(b[12+4:])
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	return ServerPacket(b[12+4:12+4+1+len(h)+2], b[12+4+1+len(h)+2:len(b)-16])
-}
-
 func (s *PacketServer) Clean() {
-	x.BP65507.Put(s.wb)
+	x.BP65507.Put(s.RB)
+	x.BP65507.Put(s.WB)
+}
+
+func (s *PacketServer) Network() string {
+	return "udp"
+}
+
+func (s *PacketServer) Src() string {
+	return s.src
+}
+
+func (s *PacketServer) Dst() string {
+	return s.dst
 }

@@ -20,7 +20,7 @@ import (
 )
 
 func EchoClient(server string, times int) error {
-	c, err := net.Dial("tcp", server)
+	c, err := DialTCP("tcp", "", server)
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func EchoClient(server string, times int) error {
 		}
 	}
 
-	raddr, err := net.ResolveUDPAddr("udp", server)
+	raddr, err := Resolve("udp", server)
 	if err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func EchoClient(server string, times int) error {
 	}
 	defer c1.Close()
 	for i := 0; i < times; i++ {
-		if _, err := c1.WriteToUDP([]byte(c1.LocalAddr().String()), raddr); err != nil {
+		if _, err := c1.WriteToUDP([]byte(c1.LocalAddr().String()), raddr.(*net.UDPAddr)); err != nil {
 			return err
 		}
 		i, addr, err := c1.ReadFromUDP(b[:])

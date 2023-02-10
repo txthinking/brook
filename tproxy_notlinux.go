@@ -17,16 +17,18 @@
 package brook
 
 import (
-	"crypto/x509"
 	"errors"
+	"net"
 )
 
-// Tproxy.
 type Tproxy struct {
 }
 
-// NewTproxy.
-func NewTproxy(addr, server, password string, enableIPv6 bool, cidr4url, cidr6url string, tcpTimeout, udpTimeout int, address string, insecure, withoutbrook bool, roots *x509.CertPool, udpovertcp bool) (*Tproxy, error) {
+var TproxyGate func(conn net.Conn) (done bool, err error) = func(conn net.Conn) (done bool, err error) {
+	return false, nil
+}
+
+func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 	return nil, errors.New("Only support Linux")
 }
 
@@ -38,12 +40,10 @@ func (s *Tproxy) ClearAutoScripts() error {
 	return nil
 }
 
-// Run server.
 func (s *Tproxy) ListenAndServe() error {
 	return nil
 }
 
-// Shutdown server.
 func (s *Tproxy) Shutdown() error {
 	return nil
 }

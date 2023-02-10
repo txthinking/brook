@@ -25,113 +25,84 @@ import (
 )
 
 type EchoServer struct {
-	TCPAddr     *net.TCPAddr
-	UDPAddr     *net.UDPAddr
-	TCPListen   *net.TCPListener
-	UDPConn     *net.UDPConn
+	Addr        string
 	RunnerGroup *runnergroup.RunnerGroup
 }
 
 func NewEchoServer(addr string) (*EchoServer, error) {
-	taddr, err := net.ResolveTCPAddr("tcp", addr)
-	if err != nil {
-		return nil, err
-	}
-	uaddr, err := net.ResolveUDPAddr("udp", addr)
-	if err != nil {
-		return nil, err
-	}
 	if err := limits.Raise(); err != nil {
 		log.Println("Try to raise system limits, got", err)
 	}
 	s := &EchoServer{
-		TCPAddr:     taddr,
-		UDPAddr:     uaddr,
+		Addr:        addr,
 		RunnerGroup: runnergroup.New(),
 	}
 	return s, nil
 }
 
-// Run server.
 func (s *EchoServer) ListenAndServe() error {
+	addr, err := Resolve("tcp", s.Addr)
+	if err != nil {
+		return err
+	}
+	l, err := net.ListenTCP("tcp", addr.(*net.TCPAddr))
+	if err != nil {
+		return err
+	}
 	s.RunnerGroup.Add(&runnergroup.Runner{
 		Start: func() error {
-			return s.RunTCPServer()
-		},
-		Stop: func() error {
-			if s.TCPListen != nil {
-				return s.TCPListen.Close()
+			for {
+				c, err := l.AcceptTCP()
+				if err != nil {
+					return err
+				}
+				go func(c *net.TCPConn) {
+					defer c.Close()
+					if err := s.TCPHandle(c); err != nil {
+						log.Println(err)
+					}
+				}(c)
 			}
 			return nil
+		},
+		Stop: func() error {
+			return l.Close()
 		},
 	})
+	addr, err = Resolve("udp", s.Addr)
+	if err != nil {
+		l.Close()
+		return err
+	}
+	l1, err := net.ListenUDP("udp", addr.(*net.UDPAddr))
+	if err != nil {
+		l.Close()
+		return err
+	}
 	s.RunnerGroup.Add(&runnergroup.Runner{
 		Start: func() error {
-			return s.RunUDPServer()
-		},
-		Stop: func() error {
-			if s.UDPConn != nil {
-				return s.UDPConn.Close()
+			for {
+				b := make([]byte, 65507)
+				n, addr, err := l1.ReadFromUDP(b)
+				if err != nil {
+					return err
+				}
+				go func(addr *net.UDPAddr, b []byte) {
+					if err := s.UDPHandle(addr, b, l1); err != nil {
+						log.Println(err)
+						return
+					}
+				}(addr, b[0:n])
 			}
 			return nil
+		},
+		Stop: func() error {
+			return l1.Close()
 		},
 	})
 	return s.RunnerGroup.Wait()
 }
 
-// RunTCPServer starts tcp server.
-func (s *EchoServer) RunTCPServer() error {
-	var err error
-	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
-	if err != nil {
-		return err
-	}
-	defer s.TCPListen.Close()
-	for {
-		c, err := s.TCPListen.AcceptTCP()
-		if err != nil {
-			return err
-		}
-		go func(c *net.TCPConn) {
-			defer c.Close()
-			if err := s.TCPHandle(c); err != nil {
-				log.Println(err)
-			}
-		}(c)
-	}
-	return nil
-}
-
-// RunUDPServer starts udp server.
-func (s *EchoServer) RunUDPServer() error {
-	var err error
-	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
-	if err != nil {
-		return err
-	}
-	defer s.UDPConn.Close()
-	for {
-		b := make([]byte, 65507)
-		n, addr, err := s.UDPConn.ReadFromUDP(b)
-		if err != nil {
-			return err
-		}
-		go func(addr *net.UDPAddr, b []byte) {
-			if err := s.UDPHandle(addr, b); err != nil {
-				log.Println(err)
-				return
-			}
-		}(addr, b[0:n])
-	}
-	return nil
-}
-
-// Shutdown server.
-func (s *EchoServer) Shutdown() error {
-	return s.RunnerGroup.Done()
-}
-
-// TCPHandle handles request.
 func (s *EchoServer) TCPHandle(c *net.TCPConn) error {
 	var b [1024 * 2]byte
 	for {
@@ -157,18 +128,21 @@ func (s *EchoServer) TCPHandle(c *net.TCPConn) error {
 	return nil
 }
 
-// UDPHandle handles packet.
-func (s *EchoServer) UDPHandle(addr *net.UDPAddr, b []byte) error {
-	if _, err := s.UDPConn.WriteToUDP([]byte(addr.String()), addr); err != nil {
+func (s *EchoServer) UDPHandle(addr *net.UDPAddr, b []byte, l1 *net.UDPConn) error {
+	if _, err := l1.WriteToUDP([]byte(addr.String()), addr); err != nil {
 		return err
 	}
 	if addr.String() == string(b) {
-		fmt.Printf("UDP: dst:%s <- src:%s\n", s.UDPConn.LocalAddr().String(), addr.String())
-		fmt.Printf("UDP: src:%s -> dst:%s\n", s.UDPConn.LocalAddr().String(), addr.String())
+		fmt.Printf("UDP: dst:%s <- src:%s\n", l1.LocalAddr().String(), addr.String())
+		fmt.Printf("UDP: src:%s -> dst:%s\n", l1.LocalAddr().String(), addr.String())
 	}
 	if addr.String() != string(b) {
-		fmt.Printf("UDP: dst:%s <- src:%s <- dst:proxy <- src:%s\n", s.UDPConn.LocalAddr().String(), addr.String(), string(b))
-		fmt.Printf("UDP: src:%s -> dst:%s -> src:proxy -> dst:%s\n", s.UDPConn.LocalAddr().String(), addr.String(), string(b))
+		fmt.Printf("UDP: dst:%s <- src:%s <- dst:proxy <- src:%s\n", l1.LocalAddr().String(), addr.String(), string(b))
+		fmt.Printf("UDP: src:%s -> dst:%s -> src:proxy -> dst:%s\n", l1.LocalAddr().String(), addr.String(), string(b))
 	}
 	return nil
+}
+
+func (s *EchoServer) Shutdown() error {
+	return s.RunnerGroup.Done()
 }

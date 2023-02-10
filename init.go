@@ -15,8 +15,6 @@
 package brook
 
 import (
-	"net"
-
 	"github.com/txthinking/socks5"
 	"github.com/txthinking/x"
 )
@@ -31,5 +29,3 @@ func EnableDebug() {
 	socks5.Debug = true
 	Debug = true
 }
-
-var ListenUDP func(network string, laddr *net.UDPAddr) (*net.UDPConn, error) = net.ListenUDP

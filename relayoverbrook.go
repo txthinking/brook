@@ -25,35 +25,41 @@ import (
 	"github.com/txthinking/socks5"
 )
 
-type Relay struct {
+type RelayOverBrook struct {
 	From        string
-	To          string
+	Link        string
 	dstb        []byte
 	TCPTimeout  int
 	UDPTimeout  int
+	blk         *BrookLink
 	pcf         *PacketConnFactory
 	RunnerGroup *runnergroup.RunnerGroup
 	IsDNS       bool
 }
 
-func NewRelay(from, to string, tcpTimeout, udpTimeout int) (*Relay, error) {
+func NewRelayOverBrook(from, link, to string, tcpTimeout, udpTimeout int) (*RelayOverBrook, error) {
 	a, h, p, err := socks5.ParseAddress(to)
 	if err != nil {
 		return nil, err
 	}
-	s := &Relay{
+	blk, err := NewBrookLink(link)
+	if err != nil {
+		return nil, err
+	}
+	s := &RelayOverBrook{
 		From:        from,
-		To:          to,
+		Link:        link,
 		dstb:        append(append([]byte{a}, h...), p...),
 		TCPTimeout:  tcpTimeout,
 		UDPTimeout:  udpTimeout,
+		blk:         blk,
 		pcf:         NewPacketConnFactory(),
 		RunnerGroup: runnergroup.New(),
 	}
 	return s, nil
 }
 
-func (s *Relay) ListenAndServe() error {
+func (s *RelayOverBrook) ListenAndServe() error {
 	addr, err := Resolve("tcp", s.From)
 	if err != nil {
 		return err
@@ -122,48 +128,25 @@ func (s *Relay) ListenAndServe() error {
 	return s.RunnerGroup.Wait()
 }
 
-func (s *Relay) TCPHandle(c *net.TCPConn) error {
-	rc, err := DialTCP("tcp", "", s.To)
+func (s *RelayOverBrook) TCPHandle(c *net.TCPConn) error {
+	sc, err := s.blk.CreateExchanger("tcp", c.RemoteAddr().String(), s.dstb, s.TCPTimeout, s.UDPTimeout)
 	if err != nil {
 		return err
 	}
-	defer rc.Close()
-	go func() {
-		var bf [1024 * 2]byte
-		for {
-			if s.TCPTimeout != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-					return
-				}
-			}
-			i, err := rc.Read(bf[:])
-			if err != nil {
-				return
-			}
-			if _, err := c.Write(bf[0:i]); err != nil {
-				return
-			}
-		}
-	}()
-	var bf [1024 * 2]byte
-	for {
-		if s.TCPTimeout != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-				return nil
-			}
-		}
-		i, err := c.Read(bf[:])
-		if err != nil {
-			return nil
-		}
-		if _, err := rc.Write(bf[0:i]); err != nil {
-			return nil
-		}
+	defer sc.Clean()
+	if v, ok := sc.(*StreamClient); ok {
+		defer v.Server.Close()
+	}
+	if v, ok := sc.(*SimpleStreamClient); ok {
+		defer v.Server.Close()
+	}
+	if err := sc.Exchange(c); err != nil {
+		return nil
 	}
 	return nil
 }
 
-func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte, l1 *net.UDPConn) error {
+func (s *RelayOverBrook) UDPHandle(addr *net.UDPAddr, b []byte, l1 *net.UDPConn) error {
 	if s.IsDNS {
 		m := &dns.Msg{}
 		if err := m.Unpack(b); err != nil {
@@ -180,56 +163,39 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte, l1 *net.UDPConn) error {
 			return nil
 		}
 	}
-	c, err := s.pcf.Handle(addr, s.dstb, b, func(b []byte) (int, error) {
+	conn, err := s.pcf.Handle(addr, s.dstb, b, func(b []byte) (int, error) {
 		return l1.WriteToUDP(b, addr)
 	}, s.UDPTimeout)
 	if err != nil {
 		return err
 	}
-	if c == nil {
+	if conn == nil {
 		return nil
 	}
-	defer c.Close()
-	rc, err := NATDial("udp", addr.String(), s.To, s.To)
+	defer conn.Close()
+	sc, err := s.blk.CreateExchanger("udp", addr.String(), s.dstb, s.TCPTimeout, s.UDPTimeout)
 	if err != nil {
 		return err
 	}
-	defer rc.Close()
-	go func() {
-		var bf [65507]byte
-		for {
-			if s.UDPTimeout != 0 {
-				if err := rc.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
-					return
-				}
-			}
-			i, err := rc.Read(bf[:])
-			if err != nil {
-				return
-			}
-			if _, err := c.Write(bf[0:i]); err != nil {
-				return
-			}
-		}
-	}()
-	var bf [65507]byte
-	for {
-		if s.UDPTimeout != 0 {
-			if err := c.SetDeadline(time.Now().Add(time.Duration(s.UDPTimeout) * time.Second)); err != nil {
-				return nil
-			}
-		}
-		i, err := c.Read(bf[:])
-		if err != nil {
-			return nil
-		}
-		if _, err := rc.Write(bf[0:i]); err != nil {
-			return nil
-		}
+	defer sc.Clean()
+	if v, ok := sc.(*PacketClient); ok {
+		defer v.Server.Close()
+	}
+	if v, ok := sc.(*StreamClient); ok {
+		defer v.Server.Close()
+	}
+	if v, ok := sc.(*SimplePacketClient); ok {
+		defer v.Server.Close()
+	}
+	if v, ok := sc.(*SimpleStreamClient); ok {
+		defer v.Server.Close()
+	}
+	if err := sc.Exchange(conn); err != nil {
+		return nil
 	}
 	return nil
 }
 
-func (s *Relay) Shutdown() error {
+func (s *RelayOverBrook) Shutdown() error {
 	return s.RunnerGroup.Done()
 }
