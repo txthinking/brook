@@ -90,9 +90,6 @@ func (p *TheDNS) TouchBrook() {
 		if err != nil || done {
 			return done, err
 		}
-		if len(m.Question[0].Name) == 0 {
-			return false, nil
-		}
 		if m.Question[0].Qtype == dns.TypeA && p.DisableA {
 			err := soa(addr, m, l1)
 			return err == nil, err
@@ -119,6 +116,6 @@ func (p *TheDNS) TouchBrook() {
 			}
 			return true, nil
 		}
-		return false, nil
+		return f(addr, m, l1)
 	}
 }

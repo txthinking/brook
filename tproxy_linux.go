@@ -35,8 +35,8 @@ type Tproxy struct {
 	RunnerGroup *runnergroup.RunnerGroup
 }
 
-var TproxyGate func(conn net.Conn) (done bool, err error) = func(conn net.Conn) (done bool, err error) {
-	return false, nil
+var TproxyGate func(conn net.Conn) (net.Conn, error) = func(conn net.Conn) (net.Conn, error) {
+	return conn, nil
 }
 
 func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
@@ -259,13 +259,13 @@ func (s *Tproxy) ListenAndServe() error {
 			return l1.Close()
 		},
 	})
-	addr, err = net.ResolveUDPAddr("udp", "127.0.0.1"+s.Addr)
+	addr1, err := net.ResolveUDPAddr("udp", "127.0.0.1"+s.Addr)
 	if err != nil {
 		l.Close()
 		l1.Close()
 		return err
 	}
-	l2, err := tproxy.ListenUDP("udp", addr)
+	l2, err := tproxy.ListenUDP("udp", addr1)
 	if err != nil {
 		l.Close()
 		l1.Close()
@@ -287,13 +287,13 @@ func (s *Tproxy) ListenAndServe() error {
 				}
 				c, err := tproxy.DialUDP("udp", dst, src)
 				if err != nil {
-					Log(&Error{"from": dst, "dst": src, "error": err.Error()})
+					Log(&Error{"from": dst.String(), "dst": src.String(), "error": err.Error()})
 					continue
 				}
 				go func(c *net.UDPConn, b []byte) {
 					defer c.Close()
 					if err := s.UDPHandle(c, b); err != nil {
-						Log(&Error{"from": dst, "dst": src, "error": err.Error()})
+						Log(&Error{"from": dst.String(), "dst": src.String(), "error": err.Error()})
 						return
 					}
 				}(c, b[0:n])
@@ -304,14 +304,14 @@ func (s *Tproxy) ListenAndServe() error {
 			return l2.Close()
 		},
 	})
-	addr, err = net.ResolveUDPAddr("udp", "[::1]"+s.Addr)
+	addr1, err = net.ResolveUDPAddr("udp", "[::1]"+s.Addr)
 	if err != nil {
 		l.Close()
 		l1.Close()
 		l2.Close()
 		return err
 	}
-	l3, err := tproxy.ListenUDP("udp", addr)
+	l3, err := tproxy.ListenUDP("udp", addr1)
 	if err != nil {
 		l.Close()
 		l1.Close()
@@ -334,13 +334,13 @@ func (s *Tproxy) ListenAndServe() error {
 				}
 				c, err := tproxy.DialUDP("udp", dst, src)
 				if err != nil {
-					Log(&Error{"from": dst, "dst": src, "error": err.Error()})
+					Log(&Error{"from": dst.String(), "dst": src.String(), "error": err.Error()})
 					continue
 				}
 				go func(c *net.UDPConn, b []byte) {
 					defer c.Close()
 					if err := s.UDPHandle(c, b); err != nil {
-						Log(&Error{"from": dst, "dst": src, "error": err.Error()})
+						Log(&Error{"from": dst.String(), "dst": src.String(), "error": err.Error()})
 						return
 					}
 				}(c, b[0:n])
@@ -354,12 +354,12 @@ func (s *Tproxy) ListenAndServe() error {
 	return s.RunnerGroup.Wait()
 }
 
-func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
-	done, err := TproxyGate(c)
+func (s *Tproxy) TCPHandle(c0 *net.TCPConn) error {
+	c, err := TproxyGate(c0)
 	if err != nil {
 		return err
 	}
-	if done {
+	if c == nil {
 		return nil
 	}
 	a, h, p, err := socks5.ParseAddress(c.LocalAddr().String())
@@ -385,12 +385,12 @@ func (s *Tproxy) TCPHandle(c *net.TCPConn) error {
 }
 
 func (s *Tproxy) UDPHandle(c *net.UDPConn, b []byte) error {
-	c1 := &ConnFirst{UDPConn: c, First: b}
-	done, err := TproxyGate(c1)
+	var c1 net.Conn = &ConnFirst{UDPConn: c, First: b}
+	c1, err := TproxyGate(c1)
 	if err != nil {
 		return err
 	}
-	if done {
+	if c1 == nil {
 		return nil
 	}
 	a, h, p, err := socks5.ParseAddress(c.LocalAddr().String())

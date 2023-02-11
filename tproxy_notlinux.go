@@ -24,8 +24,8 @@ import (
 type Tproxy struct {
 }
 
-var TproxyGate func(conn net.Conn) (done bool, err error) = func(conn net.Conn) (done bool, err error) {
-	return false, nil
+var TproxyGate func(conn net.Conn) (net.Conn, error) = func(conn net.Conn) (net.Conn, error) {
+	return conn, nil
 }
 
 func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {

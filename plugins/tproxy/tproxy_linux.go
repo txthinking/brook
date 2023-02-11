@@ -31,6 +31,7 @@ type Tproxy struct {
 }
 
 func NewTproxy(cidr4List, cidr6List string, geoIP []string, tcptimeout, udptimeout int) (*Tproxy, error) {
+	var err error
 	var c4 []*net.IPNet
 	if cidr4List != "" {
 		c4, err = brook.ReadCIDRList(cidr4List)
@@ -58,7 +59,7 @@ func NewTproxy(cidr4List, cidr6List string, geoIP []string, tcptimeout, udptimeo
 
 func (p *Tproxy) TouchBrook() {
 	f := brook.TproxyGate
-	brook.TproxyGate = func(conn net.Conn) (bool, error) {
+	brook.TproxyGate = func(conn net.Conn) (net.Conn, error) {
 		var ip net.IP
 		network := "tcp"
 		timeout := p.TCPTimeout
@@ -68,26 +69,26 @@ func (p *Tproxy) TouchBrook() {
 			ip = a.IP
 		}
 		if ip == nil {
-			conn.LocalAddr().(*net.UDPAddr).IP
+			ip = conn.LocalAddr().(*net.UDPAddr).IP
 			network = "udp"
 			timeout = p.UDPTimeout
 			size = 65507
 		}
-		if !brook.ListHasIP(p.CIDR4, p.CIDR6, ip, p.Cache, p.GeoIP) {
-			return false, nil
+		if brook.ListHasIP(p.CIDR4, p.CIDR6, ip, p.Cache, p.GeoIP) {
+			var rc net.Conn
+			var err error
+			if network == "tcp" {
+				rc, err = brook.DialTCP(network, "", conn.LocalAddr().String())
+			}
+			if network == "udp" {
+				rc, err = brook.NATDial(network, conn.RemoteAddr().String(), conn.LocalAddr().String(), conn.LocalAddr().String())
+			}
+			if err != nil {
+				return nil, err
+			}
+			brook.Conn2Conn(conn, rc, size, timeout)
+			return nil, nil
 		}
-		var rc net.Conn
-		var err error
-		if network == "tcp" {
-			rc, err = brook.DialTCP(network, "", conn.LocalAddr().String())
-		}
-		if network == "udp" {
-			rc, err = brook.NATDial(network, conn.RemoteAddr().String(), conn.LocalAddr().String(), conn.LocalAddr().String())
-		}
-		if err != nil {
-			return false, err
-		}
-		brook.Conn2Conn(conn, rc, size, timeout)
-		return true, nil
+		return f(conn)
 	}
 }
