@@ -20,7 +20,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"io"
-	"log"
 	"net"
 	"time"
 
@@ -62,25 +61,25 @@ func (s *PacketServer) Exchange(remote net.Conn) error {
 				return
 			}
 			if _, err := io.ReadFull(rand.Reader, s.WB[:12]); err != nil {
-				log.Println(err)
+				Log(err)
 				return
 			}
 			sk := x.BP32.Get().([]byte)
 			if _, err := io.ReadFull(hkdf.New(sha256.New, s.Password, s.WB[:12], []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), sk); err != nil {
 				x.BP32.Put(sk)
-				log.Println(err)
+				Log(err)
 				return
 			}
 			sb, err := aes.NewCipher(sk)
 			if err != nil {
 				x.BP32.Put(sk)
-				log.Println(err)
+				Log(err)
 				return
 			}
 			x.BP32.Put(sk)
 			sa, err := cipher.NewGCM(sb)
 			if err != nil {
-				log.Println(err)
+				Log(err)
 				return
 			}
 			sa.Seal(s.WB[:12], s.WB[:12], s.WB[12:12+s.dstl+l], nil)

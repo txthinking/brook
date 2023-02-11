@@ -16,7 +16,6 @@ package brook
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"time"
 
@@ -31,7 +30,7 @@ type EchoServer struct {
 
 func NewEchoServer(addr string) (*EchoServer, error) {
 	if err := limits.Raise(); err != nil {
-		log.Println("Try to raise system limits, got", err)
+		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	s := &EchoServer{
 		Addr:        addr,
@@ -41,11 +40,11 @@ func NewEchoServer(addr string) (*EchoServer, error) {
 }
 
 func (s *EchoServer) ListenAndServe() error {
-	addr, err := Resolve("tcp", s.Addr)
+	addr, err := net.ResolveTCPAddr("tcp", s.Addr)
 	if err != nil {
 		return err
 	}
-	l, err := net.ListenTCP("tcp", addr.(*net.TCPAddr))
+	l, err := net.ListenTCP("tcp", addr)
 	if err != nil {
 		return err
 	}
@@ -59,7 +58,7 @@ func (s *EchoServer) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						log.Println(err)
+						Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -69,12 +68,12 @@ func (s *EchoServer) ListenAndServe() error {
 			return l.Close()
 		},
 	})
-	addr, err = Resolve("udp", s.Addr)
+	addr1, err := net.ResolveUDPAddr("udp", s.Addr)
 	if err != nil {
 		l.Close()
 		return err
 	}
-	l1, err := net.ListenUDP("udp", addr.(*net.UDPAddr))
+	l1, err := net.ListenUDP("udp", addr1)
 	if err != nil {
 		l.Close()
 		return err
@@ -89,7 +88,7 @@ func (s *EchoServer) ListenAndServe() error {
 				}
 				go func(addr *net.UDPAddr, b []byte) {
 					if err := s.UDPHandle(addr, b, l1); err != nil {
-						log.Println(err)
+						Log(&Error{"from": addr.String(), "error": err.Error()})
 						return
 					}
 				}(addr, b[0:n])

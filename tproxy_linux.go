@@ -16,7 +16,6 @@ package brook
 
 import (
 	"errors"
-	"log"
 	"net"
 	"os/exec"
 	"strings"
@@ -202,11 +201,11 @@ func (s *Tproxy) ClearAutoScripts() error {
 }
 
 func (s *Tproxy) ListenAndServe() error {
-	addr, err := Resolve("tcp", "127.0.0.1"+s.Addr)
+	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1"+s.Addr)
 	if err != nil {
 		return err
 	}
-	l, err := tproxy.ListenTCP("tcp", addr.(*net.TCPAddr))
+	l, err := tproxy.ListenTCP("tcp", addr)
 	if err != nil {
 		return err
 	}
@@ -220,7 +219,7 @@ func (s *Tproxy) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						log.Println(err)
+						Log(&Error{"from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -230,12 +229,12 @@ func (s *Tproxy) ListenAndServe() error {
 			return l.Close()
 		},
 	})
-	addr, err = Resolve("tcp", "[::1]"+s.Addr)
+	addr, err = net.ResolveTCPAddr("tcp", "[::1]"+s.Addr)
 	if err != nil {
 		l.Close()
 		return err
 	}
-	l1, err := tproxy.ListenTCP("tcp", addr.(*net.TCPAddr))
+	l1, err := tproxy.ListenTCP("tcp", addr)
 	if err != nil {
 		l.Close()
 		return err
@@ -250,7 +249,7 @@ func (s *Tproxy) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						log.Println(err)
+						Log(&Error{"from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -260,13 +259,13 @@ func (s *Tproxy) ListenAndServe() error {
 			return l1.Close()
 		},
 	})
-	addr, err = Resolve("udp", "127.0.0.1"+s.Addr)
+	addr, err = net.ResolveUDPAddr("udp", "127.0.0.1"+s.Addr)
 	if err != nil {
 		l.Close()
 		l1.Close()
 		return err
 	}
-	l2, err := tproxy.ListenUDP("udp", addr.(*net.UDPAddr))
+	l2, err := tproxy.ListenUDP("udp", addr)
 	if err != nil {
 		l.Close()
 		l1.Close()
@@ -288,13 +287,13 @@ func (s *Tproxy) ListenAndServe() error {
 				}
 				c, err := tproxy.DialUDP("udp", dst, src)
 				if err != nil {
-					log.Println(err)
+					Log(&Error{"from": dst, "dst": src, "error": err.Error()})
 					continue
 				}
 				go func(c *net.UDPConn, b []byte) {
 					defer c.Close()
 					if err := s.UDPHandle(c, b); err != nil {
-						log.Println(err)
+						Log(&Error{"from": dst, "dst": src, "error": err.Error()})
 						return
 					}
 				}(c, b[0:n])
@@ -305,14 +304,14 @@ func (s *Tproxy) ListenAndServe() error {
 			return l2.Close()
 		},
 	})
-	addr, err = Resolve("udp", "[::1]"+s.Addr)
+	addr, err = net.ResolveUDPAddr("udp", "[::1]"+s.Addr)
 	if err != nil {
 		l.Close()
 		l1.Close()
 		l2.Close()
 		return err
 	}
-	l3, err := tproxy.ListenUDP("udp", addr.(*net.UDPAddr))
+	l3, err := tproxy.ListenUDP("udp", addr)
 	if err != nil {
 		l.Close()
 		l1.Close()
@@ -335,13 +334,13 @@ func (s *Tproxy) ListenAndServe() error {
 				}
 				c, err := tproxy.DialUDP("udp", dst, src)
 				if err != nil {
-					log.Println(err)
+					Log(&Error{"from": dst, "dst": src, "error": err.Error()})
 					continue
 				}
 				go func(c *net.UDPConn, b []byte) {
 					defer c.Close()
 					if err := s.UDPHandle(c, b); err != nil {
-						log.Println(err)
+						Log(&Error{"from": dst, "dst": src, "error": err.Error()})
 						return
 					}
 				}(c, b[0:n])

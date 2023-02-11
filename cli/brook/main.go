@@ -34,20 +34,21 @@ import (
 	"time"
 
 	"net/http"
-	_ "net/http/pprof"
 	"net/url"
 
 	"github.com/txthinking/brook"
+	"github.com/txthinking/brook/plugins/block"
+	"github.com/txthinking/brook/plugins/pprof"
+	"github.com/txthinking/brook/plugins/socks5dial"
+	"github.com/txthinking/brook/plugins/thedns"
+	"github.com/txthinking/brook/plugins/tproxy"
 	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
 	"github.com/urfave/cli/v2"
 )
 
-var debug bool
-var debugAddress string
-
 func main() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	g := runnergroup.New()
 	app := cli.NewApp()
 	app.Name = "Brook"
 	app.Version = "20230122"
@@ -59,22 +60,28 @@ func main() {
 		},
 	}
 	app.Copyright = "https://github.com/txthinking/brook"
+	app.EnableBashCompletion = true
 	app.Flags = []cli.Flag{
-		&cli.BoolFlag{
-			Name:        "debug",
-			Aliases:     []string{"d"},
-			Usage:       "Enable debug",
-			Destination: &debug,
-		},
 		&cli.StringFlag{
-			Name:        "listen",
-			Aliases:     []string{"l"},
-			Usage:       "Listen address for debug",
-			Value:       ":6060",
-			Destination: &debugAddress,
+			Name:  "pprof",
+			Usage: "go http pprof listen addr, such as :6060",
 		},
 	}
-	app.EnableBashCompletion = true
+	app.Before = func(c *cli.Context) error {
+		p, err := pprof.NewPprof(c.String("pprof"))
+		if err != nil {
+			return err
+		}
+		g.Add(&runnergroup.Runner{
+			Start: func() error {
+				return p.ListenAndServe()
+			},
+			Stop: func() error {
+				return p.Shutdown()
+			},
+		})
+		return nil
+	}
 	app.Commands = []*cli.Command{
 		&cli.Command{
 			Name:  "server",
@@ -99,12 +106,12 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
@@ -140,9 +147,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("listen") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -155,20 +159,36 @@ func main() {
 				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
 					return errors.New("--blockCIDR6List must be with absolute path")
 				}
+				if c.String("blockDomainList") != "" || c.String("blockCIDR4List") != "" || c.String("blockCIDR6List") != "" || len(c.StringSlice("blockGeoIP")) != 0 {
+					p, err := block.NewBlock(c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.StringSlice("blockGeoIP"), c.Int("updateListInterval"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+					if c.Int("updateListInterval") != 0 {
+						g.Add(&runnergroup.Runner{
+							Start: func() error {
+								p.Update()
+								return nil
+							},
+							Stop: func() error {
+								p.Stop()
+								return nil
+							},
+						})
+					}
+				}
 				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
-				// if c.String("toSocks5") != "" {
-				// 	c, err := socks5.NewClient(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-				// 	if err != nil {
-				// 		return err
-				// 	}
-				// 	s.Dial = func(network, laddr, raddr string) (net.Conn, error) {
-				// 		return c.DialWithLocalAddr(network, laddr, raddr, nil)
-				// 	}
-				// }
-				g := runnergroup.New()
+				if c.String("toSocks5") != "" {
+					p, err := socks5dial.NewSocks5Dial(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -177,13 +197,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -226,18 +240,27 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
+				},
+				&cli.StringFlag{
+					Name:  "dialWithSocks5",
+					Usage: "Dial with your socks5 proxy, such as 127.0.0.1:1081",
+				},
+				&cli.StringFlag{
+					Name:  "dialWithSocks5Username",
+					Usage: "Optional",
+				},
+				&cli.StringFlag{
+					Name:  "dialWithSocks5Password",
+					Usage: "Optional",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("socks5") == "" || c.String("server") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -247,6 +270,13 @@ func main() {
 				}
 				if h == "" && c.String("socks5ServerIP") == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
+				}
+				if c.String("dialWithSocks5") != "" {
+					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
 				}
 				var ip string
 				if h != "" {
@@ -260,7 +290,6 @@ func main() {
 					return err
 				}
 				s.UDPOverTCP = c.Bool("udpovertcp")
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -317,15 +346,19 @@ func main() {
 					Usage: "URL path",
 					Value: "/ws",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
@@ -347,10 +380,6 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
-				},
 				&cli.StringFlag{
 					Name:  "toSocks5",
 					Usage: "Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080",
@@ -365,9 +394,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("listen") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -380,20 +406,36 @@ func main() {
 				if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
 					return errors.New("--blockCIDR6List must be with absolute path")
 				}
+				if c.String("blockDomainList") != "" || c.String("blockCIDR4List") != "" || c.String("blockCIDR6List") != "" || len(c.StringSlice("blockGeoIP")) != 0 {
+					p, err := block.NewBlock(c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.StringSlice("blockGeoIP"), c.Int("updateListInterval"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+					if c.Int("updateListInterval") != 0 {
+						g.Add(&runnergroup.Runner{
+							Start: func() error {
+								p.Update()
+								return nil
+							},
+							Stop: func() error {
+								p.Stop()
+								return nil
+							},
+						})
+					}
+				}
+				if c.String("toSocks5") != "" {
+					p, err := socks5dial.NewSocks5Dial(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+				}
 				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
 				if err != nil {
 					return err
 				}
-				// if c.String("toSocks5") != "" {
-				// 	c, err := socks5.NewClient(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-				// 	if err != nil {
-				// 		return err
-				// 	}
-				// 	s.Dial = func(network, laddr, raddr string) (net.Conn, error) {
-				// 		return c.DialWithLocalAddr(network, laddr, raddr, nil)
-				// 	}
-				// }
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -402,13 +444,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -432,6 +468,14 @@ func main() {
 					Usage:   "Brook wsserver password",
 				},
 				&cli.StringFlag{
+					Name:  "address",
+					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
+				&cli.StringFlag{
 					Name:  "socks5",
 					Value: "127.0.0.1:1080",
 					Usage: "Where to listen for SOCKS5 connections",
@@ -447,26 +491,27 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.StringFlag{
-					Name:  "address",
-					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+					Name:  "dialWithSocks5",
+					Usage: "Dial with your socks5 proxy, such as 127.0.0.1:1081",
 				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
+				&cli.StringFlag{
+					Name:  "dialWithSocks5Username",
+					Usage: "Optional",
+				},
+				&cli.StringFlag{
+					Name:  "dialWithSocks5Password",
+					Usage: "Optional",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("socks5") == "" || c.String("wsserver") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -476,6 +521,13 @@ func main() {
 				}
 				if h == "" && c.String("socks5ServerIP") == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
+				}
+				if c.String("dialWithSocks5") != "" {
+					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
 				}
 				var ip string
 				if h != "" {
@@ -491,7 +543,6 @@ func main() {
 				if c.String("address") != "" {
 					s.ServerAddress = c.String("address")
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -514,13 +565,7 @@ func main() {
 						},
 					})
 				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -538,6 +583,11 @@ func main() {
 					Usage: "Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used",
 				},
 				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
+				},
+				&cli.StringFlag{
 					Name:  "cert",
 					Usage: "The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically",
 				},
@@ -546,24 +596,23 @@ func main() {
 					Usage: "The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically",
 				},
 				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "Server password",
-				},
-				&cli.StringFlag{
 					Name:  "path",
 					Usage: "URL path",
 					Value: "/ws",
 				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
@@ -585,10 +634,6 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
-				},
 				&cli.StringFlag{
 					Name:  "toSocks5",
 					Usage: "Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080",
@@ -603,9 +648,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("domainaddress") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -624,6 +666,32 @@ func main() {
 				if c.String("certkey") != "" && !filepath.IsAbs(c.String("certkey")) {
 					return errors.New("--certkey must be with absolute path")
 				}
+				if c.String("blockDomainList") != "" || c.String("blockCIDR4List") != "" || c.String("blockCIDR6List") != "" || len(c.StringSlice("blockGeoIP")) != 0 {
+					p, err := block.NewBlock(c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.StringSlice("blockGeoIP"), c.Int("updateListInterval"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+					if c.Int("updateListInterval") != 0 {
+						g.Add(&runnergroup.Runner{
+							Start: func() error {
+								p.Update()
+								return nil
+							},
+							Stop: func() error {
+								p.Stop()
+								return nil
+							},
+						})
+					}
+				}
+				if c.String("toSocks5") != "" {
+					p, err := socks5dial.NewSocks5Dial(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+				}
 				h, p, err := net.SplitHostPort(c.String("domainaddress"))
 				if err != nil {
 					return err
@@ -632,15 +700,6 @@ func main() {
 				if err != nil {
 					return err
 				}
-				// if c.String("toSocks5") != "" {
-				// 	c, err := socks5.NewClient(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-				// 	if err != nil {
-				// 		return err
-				// 	}
-				// 	s.Dial = func(network, laddr, raddr string) (net.Conn, error) {
-				// 		return c.DialWithLocalAddr(network, laddr, raddr, nil)
-				// 	}
-				// }
 				if c.String("cert") != "" {
 					b, err := ioutil.ReadFile(c.String("cert"))
 					if err != nil {
@@ -655,7 +714,6 @@ func main() {
 					}
 					s.CertKey = b
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -664,13 +722,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -694,6 +746,22 @@ func main() {
 					Usage:   "Brook wssserver password",
 				},
 				&cli.StringFlag{
+					Name:  "address",
+					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.BoolFlag{
+					Name:  "insecure",
+					Usage: "Client do not verify the server's certificate chain and host name",
+				},
+				&cli.StringFlag{
+					Name:  "ca",
+					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
+				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
+				&cli.StringFlag{
 					Name:  "socks5",
 					Value: "127.0.0.1:1080",
 					Usage: "Where to listen for SOCKS5 connections",
@@ -709,34 +777,27 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.StringFlag{
-					Name:  "address",
-					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
-				},
-				&cli.BoolFlag{
-					Name:  "insecure",
-					Usage: "Client do not verify the server's certificate chain and host name",
-				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
+					Name:  "dialWithSocks5",
+					Usage: "Dial with your socks5 proxy, such as 127.0.0.1:1081",
 				},
 				&cli.StringFlag{
-					Name:  "ca",
-					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
+					Name:  "dialWithSocks5Username",
+					Usage: "Optional",
+				},
+				&cli.StringFlag{
+					Name:  "dialWithSocks5Password",
+					Usage: "Optional",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -746,6 +807,13 @@ func main() {
 				}
 				if h == "" && c.String("socks5ServerIP") == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
+				}
+				if c.String("dialWithSocks5") != "" {
+					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
 				}
 				var ip string
 				if h != "" {
@@ -776,7 +844,6 @@ func main() {
 					}
 					s.TLSConfig.RootCAs = roots
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -799,13 +866,7 @@ func main() {
 						},
 					})
 				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -823,6 +884,11 @@ func main() {
 					Usage: "Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used",
 				},
 				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Server password",
+				},
+				&cli.StringFlag{
 					Name:  "cert",
 					Usage: "The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically",
 				},
@@ -830,20 +896,19 @@ func main() {
 					Name:  "certkey",
 					Usage: "The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically",
 				},
-				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "Server password",
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
 					Value: 60,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
@@ -865,15 +930,8 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
-				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("domainaddress") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -891,6 +949,25 @@ func main() {
 				}
 				if c.String("certkey") != "" && !filepath.IsAbs(c.String("certkey")) {
 					return errors.New("--certkey must be with absolute path")
+				}
+				if c.String("blockDomainList") != "" || c.String("blockCIDR4List") != "" || c.String("blockCIDR6List") != "" || len(c.StringSlice("blockGeoIP")) != 0 {
+					p, err := block.NewBlock(c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.StringSlice("blockGeoIP"), c.Int("updateListInterval"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+					if c.Int("updateListInterval") != 0 {
+						g.Add(&runnergroup.Runner{
+							Start: func() error {
+								p.Update()
+								return nil
+							},
+							Stop: func() error {
+								p.Stop()
+								return nil
+							},
+						})
+					}
 				}
 				h, p, err := net.SplitHostPort(c.String("domainaddress"))
 				if err != nil {
@@ -914,7 +991,6 @@ func main() {
 					}
 					s.CertKey = b
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -923,13 +999,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -953,6 +1023,18 @@ func main() {
 					Usage:   "Brook quicserver password",
 				},
 				&cli.StringFlag{
+					Name:  "address",
+					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
+				},
+				&cli.StringFlag{
+					Name:  "ca",
+					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
+				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "The data will not be encrypted with brook protocol",
+				},
+				&cli.StringFlag{
 					Name:  "socks5",
 					Value: "127.0.0.1:1080",
 					Usage: "Where to listen for SOCKS5 connections",
@@ -965,22 +1047,10 @@ func main() {
 					Name:  "http",
 					Usage: "Where to listen for HTTP proxy connections",
 				},
-				&cli.StringFlag{
-					Name:  "address",
-					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
-				},
-				&cli.StringFlag{
-					Name:  "ca",
-					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
-				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
-				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: " time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
@@ -989,9 +1059,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("socks5") == "" || c.String("quicserver") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1028,7 +1095,6 @@ func main() {
 					}
 					s.TLSConfig.RootCAs = roots
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -1051,13 +1117,7 @@ func main() {
 						},
 					})
 				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -1122,9 +1182,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("from") == "" || c.String("to") == "" || c.String("server") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1162,7 +1219,6 @@ func main() {
 				if err != nil {
 					return err
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -1171,13 +1227,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -1213,6 +1263,14 @@ func main() {
 					Name:  "blockDomainList",
 					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
+				&cli.BoolFlag{
+					Name:  "disableA",
+					Usage: "Disable A query",
+				},
+				&cli.BoolFlag{
+					Name:  "disableAAAA",
+					Usage: "Disable AAAA query",
+				},
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
@@ -1235,13 +1293,13 @@ func main() {
 					Name:  "insecure",
 					Usage: "When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name",
 				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol",
-				},
 				&cli.StringFlag{
 					Name:  "ca",
 					Usage: "When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem",
+				},
+				&cli.BoolFlag{
+					Name:  "withoutBrookProtocol",
+					Usage: "When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1255,9 +1313,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1266,6 +1321,13 @@ func main() {
 				}
 				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
 					return errors.New("--blockDomainList must be with absolute path")
+				}
+				if c.String("blockDomainList") != "" || c.String("bypassDomainList") != "" || c.Bool("disableA") || c.Bool("disableAAAA") {
+					p, err := thedns.NewTheDNS(c.String("blockDomainList"), c.String("bypassDomainList"), c.String("dnsForBypass"), c.Bool("disableA"), c.Bool("disableAAAA"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
 				}
 				kind := "server"
 				if strings.HasPrefix(c.String("server"), "ws://") {
@@ -1302,7 +1364,6 @@ func main() {
 					return err
 				}
 				s.IsDNS = true
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -1311,13 +1372,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -1351,8 +1406,20 @@ func main() {
 					Value: "223.5.5.5:53",
 				},
 				&cli.StringFlag{
+					Name:  "blockDomainList",
+					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
+				},
+				&cli.StringFlag{
 					Name:  "bypassDomainList",
 					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
+				},
+				&cli.BoolFlag{
+					Name:  "disableA",
+					Usage: "Disable A query",
+				},
+				&cli.BoolFlag{
+					Name:  "disableAAAA",
+					Usage: "Disable AAAA query",
 				},
 				&cli.StringFlag{
 					Name:  "bypassCIDR4List",
@@ -1362,9 +1429,9 @@ func main() {
 					Name:  "bypassCIDR6List",
 					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt",
 				},
-				&cli.StringFlag{
-					Name:  "blockDomainList",
-					Usage: "One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt",
+				&cli.StringSliceFlag{
+					Name:  "bypassGeoIP",
+					Usage: "Bypass IP by Geo country code, such as US",
 				},
 				&cli.BoolFlag{
 					Name:  "enableIPv6",
@@ -1421,6 +1488,18 @@ func main() {
 					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "time (s)",
+				},
+				&cli.StringFlag{
+					Name:  "dialWithSocks5",
+					Usage: "Dial with your socks5 proxy, such as 127.0.0.1:1081",
+				},
+				&cli.StringFlag{
+					Name:  "dialWithSocks5Username",
+					Usage: "Optional",
+				},
+				&cli.StringFlag{
+					Name:  "dialWithSocks5Password",
+					Usage: "Optional",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1496,7 +1575,6 @@ func main() {
 						Addr:    c.String("webListen"),
 						Handler: m,
 					}
-					g := runnergroup.New()
 					g.Add(&runnergroup.Runner{
 						Start: func() error {
 							return s.ListenAndServe()
@@ -1508,20 +1586,14 @@ func main() {
 							return s.Shutdown(context.Background())
 						},
 					})
-					go func() {
-						sigs := make(chan os.Signal, 1)
-						signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-						<-sigs
-						g.Done()
-					}()
-					return g.Wait()
-				}
-				if debug {
-					enableDebug()
+					return nil
 				}
 				if c.String("listen") == "" || (c.String("link") == "" && (c.String("server") == "" || c.String("password") == "")) {
 					_ = cli.ShowSubcommandHelp(c)
 					return errors.New("")
+				}
+				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
+					return errors.New("--blockDomainList must be with absolute path")
 				}
 				if c.String("bypassDomainList") != "" && !strings.HasPrefix(c.String("bypassDomainList"), "http://") && !strings.HasPrefix(c.String("bypassDomainList"), "https://") && !filepath.IsAbs(c.String("bypassDomainList")) {
 					return errors.New("--bypassDomainList must be with absolute path")
@@ -1532,8 +1604,26 @@ func main() {
 				if c.String("bypassCIDR6List") != "" && !strings.HasPrefix(c.String("bypassCIDR6List"), "http://") && !strings.HasPrefix(c.String("bypassCIDR6List"), "https://") && !filepath.IsAbs(c.String("bypassCIDR6List")) {
 					return errors.New("--bypassCIDR6List must be with absolute path")
 				}
-				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
-					return errors.New("--blockDomainList must be with absolute path")
+				if c.String("blockDomainList") != "" || c.String("bypassDomainList") != "" || c.Bool("disableA") || c.Bool("disableAAAA") {
+					p, err := thedns.NewTheDNS(c.String("blockDomainList"), c.String("bypassDomainList"), c.String("dnsForBypass"), c.Bool("disableA"), c.Bool("disableAAAA"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+				}
+				if c.String("bypassCIDR4List") != "" || c.String("bypassCIDR6List") != "" || len(c.StringSlice("bypassGeoIP")) != 0 {
+					p, err := tproxy.NewTproxy(c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.StringSlice("bypassGeoIP"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+				}
+				if c.String("dialWithSocks5") != "" {
+					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
 				}
 				kind := "server"
 				if strings.HasPrefix(c.String("server"), "ws://") {
@@ -1573,7 +1663,6 @@ func main() {
 				if err != nil {
 					return err
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						if !c.Bool("doNotRunScripts") {
@@ -1594,7 +1683,7 @@ func main() {
 					},
 				})
 				if c.String("dnsListen") != "" {
-					s, err := brook.NewRelayOverBrook(c.String("dnsListen"), link, c.String("dns"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					s, err := brook.NewRelayOverBrook(c.String("dnsListen"), link, c.String("dnsForDefault"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
 						return err
 					}
@@ -1608,13 +1697,7 @@ func main() {
 						},
 					})
 				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -1742,7 +1825,7 @@ func main() {
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
-					Usage: "Connection deadline time (s)",
+					Usage: "time (s)",
 				},
 				&cli.IntFlag{
 					Name:  "udpTimeout",
@@ -1750,22 +1833,19 @@ func main() {
 					Usage: "time (s)",
 				},
 				&cli.StringFlag{
-					Name:  "dialSocks5",
-					Usage: "If you already have a socks5, such as 127.0.0.1:1081, and want [src <-> listen socks5 <-> $ brook connect <-> dialSocks5 <-> $ brook server/wsserver/wssserver <-> dst]",
+					Name:  "dialWithSocks5",
+					Usage: "If you already have a socks5, such as 127.0.0.1:1081, and want [src <-> listen socks5 <-> $ brook connect <-> dialWithSocks5 <-> $ brook server/wsserver/wssserver <-> dst]",
 				},
 				&cli.StringFlag{
-					Name:  "dialSocks5Username",
+					Name:  "dialWithSocks5Username",
 					Usage: "Optional",
 				},
 				&cli.StringFlag{
-					Name:  "dialSocks5Password",
+					Name:  "dialWithSocks5Password",
 					Usage: "Optional",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1786,7 +1866,13 @@ func main() {
 				if kind == "socks5" {
 					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
 				}
-				g := runnergroup.New()
+				if c.String("dialWithSocks5") != "" {
+					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
+				}
 				s, err := brook.NewBrookLink(c.String("link"))
 				if err != nil {
 					return err
@@ -1817,13 +1903,7 @@ func main() {
 						},
 					})
 				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -1858,9 +1938,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("from") == "" || c.String("to") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1868,7 +1945,6 @@ func main() {
 				if err != nil {
 					return err
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -1877,13 +1953,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -1907,20 +1977,16 @@ func main() {
 					Value: "8.8.8.8:53",
 				},
 				&cli.StringFlag{
-					Name:  "disableIPv4DomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
-				},
-				&cli.StringFlag{
-					Name:  "disableIPv6DomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
-				},
-				&cli.StringFlag{
 					Name:  "blockDomainList",
 					Usage: "One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt",
 				},
-				&cli.StringSliceFlag{
-					Name:  "blockGeoIP",
-					Usage: "Block IP by Geo country code, such as US",
+				&cli.BoolFlag{
+					Name:  "disableA",
+					Usage: "Disable A query",
+				},
+				&cli.BoolFlag{
+					Name:  "disableAAAA",
+					Usage: "Disable AAAA query",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1934,27 +2000,24 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("listen") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
-				if c.String("disableIPv4DomainList") != "" && !strings.HasPrefix(c.String("disableIPv4DomainList"), "http://") && !strings.HasPrefix(c.String("disableIPv4DomainList"), "https://") && !filepath.IsAbs(c.String("disableIPv4DomainList")) {
-					return errors.New("--disableIPv4DomainList must be with absolute path")
-				}
-				if c.String("disableIPv6DomainList") != "" && !strings.HasPrefix(c.String("disableIPv6DomainList"), "http://") && !strings.HasPrefix(c.String("disableIPv6DomainList"), "https://") && !filepath.IsAbs(c.String("disableIPv6DomainList")) {
-					return errors.New("--disableIPv6DomainList must be with absolute path")
-				}
 				if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
 					return errors.New("--blockDomainList must be with absolute path")
+				}
+				if c.String("blockDomainList") != "" || c.Bool("disableA") || c.Bool("disableAAAA") {
+					p, err := thedns.NewTheDNS(c.String("blockDomainList"), "", "", c.Bool("disableA"), c.Bool("disableAAAA"))
+					if err != nil {
+						return err
+					}
+					p.TouchBrook()
 				}
 				s, err := brook.NewRelay(c.String("listen"), c.String("dns"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
 				s.IsDNS = true
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -1963,13 +2026,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -2015,9 +2072,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("listen") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2040,7 +2094,6 @@ func main() {
 					return err
 				}
 				s.Server.LimitUDP = c.Bool("limitUDP")
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -2049,13 +2102,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -2093,9 +2140,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if debug {
-					enableDebug()
-				}
 				if c.String("listen") == "" || c.String("socks5") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2103,7 +2147,6 @@ func main() {
 				if err != nil {
 					return err
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -2112,13 +2155,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -2164,7 +2201,6 @@ func main() {
 				if c.String("file") != "" {
 					return s.WriteToFile()
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -2173,13 +2209,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -2318,7 +2348,6 @@ func main() {
 				if err != nil {
 					return err
 				}
-				g := runnergroup.New()
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -2327,13 +2356,7 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -2511,14 +2534,21 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 			},
 		},
 	}
+	if os.Getenv("SOCKS5_DEBUG") != "" {
+		socks5.Debug = true
+	}
 	if err := app.Run(os.Args); err != nil {
 		log.Println(err)
+		return
 	}
-}
-
-func enableDebug() {
+	if len(g.Runners) == 0 {
+		return
+	}
 	go func() {
-		log.Println(http.ListenAndServe(debugAddress, nil))
+		sigs := make(chan os.Signal, 1)
+		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+		<-sigs
+		g.Done()
 	}()
-	brook.EnableDebug()
+	log.Println(g.Wait())
 }

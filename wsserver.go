@@ -17,7 +17,6 @@ package brook
 import (
 	"context"
 	"crypto/tls"
-	"log"
 	"net/http"
 	"time"
 
@@ -44,7 +43,7 @@ type WSServer struct {
 
 func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int, withoutbrook bool) (*WSServer, error) {
 	if err := limits.Raise(); err != nil {
-		log.Println("Try to raise system limits, got", err)
+		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	p := []byte(password)
 	if withoutbrook {
@@ -76,9 +75,6 @@ func (s *WSServer) ListenAndServe() error {
 
 	n := negroni.New()
 	n.Use(negroni.NewRecovery())
-	if Debug {
-		n.Use(negroni.NewLogger())
-	}
 	n.UseFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		w.Header().Set("Server", "nginx")
 		next(w, r)
@@ -105,7 +101,7 @@ func (s *WSServer) ListenAndServe() error {
 			Email:      "cloud@txthinking.com",
 		}
 		go func() {
-			log.Println(http.ListenAndServe(":80", m.HTTPHandler(nil)))
+			Log(http.ListenAndServe(":80", m.HTTPHandler(nil)))
 		}()
 		t = &tls.Config{GetCertificate: m.GetCertificate}
 	}
@@ -159,18 +155,18 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ss, err = NewSimpleStreamServer(s.Password, c.RemoteAddr().String(), c, s.TCPTimeout, s.UDPTimeout)
 	}
 	if err != nil {
-		log.Println(err)
+		Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 		return
 	}
 	defer ss.Clean()
 	if ss.Network() == "tcp" {
 		if err := s.TCPHandle(ss); err != nil {
-			log.Println(err)
+			Log(&Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
 		}
 	}
 	if ss.Network() == "udp" {
 		if err := s.UDPHandle(ss); err != nil {
-			log.Println(err)
+			Log(&Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
 		}
 	}
 }

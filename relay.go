@@ -16,7 +16,6 @@ package brook
 
 import (
 	"errors"
-	"log"
 	"net"
 	"time"
 
@@ -54,11 +53,11 @@ func NewRelay(from, to string, tcpTimeout, udpTimeout int) (*Relay, error) {
 }
 
 func (s *Relay) ListenAndServe() error {
-	addr, err := Resolve("tcp", s.From)
+	addr, err := net.ResolveTCPAddr("tcp", s.From)
 	if err != nil {
 		return err
 	}
-	l, err := net.ListenTCP("tcp", addr.(*net.TCPAddr))
+	l, err := net.ListenTCP("tcp", addr)
 	if err != nil {
 		return err
 	}
@@ -71,14 +70,8 @@ func (s *Relay) ListenAndServe() error {
 				}
 				go func(c *net.TCPConn) {
 					defer c.Close()
-					if s.TCPTimeout != 0 {
-						if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-							log.Println(err)
-							return
-						}
-					}
 					if err := s.TCPHandle(c); err != nil {
-						log.Println(err)
+						Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -88,12 +81,12 @@ func (s *Relay) ListenAndServe() error {
 			return l.Close()
 		},
 	})
-	addr, err = Resolve("udp", s.From)
+	addr1, err := net.ResolveUDPAddr("udp", s.From)
 	if err != nil {
 		l.Close()
 		return err
 	}
-	l1, err := net.ListenUDP("udp", addr.(*net.UDPAddr))
+	l1, err := net.ListenUDP("udp", addr1)
 	if err != nil {
 		l.Close()
 		return err
@@ -108,7 +101,7 @@ func (s *Relay) ListenAndServe() error {
 				}
 				go func(addr *net.UDPAddr, b []byte) {
 					if err := s.UDPHandle(addr, b, l1); err != nil {
-						log.Println(err)
+						Log(&Error{"from": addr.String(), "error": err.Error()})
 						return
 					}
 				}(addr, b[0:n])

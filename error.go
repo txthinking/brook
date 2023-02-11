@@ -14,10 +14,14 @@
 
 package brook
 
-import (
-	"testing"
-)
+import "encoding/json"
 
-func TestTest(t *testing.T) {
-	Log(&Error{"a": "b"})
+type Error map[string]string
+
+func (e *Error) Error() string {
+	b, err := json.Marshal(e)
+	if err != nil {
+		return err.Error()
+	}
+	return string(b)
 }

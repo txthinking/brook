@@ -28,11 +28,11 @@ var Resolve func(network string, addr string) (net.Addr, error) = func(network s
 var DialTCP func(network string, laddr, raddr string) (net.Conn, error) = func(network string, laddr, raddr string) (net.Conn, error) {
 	var la, ra *net.TCPAddr
 	if laddr != "" {
-		a, err := Resolve(network, laddr)
+		var err error
+		la, err = net.ResolveTCPAddr(network, laddr)
 		if err != nil {
 			return nil, err
 		}
-		la = a.(*net.TCPAddr)
 	}
 	a, err := Resolve(network, raddr)
 	if err != nil {
@@ -45,11 +45,11 @@ var DialTCP func(network string, laddr, raddr string) (net.Conn, error) = func(n
 var DialUDP func(network string, laddr, raddr string) (net.Conn, error) = func(network string, laddr, raddr string) (net.Conn, error) {
 	var la, ra *net.UDPAddr
 	if laddr != "" {
-		a, err := Resolve(network, laddr)
+		var err error
+		la, err = net.ResolveUDPAddr(network, laddr)
 		if err != nil {
 			return nil, err
 		}
-		la = a.(*net.UDPAddr)
 	}
 	a, err := Resolve(network, raddr)
 	if err != nil {

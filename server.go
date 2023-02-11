@@ -15,41 +15,28 @@
 package brook
 
 import (
-	"log"
 	"net"
-	"time"
 
 	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/runnergroup"
+	"github.com/txthinking/socks5"
 )
 
 type Server struct {
+	Addr        string
 	Password    []byte
-	TCPAddr     *net.TCPAddr
-	UDPAddr     *net.UDPAddr
-	TCPListen   *net.TCPListener
-	UDPConn     *net.UDPConn
 	TCPTimeout  int
 	UDPTimeout  int
 	RunnerGroup *runnergroup.RunnerGroup
 }
 
 func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, error) {
-	taddr, err := net.ResolveTCPAddr("tcp", addr)
-	if err != nil {
-		return nil, err
-	}
-	uaddr, err := net.ResolveUDPAddr("udp", addr)
-	if err != nil {
-		return nil, err
-	}
 	if err := limits.Raise(); err != nil {
-		log.Println("Try to raise system limits, got", err)
+		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	s := &Server{
 		Password:    []byte(password),
-		TCPAddr:     taddr,
-		UDPAddr:     uaddr,
+		Addr:        addr,
 		TCPTimeout:  tcpTimeout,
 		UDPTimeout:  udpTimeout,
 		RunnerGroup: runnergroup.New(),
@@ -58,110 +45,96 @@ func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, erro
 }
 
 func (s *Server) ListenAndServe() error {
+	addr, err := net.ResolveTCPAddr("tcp", s.Addr)
+	if err != nil {
+		return err
+	}
+	l, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		return err
+	}
 	s.RunnerGroup.Add(&runnergroup.Runner{
 		Start: func() error {
-			return s.RunTCPServer()
-		},
-		Stop: func() error {
-			if s.TCPListen != nil {
-				return s.TCPListen.Close()
+			for {
+				c, err := l.AcceptTCP()
+				if err != nil {
+					return err
+				}
+				go func(c *net.TCPConn) {
+					defer c.Close()
+					ss, err := NewStreamServer(s.Password, c.RemoteAddr().String(), c, s.TCPTimeout, s.UDPTimeout)
+					if err != nil {
+						Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
+						return
+					}
+					defer ss.Clean()
+					if ss.Network() == "tcp" {
+						if err := s.TCPHandle(ss); err != nil {
+							Log(&Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+						}
+					}
+					if ss.Network() == "udp" {
+						if err := s.UDPOverTCPHandle(ss); err != nil {
+							Log(&Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+						}
+					}
+				}(c)
 			}
 			return nil
+		},
+		Stop: func() error {
+			return l.Close()
 		},
 	})
+	addr1, err := net.ResolveUDPAddr("udp", s.Addr)
+	if err != nil {
+		l.Close()
+		return err
+	}
+	l1, err := net.ListenUDP("udp", addr1)
+	if err != nil {
+		l.Close()
+		return err
+	}
 	s.RunnerGroup.Add(&runnergroup.Runner{
 		Start: func() error {
-			return s.RunUDPServer()
-		},
-		Stop: func() error {
-			if s.UDPConn != nil {
-				return s.UDPConn.Close()
+			f := NewPacketServerConnFactory()
+			for {
+				b := make([]byte, 65507)
+				n, addr, err := l1.ReadFromUDP(b)
+				if err != nil {
+					return err
+				}
+				conn, dstb, err := f.Handle(addr, b[0:n], s.Password, func(b []byte) (int, error) {
+					return l1.WriteToUDP(b, addr)
+				}, s.UDPTimeout)
+				if err != nil {
+					Log(&Error{"from": addr.String(), "error": err.Error()})
+					continue
+				}
+				if conn == nil {
+					continue
+				}
+				go func() {
+					defer conn.Close()
+					ss, err := NewPacketServer(s.Password, addr.String(), conn, s.UDPTimeout, dstb)
+					if err != nil {
+						Log(&Error{"from": addr.String(), "dst": socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), "error": err.Error()})
+						return
+					}
+					defer ss.Clean()
+					if err := s.UDPHandle(ss); err != nil {
+						Log(&Error{"from": addr.String(), "dst": socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), "error": err.Error()})
+					}
+				}()
 			}
 			return nil
+		},
+		Stop: func() error {
+			return l1.Close()
 		},
 	})
 	return s.RunnerGroup.Wait()
-}
-
-func (s *Server) RunTCPServer() error {
-	var err error
-	s.TCPListen, err = net.ListenTCP("tcp", s.TCPAddr)
-	if err != nil {
-		return err
-	}
-	defer s.TCPListen.Close()
-	for {
-		c, err := s.TCPListen.AcceptTCP()
-		if err != nil {
-			return err
-		}
-		go func(c *net.TCPConn) {
-			defer c.Close()
-			if s.TCPTimeout != 0 {
-				if err := c.SetDeadline(time.Now().Add(time.Duration(s.TCPTimeout) * time.Second)); err != nil {
-					log.Println(err)
-					return
-				}
-			}
-			ss, err := NewStreamServer(s.Password, c.RemoteAddr().String(), c, s.TCPTimeout, s.UDPTimeout)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			defer ss.Clean()
-			if ss.Network() == "tcp" {
-				if err := s.TCPHandle(ss); err != nil {
-					log.Println(err)
-				}
-			}
-			if ss.Network() == "udp" {
-				if err := s.UDPOverTCPHandle(ss); err != nil {
-					log.Println(err)
-				}
-			}
-		}(c)
-	}
-	return nil
-}
-
-func (s *Server) RunUDPServer() error {
-	var err error
-	s.UDPConn, err = net.ListenUDP("udp", s.UDPAddr)
-	if err != nil {
-		return err
-	}
-	defer s.UDPConn.Close()
-	f := NewPacketServerConnFactory()
-	for {
-		b := make([]byte, 65507)
-		n, addr, err := s.UDPConn.ReadFromUDP(b)
-		if err != nil {
-			return err
-		}
-		conn, dstb, err := f.Handle(addr, b[0:n], s.Password, func(b []byte) (int, error) {
-			return s.UDPConn.WriteToUDP(b, addr)
-		}, s.UDPTimeout)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		if conn == nil {
-			continue
-		}
-		go func() {
-			defer conn.Close()
-			ss, err := NewPacketServer(s.Password, addr.String(), conn, s.UDPTimeout, dstb)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			defer ss.Clean()
-			if err := s.UDPHandle(ss); err != nil {
-				log.Println(err)
-			}
-		}()
-	}
-	return nil
 }
 
 func (s *Server) TCPHandle(ss Exchanger) error {

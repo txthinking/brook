@@ -20,8 +20,8 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/binary"
+	"errors"
 	"io"
-	"log"
 	"net"
 	"time"
 
@@ -63,34 +63,34 @@ func (c *PacketClient) Exchange(local net.Conn) error {
 				return
 			}
 			if i < 12+16 {
-				log.Println("data too small")
+				Log(errors.New("data too small"))
 				return
 			}
 			sk := x.BP32.Get().([]byte)
 			if _, err := io.ReadFull(hkdf.New(sha256.New, c.Password, c.RB[:12], []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), sk); err != nil {
 				x.BP32.Put(sk)
-				log.Println(err)
+				Log(err)
 				return
 			}
 			sb, err := aes.NewCipher(sk)
 			if err != nil {
 				x.BP32.Put(sk)
-				log.Println(err)
+				Log(err)
 				return
 			}
 			x.BP32.Put(sk)
 			sa, err := cipher.NewGCM(sb)
 			if err != nil {
-				log.Println(err)
+				Log(err)
 				return
 			}
 			if _, err := sa.Open(c.RB[:12], c.RB[:12], c.RB[12:i], nil); err != nil {
-				log.Println(err)
+				Log(err)
 				return
 			}
 			_, h, _, err := socks5.ParseBytesAddress(c.RB[12:])
 			if err != nil {
-				log.Println(err)
+				Log(err)
 				return
 			}
 			_, err = local.Write(c.RB[12+1+len(h)+2 : i-16])

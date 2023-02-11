@@ -16,7 +16,6 @@ package brook
 
 import (
 	"encoding/binary"
-	"log"
 	"net"
 	"time"
 
@@ -58,7 +57,7 @@ func (c *SimplePacketClient) Exchange(local net.Conn) error {
 			}
 			_, h, _, err := socks5.ParseBytesAddress(c.RB[0:])
 			if err != nil {
-				log.Println(err)
+				Log(err)
 				return
 			}
 			_, err = local.Write(c.RB[1+len(h)+2 : i])

@@ -15,7 +15,6 @@
 package brook
 
 import (
-	"log"
 	"net"
 
 	"github.com/txthinking/brook/limits"
@@ -38,7 +37,7 @@ func NewClient(addr, ip, server, password string, tcpTimeout, udpTimeout int) (*
 		return nil, err
 	}
 	if err := limits.Raise(); err != nil {
-		log.Println("Try to raise system limits, got", err)
+		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	x := &Client{
 		ServerAddress:     server,
@@ -92,12 +91,6 @@ func (x *Client) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) 
 		return nil
 	}
 	return socks5.ErrUnsupportCmd
-}
-
-type UDPExchange struct {
-	Conn net.Conn
-	Any  interface{}
-	Dst  []byte
 }
 
 func (x *Client) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {

@@ -12,35 +12,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-package brook
+package socks5dial
 
 import (
-	"github.com/txthinking/brook/limits"
+	"net"
+
+	"github.com/txthinking/brook"
 	"github.com/txthinking/socks5"
 )
 
-type Socks5Server struct {
-	Server *socks5.Server
+type Socks5Dial struct {
+	s5c *socks5.Client
 }
 
-func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, udpTimeout int) (*Socks5Server, error) {
-	s5, err := socks5.NewClassicServer(addr, ip, userName, password, tcpTimeout, udpTimeout)
+func NewSocks5Dial(server, username, password string, tcptimeout, udptimeout int) (*Socks5Dial, error) {
+	s5c, err := socks5.NewClient(server, username, password, tcptimeout, udptimeout)
 	if err != nil {
 		return nil, err
 	}
-	if err := limits.Raise(); err != nil {
-		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
-	}
-	x := &Socks5Server{
-		Server: s5,
-	}
-	return x, nil
+	return &Socks5Dial{
+		s5c: s5c,
+	}, nil
 }
 
-func (x *Socks5Server) ListenAndServe() error {
-	return x.Server.ListenAndServe(nil)
-}
-
-func (x *Socks5Server) Shutdown() error {
-	return x.Server.Shutdown()
+func (p *Socks5Dial) TouchBrook() {
+	brook.DialTCP = func(network string, laddr, raddr string) (net.Conn, error) {
+		return p.s5c.DialWithLocalAddr("tcp", laddr, raddr, nil)
+	}
+	brook.DialUDP = func(network string, laddr, raddr string) (net.Conn, error) {
+		return p.s5c.DialWithLocalAddr("udp", laddr, raddr, nil)
+	}
 }

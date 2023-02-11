@@ -12,12 +12,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-package brook
+// +build !linux
+
+package tproxy
 
 import (
-	"testing"
+	"errors"
+	"net"
+
+	cache "github.com/patrickmn/go-cache"
 )
 
-func TestTest(t *testing.T) {
-	Log(&Error{"a": "b"})
+type Tproxy struct {
+	CIDR4      []*net.IPNet
+	CIDR6      []*net.IPNet
+	GeoIP      []string
+	Cache      *cache.Cache
+	TCPTimeout int
+	UDPTimeout int
+}
+
+func NewTproxy(cidr4List, cidr6List string, geoIP []string, tcptimeout, udptimeout int) (*Tproxy, error) {
+	return nil, errors.New("Only support Linux")
+}
+
+func (p *Tproxy) TouchBrook() {
 }

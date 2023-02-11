@@ -18,7 +18,6 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	"log"
 	"net"
 	"net/http"
 	"os/exec"
@@ -29,6 +28,7 @@ import (
 	"github.com/txthinking/brook/limits"
 	crypto1 "github.com/txthinking/crypto"
 	"github.com/txthinking/runnergroup"
+	"github.com/txthinking/socks5"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -47,20 +47,20 @@ type QUICServer struct {
 
 func NewQUICServer(addr, password, domain string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64, blockGeoIP []string, withoutbrook bool) (*QUICServer, error) {
 	if err := limits.Raise(); err != nil {
-		log.Println("Try to raise system limits, got", err)
+		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	if runtime.GOOS == "linux" {
 		c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
 		b, err := c.CombinedOutput()
 		if err != nil {
-			log.Println("Try to raise UDP Receive Buffer Size, got", err, string(b))
+			Log(&Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
 		}
 	}
 	if runtime.GOOS == "darwin" {
 		c := exec.Command("sysctl", "-w", "kern.ipc.maxsockbuf=3014656")
 		b, err := c.CombinedOutput()
 		if err != nil {
-			log.Println("Try to raise UDP Receive Buffer Size, got", err, string(b))
+			Log(&Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
 		}
 	}
 	var p []byte
@@ -145,12 +145,12 @@ func (s *QUICServer) ListenAndServe() error {
 								ss, err = NewSimpleStreamServer(s.Password, c.RemoteAddr().String(), c, s.TCPTimeout, s.UDPTimeout)
 							}
 							if err != nil {
-								log.Println(err)
+								Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 								return
 							}
 							defer ss.Clean()
 							if err := s.TCPHandle(ss); err != nil {
-								log.Println(err)
+								Log(&Error{"from": ss.Src(), "dst": ss.Dst(), "error": err.Error()})
 							}
 						}(&QUICConn{
 							Conn:   c,
@@ -178,8 +178,8 @@ func (s *QUICServer) ListenAndServe() error {
 							}
 							conn, dstb, err := s.UDPServerConnFactory.Handle(c.RemoteAddr().(*net.UDPAddr), b, s.Password, func(b []byte) (int, error) {
 								if len(b) > 1197 {
-									err := errors.New("quic max datagram size is 1197")
-									log.Println(err)
+									err := errors.New("when write to client, quic max datagram size is 1197")
+									Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 									return 0, err
 								}
 								if err := c.SendMessage(b); err != nil {
@@ -188,7 +188,7 @@ func (s *QUICServer) ListenAndServe() error {
 								return len(b), nil
 							}, s.UDPTimeout)
 							if err != nil {
-								log.Println(err)
+								Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 								continue
 							}
 							if conn == nil {
@@ -204,12 +204,12 @@ func (s *QUICServer) ListenAndServe() error {
 									ss, err = NewSimplePacketServer(s.Password, c.RemoteAddr().String(), conn, s.UDPTimeout, dstb)
 								}
 								if err != nil {
-									log.Println(err)
+									Log(&Error{"from": c.RemoteAddr().String(), "dst": socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), "error": err.Error()})
 									return
 								}
 								defer ss.Clean()
 								if err := s.UDPHandle(ss); err != nil {
-									log.Println(err)
+									Log(&Error{"from": c.RemoteAddr().String(), "dst": socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), "error": err.Error()})
 								}
 							}()
 						}

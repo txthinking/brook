@@ -14,10 +14,8 @@
 
 package brook
 
-import (
-	"testing"
-)
+import "log"
 
-func TestTest(t *testing.T) {
-	Log(&Error{"a": "b"})
+var Log func(err error) = func(err error) {
+	log.Println(err)
 }

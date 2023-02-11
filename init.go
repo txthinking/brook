@@ -14,18 +14,5 @@
 
 package brook
 
-import (
-	"github.com/txthinking/socks5"
-	"github.com/txthinking/x"
-)
-
-var Dial x.Dialer = x.DefaultDial
-var Dial1 x.Dialer1
-
-var Debug bool = false
-
-// EnableDebug.
-func EnableDebug() {
-	socks5.Debug = true
-	Debug = true
+func init() {
 }

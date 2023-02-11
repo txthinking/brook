@@ -78,11 +78,11 @@ var NATListenUDP func(network string, src, dst string) (*net.UDPConn, error) = f
 	var laddr *net.UDPAddr
 	s := _nattable.get(src, dst)
 	if s != "" {
-		a, err := Resolve("udp", s)
+		var err error
+		laddr, err = net.ResolveUDPAddr("udp", s)
 		if err != nil {
 			return nil, err
 		}
-		laddr = a.(*net.UDPAddr)
 	}
 	c, err := ListenUDP("udp", laddr)
 	if err != nil {

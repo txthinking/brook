@@ -18,7 +18,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
-	"log"
 	"net"
 	"net/url"
 
@@ -226,7 +225,7 @@ func (x *BrookLink) PrepareSocks5Server(addr, ip string, tcptimeout, udptimeout 
 		return err
 	}
 	if err := limits.Raise(); err != nil {
-		log.Println("Try to raise system limits, got", err)
+		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	x.pcf = NewPacketConnFactory()
 	x.tt = tcptimeout

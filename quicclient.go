@@ -17,7 +17,6 @@ package brook
 import (
 	"crypto/tls"
 	"errors"
-	"log"
 	"net"
 	"net/url"
 
@@ -48,7 +47,7 @@ func NewQUICClient(addr, ip, server, password string, tcpTimeout, udpTimeout int
 		return nil, err
 	}
 	if err := limits.Raise(); err != nil {
-		log.Println("Try to raise system limits, got", err)
+		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	p := []byte(password)
 	if withoutbrook {
