@@ -45,7 +45,7 @@ func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 		return nil, err
 	}
 	// convert to ip first, because gateway system may no dns server
-	h, p, err := net.SplitHostPort(r.address)
+	h, p, err := net.SplitHostPort(r.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 	if ip == "" {
 		return nil, errors.New("Can not find server IP")
 	}
-	r.address = net.JoinHostPort(ip, p)
+	r.Address = net.JoinHostPort(ip, p)
 
 	t := &Tproxy{
 		Addr:        addr,
