@@ -20,31 +20,31 @@ import (
 	"sync"
 )
 
-type nattable struct {
-	table map[string]string
-	lock  *sync.Mutex
+type NATTable struct {
+	Table map[string]string
+	Lock  *sync.Mutex
 }
 
-var _nattable = &nattable{
-	table: map[string]string{},
-	lock:  &sync.Mutex{},
+var NAT = &NATTable{
+	Table: map[string]string{},
+	Lock:  &sync.Mutex{},
 }
 
-func (n *nattable) set(src, dst, addr string) {
-	n.lock.Lock()
-	defer n.lock.Unlock()
-	n.table[src+dst] = addr
+func (n *NATTable) Set(src, dst, addr string) {
+	n.Lock.Lock()
+	defer n.Lock.Unlock()
+	n.Table[src+dst] = addr
 }
 
-func (n *nattable) get(src, dst string) string {
-	n.lock.Lock()
-	defer n.lock.Unlock()
-	s, _ := n.table[src+dst]
+func (n *NATTable) Get(src, dst string) string {
+	n.Lock.Lock()
+	defer n.Lock.Unlock()
+	s, _ := n.Table[src+dst]
 	return s
 }
 
 var NATDial func(network string, src, dst, addr string) (net.Conn, error) = func(network string, src, dst, addr string) (net.Conn, error) {
-	s := _nattable.get(src, dst)
+	s := NAT.Get(src, dst)
 	var c net.Conn
 	var err error
 	if network == "tcp" {
@@ -69,14 +69,14 @@ var NATDial func(network string, src, dst, addr string) (net.Conn, error) = func
 		return nil, err
 	}
 	if s == "" {
-		_nattable.set(src, dst, c.LocalAddr().String())
+		NAT.Set(src, dst, c.LocalAddr().String())
 	}
 	return c, nil
 }
 
 var NATListenUDP func(network string, src, dst string) (*net.UDPConn, error) = func(network string, src, dst string) (*net.UDPConn, error) {
 	var laddr *net.UDPAddr
-	s := _nattable.get(src, dst)
+	s := NAT.Get(src, dst)
 	if s != "" {
 		var err error
 		laddr, err = net.ResolveUDPAddr("udp", s)
@@ -96,7 +96,7 @@ var NATListenUDP func(network string, src, dst string) (*net.UDPConn, error) = f
 		return nil, err
 	}
 	if s == "" {
-		_nattable.set(src, dst, c.LocalAddr().String())
+		NAT.Set(src, dst, c.LocalAddr().String())
 	}
 	return c, nil
 }
