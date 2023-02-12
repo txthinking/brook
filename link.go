@@ -17,18 +17,23 @@ package brook
 import (
 	"fmt"
 	"net/url"
-	"os"
-
-	"github.com/mdp/qrterminal"
 )
 
-func Link(kind, s, username, password string) string {
-	v := url.Values{}
-	v.Set(kind, s)
-	v.Set("username", username)
-	v.Set("password", password)
-	s = fmt.Sprintf("brook://%s?%s", kind, v.Encode())
-	return s
+func Link(kind, server string, v url.Values) string {
+	v.Set(kind, server)
+	return fmt.Sprintf("brook://%s?%s", kind, v.Encode())
+}
+
+func ParseLink(link string) (kind, server string, v url.Values, err error) {
+	var u *url.URL
+	u, err = url.Parse(link)
+	if err != nil {
+		return
+	}
+	kind = u.Host
+	server = u.Query().Get(kind)
+	v = u.Query()
+	return
 }
 
 func LinkExtra(kind, s, username, password string, v url.Values) string {
@@ -37,23 +42,6 @@ func LinkExtra(kind, s, username, password string, v url.Values) string {
 	v.Set("password", password)
 	s = fmt.Sprintf("brook://%s?%s", kind, v.Encode())
 	return s
-}
-
-func QR(kind, s, username, password string) {
-	qrterminal.GenerateHalfBlock(Link(kind, s, username, password), qrterminal.L, os.Stdout)
-}
-
-func ParseLink(link string) (kind, s, username, password string, err error) {
-	var u *url.URL
-	u, err = url.Parse(link)
-	if err != nil {
-		return
-	}
-	kind = u.Host
-	s = u.Query().Get(kind)
-	username = u.Query().Get("username")
-	password = u.Query().Get("password")
-	return
 }
 
 func ParseLinkExtra(link string) (kind, s, username, password string, v url.Values, err error) {

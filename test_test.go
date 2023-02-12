@@ -15,9 +15,15 @@
 package brook
 
 import (
+	"log"
+	"net/url"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
-	Log(&Error{"a": "b"})
+	v := url.Values{}
+	v.Set("password", "hello")
+	s := Link("server", "1.2.3.4:5", v)
+	log.Println(s)
+	log.Println(ParseLink(s))
 }
