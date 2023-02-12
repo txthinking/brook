@@ -29,7 +29,7 @@ import (
 
 type Tproxy struct {
 	Addr        string
-	blk         *BrookLink
+	Blk         *BrookLink
 	TCPTimeout  int
 	UDPTimeout  int
 	RunnerGroup *runnergroup.RunnerGroup
@@ -63,7 +63,7 @@ func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 		TCPTimeout:  tcpTimeout,
 		UDPTimeout:  udpTimeout,
 		RunnerGroup: runnergroup.New(),
-		blk:         r,
+		Blk:         r,
 	}
 	return t, nil
 }
@@ -367,7 +367,7 @@ func (s *Tproxy) TCPHandle(c0 *net.TCPConn) error {
 		return err
 	}
 	dstb := append(append([]byte{a}, h...), p...)
-	sc, err := s.blk.CreateExchanger("tcp", c.RemoteAddr().String(), dstb, s.TCPTimeout, s.UDPTimeout)
+	sc, err := s.Blk.CreateExchanger("tcp", c.RemoteAddr().String(), dstb, s.TCPTimeout, s.UDPTimeout)
 	if err != nil {
 		return err
 	}
@@ -398,7 +398,7 @@ func (s *Tproxy) UDPHandle(c *net.UDPConn, b []byte) error {
 		return err
 	}
 	dstb := append(append([]byte{a}, h...), p...)
-	sc, err := s.blk.CreateExchanger("udp", c.RemoteAddr().String(), dstb, s.TCPTimeout, s.UDPTimeout)
+	sc, err := s.Blk.CreateExchanger("udp", c.RemoteAddr().String(), dstb, s.TCPTimeout, s.UDPTimeout)
 	if err != nil {
 		return err
 	}

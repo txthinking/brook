@@ -51,7 +51,7 @@ func main() {
 	g := runnergroup.New()
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20230122"
+	app.Version = "20230122.Beta.20230214"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{

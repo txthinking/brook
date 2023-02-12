@@ -27,10 +27,10 @@ import (
 type Relay struct {
 	From        string
 	To          string
-	dstb        []byte
+	Dstb        []byte
 	TCPTimeout  int
 	UDPTimeout  int
-	pcf         *PacketConnFactory
+	Pcf         *PacketConnFactory
 	RunnerGroup *runnergroup.RunnerGroup
 	IsDNS       bool
 }
@@ -43,10 +43,10 @@ func NewRelay(from, to string, tcpTimeout, udpTimeout int) (*Relay, error) {
 	s := &Relay{
 		From:        from,
 		To:          to,
-		dstb:        append(append([]byte{a}, h...), p...),
+		Dstb:        append(append([]byte{a}, h...), p...),
 		TCPTimeout:  tcpTimeout,
 		UDPTimeout:  udpTimeout,
-		pcf:         NewPacketConnFactory(),
+		Pcf:         NewPacketConnFactory(),
 		RunnerGroup: runnergroup.New(),
 	}
 	return s, nil
@@ -173,7 +173,7 @@ func (s *Relay) UDPHandle(addr *net.UDPAddr, b []byte, l1 *net.UDPConn) error {
 			return nil
 		}
 	}
-	c, err := s.pcf.Handle(addr, s.dstb, b, func(b []byte) (int, error) {
+	c, err := s.Pcf.Handle(addr, s.Dstb, b, func(b []byte) (int, error) {
 		return l1.WriteToUDP(b, addr)
 	}, s.UDPTimeout)
 	if err != nil {

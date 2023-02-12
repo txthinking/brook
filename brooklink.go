@@ -27,18 +27,18 @@ import (
 )
 
 type BrookLink struct {
-	kind     string
-	address  string
-	host     string
-	path     string
-	password []byte
-	v        url.Values
-	tc       *tls.Config
+	Kind     string
+	Address  string
+	Host     string
+	Path     string
+	Password []byte
+	V        url.Values
+	Tc       *tls.Config
 
-	s5  *socks5.Server
-	pcf *PacketConnFactory
-	tt  int
-	ut  int
+	S5         *socks5.Server
+	Pcf        *PacketConnFactory
+	TCPTimeout int
+	UDPTimeout int
 }
 
 func NewBrookLink(link string) (*BrookLink, error) {
@@ -95,66 +95,66 @@ func NewBrookLink(link string) (*BrookLink, error) {
 		}
 	}
 	return &BrookLink{
-		kind:     kind,
-		address:  address,
-		host:     host,
-		path:     path,
-		password: p,
-		v:        v,
-		tc:       tc,
+		Kind:     kind,
+		Address:  address,
+		Host:     host,
+		Path:     path,
+		Password: p,
+		V:        v,
+		Tc:       tc,
 	}, nil
 }
 
 // The caller is responsible for closing the connection in Exchanger.
 func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeout, udptimeout int) (Exchanger, error) {
-	if blk.kind == "server" {
+	if blk.Kind == "server" {
 		if network == "tcp" {
-			rc, err := DialTCP("tcp", "", blk.address)
+			rc, err := DialTCP("tcp", "", blk.Address)
 			if err != nil {
 				return nil, err
 			}
-			sc, err := NewStreamClient("tcp", blk.password, src, rc, tcptimeout, dstb)
-			if err != nil {
-				rc.Close()
-				return nil, err
-			}
-			return sc, nil
-		}
-		if blk.v.Get("udpovertcp") == "true" {
-			rc, err := NATDial("tcp", src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.address)
-			if err != nil {
-				return nil, err
-			}
-			sc, err := NewStreamClient("udp", blk.password, src, rc, udptimeout, dstb)
+			sc, err := NewStreamClient("tcp", blk.Password, src, rc, tcptimeout, dstb)
 			if err != nil {
 				rc.Close()
 				return nil, err
 			}
 			return sc, nil
 		}
-		rc, err := NATDial("udp", src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.address)
+		if blk.V.Get("udpovertcp") == "true" {
+			rc, err := NATDial("tcp", src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address)
+			if err != nil {
+				return nil, err
+			}
+			sc, err := NewStreamClient("udp", blk.Password, src, rc, udptimeout, dstb)
+			if err != nil {
+				rc.Close()
+				return nil, err
+			}
+			return sc, nil
+		}
+		rc, err := NATDial("udp", src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address)
 		if err != nil {
 			return nil, err
 		}
-		sc, err := NewPacketClient(blk.password, src, rc, udptimeout, dstb)
+		sc, err := NewPacketClient(blk.Password, src, rc, udptimeout, dstb)
 		if err != nil {
 			rc.Close()
 			return nil, err
 		}
 		return sc, nil
 	}
-	if blk.kind == "wsserver" || blk.kind == "wssserver" {
+	if blk.Kind == "wsserver" || blk.Kind == "wssserver" {
 		if network == "tcp" {
-			rc, err := WebSocketDial("", "", blk.address, blk.host, blk.path, blk.tc, tcptimeout)
+			rc, err := WebSocketDial("", "", blk.Address, blk.Host, blk.Path, blk.Tc, tcptimeout)
 			if err != nil {
 				return nil, err
 			}
 			var sc Exchanger
-			if blk.v.Get("withoutBrookProtocol") != "true" {
-				sc, err = NewStreamClient("tcp", blk.password, src, rc, tcptimeout, dstb)
+			if blk.V.Get("withoutBrookProtocol") != "true" {
+				sc, err = NewStreamClient("tcp", blk.Password, src, rc, tcptimeout, dstb)
 			}
-			if blk.v.Get("withoutBrookProtocol") == "true" {
-				sc, err = NewSimpleStreamClient("tcp", blk.password, src, rc, tcptimeout, dstb)
+			if blk.V.Get("withoutBrookProtocol") == "true" {
+				sc, err = NewSimpleStreamClient("tcp", blk.Password, src, rc, tcptimeout, dstb)
 			}
 			if err != nil {
 				rc.Close()
@@ -162,16 +162,16 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 			}
 			return sc, nil
 		}
-		rc, err := WebSocketDial(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.address, blk.host, blk.path, blk.tc, tcptimeout)
+		rc, err := WebSocketDial(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address, blk.Host, blk.Path, blk.Tc, tcptimeout)
 		if err != nil {
 			return nil, err
 		}
 		var sc Exchanger
-		if blk.v.Get("withoutBrookProtocol") != "true" {
-			sc, err = NewStreamClient("udp", blk.password, src, rc, udptimeout, dstb)
+		if blk.V.Get("withoutBrookProtocol") != "true" {
+			sc, err = NewStreamClient("udp", blk.Password, src, rc, udptimeout, dstb)
 		}
-		if blk.v.Get("withoutBrookProtocol") == "true" {
-			sc, err = NewSimpleStreamClient("udp", blk.password, src, rc, udptimeout, dstb)
+		if blk.V.Get("withoutBrookProtocol") == "true" {
+			sc, err = NewSimpleStreamClient("udp", blk.Password, src, rc, udptimeout, dstb)
 		}
 		if err != nil {
 			rc.Close()
@@ -179,18 +179,18 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 		}
 		return sc, nil
 	}
-	if blk.kind == "quicserver" {
+	if blk.Kind == "quicserver" {
 		if network == "tcp" {
-			rc, err := QUICDialTCP("", "", blk.address, blk.host, blk.tc, tcptimeout)
+			rc, err := QUICDialTCP("", "", blk.Address, blk.Host, blk.Tc, tcptimeout)
 			if err != nil {
 				return nil, err
 			}
 			var sc Exchanger
-			if blk.v.Get("withoutBrookProtocol") != "true" {
-				sc, err = NewStreamClient("tcp", blk.password, src, rc, tcptimeout, dstb)
+			if blk.V.Get("withoutBrookProtocol") != "true" {
+				sc, err = NewStreamClient("tcp", blk.Password, src, rc, tcptimeout, dstb)
 			}
-			if blk.v.Get("withoutBrookProtocol") == "true" {
-				sc, err = NewSimpleStreamClient("tcp", blk.password, src, rc, tcptimeout, dstb)
+			if blk.V.Get("withoutBrookProtocol") == "true" {
+				sc, err = NewSimpleStreamClient("tcp", blk.Password, src, rc, tcptimeout, dstb)
 			}
 			if err != nil {
 				rc.Close()
@@ -198,16 +198,16 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 			}
 			return sc, nil
 		}
-		rc, err := QUICDialUDP(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.address, blk.host, blk.tc, udptimeout)
+		rc, err := QUICDialUDP(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address, blk.Host, blk.Tc, udptimeout)
 		if err != nil {
 			return nil, err
 		}
 		var sc Exchanger
-		if blk.v.Get("withoutBrookProtocol") != "true" {
-			sc, err = NewPacketClient(blk.password, src, rc, udptimeout, dstb)
+		if blk.V.Get("withoutBrookProtocol") != "true" {
+			sc, err = NewPacketClient(blk.Password, src, rc, udptimeout, dstb)
 		}
-		if blk.v.Get("withoutBrookProtocol") == "true" {
-			sc, err = NewSimplePacketClient(blk.password, src, rc, udptimeout, dstb)
+		if blk.V.Get("withoutBrookProtocol") == "true" {
+			sc, err = NewSimplePacketClient(blk.Password, src, rc, udptimeout, dstb)
 		}
 		if err != nil {
 			rc.Close()
@@ -215,32 +215,32 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 		}
 		return sc, nil
 	}
-	return nil, errors.New("cannot create exchanger from " + blk.kind)
+	return nil, errors.New("cannot create exchanger from " + blk.Kind)
 }
 
 func (x *BrookLink) PrepareSocks5Server(addr, ip string, tcptimeout, udptimeout int) error {
 	var err error
-	x.s5, err = socks5.NewClassicServer(addr, ip, "", "", tcptimeout, udptimeout)
+	x.S5, err = socks5.NewClassicServer(addr, ip, "", "", tcptimeout, udptimeout)
 	if err != nil {
 		return err
 	}
 	if err := limits.Raise(); err != nil {
 		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
-	x.pcf = NewPacketConnFactory()
-	x.tt = tcptimeout
-	x.ut = udptimeout
+	x.Pcf = NewPacketConnFactory()
+	x.TCPTimeout = tcptimeout
+	x.UDPTimeout = udptimeout
 	return nil
 }
 
 func (x *BrookLink) ListenAndServe() error {
-	return x.s5.ListenAndServe(x)
+	return x.S5.ListenAndServe(x)
 }
 
 func (x *BrookLink) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request) error {
 	if r.Cmd == socks5.CmdConnect {
 		dstb := append(append([]byte{r.Atyp}, r.DstAddr...), r.DstPort...)
-		sc, err := x.CreateExchanger("tcp", c.RemoteAddr().String(), dstb, x.tt, x.ut)
+		sc, err := x.CreateExchanger("tcp", c.RemoteAddr().String(), dstb, x.TCPTimeout, x.UDPTimeout)
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
@@ -268,7 +268,7 @@ func (x *BrookLink) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Reques
 		return nil
 	}
 	if r.Cmd == socks5.CmdUDP {
-		_, err := r.UDP(c, x.s5.ServerAddr)
+		_, err := r.UDP(c, x.S5.ServerAddr)
 		if err != nil {
 			return err
 		}
@@ -279,10 +279,10 @@ func (x *BrookLink) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Reques
 
 func (x *BrookLink) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Datagram) error {
 	dstb := append(append([]byte{d.Atyp}, d.DstAddr...), d.DstPort...)
-	conn, err := x.pcf.Handle(addr, dstb, d.Data, func(b []byte) (int, error) {
+	conn, err := x.Pcf.Handle(addr, dstb, d.Data, func(b []byte) (int, error) {
 		d.Data = b
 		return s.UDPConn.WriteToUDP(d.Bytes(), addr)
-	}, x.ut)
+	}, x.UDPTimeout)
 	if err != nil {
 		return err
 	}
@@ -290,7 +290,7 @@ func (x *BrookLink) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Dat
 		return nil
 	}
 	defer conn.Close()
-	sc, err := x.CreateExchanger("udp", addr.String(), dstb, x.tt, x.ut)
+	sc, err := x.CreateExchanger("udp", addr.String(), dstb, x.TCPTimeout, x.UDPTimeout)
 	if err != nil {
 		return err
 	}
@@ -314,5 +314,5 @@ func (x *BrookLink) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Dat
 }
 
 func (x *BrookLink) Shutdown() error {
-	return x.s5.Shutdown()
+	return x.S5.Shutdown()
 }
