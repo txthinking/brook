@@ -68,18 +68,20 @@ func main() {
 		},
 	}
 	app.Before = func(c *cli.Context) error {
-		p, err := pprof.NewPprof(c.String("pprof"))
-		if err != nil {
-			return err
+		if c.String("pprof") != "" {
+			p, err := pprof.NewPprof(c.String("pprof"))
+			if err != nil {
+				return err
+			}
+			g.Add(&runnergroup.Runner{
+				Start: func() error {
+					return p.ListenAndServe()
+				},
+				Stop: func() error {
+					return p.Shutdown()
+				},
+			})
 		}
-		g.Add(&runnergroup.Runner{
-			Start: func() error {
-				return p.ListenAndServe()
-			},
-			Stop: func() error {
-				return p.Shutdown()
-			},
-		})
 		return nil
 	}
 	app.Commands = []*cli.Command{
