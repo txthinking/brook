@@ -45,7 +45,7 @@ type QUICServer struct {
 	UDPServerConnFactory UDPServerConnFactory
 }
 
-func NewQUICServer(addr, password, domain string, tcpTimeout, udpTimeout int, blockDomainList, blockCIDR4List, blockCIDR6List string, updateListInterval int64, blockGeoIP []string, withoutbrook bool) (*QUICServer, error) {
+func NewQUICServer(addr, password, domain string, tcpTimeout, udpTimeout int, withoutbrook bool) (*QUICServer, error) {
 	if err := limits.Raise(); err != nil {
 		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
 	}

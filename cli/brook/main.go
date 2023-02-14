@@ -975,7 +975,7 @@ func main() {
 				if err != nil {
 					return err
 				}
-				s, err := brook.NewQUICServer(":"+p, c.String("password"), h, c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.Int64("updateListInterval"), c.StringSlice("blockGeoIP"), c.Bool("withoutBrookProtocol"))
+				s, err := brook.NewQUICServer(":"+p, c.String("password"), h, c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
 				if err != nil {
 					return err
 				}
@@ -1437,7 +1437,7 @@ func main() {
 				},
 				&cli.BoolFlag{
 					Name:  "enableIPv6",
-					Usage: "Your local and server must support IPv6 both",
+					Usage: "deprecated",
 				},
 				&cli.BoolFlag{
 					Name:  "doNotRunScripts",
@@ -1514,7 +1514,55 @@ func main() {
 					lock := &sync.Mutex{}
 					m := http.NewServeMux()
 					m.Handle("/", http.FileServer(http.FS(web)))
+					m.HandleFunc("/hasp", func(w http.ResponseWriter, r *http.Request) {
+						lock.Lock()
+						defer lock.Unlock()
+						_, err := os.Stat("/tmp/.brook.web.password")
+						if os.IsNotExist(err) {
+							w.Write([]byte("no"))
+							return
+						}
+						w.Write([]byte("yes"))
+					})
+					m.HandleFunc("/setp", func(w http.ResponseWriter, r *http.Request) {
+						lock.Lock()
+						defer lock.Unlock()
+						_, err := os.Stat("/tmp/.brook.web.password")
+						if !os.IsNotExist(err) {
+							http.Error(w, "file exsits", 500)
+							return
+						}
+						err = ioutil.WriteFile("/tmp/.brook.web.password", []byte(r.FormValue("p")), 0600)
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						w.WriteHeader(200)
+					})
+					m.HandleFunc("/authp", func(w http.ResponseWriter, r *http.Request) {
+						lock.Lock()
+						defer lock.Unlock()
+						b, err := ioutil.ReadFile("/tmp/.brook.web.password")
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						if string(b) != r.FormValue("p") {
+							http.Error(w, "web ui password wrong", 500)
+							return
+						}
+						w.WriteHeader(200)
+					})
 					m.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
+						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						if string(b) != r.FormValue("p") {
+							http.Error(w, "web ui password wrong", 500)
+							return
+						}
 						s, err := os.Executable()
 						if err != nil {
 							http.Error(w, err.Error(), 500)
@@ -1523,7 +1571,6 @@ func main() {
 						lock.Lock()
 						defer lock.Unlock()
 						cmd = exec.Command("/bin/sh", "-c", s+" tproxy "+r.FormValue("args"))
-						log.Println(s + " tproxy " + r.FormValue("args"))
 						done := make(chan byte)
 						defer close(done)
 						errch := make(chan error)
@@ -1552,6 +1599,15 @@ func main() {
 						}
 					})
 					m.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
+						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						if string(b) != r.FormValue("p") {
+							http.Error(w, "web ui password wrong", 500)
+							return
+						}
 						lock.Lock()
 						defer lock.Unlock()
 						if cmd == nil {
@@ -1565,6 +1621,15 @@ func main() {
 						w.Write([]byte("disconnected"))
 					})
 					m.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+						b, err := ioutil.ReadFile("/tmp/.brook.web.password")
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						if string(b) != r.FormValue("p") {
+							http.Error(w, "web ui password wrong", 500)
+							return
+						}
 						lock.Lock()
 						defer lock.Unlock()
 						if cmd == nil {

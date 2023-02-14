@@ -35,15 +35,36 @@
                             bypassDomainList: localStorage.getItem("bypassDomainList") ?? "",
                             bypassCIDR4List: localStorage.getItem("bypassCIDR4List") ?? "",
                             bypassCIDR6List: localStorage.getItem("bypassCIDR6List") ?? "",
+                            bypassGeoIP: localStorage.getItem("bypassGeoIP") ?? "",
                             blockDomainList: localStorage.getItem("blockDomainList") ?? "",
-                            enableIPv6: localStorage.getItem("enableIPv6") ? true : false,
+                            disableA: localStorage.getItem("disableA") ? true : false,
+                            disableAAAA: localStorage.getItem("disableAAAA") ? true : false,
+                            hasp: false,
+                            localhasp: false,
+                            p: "",
                             status: "disconnected",
                             ing: false,
                         };
                     },
                     async created() {
                         try {
-                            var r = await fetch("/status");
+                            var r = await fetch("/hasp");
+                            if (r.status != 200) {
+                                throw await r.text();
+                            }
+                            if((await r.text()) == "yes"){
+                                this.hasp = true;
+                            }
+                            if(!this.hasp){
+                                return;
+                            }
+                            if(localStorage.getItem("p")){
+                                this.localhasp = true;
+                            }
+                            if(!this.localhasp){
+                                return;
+                            }
+                            var r = await fetch(`/status?p=${encodeURIComponent(localStorage.getItem('p'))}`);
                             if (r.status != 200) {
                                 throw await r.text();
                             }
@@ -53,6 +74,41 @@
                         }
                     },
                     methods: {
+                        async setp() {
+                            try {
+                                if (!this.p.trim()) {
+                                    return;
+                                }
+                                this.ing = true;
+                                var r = await fetch(`/setp?p=${encodeURIComponent(this.p.trim())}`);
+                                if (r.status != 200) {
+                                    throw await r.text();
+                                }
+                                location.reload();
+                                this.ing = false;
+                            } catch (e) {
+                                alert(`${e}`);
+                                this.ing = false;
+                            }
+                        },
+                        async authp() {
+                            try {
+                                if (!this.p.trim()) {
+                                    return;
+                                }
+                                this.ing = true;
+                                var r = await fetch(`/authp?p=${encodeURIComponent(this.p.trim())}`);
+                                if (r.status != 200) {
+                                    throw await r.text();
+                                }
+                                localStorage.setItem("p", this.p.trim());
+                                location.reload();
+                                this.ing = false;
+                            } catch (e) {
+                                alert(`${e}`);
+                                this.ing = false;
+                            }
+                        },
                         async start() {
                             try {
                                 this.ing = true;
@@ -105,19 +161,43 @@
                                 } else {
                                     localStorage.setItem("bypassCIDR6List", "");
                                 }
+                                if (
+                                    this.bypassGeoIP &&
+                                    this.bypassGeoIP
+                                        .split(",")
+                                        .map((v) => v.trim())
+                                        .filter((v) => v).length
+                                ) {
+                                    this.bypassGeoIP
+                                        .split(",")
+                                        .map((v) => v.trim())
+                                        .filter((v) => v)
+                                        .forEach((v) => {
+                                            s += ` --bypassGeoIP '${v}'`;
+                                        });
+                                    localStorage.setItem("bypassGeoIP", this.bypassGeoIP);
+                                } else {
+                                    localStorage.setItem("bypassGeoIP", "");
+                                }
                                 if (this.blockDomainList) {
                                     s += ` --blockDomainList '${this.blockDomainList}'`;
                                     localStorage.setItem("blockDomainList", this.blockDomainList);
                                 } else {
                                     localStorage.setItem("blockDomainList", "");
                                 }
-                                if (this.enableIPv6) {
-                                    s += ` --enableIPv6`;
-                                    localStorage.setItem("enableIPv6", "true");
+                                if (this.disableA) {
+                                    s += ` --disableA`;
+                                    localStorage.setItem("disableA", "true");
                                 } else {
-                                    localStorage.setItem("enableIPv6", "");
+                                    localStorage.setItem("disableA", "");
                                 }
-                                var r = await fetch(`/start?args=${encodeURIComponent(s)}`);
+                                if (this.disableAAAA) {
+                                    s += ` --disableAAAA`;
+                                    localStorage.setItem("disableAAAA", "true");
+                                } else {
+                                    localStorage.setItem("disableAAAA", "");
+                                }
+                                var r = await fetch(`/start?args=${encodeURIComponent(s)}&p=${encodeURIComponent(localStorage.getItem('p'))}`);
                                 if (r.status != 200) {
                                     throw await r.text();
                                 }
@@ -131,7 +211,7 @@
                         async stop() {
                             try {
                                 this.ing = true;
-                                var r = await fetch(`/stop`);
+                                var r = await fetch(`/stop?p=${encodeURIComponent(localStorage.getItem('p'))}`);
                                 if (r.status != 200) {
                                     throw await r.text();
                                 }
@@ -153,7 +233,7 @@
             <h1>Brook</h1>
             <p>brook tproxy</p>
         </header>
-        <main>
+        <main v-if="hasp && localhasp">
             <p>
                 <label>--link brook link</label><br />
                 <input v-model="link" placeholder="brook://..." />
@@ -175,6 +255,14 @@
                 <input v-model="dnsForBypass" placeholder="223.5.5.5:53" />
             </p>
             <p>
+                <label>--disableA Disable A query</label><br />
+                <input type="checkbox" v-model="disableA" />
+            </p>
+            <p>
+                <label>--disableAAAA Disable AAAA query</label><br />
+                <input type="checkbox" v-model="disableAAAA" />
+            </p>
+            <p>
                 <label>--bypassDomainList Suffix match mode</label><br />
                 <input v-model="bypassDomainList" placeholder="/path/to/local/file/example_domain.txt" />
             </p>
@@ -187,16 +275,32 @@
                 <input v-model="bypassCIDR6List" placeholder="/path/to/local/file/example_cidr6.txt" />
             </p>
             <p>
-                <label>--blockDomainList Suffix match mode</label><br />
-                <input v-model="blockDomainList" placeholder="/path/to/local/file/example_domain.txt" />
+                <label>--bypassGeoIP Bypass IP by Geo country code, such as CN</label><br />
+                <input v-model="bypassGeoIP" placeholder="ZZ,CN" />
             </p>
             <p>
-                <label>--enableIPv6 Your local and server must support IPv6</label><br />
-                <input type="checkbox" v-model="enableIPv6" />
+                <label>--blockDomainList Suffix match mode</label><br />
+                <input v-model="blockDomainList" placeholder="/path/to/local/file/example_domain.txt" />
             </p>
             <p v-if="ing"><button disabled>Waiting...</button></p>
             <p v-if="!ing && status == 'disconnected'"><button v-on:click="start">Connect</button></p>
             <p v-if="!ing && status =='connected'"><button v-on:click="stop">Disconnect</button></p>
+        </main>
+        <main v-if="!hasp">
+            <p>
+                <label>Set password for web UI</label><br />
+                <input v-model="p" />
+            </p>
+            <p v-if="ing"><button disabled>Waiting...</button></p>
+            <p v-if="!ing"><button v-on:click="setp">Save</button></p>
+        </main>
+        <main v-if="hasp && !localhasp">
+            <p>
+                <label>Auth web UI</label><br />
+                <input v-model="p" />
+            </p>
+            <p v-if="ing"><button disabled>Waiting...</button></p>
+            <p v-if="!ing"><button v-on:click="authp">Auth</button></p>
         </main>
         <footer>
             <p><a href="https://txthinking.com">txthinking.com</a> | <a href="https://github.com/txthinking">github.com/txthinking</a> | <a href="https://talks.txthinking.com">blog</a> | <a href="https://youtube.com/txthinking">youtube</a> | <a href="https://t.me/brookgroup">telegram</a> | <a href="https://t.me/txthinking_news">news</a></p>
