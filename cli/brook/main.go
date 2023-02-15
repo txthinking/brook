@@ -51,7 +51,7 @@ func main() {
 	g := runnergroup.New()
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20230122.Beta.20230214"
+	app.Version = "20230217"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{
@@ -1517,7 +1517,7 @@ func main() {
 					m.HandleFunc("/hasp", func(w http.ResponseWriter, r *http.Request) {
 						lock.Lock()
 						defer lock.Unlock()
-						_, err := os.Stat("/tmp/.brook.web.password")
+						_, err := os.Stat("/root/.brook.web.password")
 						if os.IsNotExist(err) {
 							w.Write([]byte("no"))
 							return
@@ -1527,12 +1527,12 @@ func main() {
 					m.HandleFunc("/setp", func(w http.ResponseWriter, r *http.Request) {
 						lock.Lock()
 						defer lock.Unlock()
-						_, err := os.Stat("/tmp/.brook.web.password")
+						_, err := os.Stat("/root/.brook.web.password")
 						if !os.IsNotExist(err) {
 							http.Error(w, "file exsits", 500)
 							return
 						}
-						err = ioutil.WriteFile("/tmp/.brook.web.password", []byte(r.FormValue("p")), 0600)
+						err = ioutil.WriteFile("/root/.brook.web.password", []byte(r.FormValue("p")), 0600)
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1542,7 +1542,7 @@ func main() {
 					m.HandleFunc("/authp", func(w http.ResponseWriter, r *http.Request) {
 						lock.Lock()
 						defer lock.Unlock()
-						b, err := ioutil.ReadFile("/tmp/.brook.web.password")
+						b, err := ioutil.ReadFile("/root/.brook.web.password")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1621,7 +1621,7 @@ func main() {
 						w.Write([]byte("disconnected"))
 					})
 					m.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-						b, err := ioutil.ReadFile("/tmp/.brook.web.password")
+						b, err := ioutil.ReadFile("/root/.brook.web.password")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return

@@ -43,16 +43,16 @@ type BrookLink struct {
 
 func NewBrookLink(link string) (*BrookLink, error) {
 	var address, host, path string
-	kind, server, _, password, v, err := ParseLinkExtra(link)
+	kind, server, v, err := ParseLink(link)
 	if err != nil {
 		return nil, err
 	}
-	p := []byte(password)
+	p := []byte(v.Get("password"))
 	if kind == "server" {
 		address = server
 	}
 	var tc *tls.Config
-	if kind == "wsserver" || kind == "wssserver" || kind == "quicserver" {
+	if kind == "socks5" || kind == "wsserver" || kind == "wssserver" || kind == "quicserver" {
 		u, err := url.Parse(server)
 		if err != nil {
 			return nil, err
@@ -63,8 +63,10 @@ func NewBrookLink(link string) (*BrookLink, error) {
 			path = "/ws"
 		}
 		address = host
-		if v.Get("address") != "" {
-			address = v.Get("address")
+		if kind == "wsserver" || kind == "wssserver" || kind == "quicserver" {
+			if v.Get("address") != "" {
+				address = v.Get("address")
+			}
 		}
 		if kind == "wssserver" || kind == "quicserver" {
 			h, _, err := net.SplitHostPort(u.Host)
@@ -87,10 +89,12 @@ func NewBrookLink(link string) (*BrookLink, error) {
 				tc.NextProtos = []string{"h3"}
 			}
 		}
-		if v.Get("withoutBrookProtocol") == "true" {
-			p, err = crypto1.SHA256Bytes([]byte(password))
-			if err != nil {
-				return nil, err
+		if kind == "wsserver" || kind == "wssserver" || kind == "quicserver" {
+			if v.Get("withoutBrookProtocol") == "true" {
+				p, err = crypto1.SHA256Bytes([]byte(v.Get("password")))
+				if err != nil {
+					return nil, err
+				}
 			}
 		}
 	}

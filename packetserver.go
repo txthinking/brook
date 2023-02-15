@@ -35,16 +35,14 @@ type PacketServer struct {
 	WB       []byte
 	Timeout  int
 	src      string
-	dst      string
-	dstl     int
+	dstb     []byte
 }
 
-func NewPacketServer(password []byte, src string, client net.Conn, timeout int, dst []byte) (Exchanger, error) {
+func NewPacketServer(password []byte, src string, client net.Conn, timeout int, dstb []byte) (Exchanger, error) {
 	s := &PacketServer{Password: password, Client: client, Timeout: timeout, src: src}
 	s.RB = x.BP65507.Get().([]byte)
 	s.WB = x.BP65507.Get().([]byte)
-	s.dstl = copy(s.WB[12:12+len(dst)], dst)
-	s.dst = socks5.ToAddress(dst[0], dst[1:s.dstl-2], dst[s.dstl-2:])
+	s.dstb = dstb
 	return ServerGate(s)
 }
 
@@ -56,7 +54,8 @@ func (s *PacketServer) Exchange(remote net.Conn) error {
 					return
 				}
 			}
-			l, err := remote.Read(s.WB[12+s.dstl : 65507-16])
+			copy(s.WB[12:12+len(s.dstb)], s.dstb)
+			l, err := remote.Read(s.WB[12+len(s.dstb) : 65507-16])
 			if err != nil {
 				return
 			}
@@ -82,8 +81,8 @@ func (s *PacketServer) Exchange(remote net.Conn) error {
 				Log(err)
 				return
 			}
-			sa.Seal(s.WB[:12], s.WB[:12], s.WB[12:12+s.dstl+l], nil)
-			_, err = s.Client.Write(s.WB[:12+s.dstl+l+16])
+			sa.Seal(s.WB[:12], s.WB[:12], s.WB[12:12+len(s.dstb)+l], nil)
+			_, err = s.Client.Write(s.WB[:12+len(s.dstb)+l+16])
 			if err != nil {
 				return
 			}
@@ -120,5 +119,5 @@ func (s *PacketServer) Src() string {
 }
 
 func (s *PacketServer) Dst() string {
-	return s.dst
+	return socks5.ToAddress(s.dstb[0], s.dstb[1:len(s.dstb)-2], s.dstb[len(s.dstb)-2:])
 }

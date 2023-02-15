@@ -260,7 +260,7 @@ brook dnsserveroverbrook ... --listen 127.0.0.1:53
 
 ```
 opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket
+opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables
 ```
 
 ```
@@ -313,7 +313,7 @@ brook tproxy --link 'brook://...' --dnsListen :53
 
 ```
 opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket
+opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables
 ```
 
 **无需操作 iptables！**

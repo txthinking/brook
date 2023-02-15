@@ -18,7 +18,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"log"
 	"net"
 	"os"
 	"strconv"
@@ -91,7 +90,6 @@ func ReadFromUDP(conn *net.UDPConn, oob, b []byte) (int, *net.UDPAddr, *net.UDPA
 			return n, addr, dst, nil
 		}
 		if msg.Header.Level == unix.SOL_IPV6 && msg.Header.Type == unix.IPV6_ORIGDSTADDR {
-			log.Println(333)
 			pp := &unix.RawSockaddrInet6{}
 			ai := *(*uint16)(unsafe.Pointer(&msg.Data[unsafe.Offsetof(pp.Family)]))
 			if ai != unix.AF_INET6 {
@@ -129,14 +127,22 @@ func DialUDP(network string, laddr *net.UDPAddr, raddr *net.UDPAddr) (*net.UDPCo
 		copy(lip[:], laddr.IP.To16())
 		zoneID, err := strconv.ParseUint(laddr.Zone, 10, 32)
 		if err != nil {
-			return nil, err
+			i, err := net.InterfaceByName(laddr.Zone)
+			if err != nil {
+				return nil, err
+			}
+			zoneID = uint64(i.Index)
 		}
 		laddrs = &syscall.SockaddrInet6{Addr: lip, Port: laddr.Port, ZoneId: uint32(zoneID)}
 		rip := [16]byte{}
 		copy(rip[:], raddr.IP.To16())
 		zoneID, err = strconv.ParseUint(raddr.Zone, 10, 32)
 		if err != nil {
-			return nil, err
+			i, err := net.InterfaceByName(raddr.Zone)
+			if err != nil {
+				return nil, err
+			}
+			zoneID = uint64(i.Index)
 		}
 		raddrs = &syscall.SockaddrInet6{Addr: rip, Port: raddr.Port, ZoneId: uint32(zoneID)}
 		ai = syscall.AF_INET6

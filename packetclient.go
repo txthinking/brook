@@ -37,16 +37,14 @@ type PacketClient struct {
 	WB       []byte
 	Timeout  int
 	src      string
-	dst      string
-	dstl     int
+	dstb     []byte
 }
 
-func NewPacketClient(password []byte, src string, server net.Conn, timeout int, dst []byte) (Exchanger, error) {
+func NewPacketClient(password []byte, src string, server net.Conn, timeout int, dstb []byte) (Exchanger, error) {
 	s := &PacketClient{Password: password, Server: server, Timeout: timeout, src: src}
 	s.RB = x.BP65507.Get().([]byte)
 	s.WB = x.BP65507.Get().([]byte)
-	s.dstl = copy(s.WB[12+4:12+4+len(dst)], dst)
-	s.dst = socks5.ToAddress(dst[0], dst[1:s.dstl-2], dst[s.dstl-2:])
+	s.dstb = dstb
 	return ClientGate(s)
 }
 
@@ -105,7 +103,8 @@ func (c *PacketClient) Exchange(local net.Conn) error {
 				return nil
 			}
 		}
-		l, err := local.Read(c.WB[12+4+c.dstl : 65507-16])
+		copy(c.WB[12+4:12+4+len(c.dstb)], c.dstb)
+		l, err := local.Read(c.WB[12+4+len(c.dstb) : 65507-16])
 		if err != nil {
 			return nil
 		}
@@ -128,8 +127,8 @@ func (c *PacketClient) Exchange(local net.Conn) error {
 		if err != nil {
 			return err
 		}
-		ca.Seal(c.WB[:12], c.WB[:12], c.WB[12:12+4+c.dstl+l], nil)
-		_, err = c.Server.Write(c.WB[:12+4+c.dstl+l+16])
+		ca.Seal(c.WB[:12], c.WB[:12], c.WB[12:12+4+len(c.dstb)+l], nil)
+		_, err = c.Server.Write(c.WB[:12+4+len(c.dstb)+l+16])
 		if err != nil {
 			return nil
 		}
@@ -151,5 +150,5 @@ func (s *PacketClient) Src() string {
 }
 
 func (s *PacketClient) Dst() string {
-	return s.dst
+	return socks5.ToAddress(s.dstb[0], s.dstb[1:len(s.dstb)-2], s.dstb[len(s.dstb)-2:])
 }
