@@ -35,25 +35,3 @@ func ParseLink(link string) (kind, server string, v url.Values, err error) {
 	v = u.Query()
 	return
 }
-
-func LinkExtra(kind, s, username, password string, v url.Values) string {
-	v.Set(kind, s)
-	v.Set("username", username)
-	v.Set("password", password)
-	s = fmt.Sprintf("brook://%s?%s", kind, v.Encode())
-	return s
-}
-
-func ParseLinkExtra(link string) (kind, s, username, password string, v url.Values, err error) {
-	var u *url.URL
-	u, err = url.Parse(link)
-	if err != nil {
-		return
-	}
-	kind = u.Host
-	s = u.Query().Get(kind)
-	username = u.Query().Get("username")
-	password = u.Query().Get("password")
-	v = u.Query()
-	return
-}

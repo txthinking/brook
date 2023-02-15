@@ -13,7 +13,7 @@ require (
 	github.com/tdewolff/minify v2.3.6+incompatible
 	github.com/txthinking/crypto v0.0.0-20210716135230-de9624a415a4
 	github.com/txthinking/runnergroup v0.0.0-20230211072751-d11f16258c86
-	github.com/txthinking/socks5 v0.0.0-20230210121701-a214c4a48690
+	github.com/txthinking/socks5 v0.0.0-20230215122820-1d06f3a253de
 	github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133
 	github.com/urfave/cli/v2 v2.23.0
 	github.com/urfave/negroni v1.0.0
