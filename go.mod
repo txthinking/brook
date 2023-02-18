@@ -5,7 +5,6 @@ go 1.19
 require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
-	github.com/mdp/qrterminal v1.0.1
 	github.com/miekg/dns v1.1.43
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/phuslu/iploc v1.0.20230201
@@ -18,8 +17,8 @@ require (
 	github.com/urfave/cli/v2 v2.23.0
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/crypto v0.4.0
-	golang.org/x/net v0.4.0
-	golang.org/x/sys v0.3.0
+	golang.org/x/net v0.7.0
+	golang.org/x/sys v0.5.0
 )
 
 require (
@@ -37,7 +36,6 @@ require (
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	golang.org/x/exp v0.0.0-20221205204356-47842c84f3db // indirect
 	golang.org/x/mod v0.6.0 // indirect
-	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/tools v0.2.0 // indirect
-	rsc.io/qr v0.2.0 // indirect
 )
