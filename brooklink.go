@@ -229,7 +229,7 @@ func (x *BrookLink) PrepareSocks5Server(addr, ip string, tcptimeout, udptimeout 
 		return err
 	}
 	if err := limits.Raise(); err != nil {
-		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	x.Pcf = NewPacketConnFactory()
 	x.TCPTimeout = tcptimeout

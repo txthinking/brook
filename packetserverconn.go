@@ -20,6 +20,7 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"sync"
@@ -72,6 +73,9 @@ func (f *PacketServerConnFactory) Handle(addr *net.UDPAddr, b, p []byte, w func(
 	a, h, p, err := socks5.ParseBytesAddress(b[12+4:])
 	if err != nil {
 		return nil, nil, err
+	}
+	if 12+4+1+len(h)+2 >= len(b)-16 {
+		return nil, nil, errors.New(fmt.Sprintf("invalid packet. length: %d address: %#x %#x %#x", len(b), a, h, p))
 	}
 	dst := socks5.ToAddress(a, h, p)
 	f.Lock.Lock()

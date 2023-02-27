@@ -51,7 +51,7 @@ func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, tc
 		return nil, err
 	}
 	if err := limits.Raise(); err != nil {
-		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	return &Socks5ToHTTP{
 		Addr:       addr,

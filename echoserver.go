@@ -30,7 +30,7 @@ type EchoServer struct {
 
 func NewEchoServer(addr string) (*EchoServer, error) {
 	if err := limits.Raise(); err != nil {
-		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	s := &EchoServer{
 		Addr:        addr,
@@ -58,7 +58,7 @@ func (s *EchoServer) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
+						Log(Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -88,7 +88,7 @@ func (s *EchoServer) ListenAndServe() error {
 				}
 				go func(addr *net.UDPAddr, b []byte) {
 					if err := s.UDPHandle(addr, b, l1); err != nil {
-						Log(&Error{"from": addr.String(), "error": err.Error()})
+						Log(Error{"from": addr.String(), "error": err.Error()})
 						return
 					}
 				}(addr, b[0:n])

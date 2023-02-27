@@ -32,7 +32,7 @@ type Server struct {
 
 func NewServer(addr, password string, tcpTimeout, udpTimeout int) (*Server, error) {
 	if err := limits.Raise(); err != nil {
-		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	s := &Server{
 		Password:    []byte(password),
@@ -64,18 +64,18 @@ func (s *Server) ListenAndServe() error {
 					defer c.Close()
 					ss, err := NewStreamServer(s.Password, c.RemoteAddr().String(), c, s.TCPTimeout, s.UDPTimeout)
 					if err != nil {
-						Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
+						Log(Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 						return
 					}
 					defer ss.Clean()
 					if ss.Network() == "tcp" {
 						if err := s.TCPHandle(ss); err != nil {
-							Log(&Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+							Log(Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
 						}
 					}
 					if ss.Network() == "udp" {
 						if err := s.UDPOverTCPHandle(ss); err != nil {
-							Log(&Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+							Log(Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
 						}
 					}
 				}(c)
@@ -109,7 +109,7 @@ func (s *Server) ListenAndServe() error {
 					return l1.WriteToUDP(b, addr)
 				}, s.UDPTimeout)
 				if err != nil {
-					Log(&Error{"from": addr.String(), "error": err.Error()})
+					Log(Error{"from": addr.String(), "error": err.Error()})
 					continue
 				}
 				if conn == nil {
@@ -119,12 +119,12 @@ func (s *Server) ListenAndServe() error {
 					defer conn.Close()
 					ss, err := NewPacketServer(s.Password, addr.String(), conn, s.UDPTimeout, dstb)
 					if err != nil {
-						Log(&Error{"from": addr.String(), "dst": socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), "error": err.Error()})
+						Log(Error{"from": addr.String(), "dst": socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), "error": err.Error()})
 						return
 					}
 					defer ss.Clean()
 					if err := s.UDPHandle(ss); err != nil {
-						Log(&Error{"from": addr.String(), "dst": socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), "error": err.Error()})
+						Log(Error{"from": addr.String(), "dst": socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), "error": err.Error()})
 					}
 				}()
 			}

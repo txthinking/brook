@@ -2,6 +2,8 @@
 
 A cross-platform network tool designed for developers.
 
+[❤️  *A txthinking project*](https://www.txthinking.com)
+
 ## Server
 
 ```

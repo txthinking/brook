@@ -37,7 +37,7 @@ func NewClient(addr, ip, server, password string, tcpTimeout, udpTimeout int) (*
 		return nil, err
 	}
 	if err := limits.Raise(); err != nil {
-		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	x := &Client{
 		ServerAddress:     server,

@@ -29,7 +29,7 @@ func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, udpTimeout
 		return nil, err
 	}
 	if err := limits.Raise(); err != nil {
-		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	x := &Socks5Server{
 		Server: s5,

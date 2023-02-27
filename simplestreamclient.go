@@ -95,7 +95,7 @@ func (c *SimpleStreamClient) Exchange(local net.Conn) error {
 				}
 				l := int(binary.BigEndian.Uint16(c.RB[:2]))
 				if l > 65507-2 {
-					Log(&Error{"from": c.src, "dst": c.dst, "error": "read from server but packet too long"})
+					Log(Error{"from": c.src, "dst": c.dst, "error": "read from server but packet too long"})
 					return
 				}
 				if _, err := io.ReadFull(c.Server, c.RB[2:2+l]); err != nil {

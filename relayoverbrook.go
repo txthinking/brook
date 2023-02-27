@@ -76,7 +76,7 @@ func (s *RelayOverBrook) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
+						Log(Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -106,7 +106,7 @@ func (s *RelayOverBrook) ListenAndServe() error {
 				}
 				go func(addr *net.UDPAddr, b []byte) {
 					if err := s.UDPHandle(addr, b, l1); err != nil {
-						Log(&Error{"from": addr.String(), "error": err.Error()})
+						Log(Error{"from": addr.String(), "error": err.Error()})
 						return
 					}
 				}(addr, b[0:n])

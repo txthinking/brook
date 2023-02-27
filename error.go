@@ -18,7 +18,7 @@ import "encoding/json"
 
 type Error map[string]string
 
-func (e *Error) Error() string {
+func (e Error) Error() string {
 	b, err := json.Marshal(e)
 	if err != nil {
 		return err.Error()

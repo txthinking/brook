@@ -138,7 +138,7 @@ func ReadCIDRList(url string) ([]*net.IPNet, error) {
 	for _, v := range l {
 		_, in, err := net.ParseCIDR(v)
 		if err != nil {
-			Log(&Error{"when": "net.ParseCIDR", "cidr": v, "error": err.Error()})
+			Log(Error{"when": "net.ParseCIDR", "cidr": v, "error": err.Error()})
 			continue
 		}
 		c = append(c, in)

@@ -38,6 +38,7 @@ import (
 
 	"github.com/txthinking/brook"
 	"github.com/txthinking/brook/plugins/block"
+	"github.com/txthinking/brook/plugins/logger"
 	"github.com/txthinking/brook/plugins/pprof"
 	"github.com/txthinking/brook/plugins/socks5dial"
 	"github.com/txthinking/brook/plugins/thedns"
@@ -49,9 +50,10 @@ import (
 
 func main() {
 	g := runnergroup.New()
+	df := func() {}
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20230218"
+	app.Version = "20230401"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{
@@ -65,6 +67,14 @@ func main() {
 		&cli.StringFlag{
 			Name:  "pprof",
 			Usage: "go http pprof listen addr, such as :6060",
+		},
+		&cli.StringFlag{
+			Name:  "log",
+			Usage: "Enable log. A valid value is file path for production or 'console' for testing. BTW, if you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true",
+		},
+		&cli.StringSliceFlag{
+			Name:  "tag",
+			Usage: "Tag can be used to the process, will be append into log, such as: 'key1:value1'",
 		},
 	}
 	app.Before = func(c *cli.Context) error {
@@ -81,6 +91,32 @@ func main() {
 					return p.Shutdown()
 				},
 			})
+		}
+		if c.String("log") != "" {
+			if c.String("log") != "console" && !filepath.IsAbs(c.String("log")) {
+				return errors.New("--log must be with absolute path")
+			}
+			var m map[string]string
+			if len(c.StringSlice("tag")) > 0 {
+				m = make(map[string]string)
+				for _, v := range c.StringSlice("tag") {
+					l := strings.Split(v, ":")
+					if len(l) != 2 {
+						return errors.New("Invalid tag " + v)
+					}
+					m[l[0]] = l[1]
+				}
+			}
+			p, err := logger.NewLogger(m, c.String("log"))
+			if err != nil {
+				return err
+			}
+			p.TouchBrook()
+			f := df
+			df = func() {
+				p.Close()
+				f()
+			}
 		}
 		return nil
 	}
@@ -2608,6 +2644,7 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 			},
 		},
 	}
+	defer df()
 	if os.Getenv("SOCKS5_DEBUG") != "" {
 		socks5.Debug = true
 	}

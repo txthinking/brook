@@ -219,7 +219,7 @@ func (s *Tproxy) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						Log(&Error{"from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
+						Log(Error{"from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -249,7 +249,7 @@ func (s *Tproxy) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						Log(&Error{"from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
+						Log(Error{"from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -287,13 +287,13 @@ func (s *Tproxy) ListenAndServe() error {
 				}
 				c, err := tproxy.DialUDP("udp", dst, src)
 				if err != nil {
-					Log(&Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
+					Log(Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
 					continue
 				}
 				go func(c *net.UDPConn, b []byte) {
 					defer c.Close()
 					if err := s.UDPHandle(c, b); err != nil {
-						Log(&Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
+						Log(Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
 						return
 					}
 				}(c, b[0:n])
@@ -334,13 +334,13 @@ func (s *Tproxy) ListenAndServe() error {
 				}
 				c, err := tproxy.DialUDP("udp", dst, src)
 				if err != nil {
-					Log(&Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
+					Log(Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
 					continue
 				}
 				go func(c *net.UDPConn, b []byte) {
 					defer c.Close()
 					if err := s.UDPHandle(c, b); err != nil {
-						Log(&Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
+						Log(Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
 						return
 					}
 				}(c, b[0:n])

@@ -43,7 +43,7 @@ type WSServer struct {
 
 func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int, withoutbrook bool) (*WSServer, error) {
 	if err := limits.Raise(); err != nil {
-		Log(&Error{"when": "try to raise system limits", "warning": err.Error()})
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	p := []byte(password)
 	if withoutbrook {
@@ -155,18 +155,18 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ss, err = NewSimpleStreamServer(s.Password, c.RemoteAddr().String(), c, s.TCPTimeout, s.UDPTimeout)
 	}
 	if err != nil {
-		Log(&Error{"from": c.RemoteAddr().String(), "error": err.Error()})
+		Log(Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 		return
 	}
 	defer ss.Clean()
 	if ss.Network() == "tcp" {
 		if err := s.TCPHandle(ss); err != nil {
-			Log(&Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+			Log(Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
 		}
 	}
 	if ss.Network() == "udp" {
 		if err := s.UDPHandle(ss); err != nil {
-			Log(&Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+			Log(Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
 		}
 	}
 }
