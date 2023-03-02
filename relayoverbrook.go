@@ -121,17 +121,12 @@ func (s *RelayOverBrook) ListenAndServe() error {
 }
 
 func (s *RelayOverBrook) TCPHandle(c *net.TCPConn) error {
-	sc, err := s.blk.CreateExchanger("tcp", c.RemoteAddr().String(), s.dstb, s.TCPTimeout, s.UDPTimeout)
+	sc, rc, err := s.blk.CreateExchanger("tcp", c.RemoteAddr().String(), s.dstb, s.TCPTimeout, s.UDPTimeout)
 	if err != nil {
 		return err
 	}
+	defer rc.Close()
 	defer sc.Clean()
-	if v, ok := sc.(*StreamClient); ok {
-		defer v.Server.Close()
-	}
-	if v, ok := sc.(*SimpleStreamClient); ok {
-		defer v.Server.Close()
-	}
 	if err := sc.Exchange(c); err != nil {
 		return nil
 	}
@@ -165,10 +160,11 @@ func (s *RelayOverBrook) UDPHandle(addr *net.UDPAddr, b []byte, l1 *net.UDPConn)
 		return nil
 	}
 	defer conn.Close()
-	sc, err := s.blk.CreateExchanger("udp", addr.String(), s.dstb, s.TCPTimeout, s.UDPTimeout)
+	sc, rc, err := s.blk.CreateExchanger("udp", addr.String(), s.dstb, s.TCPTimeout, s.UDPTimeout)
 	if err != nil {
 		return err
 	}
+	defer rc.Close()
 	defer sc.Clean()
 	if v, ok := sc.(*PacketClient); ok {
 		defer v.Server.Close()
