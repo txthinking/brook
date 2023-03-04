@@ -56,6 +56,10 @@ github.com/txthinking/runnergroup v0.0.0-20230211072751-d11f16258c86 h1:nIvfVa+O
 github.com/txthinking/runnergroup v0.0.0-20230211072751-d11f16258c86/go.mod h1:cldYm15/XHcGt7ndItnEWHwFZo7dinU+2QoyjfErhsI=
 github.com/txthinking/socks5 v0.0.0-20230215122820-1d06f3a253de h1:Uar4PWybdMCn4DoppuEl8Fd9qMuXqZFMNmvpDy8vhY4=
 github.com/txthinking/socks5 v0.0.0-20230215122820-1d06f3a253de/go.mod h1:7NloQcrxaZYKURWph5HLxVDlIwMHJXCPkeWPtpftsIg=
+github.com/txthinking/socks5 v0.0.0-20230218064523-bfcd05be2cf1 h1:Y9Bw4Qq+k/z3Q4jjfgXpgNxRLtQFqAYDnVSCTvmpfvQ=
+github.com/txthinking/socks5 v0.0.0-20230218064523-bfcd05be2cf1/go.mod h1:7NloQcrxaZYKURWph5HLxVDlIwMHJXCPkeWPtpftsIg=
+github.com/txthinking/socks5 v0.0.0-20230304014913-225d9357dddc h1:HbtMoKTPCuj6IVBGr51PdmC6IvSX8OMXmSwOvZMiKZ0=
+github.com/txthinking/socks5 v0.0.0-20230304014913-225d9357dddc/go.mod h1:7NloQcrxaZYKURWph5HLxVDlIwMHJXCPkeWPtpftsIg=
 github.com/txthinking/x v0.0.0-20210326105829-476fab902fbe/go.mod h1:WgqbSEmUYSjEV3B1qmee/PpP2NYEz4bL9/+mF1ma+s4=
 github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133 h1:fUw8+3ruX0uv2gAko4D0v6IpLmSI2soOkGl6YYmiBrM=
 github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133/go.mod h1:WgqbSEmUYSjEV3B1qmee/PpP2NYEz4bL9/+mF1ma+s4=

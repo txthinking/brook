@@ -54,7 +54,7 @@ var NATDial func(network string, src, dst, addr string) (net.Conn, error) = func
 		c, err = DialUDP(network, s, addr)
 	}
 	if err != nil {
-		if !strings.Contains(err.Error(), "address already in use") {
+		if !strings.Contains(err.Error(), "address already in use") && !strings.Contains(err.Error(), "can't assign requested address") {
 			return nil, err
 		}
 		if network == "tcp" {
@@ -86,7 +86,7 @@ var NATListenUDP func(network string, src, dst string) (*net.UDPConn, error) = f
 	}
 	c, err := ListenUDP("udp", laddr)
 	if err != nil {
-		if !strings.Contains(err.Error(), "address already in use") {
+		if !strings.Contains(err.Error(), "address already in use") && !strings.Contains(err.Error(), "can't assign requested address") {
 			return nil, err
 		}
 		c, err = ListenUDP("udp", nil)
