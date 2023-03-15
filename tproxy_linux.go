@@ -18,9 +18,11 @@ import (
 	"errors"
 	"net"
 	"os/exec"
+	"runtime"
 	"strings"
 	"unsafe"
 
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/brook/tproxy"
 	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
@@ -40,6 +42,23 @@ var TproxyGate func(conn net.Conn) (net.Conn, error) = func(conn net.Conn) (net.
 }
 
 func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
+	if err := limits.Raise(); err != nil {
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+	}
+	if runtime.GOOS == "linux" {
+		c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
+		b, err := c.CombinedOutput()
+		if err != nil {
+			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+		}
+	}
+	if runtime.GOOS == "darwin" {
+		c := exec.Command("sysctl", "-w", "kern.ipc.maxsockbuf=3014656")
+		b, err := c.CombinedOutput()
+		if err != nil {
+			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+		}
+	}
 	r, err := NewBrookLink(link)
 	if err != nil {
 		return nil, err
@@ -219,7 +238,7 @@ func (s *Tproxy) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						Log(Error{"from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
+						Log(Error{"network": "tcp", "from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -249,7 +268,7 @@ func (s *Tproxy) ListenAndServe() error {
 				go func(c *net.TCPConn) {
 					defer c.Close()
 					if err := s.TCPHandle(c); err != nil {
-						Log(Error{"from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
+						Log(Error{"network": "tcp", "from": c.RemoteAddr().String(), "dst": c.LocalAddr().String(), "error": err.Error()})
 					}
 				}(c)
 			}
@@ -287,13 +306,13 @@ func (s *Tproxy) ListenAndServe() error {
 				}
 				c, err := tproxy.DialUDP("udp", dst, src)
 				if err != nil {
-					Log(Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
+					Log(Error{"network": "udp", "from": src.String(), "dst": dst.String(), "error": err.Error()})
 					continue
 				}
 				go func(c *net.UDPConn, b []byte) {
 					defer c.Close()
 					if err := s.UDPHandle(c, b); err != nil {
-						Log(Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
+						Log(Error{"network": "udp", "from": src.String(), "dst": dst.String(), "error": err.Error()})
 						return
 					}
 				}(c, b[0:n])
@@ -334,13 +353,13 @@ func (s *Tproxy) ListenAndServe() error {
 				}
 				c, err := tproxy.DialUDP("udp", dst, src)
 				if err != nil {
-					Log(Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
+					Log(Error{"network": "udp", "from": src.String(), "dst": dst.String(), "error": err.Error()})
 					continue
 				}
 				go func(c *net.UDPConn, b []byte) {
 					defer c.Close()
 					if err := s.UDPHandle(c, b); err != nil {
-						Log(Error{"from": src.String(), "dst": dst.String(), "error": err.Error()})
+						Log(Error{"network": "udp", "from": src.String(), "dst": dst.String(), "error": err.Error()})
 						return
 					}
 				}(c, b[0:n])

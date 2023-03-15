@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
 )
@@ -36,6 +37,9 @@ type Relay struct {
 }
 
 func NewRelay(from, to string, tcpTimeout, udpTimeout int) (*Relay, error) {
+	if err := limits.Raise(); err != nil {
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+	}
 	a, h, p, err := socks5.ParseAddress(to)
 	if err != nil {
 		return nil, err

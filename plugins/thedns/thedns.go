@@ -116,6 +116,6 @@ func (p *TheDNS) TouchBrook() {
 			}
 			return true, nil
 		}
-		return f(addr, m, l1)
+		return false, nil
 	}
 }

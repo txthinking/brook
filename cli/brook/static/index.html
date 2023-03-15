@@ -15,11 +15,11 @@
         </script>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="simple.min.css" />
+        <link rel="stylesheet" href="pico.min.css">
         <script src="vue.global.prod.js"></script>
         <style>
-            input {
-                width: 100%;
+            :root {
+                --primary: #000000;
             }
         </style>
         <script>
@@ -28,22 +28,32 @@
                     data() {
                         return {
                             link: localStorage.getItem("link") ?? "",
-                            listen: localStorage.getItem("listen") ?? ":1080",
+                            listen: localStorage.getItem("listen") ?? ":8888",
                             dnsListen: localStorage.getItem("dnsListen") ?? ":5353",
                             dnsForDefault: localStorage.getItem("dnsForDefault") ?? "8.8.8.8:53",
                             dnsForBypass: localStorage.getItem("dnsForBypass") ?? "223.5.5.5:53",
                             bypassDomainList: localStorage.getItem("bypassDomainList") ?? "",
                             bypassCIDR4List: localStorage.getItem("bypassCIDR4List") ?? "",
                             bypassCIDR6List: localStorage.getItem("bypassCIDR6List") ?? "",
-                            bypassGeoIP: localStorage.getItem("bypassGeoIP") ?? "",
+                            bypassGeoIP: localStorage.getItem("bypassGeoIP") ?? "ZZ,CN",
                             blockDomainList: localStorage.getItem("blockDomainList") ?? "",
                             disableA: localStorage.getItem("disableA") ? true : false,
                             disableAAAA: localStorage.getItem("disableAAAA") ? true : false,
+                            log: localStorage.getItem("log") ? true : false,
+
                             hasp: false,
                             localhasp: false,
                             p: "",
+
                             status: "disconnected",
                             ing: false,
+                            zh: !navigator.language.toLowerCase().startsWith("zh-"),
+
+                            page: 'home',
+                            links: localStorage.getItem("links") ? JSON.parse(localStorage.getItem("links")) : [],
+                            addlink: '',
+                            importurl: localStorage.getItem("importurl") ?? "",
+                            logview: "",
                         };
                     },
                     async created() {
@@ -66,7 +76,14 @@
                             }
                             var r = await fetch(`/status?p=${encodeURIComponent(localStorage.getItem('p'))}`);
                             if (r.status != 200) {
-                                throw await r.text();
+                                var s = await r.text();
+                                if(s.indexOf('password wrong') == -1){
+                                    throw s;
+                                    return;
+                                }
+                                localStorage.setItem("p", "");
+                                this.localhasp = false;
+                                return;
                             }
                             this.status = await r.text();
                         } catch (e) {
@@ -113,6 +130,13 @@
                             try {
                                 this.ing = true;
                                 var s = "";
+                                if (this.log) {
+                                    s += ` --log /root/.brook.log`;
+                                    localStorage.setItem("log", "true");
+                                }else{
+                                    localStorage.setItem("log", "");
+                                }
+                                s += ` tproxy`;
                                 if (this.link) {
                                     s += ` --link '${this.link}'`;
                                     localStorage.setItem("link", this.link);
@@ -222,88 +246,207 @@
                                 this.ing = false;
                             }
                         },
+                        async importservers() {
+                            try{
+                                this.ing = true;
+                                var r = await fetch(`/httpread?url=${encodeURIComponent(this.importurl)}&p=${encodeURIComponent(localStorage.getItem('p'))}`);
+                                if (r.status != 200) {
+                                    throw await r.text();
+                                }
+                                var l = localStorage.getItem('links') ? JSON.parse(localStorage.getItem('links')) : [];
+                                var l0 = (await r.text()).split('\n');
+                                for(var i=0; i<l0.length; i++){
+                                    if(!l0[i].trim()){
+                                        continue;
+                                    }
+                                    l.unshift(l0[i].trim());
+                                }
+                                l = Array.from(new Set(l));
+                                localStorage.setItem('links', JSON.stringify(l));
+                                localStorage.setItem('importurl', this.importurl);
+                                this.links = l;
+                                this.ing = false;
+                                alert('OK');
+                            } catch (e) {
+                                alert(`${e}`);
+                                this.ing = false;
+                            }
+                        },
+                        async logread() {
+                            try{
+                                this.page = "logview";
+                                this.logview = "loading...";
+                                var r = await fetch(`/logread?p=${encodeURIComponent(localStorage.getItem('p'))}`);
+                                if (r.status != 200) {
+                                    throw await r.text();
+                                }
+                                this.logview = (await r.text()).split('\n').reverse().filter(v=>v).map(v=>{
+                                    var o = JSON.parse(v)
+                                    o.time = new Date(o.time*1000).toLocaleString();
+                                    return JSON.stringify(o);
+                                }).join('\n');
+                            } catch (e) {
+                                if(`${e}`.indexOf('no such file') != -1){
+                                    this.logview = "";
+                                    return;
+                                }
+                                alert(`${e}`);
+                            }
+                        },
+                        async add() {
+                            try{
+                                var u = new URL(this.addlink.replace('brook://', 'http://'));
+                                if(u.host != 'server' && u.host != 'wsserver' && u.host != 'wssserver' && u.host != 'quicserver'){
+                                    throw 'unsupport brook link';
+                                }
+                                var l = localStorage.getItem('links') ? JSON.parse(localStorage.getItem('links')) : [];
+                                l.unshift(this.addlink);
+                                l = Array.from(new Set(l));
+                                localStorage.setItem('links', JSON.stringify(l));
+                                this.addlink = '';
+                                this.links = l;
+                                alert('OK');
+                            } catch (e) {
+                                alert(`${e}`);
+                                this.ing = false;
+                            }
+                        },
+                        async remove(s) {
+                            try{
+                                var l = localStorage.getItem('links') ? JSON.parse(localStorage.getItem('links')) : [];
+                                l = l.filter(v=>v!=s);
+                                localStorage.setItem('links', JSON.stringify(l));
+                                this.links = l;
+                                alert('OK');
+                            } catch (e) {
+                                alert(`${e}`);
+                                this.ing = false;
+                            }
+                        },
+                        name(s) {
+                            var u = new URL(s.replace('brook://', 'http://'));
+                            return (u.searchParams.get('name') ? u.searchParams.get('name') : u.searchParams.get(u.host)) + ' - ' + u.host;
+                        },
                     },
                 };
                 Vue.createApp(app).mount("body");
             });
         </script>
     </head>
-    <body>
-        <header>
-            <h1>Brook</h1>
-            <p>brook tproxy</p>
-        </header>
-        <main v-if="hasp && localhasp">
-            <p>
-                <label>--link brook link</label><br />
-                <input v-model="link" placeholder="brook://..." />
-            </p>
-            <p>
-                <label>--listen Listen address, DO NOT contain IP</label><br />
-                <input v-model="listen" placeholder=":1080" />
-            </p>
-            <p>
-                <label>--dnsListen Start a smart DNS server</label><br />
-                <input v-model="dnsListen" placeholder=":5353" />
-            </p>
-            <p>
-                <label>--dnsForDefault DNS server for resolving domains not in bypass list</label><br />
-                <input v-model="dnsForDefault" placeholder="8.8.8.8:53" />
-            </p>
-            <p>
-                <label>--dnsForBypass DNS server for resolving domains in bypass list</label><br />
-                <input v-model="dnsForBypass" placeholder="223.5.5.5:53" />
-            </p>
-            <p>
-                <label>--disableA Disable A query</label><br />
-                <input type="checkbox" v-model="disableA" />
-            </p>
-            <p>
-                <label>--disableAAAA Disable AAAA query</label><br />
-                <input type="checkbox" v-model="disableAAAA" />
-            </p>
-            <p>
-                <label>--bypassDomainList Suffix match mode</label><br />
-                <input v-model="bypassDomainList" placeholder="/path/to/local/file/example_domain.txt" />
-            </p>
-            <p>
-                <label>--bypassCIDR4List</label><br />
-                <input v-model="bypassCIDR4List" placeholder="/path/to/local/file/example_cidr4.txt" />
-            </p>
-            <p>
-                <label>--bypassCIDR6List</label><br />
-                <input v-model="bypassCIDR6List" placeholder="/path/to/local/file/example_cidr6.txt" />
-            </p>
-            <p>
-                <label>--bypassGeoIP Bypass IP by Geo country code, such as CN</label><br />
-                <input v-model="bypassGeoIP" placeholder="ZZ,CN" />
-            </p>
-            <p>
-                <label>--blockDomainList Suffix match mode</label><br />
-                <input v-model="blockDomainList" placeholder="/path/to/local/file/example_domain.txt" />
-            </p>
-            <p v-if="ing"><button disabled>Waiting...</button></p>
-            <p v-if="!ing && status == 'disconnected'"><button v-on:click="start">Connect</button></p>
-            <p v-if="!ing && status =='connected'"><button v-on:click="stop">Disconnect</button></p>
-        </main>
+    <body style="margin:0; padding: 0px 30px;">
+        <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/txthinking/brook"><strong>Brook</strong></a>
+            </li>
+        </ul>
+        <ul>
+            <li><a href="https://txthinking.github.io/brook/">Document</a></li>
+            <li><a href="https://www.youtube.com/txthinking">YouTube</a></li>
+            <li><a href="https://www.txthinking.com/talks/">Talks</a></li>
+            <li><a href="https://t.me/s/txthinking_news">News</a></li>
+            <li><a href="https://t.me/brookgroup">Telegram</a></li>
+            <li><a href="https://github.com/txthinking">GitHub</a></li>
+            <li><a href="https://www.txthinking.com">TxThinking</a></li>
+        </ul>
+        </nav>
         <main v-if="!hasp">
-            <p>
-                <label>Set password for web UI</label><br />
-                <input v-model="p" />
-            </p>
-            <p v-if="ing"><button disabled>Waiting...</button></p>
-            <p v-if="!ing"><button v-on:click="setp">Save</button></p>
+            <label>{{ zh ? '给 Web UI 设置个密码先' : 'Set Password for Web UI'}}</label><br />
+            <input v-model="p" />
+            <button @click="setp" :disabled="ing" :aria-busy="ing ? 'true' : ''">{{ zh ? '保存' : 'Save' }}</button>
         </main>
         <main v-if="hasp && !localhasp">
-            <p>
-                <label>Auth web UI</label><br />
-                <input v-model="p" />
-            </p>
-            <p v-if="ing"><button disabled>Waiting...</button></p>
-            <p v-if="!ing"><button v-on:click="authp">Auth</button></p>
+            <label>{{ zh ? '认证 Web UI' : 'Auth Web UI' }}</label><br />
+            <input v-model="p" />
+            <button @click="authp" :disabled="ing" :aria-busy="ing ? 'true' : ''">{{ zh ? '认证' : 'Auth' }}</button>
         </main>
-        <footer>
-            <p><a href="https://txthinking.com">txthinking.com</a> | <a href="https://github.com/txthinking">github.com/txthinking</a> | <a href="https://www.txthinking.com/talks/">blog</a> | <a href="https://youtube.com/txthinking">youtube</a> | <a href="https://t.me/brookgroup">telegram</a> | <a href="https://t.me/txthinking_news">news</a></p>
+        <main style="display:flex;justify-content:space-between" v-if="hasp && localhasp">
+            <aside>
+                <nav>
+                    <ul>
+                        <li><a href="javascript:void(0)" @click="this.page = 'home'">{{ zh ? '首页' : 'Home' }}</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'addserver'">{{ zh ? '添加服务器' : 'Add Server' }}</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'importservers'">{{ zh ? '导入服务器' : 'Import Servers' }}</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'serverlist'">{{ zh ? '服务器列表' : 'Server List' }}</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'listen'">{{ zh ? '监听端口' : 'Listen' }}</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'dnsListen'">{{ zh ? 'DNS 监听端口' : 'DNS Listen' }}</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'dnsForDefault'">{{ zh ? '默认 DNS' : 'Default DNS' }}</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'dnsForBypass'">{{ zh ? 'Bypass DNS' : 'Bypass DNS' }}</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'bypassDomainList'">Bypass Domain</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'bypassCIDR4List'">Bypass CIDR4</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'bypassCIDR6List'">Bypass CIDR6</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'bypassGeoIP'">Bypass Geo IP</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'blockDomainList'">Block Domain</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'disableA'">Disable A</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'disableAAAA'">Disable AAAA</a></li>
+                        <li><a href="javascript:void(0)" @click="this.page = 'log'">Log</a></li>
+                        <li><a href="javascript:void(0)" @click="logread">Log View</a></li>
+                    </ul>
+                </nav>
+            </aside>
+            <div style="flex:1;padding:0 0 0 30px;">
+                <div v-if="page=='home'">
+                    <select v-model="link">
+                        <option value="">{{ zh ? '选择' : 'Select' }}</option>
+                        <option v-for="item in links" :value="item">{{name(item)}}</option>
+                    </select>
+                    <button v-if="status=='disconnected'":disabled="ing" :aria-busy="ing ? 'true' : ''" @click="start">{{zh ? '连接' : 'Connect' }}</button>
+                    <button v-if="status=='connected'" :disabled="ing" :aria-busy="ing ? 'true' : ''" @click="stop">{{zh ? '断开' : 'Disconnect' }}</button>
+                </div>
+                <div v-if="page=='serverlist'">
+                    <div v-for="item in links" style="display:flex;align-items:center;">
+                        <div>{{name(item)}}</div>
+                        <div style="width:30px;"></div>
+                        <div>
+                            <a href="javascript:void(0)" @click="remove(item)">{{zh ? '删除' : 'Remove'}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="page=='addserver'">
+                    <input v-model="addlink" placeholder="brook://..." />
+                    <button @click="add">{{zh ? '添加' : 'Add' }}</button>
+                </div>
+                <div v-if="page=='importservers'">
+                    <input v-model="importurl" placeholder="https://..." />
+                    <button :disabled="ing" :aria-busy="ing ? 'true' : ''" @click="importservers">{{zh ? '导入' : 'Import' }}</button>
+                </div>
+                <div v-if="page=='listen'">
+                    <input v-model="listen" :placeholder="zh ? '一般不需要修改' : 'Generally do not modify'"/>
+                </div>
+                <div v-if="page=='dnsListen'">
+                    <input v-model="dnsListen" placeholder=":5353" />
+                    <div>{{zh ? '你还需要操作:' : 'You still need to do:'}}</div>
+                    <ul>
+                        <li>OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353</li>
+                        <li>OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file</li>
+                    </ul>
+                    <div>{{zh ? '或者:' : 'Or:'}}</div>
+                    <ul>
+                        <li>{{ zh ? '停止内置的DNS服务，在这里直接监听:53' : 'Stop built-in DNS server, and listen :53 here'}}</li>
+                    </ul>
+                </div>
+                <div v-if="page=='dnsForDefault'">
+                    <input v-model="dnsForDefault"/>
+                </div>
+                <div v-if="page=='dnsForBypass'">
+                    <input v-model="dnsForBypass"/>
+                </div>
+                <input v-if="page=='bypassDomainList'" v-model="bypassDomainList" placeholder="/path/to/local/file/example_domain.txt or https://..." />
+                <input v-if="page=='bypassCIDR4List'" v-model="bypassCIDR4List" placeholder="/path/to/local/file/example_cidr4.txt or https://..." />
+                <input v-if="page=='bypassCIDR6List'" v-model="bypassCIDR6List" placeholder="/path/to/local/file/example_cidr6.txt or https://..." />
+                <div v-if="page=='bypassGeoIP'">
+                    <input v-model="bypassGeoIP" placeholder="ZZ,CN"/>
+                </div>
+                <input v-if="page=='blockDomainList'" v-model="blockDomainList" placeholder="/path/to/local/file/example_domain.txt or https://..." />
+                <input v-if="page=='disableA'" type="checkbox" v-model="disableA" />
+                <input v-if="page=='disableAAAA'" type="checkbox" v-model="disableAAAA" />
+                <input v-if="page=='log'" type="checkbox" v-model="log" />
+                <textarea style="height:666px;" v-if="page=='logview'">{{logview}}</textarea>
+            </div>
+        </main>
+        <footer style="display:flex;justify-content:space-around;">
+            <a href="https://www.txthinking.com">Brook v20230401. A project by txthinking.com</a>
         </footer>
     </body>
 </html>
+

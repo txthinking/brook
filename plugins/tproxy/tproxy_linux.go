@@ -22,15 +22,16 @@ import (
 )
 
 type Tproxy struct {
-	CIDR4      []*net.IPNet
-	CIDR6      []*net.IPNet
-	GeoIP      []string
-	Cache      *cache.Cache
-	TCPTimeout int
-	UDPTimeout int
+	CIDR4       []*net.IPNet
+	CIDR6       []*net.IPNet
+	GeoIP       []string
+	Cache       *cache.Cache
+	TCPTimeout  int
+	UDPTimeout  int
+	RedirectDNS string
 }
 
-func NewTproxy(cidr4List, cidr6List string, geoIP []string, tcptimeout, udptimeout int) (*Tproxy, error) {
+func NewTproxy(cidr4List, cidr6List string, geoIP []string, tcptimeout, udptimeout int, redirectDNS string) (*Tproxy, error) {
 	var err error
 	var c4 []*net.IPNet
 	if cidr4List != "" {
@@ -47,12 +48,13 @@ func NewTproxy(cidr4List, cidr6List string, geoIP []string, tcptimeout, udptimeo
 		}
 	}
 	b := &Tproxy{
-		CIDR4:      c4,
-		CIDR6:      c6,
-		GeoIP:      geoIP,
-		Cache:      cache.New(cache.NoExpiration, cache.NoExpiration),
-		TCPTimeout: tcptimeout,
-		UDPTimeout: udptimeout,
+		CIDR4:       c4,
+		CIDR6:       c6,
+		GeoIP:       geoIP,
+		Cache:       cache.New(cache.NoExpiration, cache.NoExpiration),
+		TCPTimeout:  tcptimeout,
+		UDPTimeout:  udptimeout,
+		RedirectDNS: redirectDNS,
 	}
 	return b, nil
 }
@@ -64,15 +66,26 @@ func (p *Tproxy) TouchBrook() {
 		network := "tcp"
 		timeout := p.TCPTimeout
 		size := 1024 * 2
+		port := 0
 		a, ok := conn.LocalAddr().(*net.TCPAddr)
 		if ok {
 			ip = a.IP
+			port = a.Port
 		}
 		if ip == nil {
 			ip = conn.LocalAddr().(*net.UDPAddr).IP
+			port = conn.LocalAddr().(*net.UDPAddr).Port
 			network = "udp"
 			timeout = p.UDPTimeout
 			size = 65507
+		}
+		if p.RedirectDNS != "" && network == "udp" && port == 53 {
+			rc, err := brook.NATDial(network, conn.RemoteAddr().String(), conn.LocalAddr().String(), p.RedirectDNS)
+			if err != nil {
+				return nil, err
+			}
+			brook.Conn2Conn(conn, rc, 2048, timeout)
+			return nil, nil
 		}
 		if brook.ListHasIP(p.CIDR4, p.CIDR6, ip, p.Cache, p.GeoIP) {
 			var rc net.Conn

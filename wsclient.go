@@ -38,6 +38,9 @@ type WSClient struct {
 }
 
 func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, withoutbrook bool) (*WSClient, error) {
+	if err := limits.Raise(); err != nil {
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+	}
 	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, udpTimeout)
 	if err != nil {
 		return nil, err
@@ -45,9 +48,6 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, 
 	u, err := url.Parse(server)
 	if err != nil {
 		return nil, err
-	}
-	if err := limits.Raise(); err != nil {
-		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	path := u.Path
 	if path == "" {

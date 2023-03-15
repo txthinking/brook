@@ -4,4 +4,4 @@ Architecture: all
 Maintainer: cloud <cloud@txthinking.com>
 Homepage: https://github.com/txthinking/brook
 Description: A cross-platform network tool designed for developers
-Depends: ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables
+Depends: coreutils-nohup, ca-certificates, openssl-util, ca-bundle, iptables, ip6tables, iptables-mod-tproxy, iptables-mod-socket

@@ -5,14 +5,15 @@ go 1.19
 require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
-	github.com/miekg/dns v1.1.43
+	github.com/krolaw/dhcp4 v0.0.0-20190909130307-a50d88189771
+	github.com/miekg/dns v1.1.51
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/phuslu/iploc v1.0.20230201
 	github.com/quic-go/quic-go v0.32.0
 	github.com/tdewolff/minify v2.3.6+incompatible
 	github.com/txthinking/crypto v0.0.0-20210716135230-de9624a415a4
 	github.com/txthinking/runnergroup v0.0.0-20230211072751-d11f16258c86
-	github.com/txthinking/socks5 v0.0.0-20230304014913-225d9357dddc
+	github.com/txthinking/socks5 v0.0.0-20230307062227-0e1677eca4ba
 	github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133
 	github.com/urfave/cli/v2 v2.23.0
 	github.com/urfave/negroni v1.0.0
@@ -35,7 +36,7 @@ require (
 	github.com/tdewolff/test v1.0.6 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	golang.org/x/exp v0.0.0-20221205204356-47842c84f3db // indirect
-	golang.org/x/mod v0.6.0 // indirect
+	golang.org/x/mod v0.7.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
-	golang.org/x/tools v0.2.0 // indirect
+	golang.org/x/tools v0.3.0 // indirect
 )

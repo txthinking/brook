@@ -20,6 +20,8 @@ import (
 	"errors"
 	"net"
 	"net/url"
+	"os/exec"
+	"runtime"
 
 	"github.com/txthinking/brook/limits"
 	crypto1 "github.com/txthinking/crypto"
@@ -222,13 +224,27 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 }
 
 func (x *BrookLink) PrepareSocks5Server(addr, ip string, tcptimeout, udptimeout int) error {
+	if err := limits.Raise(); err != nil {
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+	}
+	if runtime.GOOS == "linux" {
+		c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
+		b, err := c.CombinedOutput()
+		if err != nil {
+			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+		}
+	}
+	if runtime.GOOS == "darwin" {
+		c := exec.Command("sysctl", "-w", "kern.ipc.maxsockbuf=3014656")
+		b, err := c.CombinedOutput()
+		if err != nil {
+			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+		}
+	}
 	var err error
 	x.S5, err = socks5.NewClassicServer(addr, ip, "", "", tcptimeout, udptimeout)
 	if err != nil {
 		return err
-	}
-	if err := limits.Raise(); err != nil {
-		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	x.Pcf = NewPacketConnFactory()
 	x.TCPTimeout = tcptimeout

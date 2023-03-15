@@ -271,16 +271,7 @@ brook tproxy --link 'brook://...' --dnsListen :5353
 2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 3. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
 
-Rule
-
--   --dnsForDefault
--   --dnsForBypass
--   --bypassDomainList
--   --bypassCIDR4List
--   --bypassCIDR6List
--   --blockDomainList
-
-### brook tproxy Transparent Proxy Gateway on Ubuntu
+### brook tproxy Transparent Proxy Gateway on any Linux (wired)
 
 **No need to manipulate iptables!**
 
@@ -294,31 +285,13 @@ echo nameserver 8.8.8.8 > /etc/resolv.conf
 brook tproxy --link 'brook://...' --dnsListen :53
 ```
 
-1. You may need to manually configure the computer or mobile gateway and DNS.
-2. If you are running in a virtual machine and the host is using a wireless card, it may not work.
-
-### brook tproxy Transparent Proxy Gateway on M1 macOS
-
-[https://www.txthinking.com/talks/articles/brook-gateway-on-m1-macos-en.article](https://www.txthinking.com/talks/articles/brook-gateway-on-m1-macos-en.article)
-
-### brook tproxy Transparent Proxy Gateway on Intel macOS
-
-[https://www.txthinking.com/talks/articles/brook-gateway-on-intel-macos-en.article](https://www.txthinking.com/talks/articles/brook-gateway-on-intel-macos-en.article)
-
-### brook tproxy Transparent Proxy Gateway on Windows
-
-[https://www.txthinking.com/talks/articles/brook-gateway-on-windows-en.article](https://www.txthinking.com/talks/articles/brook-gateway-on-windows-en.article)
+You may need to manually configure the computer or mobile gateway and DNS.
 
 ### GUI for official OpenWrt
 
-```
-opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables iptables-mod-tproxy iptables-mod-socket ip6tables
-```
-
 **No need to manipulate iptables!**
 
-port 9999, 1080, 5353 will be used. It work with brook server, brook wsserver and brook wssserver.
+port 9999, 8888, 5353 will be used. It work with brook server, brook wsserver, brook wssserver and brook quicserver.
 
 1. Download the [ipk](https://github.com/txthinking/brook/releases) file for your router
 2. Upload and install: OpenWrt Web -> System -> Software -> Upload Package...

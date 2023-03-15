@@ -17,8 +17,11 @@ package brook
 import (
 	"errors"
 	"net"
+	"os/exec"
+	"runtime"
 
 	"github.com/miekg/dns"
+	"github.com/txthinking/brook/limits"
 	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
 )
@@ -36,6 +39,23 @@ type RelayOverBrook struct {
 }
 
 func NewRelayOverBrook(from, link, to string, tcpTimeout, udpTimeout int) (*RelayOverBrook, error) {
+	if err := limits.Raise(); err != nil {
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+	}
+	if runtime.GOOS == "linux" {
+		c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
+		b, err := c.CombinedOutput()
+		if err != nil {
+			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+		}
+	}
+	if runtime.GOOS == "darwin" {
+		c := exec.Command("sysctl", "-w", "kern.ipc.maxsockbuf=3014656")
+		b, err := c.CombinedOutput()
+		if err != nil {
+			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+		}
+	}
 	a, h, p, err := socks5.ParseAddress(to)
 	if err != nil {
 		return nil, err
@@ -166,18 +186,6 @@ func (s *RelayOverBrook) UDPHandle(addr *net.UDPAddr, b []byte, l1 *net.UDPConn)
 	}
 	defer rc.Close()
 	defer sc.Clean()
-	if v, ok := sc.(*PacketClient); ok {
-		defer v.Server.Close()
-	}
-	if v, ok := sc.(*StreamClient); ok {
-		defer v.Server.Close()
-	}
-	if v, ok := sc.(*SimplePacketClient); ok {
-		defer v.Server.Close()
-	}
-	if v, ok := sc.(*SimpleStreamClient); ok {
-		defer v.Server.Close()
-	}
 	if err := sc.Exchange(conn); err != nil {
 		return nil
 	}

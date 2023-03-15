@@ -70,7 +70,7 @@ func main() {
 		},
 		&cli.StringFlag{
 			Name:  "log",
-			Usage: "Enable log. A valid value is file path for production or 'console' for testing. BTW, if you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true",
+			Usage: "Enable log. A valid value is file path or 'console'. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true",
 		},
 		&cli.StringSliceFlag{
 			Name:  "tag",
@@ -1417,7 +1417,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tproxy",
-			Usage: "Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]",
+			Usage: "Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]",
 			BashComplete: func(c *cli.Context) {
 				l := c.Command.VisibleFlags()
 				for _, v := range l {
@@ -1428,12 +1428,12 @@ func main() {
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
-					Usage:   "Listen address, DO NOT contain IP, just like: ':1080'. No need to operate iptables by default!",
-					Value:   ":1080",
+					Usage:   "Listen address, DO NOT contain IP, just like: ':8888'. No need to operate iptables by default!",
+					Value:   ":8888",
 				},
 				&cli.StringFlag{
 					Name:  "dnsListen",
-					Usage: "Start a smart DNS server, like: ':53'",
+					Usage: "Start a DNS server, like: ':53'. MUST contain IP, like '192.168.1.1:53', if you expect your gateway to accept requests from clients to other public DNS servers at the same time",
 				},
 				&cli.StringFlag{
 					Name:  "dnsForDefault",
@@ -1473,9 +1473,9 @@ func main() {
 					Name:  "bypassGeoIP",
 					Usage: "Bypass IP by Geo country code, such as US",
 				},
-				&cli.BoolFlag{
-					Name:  "enableIPv6",
-					Usage: "deprecated",
+				&cli.StringFlag{
+					Name:  "redirectDNS",
+					Usage: "It is usually the value of dnsListen. If the client has set custom DNS instead of dnsListen, this parameter can be intercepted and forwarded to dnsListen. Usually you don't need to set this, only if you want to control it instead of being proxied directly as normal UDP data.",
 				},
 				&cli.BoolFlag{
 					Name:  "doNotRunScripts",
@@ -1488,7 +1488,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443",
+					Usage:   "brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -1544,6 +1544,10 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("webListen") != "" {
+					go func() {
+						time.Sleep(3 * time.Second)
+						_ = ioutil.WriteFile("/etc/resolv.conf", []byte("nameserver 8.8.8.8\nnameserver 2001:4860:4860::8888\n"), 0744)
+					}()
 					web, err := fs.Sub(static, "static")
 					if err != nil {
 						return err
@@ -1585,11 +1589,49 @@ func main() {
 							http.Error(w, err.Error(), 500)
 							return
 						}
-						if string(b) != r.FormValue("p") {
+						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
 							http.Error(w, "web ui password wrong", 500)
 							return
 						}
 						w.WriteHeader(200)
+					})
+					m.HandleFunc("/httpread", func(w http.ResponseWriter, r *http.Request) {
+						lock.Lock()
+						defer lock.Unlock()
+						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
+							http.Error(w, "web ui password wrong", 500)
+							return
+						}
+						b, err = brook.ReadData(r.FormValue("url"))
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						w.Write(b)
+					})
+					m.HandleFunc("/logread", func(w http.ResponseWriter, r *http.Request) {
+						lock.Lock()
+						defer lock.Unlock()
+						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
+							http.Error(w, "web ui password wrong", 500)
+							return
+						}
+						b, err = ioutil.ReadFile("/root/.brook.log")
+						if err != nil {
+							http.Error(w, err.Error(), 500)
+							return
+						}
+						w.Write(b)
 					})
 					m.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
 						b, err := ioutil.ReadFile("/root/.brook.web.password")
@@ -1597,7 +1639,7 @@ func main() {
 							http.Error(w, err.Error(), 500)
 							return
 						}
-						if string(b) != r.FormValue("p") {
+						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
 							http.Error(w, "web ui password wrong", 500)
 							return
 						}
@@ -1608,7 +1650,7 @@ func main() {
 						}
 						lock.Lock()
 						defer lock.Unlock()
-						cmd = exec.Command("/bin/sh", "-c", s+" tproxy "+r.FormValue("args"))
+						cmd = exec.Command("/bin/sh", "-c", s+r.FormValue("args"))
 						done := make(chan byte)
 						defer close(done)
 						errch := make(chan error)
@@ -1642,7 +1684,7 @@ func main() {
 							http.Error(w, err.Error(), 500)
 							return
 						}
-						if string(b) != r.FormValue("p") {
+						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
 							http.Error(w, "web ui password wrong", 500)
 							return
 						}
@@ -1664,7 +1706,7 @@ func main() {
 							http.Error(w, err.Error(), 500)
 							return
 						}
-						if string(b) != r.FormValue("p") {
+						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
 							http.Error(w, "web ui password wrong", 500)
 							return
 						}
@@ -1716,8 +1758,8 @@ func main() {
 					}
 					p.TouchBrook()
 				}
-				if c.String("bypassCIDR4List") != "" || c.String("bypassCIDR6List") != "" || len(c.StringSlice("bypassGeoIP")) != 0 {
-					p, err := tproxy.NewTproxy(c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.StringSlice("bypassGeoIP"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if c.String("bypassCIDR4List") != "" || c.String("bypassCIDR6List") != "" || len(c.StringSlice("bypassGeoIP")) != 0 || c.String("redirectDNS") != "" {
+					p, err := tproxy.NewTproxy(c.String("bypassCIDR4List"), c.String("bypassCIDR6List"), c.StringSlice("bypassGeoIP"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.String("redirectDNS"))
 					if err != nil {
 						return err
 					}
@@ -2128,6 +2170,69 @@ func main() {
 					return err
 				}
 				s.IsDNS = true
+				g.Add(&runnergroup.Runner{
+					Start: func() error {
+						return s.ListenAndServe()
+					},
+					Stop: func() error {
+						return s.Shutdown()
+					},
+				})
+				return nil
+			},
+		},
+		&cli.Command{
+			Name:  "dhcpserver",
+			Usage: "Run as standalone dhcp server. Note that you need to stop other dhcp servers, if there are.",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "serverip",
+					Usage: "DHCP server IP, such as: 192.168.1.1",
+				},
+				&cli.StringFlag{
+					Name:  "start",
+					Usage: "Start IP which you want to assign to clients, such as: 192.168.1.2",
+				},
+				&cli.StringFlag{
+					Name:  "netmask",
+					Usage: "Subnet netmask",
+					Value: "255.255.255.0",
+				},
+				&cli.IntFlag{
+					Name:  "count",
+					Usage: "IP range from the start",
+					Value: 100,
+				},
+				&cli.StringFlag{
+					Name:  "gateway",
+					Usage: "The router gateway which you want to assign to clients, such as: 192.168.1.1",
+				},
+				&cli.StringSliceFlag{
+					Name:  "dnsserver",
+					Usage: "The dns server which you want to assign to clients, such as: 192.168.1.1 or 8.8.8.8",
+				},
+				&cli.StringFlag{
+					Name:  "cache",
+					Usage: "Cache file, local absolute file path, default is $HOME/.brook.dhcpserver",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if c.String("serverip") == "" || c.String("start") == "" || c.String("gateway") == "" || len(c.StringSlice("dnsserver")) == 0 {
+					return cli.ShowSubcommandHelp(c)
+				}
+				if c.String("cache") != "" && !filepath.IsAbs(c.String("cache")) {
+					return errors.New("--cache must be with absolute path")
+				}
+				s, err := brook.NewDHCPServer(c.String("serverip"), c.String("start"), c.String("netmask"), c.Int("count"), c.String("gateway"), c.StringSlice("dnsserver"), c.String("cache"))
+				if err != nil {
+					return err
+				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()

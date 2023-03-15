@@ -17,11 +17,13 @@ package logger
 import (
 	"fmt"
 	"log"
+	"net"
 	"os"
-	"strconv"
 	"sync"
 	"time"
 
+	"github.com/krolaw/dhcp4"
+	"github.com/miekg/dns"
 	"github.com/txthinking/brook"
 )
 
@@ -35,7 +37,7 @@ func NewLogger(tags map[string]string, file string) (*Logger, error) {
 	if file == "console" {
 		return &Logger{Tags: tags}, nil
 	}
-	f, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(file, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +58,7 @@ func (p *Logger) TouchBrook() {
 		if _, ok := err.(brook.Error); !ok {
 			err = brook.Error{"error": err.Error()}
 		}
-		err.(brook.Error)["time"] = strconv.FormatInt(time.Now().Unix(), 10)
+		err.(brook.Error)["time"] = time.Now().Format(time.RFC3339)
 		for k, v := range p.Tags {
 			err.(brook.Error)[k] = v
 		}
@@ -80,5 +82,22 @@ func (p *Logger) TouchBrook() {
 	brook.ClientGate = func(ex brook.Exchanger) (brook.Exchanger, error) {
 		brook.Log(brook.Error{"network": ex.Network(), "from": ex.Src(), "dst": ex.Dst()})
 		return f1(ex)
+	}
+	f2 := brook.DNSGate
+	brook.DNSGate = func(addr *net.UDPAddr, m *dns.Msg, l1 *net.UDPConn) (bool, error) {
+		brook.Log(brook.Error{"from": addr.String(), "dns": dns.Type(m.Question[0].Qtype).String(), "domain": m.Question[0].Name[0 : len(m.Question[0].Name)-1]})
+		return f2(addr, m, l1)
+	}
+	f3 := brook.DHCPServerGate
+	brook.DHCPServerGate = func(inmt string, in dhcp4.Packet, outmt string, ip net.IP, err error) {
+		e := brook.Error{"in": inmt, "client": in.CHAddr().String(), "out": outmt}
+		if ip != nil {
+			e["ip"] = ip.String()
+		}
+		if err != nil {
+			e["error"] = err.Error()
+		}
+		brook.Log(e)
+		f3(inmt, in, outmt, ip, err)
 	}
 }

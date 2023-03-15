@@ -24,12 +24,12 @@ type Socks5Server struct {
 }
 
 func NewSocks5Server(addr, ip, userName, password string, tcpTimeout, udpTimeout int) (*Socks5Server, error) {
+	if err := limits.Raise(); err != nil {
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+	}
 	s5, err := socks5.NewClassicServer(addr, ip, userName, password, tcpTimeout, udpTimeout)
 	if err != nil {
 		return nil, err
-	}
-	if err := limits.Raise(); err != nil {
-		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	x := &Socks5Server{
 		Server: s5,

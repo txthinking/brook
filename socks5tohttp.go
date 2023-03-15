@@ -39,6 +39,9 @@ func (p *_pd) Dial(network, addr string) (c net.Conn, err error) {
 }
 
 func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, tcpTimeout int) (*Socks5ToHTTP, error) {
+	if err := limits.Raise(); err != nil {
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+	}
 	var auth *proxy.Auth
 	if socks5username != "" || socks5password != "" {
 		auth = &proxy.Auth{
@@ -49,9 +52,6 @@ func NewSocks5ToHTTP(addr, socks5addr, socks5username, socks5password string, tc
 	dial, err := proxy.SOCKS5("tcp", socks5addr, auth, &_pd{})
 	if err != nil {
 		return nil, err
-	}
-	if err := limits.Raise(); err != nil {
-		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	return &Socks5ToHTTP{
 		Addr:       addr,

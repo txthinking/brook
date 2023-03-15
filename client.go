@@ -32,12 +32,12 @@ type Client struct {
 }
 
 func NewClient(addr, ip, server, password string, tcpTimeout, udpTimeout int) (*Client, error) {
+	if err := limits.Raise(); err != nil {
+		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+	}
 	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, udpTimeout)
 	if err != nil {
 		return nil, err
-	}
-	if err := limits.Raise(); err != nil {
-		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
 	x := &Client{
 		ServerAddress:     server,

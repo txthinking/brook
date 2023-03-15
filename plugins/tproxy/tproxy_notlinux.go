@@ -32,7 +32,7 @@ type Tproxy struct {
 	UDPTimeout int
 }
 
-func NewTproxy(cidr4List, cidr6List string, geoIP []string, tcptimeout, udptimeout int) (*Tproxy, error) {
+func NewTproxy(cidr4List, cidr6List string, geoIP []string, tcptimeout, udptimeout int, s string) (*Tproxy, error) {
 	return nil, errors.New("Only support Linux")
 }
 

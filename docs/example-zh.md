@@ -260,7 +260,7 @@ brook dnsserveroverbrook ... --listen 127.0.0.1:53
 
 ```
 opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables
+opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables iptables
 ```
 
 ```
@@ -271,16 +271,7 @@ brook tproxy --link 'brook://...' --dnsListen :5353
 2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 3. 默認, OpenWrt 將會下發 router 的 IP 的為電腦或手機的網關和 DNS
 
-规则
-
--   --dnsForDefault
--   --dnsForBypass
--   --bypassDomainList
--   --bypassCIDR4List
--   --bypassCIDR6List
--   --blockDomainList
-
-### brook tproxy 透明代理网关在 Ubuntu
+### brook tproxy 透明代理网关在任意 Linux(有线)
 
 **无需操作 iptables！**
 
@@ -294,31 +285,13 @@ echo nameserver 8.8.8.8 > /etc/resolv.conf
 brook tproxy --link 'brook://...' --dnsListen :53
 ```
 
-1. 配置其他机器的网关和 DNS 为这台机器的 IP 即可
-2. 如果你运行在虚拟机里并且宿主机使用的是无线网卡, 可能不能工作。
-
-### brook tproxy 透明代理网关在 M1 macOS
-
-[https://www.txthinking.com/talks/articles/brook-gateway-on-m1-macos.article](https://www.txthinking.com/talks/articles/brook-gateway-on-m1-macos.article)
-
-### brook tproxy 透明代理网关在 Intel macOS
-
-[https://www.txthinking.com/talks/articles/brook-gateway-on-intel-macos.article](https://www.txthinking.com/talks/articles/brook-gateway-on-intel-macos.article)
-
-### brook tproxy 透明代理网关在 Windows
-
-[https://www.txthinking.com/talks/articles/brook-gateway-on-windows.article](https://www.txthinking.com/talks/articles/brook-gateway-on-windows.article)
+> 配置其他机器的网关和 DNS 为这台机器的 IP 即可
 
 ### 官网原版 OpenWrt 图形客户端
 
-```
-opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables
-```
-
 **无需操作 iptables！**
 
-**端口 9999, 1080, 5353 将会被使用**. 它与 brook server, brook wsserver, brook wssserver 一起工作.
+**端口 9999, 8888, 5353 将会被使用**. 它与 brook server, brook wsserver, brook wssserver, brook quicserver 一起工作.
 
 1. 下載適合你系統的[ipk](https://github.com/txthinking/brook/releases)文件
 2. 上傳並安裝: OpenWrt Web -> System -> Software -> Upload Package...

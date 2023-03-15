@@ -15,15 +15,17 @@
 package brook
 
 import (
+	"encoding/json"
 	"log"
-	"net/url"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
-	v := url.Values{}
-	v.Set("password", "hello")
-	s := Link("server", "1.2.3.4:5", v)
-	log.Println(s)
-	log.Println(ParseLink(s))
+	m := make(map[string]int)
+	m["a"] = 1
+	b, err := json.Marshal(m)
+	log.Println(string(b), err)
+	m["a"] = 2
+	err = json.Unmarshal(b, &m)
+	log.Println(m, err)
 }

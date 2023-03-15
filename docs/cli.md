@@ -7,9 +7,10 @@ Brook - A cross-platform network tool designed for developers
 Brook
 
 ```
-[--debug|-d]
 [--help|-h]
-[--listen|-l]=[value]
+[--log]=[value]
+[--pprof]=[value]
+[--tag]=[value]
 [--version|-v]
 ```
 
@@ -21,11 +22,13 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 # GLOBAL OPTIONS
 
-**--debug, -d**: Enable debug
-
 **--help, -h**: show help
 
-**--listen, -l**="": Listen address for debug (default: :6060)
+**--log**="": Enable log. A valid value is file path for production or 'console' for testing. BTW, if you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true
+
+**--pprof**="": go http pprof listen addr, such as :6060
+
+**--tag**="": Tag can be used to the process, will be append into log, such as: 'key1:value1'
 
 **--version, -v**: print the version
 
@@ -48,7 +51,7 @@ Run as brook server, both TCP and UDP
 
 **--password, -p**="": Server password
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
 **--toSocks5**="": Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080
 
@@ -56,13 +59,19 @@ Run as brook server, both TCP and UDP
 
 **--toSocks5Username**="": Forward to socks5 server, username
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--updateListInterval**="": Update list interval, second. default 0, only read one time on start (default: 0)
 
 ## client
 
 Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook client <-> $ brook server <-> dst]
+
+**--dialWithSocks5**="": Dial with your socks5 proxy, such as 127.0.0.1:1081
+
+**--dialWithSocks5Password**="": Optional
+
+**--dialWithSocks5Username**="": Optional
 
 **--http**="": Where to listen for HTTP proxy connections
 
@@ -74,9 +83,9 @@ Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 
 
 **--socks5ServerIP**="": Only if your socks5 server IP is different from listen IP
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--udpovertcp**: UDP over TCP
 
@@ -98,7 +107,7 @@ Run as brook wsserver, both TCP and UDP, it will start a standard http server an
 
 **--path**="": URL path (default: /ws)
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
 **--toSocks5**="": Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080
 
@@ -106,7 +115,7 @@ Run as brook wsserver, both TCP and UDP, it will start a standard http server an
 
 **--toSocks5Username**="": Forward to socks5 server, username
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--updateListInterval**="": Update list interval, second. default 0, only read one time on start (default: 0)
 
@@ -118,6 +127,12 @@ Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks
 
 **--address**="": Specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
+**--dialWithSocks5**="": Dial with your socks5 proxy, such as 127.0.0.1:1081
+
+**--dialWithSocks5Password**="": Optional
+
+**--dialWithSocks5Username**="": Optional
+
 **--http**="": Where to listen for HTTP proxy connections
 
 **--password, -p**="": Brook wsserver password
@@ -126,9 +141,9 @@ Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks
 
 **--socks5ServerIP**="": Only if your socks5 server IP is different from listen IP
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--withoutBrookProtocol**: The data will not be encrypted with brook protocol
 
@@ -156,7 +171,7 @@ Run as brook wssserver, both TCP and UDP, it will start a standard https server 
 
 **--path**="": URL path (default: /ws)
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
 **--toSocks5**="": Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080
 
@@ -164,7 +179,7 @@ Run as brook wssserver, both TCP and UDP, it will start a standard https server 
 
 **--toSocks5Username**="": Forward to socks5 server, username
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--updateListInterval**="": Update list interval, second. default 0, only read one time on start (default: 0)
 
@@ -178,6 +193,12 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 
 **--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
 
+**--dialWithSocks5**="": Dial with your socks5 proxy, such as 127.0.0.1:1081
+
+**--dialWithSocks5Password**="": Optional
+
+**--dialWithSocks5Username**="": Optional
+
 **--http**="": Where to listen for HTTP proxy connections
 
 **--insecure**: Client do not verify the server's certificate chain and host name
@@ -188,77 +209,133 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 
 **--socks5ServerIP**="": Only if your socks5 server IP is different from listen IP
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--withoutBrookProtocol**: The data will not be encrypted with brook protocol
 
 **--wssserver, -s**="": Brook wssserver address, like: wss://google.com:443, if no path then /ws will be used. Do not omit the port under any circumstances
 
-## relayoverbrook
+## quicserver
 
-Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook server/wsserver/wssserver <-> to address]
+Run as brook quicserver, both TCP and UDP
 
-**--address**="": When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
+**--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
+
+**--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
+
+**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
+
+**--blockGeoIP**="": Block IP by Geo country code, such as US
+
+**--cert**="": The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically
+
+**--certkey**="": The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically
+
+**--domainaddress**="": Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used
+
+**--password, -p**="": Server password
+
+**--tcpTimeout**="": time (s) (default: 0)
+
+**--udpTimeout**="": time (s) (default: 60)
+
+**--updateListInterval**="": Update list interval, second. default 0, only read one time on start (default: 0)
+
+**--withoutBrookProtocol**: The data will not be encrypted with brook protocol
+
+## quicclient
+
+Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook quicclient <-> $ brook quicserver <-> dst]
+
+**--address**="": Specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
 **--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
 
+**--http**="": Where to listen for HTTP proxy connections
+
+**--password, -p**="": Brook quicserver password
+
+**--quicserver, -s**="": Brook quicserver address, like: quic://google.com:443. Do not omit the port under any circumstances
+
+**--socks5**="": Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)
+
+**--socks5ServerIP**="": Only if your socks5 server IP is different from listen IP
+
+**--tcpTimeout**="": time (s) (default: 0)
+
+**--udpTimeout**="": time (s) (default: 60)
+
+**--withoutBrookProtocol**: The data will not be encrypted with brook protocol
+
+## relayoverbrook
+
+Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook server/wsserver/wssserver/quicserver <-> to address]
+
+**--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
+
+**--ca**="": When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem
+
 **--from, -f, -l**="": Listen address: like ':9999'
 
-**--insecure**: When server is brook wssserver, client do not verify the server's certificate chain and host name
+**--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
 
 **--password, -p**="": Password
 
-**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws
+**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
 **--to, -t**="": Address which relay to, like: 1.2.3.4:9999
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--udpovertcp**: When server is brook server, UDP over TCP
 
-**--withoutBrookProtocol**: When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol
+**--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
 
 ## dnsserveroverbrook
 
-Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbrook <-> $ brook server/wsserver/wssserver <-> dns] or [src <-> $ brook dnsserveroverbrook <-> dnsForBypass]
+Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbrook <-> $ brook server/wsserver/wssserver/quicserver <-> dns] or [src <-> $ brook dnsserveroverbrook <-> dnsForBypass]
 
-**--address**="": When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
+**--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
 **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
 **--bypassDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
-**--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
+**--ca**="": When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem
+
+**--disableA**: Disable A query
+
+**--disableAAAA**: Disable AAAA query
 
 **--dns**="": DNS server for resolving domains NOT in list (default: 8.8.8.8:53)
 
 **--dnsForBypass**="": DNS server for resolving domains in bypass list (default: 223.5.5.5:53)
 
-**--insecure**: When server is brook wssserver, client do not verify the server's certificate chain and host name
+**--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
 
 **--listen, -l**="": Listen address, like: 127.0.0.1:53
 
 **--password, -p**="": Password
 
-**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws
+**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--udpovertcp**: When server is brook server, UDP over TCP
 
-**--withoutBrookProtocol**: When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol
+**--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
 
 ## tproxy
 
-Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver <-> dst]
+Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]
 
-**--address**="": When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
+**--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
 **--blockDomainList**="": One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
@@ -268,69 +345,79 @@ Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ broo
 
 **--bypassDomainList**="": One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
-**--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
+**--bypassGeoIP**="": Bypass IP by Geo country code, such as US
+
+**--ca**="": When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem
+
+**--dialWithSocks5**="": Dial with your socks5 proxy, such as 127.0.0.1:1081
+
+**--dialWithSocks5Password**="": Optional
+
+**--dialWithSocks5Username**="": Optional
+
+**--disableA**: Disable A query
+
+**--disableAAAA**: Disable AAAA query
 
 **--dnsForBypass**="": DNS server for resolving domains in bypass list (default: 223.5.5.5:53)
 
 **--dnsForDefault**="": DNS server for resolving domains NOT in list (default: 8.8.8.8:53)
 
-**--dnsListen**="": Start a smart DNS server, like: ':53'
+**--dnsListen**="": Start a DNS server, like: ':53'
 
 **--doNotRunScripts**: This will not change iptables and others if you want to do by yourself
 
-**--enableIPv6**: Your local and server must support IPv6 both
-
-**--insecure**: When server is brook wssserver, client do not verify the server's certificate chain and host name
+**--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
 
 **--link**="": brook link. This will ignore server, password, udpovertcp, address, insecure, withoutBrookProtocol, ca
 
-**--listen, -l**="": Listen address, DO NOT contain IP, just like: ':1080'. No need to operate iptables by default! (default: :1080)
+**--listen, -l**="": Listen address, DO NOT contain IP, just like: ':8888'. No need to operate iptables by default! (default: :8888)
 
 **--password, -p**="": Password
 
-**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws
+**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 **--udpovertcp**: When server is brook server, UDP over TCP
 
 **--webListen**="": Ignore all other parameters, run web UI, like: ':9999'
 
-**--withoutBrookProtocol**: When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol
+**--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
 
 ## link
 
 Generate brook link
 
-**--address**="": When server is brook wsserver or brook wssserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
+**--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
-**--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
+**--ca**="": When server is brook wssserver or brook quicserver, specify ca for untrusted cert, such as /path/to/ca.pem
 
-**--insecure**: When server is brook wssserver, client do not verify the server's certificate chain and host name
+**--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
 
 **--name**="": Give this server a name
 
 **--password, -p**="": Password
 
-**--server, -s**="": Support brook server, brook wsserver, brook wssserver, socks5 server. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080
+**--server, -s**="": Support brook server, brook wsserver, brook wssserver, socks5 server, brook quicserver. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080, quic://google.com:443
 
 **--udpovertcp**: When server is brook server, UDP over TCP
 
 **--username, -u**="": Username, when server is socks5 server
 
-**--withoutBrookProtocol**: When server is brook wsserver or brook wssserver, the data will not be encrypted with brook protocol
+**--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
 
 ## connect
 
-Run as client and connect to brook link, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook connect <-> $ brook server/wsserver/wssserver <-> dst]
+Run as client and connect to brook link, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook connect <-> $ brook server/wsserver/wssserver/quicserver <-> dst]
 
-**--dialSocks5**="": If you already have a socks5, such as 127.0.0.1:1081, and want [src <-> listen socks5 <-> $ brook connect <-> dialSocks5 <-> $ brook server/wsserver/wssserver <-> dst]
+**--dialWithSocks5**="": If you already have a socks5, such as 127.0.0.1:1081, and want [src <-> listen socks5 <-> $ brook connect <-> dialWithSocks5 <-> $ brook server/wsserver/wssserver <-> dst]
 
-**--dialSocks5Password**="": Optional
+**--dialWithSocks5Password**="": Optional
 
-**--dialSocks5Username**="": Optional
+**--dialWithSocks5Username**="": Optional
 
 **--http**="": Where to listen for HTTP proxy connections
 
@@ -340,9 +427,9 @@ Run as client and connect to brook link, both TCP and UDP, to start a socks5 pro
 
 **--socks5ServerIP**="": Only if your socks5 server IP is different from listen IP
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 ## relay
 
@@ -350,11 +437,11 @@ Run as standalone relay, both TCP and UDP, this means access [from address] is e
 
 **--from, -f, -l**="": Listen address: like ':9999'
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
 **--to, -t**="": Address which relay to, like: 1.2.3.4:9999
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 ## dnsserver
 
@@ -362,25 +449,23 @@ Run as standalone dns server, both TCP and UDP
 
 **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
-**--blockGeoIP**="": Block IP by Geo country code, such as US
+**--disableA**: Disable A query
 
-**--disableIPv4DomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
-
-**--disableIPv6DomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+**--disableAAAA**: Disable AAAA query
 
 **--dns**="": DNS server which forward to (default: 8.8.8.8:53)
 
 **--listen, -l**="": Listen address, like: 127.0.0.1:53
 
-**--tcpTimeout**="": Connection deadline time (s) (default: 0)
+**--tcpTimeout**="": time (s) (default: 0)
 
-**--udpTimeout**="": Connection deadline time (s) (default: 60)
+**--udpTimeout**="": time (s) (default: 60)
 
 ## socks5
 
 Run as standalone standard socks5 server, both TCP and UDP
 
-**--limitUDP**: The server MAY use this information to limit access to the UDP association
+**--limitUDP**: The server MAY use this information to limit access to the UDP association. This usually causes connection failures in a NAT environment, where most clients are.
 
 **--listen, -l**="": Socks5 server listen address, like: :1080 or 1.2.3.4:1080
 
@@ -491,3 +576,4 @@ Generate man.1 page
 ## help, h
 
 Shows a list of commands or help for one command
+
