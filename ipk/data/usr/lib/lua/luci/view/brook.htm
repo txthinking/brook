@@ -6,7 +6,7 @@ a.href = "javascript:history.back()";
 a.innerText = "Back to OpenWrt";
 document.body.appendChild(a);
 var e = document.createElement("iframe");
-e.src = `//${location.hostname}:9999`;
+e.src = `http://${location.hostname}:9999`;
 e.style.border = 'none';
 e.style.width = '100%';
 e.style.height = '100vh';

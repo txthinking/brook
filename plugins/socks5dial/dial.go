@@ -37,9 +37,23 @@ func NewSocks5Dial(server, username, password string, tcptimeout, udptimeout int
 
 func (p *Socks5Dial) TouchBrook() {
 	brook.DialTCP = func(network string, laddr, raddr string) (net.Conn, error) {
-		return p.s5c.DialWithLocalAddr("tcp", laddr, raddr, nil)
+		var fake net.Addr
+		if network == "tcp" {
+			fake = &net.TCPAddr{IP: net.IPv4zero}
+		}
+		if network == "udp" {
+			fake = &net.UDPAddr{IP: net.IPv4zero}
+		}
+		return p.s5c.DialWithLocalAddr("tcp", laddr, raddr, fake)
 	}
 	brook.DialUDP = func(network string, laddr, raddr string) (net.Conn, error) {
-		return p.s5c.DialWithLocalAddr("udp", laddr, raddr, nil)
+		var fake net.Addr
+		if network == "tcp" {
+			fake = &net.TCPAddr{IP: net.IPv4zero}
+		}
+		if network == "udp" {
+			fake = &net.UDPAddr{IP: net.IPv4zero}
+		}
+		return p.s5c.DialWithLocalAddr("udp", laddr, raddr, fake)
 	}
 }

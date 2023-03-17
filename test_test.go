@@ -15,17 +15,8 @@
 package brook
 
 import (
-	"encoding/json"
-	"log"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
-	m := make(map[string]int)
-	m["a"] = 1
-	b, err := json.Marshal(m)
-	log.Println(string(b), err)
-	m["a"] = 2
-	err = json.Unmarshal(b, &m)
-	log.Println(m, err)
 }

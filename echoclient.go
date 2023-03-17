@@ -16,7 +16,6 @@ package brook
 
 import (
 	"fmt"
-	"net"
 )
 
 func EchoClient(server string, times int) error {
@@ -44,30 +43,26 @@ func EchoClient(server string, times int) error {
 		}
 	}
 
-	raddr, err := Resolve("udp", server)
-	if err != nil {
-		return err
-	}
-	c1, err := net.ListenUDP("udp", nil)
+	c1, err := DialUDP("udp", "", server)
 	if err != nil {
 		return err
 	}
 	defer c1.Close()
 	for i := 0; i < times; i++ {
-		if _, err := c1.WriteToUDP([]byte(c1.LocalAddr().String()), raddr.(*net.UDPAddr)); err != nil {
+		if _, err := c1.Write([]byte(c1.LocalAddr().String())); err != nil {
 			return err
 		}
-		i, addr, err := c1.ReadFromUDP(b[:])
+		i, err := c1.Read(b[:])
 		if err != nil {
 			return err
 		}
 		if c1.LocalAddr().String() == string(b[:i]) {
-			fmt.Printf("UDP: src:%s -> dst:%s\n", c1.LocalAddr().String(), raddr.String())
-			fmt.Printf("UDP: dst:%s <- src:%s\n", c1.LocalAddr().String(), addr.String())
+			fmt.Printf("UDP: src:%s -> dst:%s\n", c1.LocalAddr().String(), c1.RemoteAddr().String())
+			fmt.Printf("UDP: dst:%s <- src:%s\n", c1.LocalAddr().String(), c1.RemoteAddr().String())
 		}
 		if c1.LocalAddr().String() != string(b[:i]) {
-			fmt.Printf("UDP: src:%s -> dst:proxy -> src:proxy -> dst:%s\n", c1.LocalAddr().String(), raddr.String())
-			fmt.Printf("UDP: dst:%s <- src:proxy <- dst:%s <- src:%s\n", c1.LocalAddr().String(), string(b[:i]), addr.String())
+			fmt.Printf("UDP: src:%s -> dst:proxy -> src:proxy -> dst:%s\n", c1.LocalAddr().String(), c1.RemoteAddr().String())
+			fmt.Printf("UDP: dst:%s <- src:proxy <- dst:%s <- src:%s\n", c1.LocalAddr().String(), string(b[:i]), c1.RemoteAddr().String())
 		}
 	}
 	return nil

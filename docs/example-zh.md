@@ -188,19 +188,6 @@ brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cer
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
 ```
 
-### brook server wsserver wssserver 服务端转发给另外的 socks5 server
-
--   --toSocks5
--   --toSocks5Username
--   --toSocks5Password
-
-### brook server wsserver wssserver 在服务端屏蔽域名和 IP 列表
-
--   --blockDomainList
--   --blockCIDR4List
--   --blockCIDR6List
--   --updateListInterval
-
 ### 运行 brook socks5, 一个独立的标准 socks5 server
 
 ```

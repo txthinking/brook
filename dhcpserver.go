@@ -119,6 +119,7 @@ func (h *DHCPServer) ServeDHCP(p dhcp4.Packet, msgType dhcp4.MessageType, option
 				return dhcp4.ReplyPacket(p, dhcp4.Offer, h.ServerIP, dhcp4.IPAdd(h.Start, i), 7*24*time.Hour, h.Options.SelectOrderOrAll(options[dhcp4.OptionParameterRequestList]))
 			}
 		}
+		Log(errors.New("DHCP server is full"))
 		DHCPServerGate(msgType.String(), p, "", nil, errors.New("DHCP server is full"))
 		return nil
 	case dhcp4.Request:

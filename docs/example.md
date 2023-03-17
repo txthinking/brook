@@ -188,19 +188,6 @@ Get brook link
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
 ```
 
-### brook server wsserver wssserver forward to another socks5 server on server-side
-
--   --toSocks5
--   --toSocks5Username
--   --toSocks5Password
-
-### brook server wsserver wssserver block domain and ip on server-side
-
--   --blockDomainList
--   --blockCIDR4List
--   --blockCIDR6List
--   --updateListInterval
-
 ### Run brook socks5, A stand-alone standard socks5 server
 
 ```

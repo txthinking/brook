@@ -38,6 +38,7 @@ import (
 
 	"github.com/txthinking/brook"
 	"github.com/txthinking/brook/plugins/block"
+	"github.com/txthinking/brook/plugins/dialwithip"
 	"github.com/txthinking/brook/plugins/logger"
 	"github.com/txthinking/brook/plugins/pprof"
 	"github.com/txthinking/brook/plugins/socks5dial"
@@ -75,6 +76,36 @@ func main() {
 		&cli.StringSliceFlag{
 			Name:  "tag",
 			Usage: "Tag can be used to the process, will be append into log, such as: 'key1:value1'",
+		},
+		&cli.StringFlag{
+			Name:  "dialWithIP4",
+			Usage: "When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used",
+		},
+		&cli.StringFlag{
+			Name:  "dialWithIP6",
+			Usage: "When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used",
+		},
+		&cli.StringFlag{
+			Name:  "dialWithSocks5",
+			Usage: "When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081",
+		},
+		&cli.StringFlag{
+			Name:  "dialWithSocks5Username",
+			Usage: "If there is",
+		},
+		&cli.StringFlag{
+			Name:  "dialWithSocks5Password",
+			Usage: "If there is",
+		},
+		&cli.IntFlag{
+			Name:  "dialWithSocks5TCPTimeout",
+			Value: 0,
+			Usage: "time (s)",
+		},
+		&cli.IntFlag{
+			Name:  "dialWithSocks5UDPTimeout",
+			Value: 60,
+			Usage: "time (s)",
 		},
 	}
 	app.Before = func(c *cli.Context) error {
@@ -117,6 +148,20 @@ func main() {
 				p.Close()
 				f()
 			}
+		}
+		if c.String("dialWithIP4") != "" || c.String("dialWithIP6") != "" {
+			p, err := dialwithip.NewDialWithIP(c.String("dialWithIP4"), c.String("dialWithIP6"))
+			if err != nil {
+				return err
+			}
+			p.TouchBrook()
+		}
+		if c.String("dialWithSocks5") != "" {
+			p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("dialWithSocks5TCPTimeout"), c.Int("dialWithSocks5UDPTimeout"))
+			if err != nil {
+				return err
+			}
+			p.TouchBrook()
 		}
 		return nil
 	}
@@ -171,18 +216,6 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
-				&cli.StringFlag{
-					Name:  "toSocks5",
-					Usage: "Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080",
-				},
-				&cli.StringFlag{
-					Name:  "toSocks5Username",
-					Usage: "Forward to socks5 server, username",
-				},
-				&cli.StringFlag{
-					Name:  "toSocks5Password",
-					Usage: "Forward to socks5 server, password",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("password") == "" {
@@ -219,13 +252,6 @@ func main() {
 				s, err := brook.NewServer(c.String("listen"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
-				}
-				if c.String("toSocks5") != "" {
-					p, err := socks5dial.NewSocks5Dial(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					p.TouchBrook()
 				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -285,18 +311,6 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5",
-					Usage: "Dial with your socks5 proxy, such as 127.0.0.1:1081",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Username",
-					Usage: "Optional",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Password",
-					Usage: "Optional",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("socks5") == "" || c.String("server") == "" || c.String("password") == "" {
@@ -308,13 +322,6 @@ func main() {
 				}
 				if h == "" && c.String("socks5ServerIP") == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
-				}
-				if c.String("dialWithSocks5") != "" {
-					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					p.TouchBrook()
 				}
 				var ip string
 				if h != "" {
@@ -418,18 +425,6 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
-				&cli.StringFlag{
-					Name:  "toSocks5",
-					Usage: "Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080",
-				},
-				&cli.StringFlag{
-					Name:  "toSocks5Username",
-					Usage: "Forward to socks5 server, username",
-				},
-				&cli.StringFlag{
-					Name:  "toSocks5Password",
-					Usage: "Forward to socks5 server, password",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("password") == "" {
@@ -462,13 +457,6 @@ func main() {
 							},
 						})
 					}
-				}
-				if c.String("toSocks5") != "" {
-					p, err := socks5dial.NewSocks5Dial(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					p.TouchBrook()
 				}
 				s, err := brook.NewWSServer(c.String("listen"), c.String("password"), "", c.String("path"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
 				if err != nil {
@@ -536,18 +524,6 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5",
-					Usage: "Dial with your socks5 proxy, such as 127.0.0.1:1081",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Username",
-					Usage: "Optional",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Password",
-					Usage: "Optional",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("socks5") == "" || c.String("wsserver") == "" || c.String("password") == "" {
@@ -559,13 +535,6 @@ func main() {
 				}
 				if h == "" && c.String("socks5ServerIP") == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
-				}
-				if c.String("dialWithSocks5") != "" {
-					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					p.TouchBrook()
 				}
 				var ip string
 				if h != "" {
@@ -672,18 +641,6 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
-				&cli.StringFlag{
-					Name:  "toSocks5",
-					Usage: "Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080",
-				},
-				&cli.StringFlag{
-					Name:  "toSocks5Username",
-					Usage: "Forward to socks5 server, username",
-				},
-				&cli.StringFlag{
-					Name:  "toSocks5Password",
-					Usage: "Forward to socks5 server, password",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("domainaddress") == "" || c.String("password") == "" {
@@ -722,13 +679,6 @@ func main() {
 							},
 						})
 					}
-				}
-				if c.String("toSocks5") != "" {
-					p, err := socks5dial.NewSocks5Dial(c.String("toSocks5"), c.String("toSocks5Username"), c.String("toSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					p.TouchBrook()
 				}
 				h, p, err := net.SplitHostPort(c.String("domainaddress"))
 				if err != nil {
@@ -822,18 +772,6 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5",
-					Usage: "Dial with your socks5 proxy, such as 127.0.0.1:1081",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Username",
-					Usage: "Optional",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Password",
-					Usage: "Optional",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
@@ -845,13 +783,6 @@ func main() {
 				}
 				if h == "" && c.String("socks5ServerIP") == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
-				}
-				if c.String("dialWithSocks5") != "" {
-					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					p.TouchBrook()
 				}
 				var ip string
 				if h != "" {
@@ -1042,7 +973,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "quicclient",
-			Usage: "Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook quicclient <-> $ brook quicserver <-> dst]",
+			Usage: "Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook quicclient <-> $ brook quicserver <-> dst]. (Note that the global dial parameter is ignored now)",
 			BashComplete: func(c *cli.Context) {
 				l := c.Command.VisibleFlags()
 				for _, v := range l {
@@ -1064,9 +995,13 @@ func main() {
 					Name:  "address",
 					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
 				},
+				&cli.BoolFlag{
+					Name:  "insecure",
+					Usage: "Client do not verify the server's certificate chain and host name",
+				},
 				&cli.StringFlag{
 					Name:  "ca",
-					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
+					Usage: "Specify ca instead of insecure, such as /path/to/ca.pem",
 				},
 				&cli.BoolFlag{
 					Name:  "withoutBrookProtocol",
@@ -1120,6 +1055,9 @@ func main() {
 				}
 				if c.String("address") != "" {
 					s.ServerAddress = c.String("address")
+				}
+				if c.Bool("insecure") {
+					s.TLSConfig.InsecureSkipVerify = true
 				}
 				if c.String("ca") != "" {
 					b, err := ioutil.ReadFile(c.String("ca"))
@@ -1181,7 +1119,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443",
+					Usage:   "brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -1313,7 +1251,7 @@ func main() {
 				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
-					Usage:   "brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443",
+					Usage:   "brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443",
 				},
 				&cli.StringFlag{
 					Name:    "password",
@@ -1528,18 +1466,6 @@ func main() {
 					Name:  "udpTimeout",
 					Value: 60,
 					Usage: "time (s)",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5",
-					Usage: "Dial with your socks5 proxy, such as 127.0.0.1:1081",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Username",
-					Usage: "Optional",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Password",
-					Usage: "Optional",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1765,13 +1691,6 @@ func main() {
 					}
 					p.TouchBrook()
 				}
-				if c.String("dialWithSocks5") != "" {
-					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					p.TouchBrook()
-				}
 				kind := "server"
 				if strings.HasPrefix(c.String("server"), "ws://") {
 					kind = "wsserver"
@@ -1984,18 +1903,6 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5",
-					Usage: "If you already have a socks5, such as 127.0.0.1:1081, and want [src <-> listen socks5 <-> $ brook connect <-> dialWithSocks5 <-> $ brook server/wsserver/wssserver <-> dst]",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Username",
-					Usage: "Optional",
-				},
-				&cli.StringFlag{
-					Name:  "dialWithSocks5Password",
-					Usage: "Optional",
-				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("link") == "" {
@@ -2017,13 +1924,6 @@ func main() {
 				}
 				if kind == "socks5" {
 					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
-				}
-				if c.String("dialWithSocks5") != "" {
-					p, err := socks5dial.NewSocks5Dial(c.String("dialWithSocks5"), c.String("dialWithSocks5Username"), c.String("dialWithSocks5Password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					p.TouchBrook()
 				}
 				s, err := brook.NewBrookLink(c.String("link"))
 				if err != nil {
@@ -2193,20 +2093,20 @@ func main() {
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:  "serverip",
-					Usage: "DHCP server IP, such as: 192.168.1.1",
+					Usage: "DHCP server IP, the IP of the this machine, you shoud set a static IP to this machine before doing this, such as: 192.168.1.10",
 				},
 				&cli.StringFlag{
 					Name:  "start",
-					Usage: "Start IP which you want to assign to clients, such as: 192.168.1.2",
+					Usage: "Start IP which you want to assign to clients, such as: 192.168.1.100",
 				},
 				&cli.StringFlag{
 					Name:  "netmask",
-					Usage: "Subnet netmask",
+					Usage: "Subnet netmask which you want to assign to clients",
 					Value: "255.255.255.0",
 				},
 				&cli.IntFlag{
 					Name:  "count",
-					Usage: "IP range from the start",
+					Usage: "IP range from the start, which you want to assign to clients",
 					Value: 100,
 				},
 				&cli.StringFlag{
@@ -2478,7 +2378,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "testbrook",
-			Usage: "Test UDP and TCP of brook server/wsserver/wssserver",
+			Usage: "Test UDP and TCP of brook server/wsserver/wssserver/quicserver. (Note that the global dial parameter is ignored now)",
 			BashComplete: func(c *cli.Context) {
 				l := c.Command.VisibleFlags()
 				for _, v := range l {
@@ -2526,6 +2426,7 @@ func main() {
 					if err != nil {
 						return
 					}
+					// TODO append global dial options
 					cmd = exec.Command(s, "connect", "--link", c.String("link"), "--socks5", c.String("socks5"))
 					b, _ := cmd.CombinedOutput()
 					err = errors.New(string(b))
