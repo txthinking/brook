@@ -234,13 +234,6 @@ brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 brook dnsserveroverbrook ... --listen 127.0.0.1:53
 ```
 
-规则
-
--   --dns
--   --dnsForBypass
--   --bypassDomainList
--   --blockDomainList
-
 ### brook tproxy 透明代理网关在官网原版 OpenWrt
 
 **无需操作 iptables！**

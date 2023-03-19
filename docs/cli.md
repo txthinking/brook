@@ -7,6 +7,13 @@ Brook - A cross-platform network tool designed for developers
 Brook
 
 ```
+[--dialWithIP4]=[value]
+[--dialWithIP6]=[value]
+[--dialWithSocks5Password]=[value]
+[--dialWithSocks5TCPTimeout]=[value]
+[--dialWithSocks5UDPTimeout]=[value]
+[--dialWithSocks5Username]=[value]
+[--dialWithSocks5]=[value]
 [--help|-h]
 [--log]=[value]
 [--pprof]=[value]
@@ -22,9 +29,23 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 # GLOBAL OPTIONS
 
+**--dialWithIP4**="": When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used
+
+**--dialWithIP6**="": When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used
+
+**--dialWithSocks5**="": When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081
+
+**--dialWithSocks5Password**="": If there is
+
+**--dialWithSocks5TCPTimeout**="": time (s) (default: 0)
+
+**--dialWithSocks5UDPTimeout**="": time (s) (default: 60)
+
+**--dialWithSocks5Username**="": If there is
+
 **--help, -h**: show help
 
-**--log**="": Enable log. A valid value is file path for production or 'console' for testing. BTW, if you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true
+**--log**="": Enable log. A valid value is file path or 'console'. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true
 
 **--pprof**="": go http pprof listen addr, such as :6060
 
@@ -53,12 +74,6 @@ Run as brook server, both TCP and UDP
 
 **--tcpTimeout**="": time (s) (default: 0)
 
-**--toSocks5**="": Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080
-
-**--toSocks5Password**="": Forward to socks5 server, password
-
-**--toSocks5Username**="": Forward to socks5 server, username
-
 **--udpTimeout**="": time (s) (default: 60)
 
 **--updateListInterval**="": Update list interval, second. default 0, only read one time on start (default: 0)
@@ -66,12 +81,6 @@ Run as brook server, both TCP and UDP
 ## client
 
 Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook client <-> $ brook server <-> dst]
-
-**--dialWithSocks5**="": Dial with your socks5 proxy, such as 127.0.0.1:1081
-
-**--dialWithSocks5Password**="": Optional
-
-**--dialWithSocks5Username**="": Optional
 
 **--http**="": Where to listen for HTTP proxy connections
 
@@ -109,12 +118,6 @@ Run as brook wsserver, both TCP and UDP, it will start a standard http server an
 
 **--tcpTimeout**="": time (s) (default: 0)
 
-**--toSocks5**="": Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080
-
-**--toSocks5Password**="": Forward to socks5 server, password
-
-**--toSocks5Username**="": Forward to socks5 server, username
-
 **--udpTimeout**="": time (s) (default: 60)
 
 **--updateListInterval**="": Update list interval, second. default 0, only read one time on start (default: 0)
@@ -126,12 +129,6 @@ Run as brook wsserver, both TCP and UDP, it will start a standard http server an
 Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook wsclient <-> $ brook wsserver <-> dst]
 
 **--address**="": Specify address instead of resolving addresses from host, such as 1.2.3.4:443
-
-**--dialWithSocks5**="": Dial with your socks5 proxy, such as 127.0.0.1:1081
-
-**--dialWithSocks5Password**="": Optional
-
-**--dialWithSocks5Username**="": Optional
 
 **--http**="": Where to listen for HTTP proxy connections
 
@@ -173,12 +170,6 @@ Run as brook wssserver, both TCP and UDP, it will start a standard https server 
 
 **--tcpTimeout**="": time (s) (default: 0)
 
-**--toSocks5**="": Forward to socks5 server, requires your socks5 supports standard socks5 TCP and UDP, such as 1.2.3.4:1080
-
-**--toSocks5Password**="": Forward to socks5 server, password
-
-**--toSocks5Username**="": Forward to socks5 server, username
-
 **--udpTimeout**="": time (s) (default: 60)
 
 **--updateListInterval**="": Update list interval, second. default 0, only read one time on start (default: 0)
@@ -192,12 +183,6 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 **--address**="": Specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
 **--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
-
-**--dialWithSocks5**="": Dial with your socks5 proxy, such as 127.0.0.1:1081
-
-**--dialWithSocks5Password**="": Optional
-
-**--dialWithSocks5Username**="": Optional
 
 **--http**="": Where to listen for HTTP proxy connections
 
@@ -247,13 +232,15 @@ Run as brook quicserver, both TCP and UDP
 
 ## quicclient
 
-Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook quicclient <-> $ brook quicserver <-> dst]
+Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook quicclient <-> $ brook quicserver <-> dst]. (Note that the global dial parameter is ignored now)
 
 **--address**="": Specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
-**--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
+**--ca**="": Specify ca instead of insecure, such as /path/to/ca.pem
 
 **--http**="": Where to listen for HTTP proxy connections
+
+**--insecure**: Client do not verify the server's certificate chain and host name
 
 **--password, -p**="": Brook quicserver password
 
@@ -283,7 +270,7 @@ Run as relay over brook, both TCP and UDP, this means access [from address] is e
 
 **--password, -p**="": Password
 
-**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443
+**--server, -s**="": brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443
 
 **--tcpTimeout**="": time (s) (default: 0)
 
@@ -321,7 +308,7 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 **--password, -p**="": Password
 
-**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
+**--server, -s**="": brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
 
 **--tcpTimeout**="": time (s) (default: 0)
 
@@ -333,7 +320,7 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 ## tproxy
 
-Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]
+Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]
 
 **--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
@@ -349,12 +336,6 @@ Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ broo
 
 **--ca**="": When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem
 
-**--dialWithSocks5**="": Dial with your socks5 proxy, such as 127.0.0.1:1081
-
-**--dialWithSocks5Password**="": Optional
-
-**--dialWithSocks5Username**="": Optional
-
 **--disableA**: Disable A query
 
 **--disableAAAA**: Disable AAAA query
@@ -363,7 +344,7 @@ Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ broo
 
 **--dnsForDefault**="": DNS server for resolving domains NOT in list (default: 8.8.8.8:53)
 
-**--dnsListen**="": Start a DNS server, like: ':53'
+**--dnsListen**="": Start a DNS server, like: ':53'. MUST contain IP, like '192.168.1.1:53', if you expect your gateway to accept requests from clients to other public DNS servers at the same time
 
 **--doNotRunScripts**: This will not change iptables and others if you want to do by yourself
 
@@ -375,7 +356,9 @@ Run as transparent proxy, both TCP and UDP, only works on Linux, [src <-> $ broo
 
 **--password, -p**="": Password
 
-**--server, -s**="": brook server or brook wsserver or brook wssserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
+**--redirectDNS**="": It is usually the value of dnsListen. If the client has set custom DNS instead of dnsListen, this parameter can be intercepted and forwarded to dnsListen. Usually you don't need to set this, only if you want to control it instead of being proxied directly as normal UDP data.
+
+**--server, -s**="": brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
 
 **--tcpTimeout**="": time (s) (default: 0)
 
@@ -412,12 +395,6 @@ Generate brook link
 ## connect
 
 Run as client and connect to brook link, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook connect <-> $ brook server/wsserver/wssserver/quicserver <-> dst]
-
-**--dialWithSocks5**="": If you already have a socks5, such as 127.0.0.1:1081, and want [src <-> listen socks5 <-> $ brook connect <-> dialWithSocks5 <-> $ brook server/wsserver/wssserver <-> dst]
-
-**--dialWithSocks5Password**="": Optional
-
-**--dialWithSocks5Username**="": Optional
 
 **--http**="": Where to listen for HTTP proxy connections
 
@@ -460,6 +437,24 @@ Run as standalone dns server, both TCP and UDP
 **--tcpTimeout**="": time (s) (default: 0)
 
 **--udpTimeout**="": time (s) (default: 60)
+
+## dhcpserver
+
+Run as standalone dhcp server. Note that you need to stop other dhcp servers, if there are.
+
+**--cache**="": Cache file, local absolute file path, default is $HOME/.brook.dhcpserver
+
+**--count**="": IP range from the start, which you want to assign to clients (default: 100)
+
+**--dnsserver**="": The dns server which you want to assign to clients, such as: 192.168.1.1 or 8.8.8.8
+
+**--gateway**="": The router gateway which you want to assign to clients, such as: 192.168.1.1
+
+**--netmask**="": Subnet netmask which you want to assign to clients (default: 255.255.255.0)
+
+**--serverip**="": DHCP server IP, the IP of the this machine, you shoud set a static IP to this machine before doing this, such as: 192.168.1.10
+
+**--start**="": Start IP which you want to assign to clients, such as: 192.168.1.100
 
 ## socks5
 
@@ -523,7 +518,7 @@ Test UDP and TCP of socks5 server
 
 ## testbrook
 
-Test UDP and TCP of brook server/wsserver/wssserver
+Test UDP and TCP of brook server/wsserver/wssserver/quicserver. (Note that the global dial parameter is ignored now)
 
 **--dns**="": DNS server for connecting (default: 8.8.8.8:53)
 

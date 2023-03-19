@@ -234,13 +234,6 @@ brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 brook dnsserveroverbrook ... --listen 127.0.0.1:53
 ```
 
-Rule
-
--   --dns
--   --dnsForBypass
--   --bypassDomainList
--   --blockDomainList
-
 ### brook tproxy Transparent Proxy Gateway on official OpenWrt
 
 **No need to manipulate iptables!**
