@@ -41,6 +41,7 @@ import (
 	"github.com/txthinking/brook/plugins/dialwithip"
 	"github.com/txthinking/brook/plugins/logger"
 	"github.com/txthinking/brook/plugins/pprof"
+	"github.com/txthinking/brook/plugins/prometheus"
 	"github.com/txthinking/brook/plugins/socks5dial"
 	"github.com/txthinking/brook/plugins/thedns"
 	"github.com/txthinking/brook/plugins/tproxy"
@@ -54,7 +55,7 @@ func main() {
 	df := func() {}
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20230401"
+	app.Version = "20230404"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{
@@ -106,6 +107,14 @@ func main() {
 			Name:  "dialWithSocks5UDPTimeout",
 			Value: 60,
 			Usage: "time (s)",
+		},
+		&cli.StringFlag{
+			Name:  "prometheus",
+			Usage: "prometheus http listen addr, such as :7070. If it is transmitted on the public network, it is recommended to use it with nico",
+		},
+		&cli.StringFlag{
+			Name:  "prometheusPath",
+			Usage: "prometheus http path, such as /xxx. If it is transmitted on the public network, a hard-to-guess value is recommended",
 		},
 	}
 	app.Before = func(c *cli.Context) error {
@@ -162,6 +171,32 @@ func main() {
 				return err
 			}
 			p.TouchBrook()
+		}
+		if c.String("prometheus") != "" {
+			if c.String("prometheusPath") == "" {
+				return errors.New("You forgot the --prometheusPath")
+			}
+			var m map[string]string
+			if len(c.StringSlice("tag")) > 0 {
+				m = make(map[string]string)
+				for _, v := range c.StringSlice("tag") {
+					l := strings.Split(v, ":")
+					if len(l) != 2 {
+						return errors.New("Invalid tag " + v)
+					}
+					m[l[0]] = l[1]
+				}
+			}
+			p := prometheus.NewPrometheus(c.String("prometheus"), c.String("prometheusPath"), m)
+			p.TouchBrook()
+			g.Add(&runnergroup.Runner{
+				Start: func() error {
+					return p.ListenAndServe()
+				},
+				Stop: func() error {
+					return p.Shutdown()
+				},
+			})
 		}
 		return nil
 	}

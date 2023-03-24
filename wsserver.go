@@ -101,7 +101,10 @@ func (s *WSServer) ListenAndServe() error {
 			Email:      "cloud@txthinking.com",
 		}
 		go func() {
-			Log(http.ListenAndServe(":80", m.HTTPHandler(nil)))
+			err := http.ListenAndServe(":80", m.HTTPHandler(nil))
+			if err != nil {
+				Log(err)
+			}
 		}()
 		t = &tls.Config{GetCertificate: m.GetCertificate}
 	}
