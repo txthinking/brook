@@ -1,3 +1,4 @@
+# Brook CLI Documentation
 # NAME
 
 Brook - A cross-platform network tool designed for developers
@@ -17,6 +18,8 @@ Brook
 [--help|-h]
 [--log]=[value]
 [--pprof]=[value]
+[--prometheusPath]=[value]
+[--prometheus]=[value]
 [--tag]=[value]
 [--version|-v]
 ```
@@ -48,6 +51,10 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 **--log**="": Enable log. A valid value is file path or 'console'. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true
 
 **--pprof**="": go http pprof listen addr, such as :6060
+
+**--prometheus**="": prometheus http listen addr, such as :7070. If it is transmitted on the public network, it is recommended to use it with nico
+
+**--prometheusPath**="": prometheus http path, such as /xxx. If it is transmitted on the public network, a hard-to-guess value is recommended
 
 **--tag**="": Tag can be used to the process, will be append into log, such as: 'key1:value1'
 
@@ -572,3 +579,5 @@ Generate man.1 page
 
 Shows a list of commands or help for one command
 
+<!--SIDEBAR-->
+<!--G-R3M673HK5V-->

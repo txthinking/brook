@@ -33,55 +33,23 @@
                     width: 500px;
                 }
             }
+            .newtab {
+                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==)
+                no-repeat center;
+                width: 1em;
+                height: 1em;
+            }
         </style>
         <script>
             window.addEventListener("DOMContentLoaded", async (e) => {
                 var app = {
                     data() {
                         return {
-                            ing3: false,
-                            p3c: "",
-                            ing7: false,
-                            p7c: "",
                             p: 0,
                             zh: navigator.language.toLowerCase().startsWith("zh-"),
                         };
                     },
                     methods: {
-                        async p3() {
-                            if (this.ing3) {
-                                return;
-                            }
-                            this.p = 3;
-                            this.ing3 = true;
-                            try {
-                                var r = await fetch("cli.md");
-                                if (r.status != 200) {
-                                    throw r.status;
-                                }
-                                this.p3c = marked.parse(await r.text());
-                            } catch (e) {
-                                alert(`${e}`);
-                            }
-                            this.ing3 = false;
-                        },
-                        async p7() {
-                            if (this.ing7) {
-                                return;
-                            }
-                            this.p = 7;
-                            this.ing7 = true;
-                            try {
-                                var r = await fetch(this.zh ? "example-zh.md" : "example.md");
-                                if (r.status != 200) {
-                                    throw r.status;
-                                }
-                                this.p7c = marked.parse(await r.text());
-                            } catch (e) {
-                                alert(`${e}`);
-                            }
-                            this.ing7 = false;
-                        },
                     },
                 };
                 Vue.createApp(app).mount("body");
@@ -113,17 +81,27 @@
                 <div><button :class="p!=2 ? 'contrast outline' : ''" @click="()=>this.p=2">{{ zh ? '安装图形端' : 'Install GUI' }}</button></div>
             </div>
             <div style="display: flex; justify-content: center; flex-wrap: wrap">
-                <div><button :class="p!=3 ? 'contrast outline' : ''" @click="p3" :aria-busy="ing3 ? 'true' : ''">{{ zh ? '命令行文档' : 'CLI Documentation' }}</button></div>
+                <div><button :class="p!=3 ? 'contrast outline' : ''" @click="()=>this.p=3">{{ zh ? '命令行文档' : 'CLI Documentation' }}</button></div>
                 <div style="width: 30px"></div>
-                <div><a class="contrast outline" :href="zh ? 'https://www.txthinking.com/talks/articles/brook.article' : 'https://www.txthinking.com/talks/articles/brook-en.article'" target="_blank" role="button">{{ zh ? '图形端文档' : 'GUI Documentation' }}</a></div>
+                <div><button :class="p!=8 ? 'contrast outline' : ''" @click="()=>this.p=8">{{ zh ? '图形端文档' : 'GUI Documentation' }}</button></div>
                 <div style="width: 30px"></div>
+                <div><button :class="p!=9 ? 'contrast outline' : ''" @click="()=>this.p=9">{{ zh ? '图解' : 'Diagram' }}</button></div>
+            </div>
+            <div style="display: flex; justify-content: center; flex-wrap: wrap">
                 <div><button :class="p!=4 ? 'contrast outline' : ''" @click="()=>this.p=4">{{ zh ? '守护进程' : 'Daemon' }}</button></div>
                 <div style="width: 30px"></div>
                 <div><button :class="p!=5 ? 'contrast outline' : ''" @click="()=>this.p=5">{{ zh ? '开机自启' : 'Auto Start at Boot' }}</button></div>
                 <div style="width: 30px"></div>
                 <div><button :class="p!=6 ? 'contrast outline' : ''" @click="()=>this.p=6">{{ zh ? '一键脚本' : 'One Click Script' }}</button></div>
                 <div style="width: 30px"></div>
-                <div><button :class="p!=7 ? 'contrast outline' : ''" @click="p7">{{ zh ? '一些例子' : 'Some Examples' }}</button></div>
+                <div><button :class="p!=7 ? 'contrast outline' : ''" @click="p7">{{ zh ? '例子' : 'Examples' }}</button></div>
+            </div>
+            <div style="display: flex; justify-content: center; flex-wrap: wrap">
+                <div><a class="contrast outline" href="https://www.txthinking.com/talks/" target="_blank" role="button" style="display:flex;align-items:center;"><div>{{ zh ? '博客' : 'Blog' }}</div> <div class="newtab"></div></a></div>
+                <div style="width: 30px"></div>
+                <div><a class="contrast outline" href="https://youtube.com/txthinking" target="_blank" role="button" style="display:flex;align-items:center;"><div>YouTube</div> <div class="newtab"></div></a></div>
+                <div style="width: 30px"></div>
+                <div><a class="contrast outline" href="https://t.me/s/txthinking_news" target="_blank" role="button" style="display:flex;align-items:center;"><div>Telegram</div> <div class="newtab"></div></a></div>
             </div>
             <div v-if="zh" style="display: flex; justify-content: center; flex-wrap: wrap">
                 <a class="contrast outline" style="border-color: #b04386; color: #b04386" href="https://www.txthinking.com/shiliew.html?utm_source=brookdocs" target="_blank" role="button"> Sponsors ❤️ Shiliew - Not just VPN </a>
@@ -215,14 +193,14 @@ joker brook server -l :9999 -p hello</code></pre>
                                 <div style="font-size: 12px">Intel Mac</div>
                             </div></a
                         >
-                            <div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
-                                <a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin" target="_blank">
+                        <div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
+                            <a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin" target="_blank">
                                 <img src="./images/linux.png" style="width: 50px; height: 50px" />
-                                </a>
-                                <div style="font-size: 12px">Linux GUI</div>
-                                <abbr style="font-size: 12px" :data-tooltip="zh ? '在 Ubuntu 22.04 上开发测试' : 'Developing and testing on Ubuntu 22.04'">tip</abbr>
-                                <a style="font-size: 12px;color:grey;" href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" target="_blank">Socks5 Configurator</abbr>
-                            </div>
+                            </a>
+                            <div style="font-size: 12px">Linux GUI</div>
+                            <abbr style="font-size: 12px" :data-tooltip="zh ? '在 Ubuntu 22.04 上开发测试' : 'Developing and testing on Ubuntu 22.04'">tip</abbr>
+                            <a style="font-size: 12px; color: grey" href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" target="_blank">Socks5 Configurator</a>
+                        </div>
                         <a href="https://github.com/txthinking/brook/releases/latest/download/Brook.exe"
                             ><div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
                                 <img src="./images/windows.png" style="width: 50px; height: 50px" />
@@ -231,16 +209,13 @@ joker brook server -l :9999 -p hello</code></pre>
                         >
                         <div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
                             <a href="https://github.com/txthinking/brook/releases" target="_blank">
-                            <img src="./images/openwrt.png" style="width: 50px; height: 50px" />
+                                <img src="./images/openwrt.png" style="width: 50px; height: 50px" />
                             </a>
                             <div style="font-size: 12px">OpenWrt IPK</div>
                             <abbr style="font-size: 12px" :data-tooltip="zh ? '安装之后需要刷新页面会看到菜单' : 'After installation, you need to refresh the page to see the menu'">tip</abbr>
                         </div>
                     </div>
                 </article>
-            </div>
-            <div v-if="p==3">
-                <article v-html="p3c"></article>
             </div>
             <div class="dm" v-if="p==4">
                 <article>
@@ -287,8 +262,37 @@ joker brook server -l :9999 -p hello</code></pre>
                     <pre><code>bash <(curl https://bash.ooo/brook.sh)</code></pre>
                 </article>
             </div>
+            <div v-if="p==3">
+                <article style="padding: 10px;">
+                    <div style="display:flex;justify-content:center;padding-bottom:10px;">
+                        <a href="cli.html" target="_blank"><div class="newtab"></div></a>
+                    </div>
+                    <iframe src="cli.html" style="width: 100%; height: 14500px"></iframe>
+                </article>
+            </div>
+            <div v-if="p==9">
+                <article style="padding: 10px;">
+                    <div style="display:flex;justify-content:center;padding-bottom:10px;">
+                        <a href="diagram.html" target="_blank"><div class="newtab"></div></a>
+                    </div>
+                    <iframe src="diagram.html" style="width: 100%; height: 10000px"></iframe>
+                </article>
+            </div>
             <div v-if="p==7">
-                <article v-html="p7c"></article>
+                <article style="padding: 10px;">
+                    <div style="display:flex;justify-content:center;padding-bottom:10px;">
+                        <a :href="zh ? 'example-zh.html' : 'example.html'" target="_blank"><div class="newtab"></div></a>
+                    </div>
+                    <iframe :src="zh ? 'example-zh.html' : 'example.html'" style="width: 100%; height: 6500px"></iframe>
+                </article>
+            </div>
+            <div v-if="p==8">
+                <article style="padding: 10px;">
+                    <div style="display:flex;justify-content:center;padding-bottom:10px;">
+                        <a :href="zh ? 'gui-zh.html' : 'gui.html'" target="_blank"><div class="newtab"></div></a>
+                    </div>
+                    <iframe :src="zh ? 'gui-zh.html' : 'gui.html'" style="width: 100%; height: 10200px"></iframe>
+                </article>
             </div>
         </main>
         <footer class="container" style="font-size: 14px">

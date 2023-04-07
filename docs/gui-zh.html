@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Brook 图形客户端文档</title>
+        
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M673HK5V"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+            gtag('config', 'G-R3M673HK5V');
+		</script>
+        
+		<style>
+@media (prefers-color-scheme: dark) {
+  .markdown-body {
+    color-scheme: dark;
+    --color-prettylights-syntax-comment: #8b949e;
+    --color-prettylights-syntax-constant: #79c0ff;
+    --color-prettylights-syntax-entity: #d2a8ff;
+    --color-prettylights-syntax-storage-modifier-import: #c9d1d9;
+    --color-prettylights-syntax-entity-tag: #7ee787;
+    --color-prettylights-syntax-keyword: #ff7b72;
+    --color-prettylights-syntax-string: #a5d6ff;
+    --color-prettylights-syntax-variable: #ffa657;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
+    --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+    --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+    --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+    --color-prettylights-syntax-carriage-return-bg: #b62324;
+    --color-prettylights-syntax-string-regexp: #7ee787;
+    --color-prettylights-syntax-markup-list: #f2cc60;
+    --color-prettylights-syntax-markup-heading: #1f6feb;
+    --color-prettylights-syntax-markup-italic: #c9d1d9;
+    --color-prettylights-syntax-markup-bold: #c9d1d9;
+    --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+    --color-prettylights-syntax-markup-deleted-bg: #67060c;
+    --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+    --color-prettylights-syntax-markup-inserted-bg: #033a16;
+    --color-prettylights-syntax-markup-changed-text: #ffdfb6;
+    --color-prettylights-syntax-markup-changed-bg: #5a1e02;
+    --color-prettylights-syntax-markup-ignored-text: #c9d1d9;
+    --color-prettylights-syntax-markup-ignored-bg: #1158c7;
+    --color-prettylights-syntax-meta-diff-range: #d2a8ff;
+    --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
+    --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+    --color-fg-default: #c9d1d9;
+    --color-fg-muted: #8b949e;
+    --color-fg-subtle: #484f58;
+    --color-canvas-default: #0d1117;
+    --color-canvas-subtle: #161b22;
+    --color-border-default: #30363d;
+    --color-border-muted: #21262d;
+    --color-neutral-muted: rgba(110,118,129,0.4);
+    --color-accent-fg: #58a6ff;
+    --color-accent-emphasis: #1f6feb;
+    --color-attention-subtle: rgba(187,128,9,0.15);
+    --color-danger-fg: #f85149;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .markdown-body {
+    color-scheme: light;
+    --color-prettylights-syntax-comment: #6e7781;
+    --color-prettylights-syntax-constant: #0550ae;
+    --color-prettylights-syntax-entity: #8250df;
+    --color-prettylights-syntax-storage-modifier-import: #24292f;
+    --color-prettylights-syntax-entity-tag: #116329;
+    --color-prettylights-syntax-keyword: #cf222e;
+    --color-prettylights-syntax-string: #0a3069;
+    --color-prettylights-syntax-variable: #953800;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
+    --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
+    --color-prettylights-syntax-invalid-illegal-bg: #82071e;
+    --color-prettylights-syntax-carriage-return-text: #f6f8fa;
+    --color-prettylights-syntax-carriage-return-bg: #cf222e;
+    --color-prettylights-syntax-string-regexp: #116329;
+    --color-prettylights-syntax-markup-list: #3b2300;
+    --color-prettylights-syntax-markup-heading: #0550ae;
+    --color-prettylights-syntax-markup-italic: #24292f;
+    --color-prettylights-syntax-markup-bold: #24292f;
+    --color-prettylights-syntax-markup-deleted-text: #82071e;
+    --color-prettylights-syntax-markup-deleted-bg: #FFEBE9;
+    --color-prettylights-syntax-markup-inserted-text: #116329;
+    --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
+    --color-prettylights-syntax-markup-changed-text: #953800;
+    --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
+    --color-prettylights-syntax-markup-ignored-text: #eaeef2;
+    --color-prettylights-syntax-markup-ignored-bg: #0550ae;
+    --color-prettylights-syntax-meta-diff-range: #8250df;
+    --color-prettylights-syntax-brackethighlighter-angle: #57606a;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #8c959f;
+    --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+    --color-fg-default: #24292f;
+    --color-fg-muted: #57606a;
+    --color-fg-subtle: #6e7781;
+    --color-canvas-default: #ffffff;
+    --color-canvas-subtle: #f6f8fa;
+    --color-border-default: #d0d7de;
+    --color-border-muted: hsla(210,18%,87%,1);
+    --color-neutral-muted: rgba(175,184,193,0.2);
+    --color-accent-fg: #0969da;
+    --color-accent-emphasis: #0969da;
+    --color-attention-subtle: #fff8c5;
+    --color-danger-fg: #cf222e;
+  }
+}
+
+.markdown-body {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  margin: 0;
+  color: var(--color-fg-default);
+  background-color: var(--color-canvas-default);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.markdown-body .octicon {
+  display: inline-block;
+  fill: currentColor;
+  vertical-align: text-bottom;
+}
+
+.markdown-body h1:hover .anchor .octicon-link:before,
+.markdown-body h2:hover .anchor .octicon-link:before,
+.markdown-body h3:hover .anchor .octicon-link:before,
+.markdown-body h4:hover .anchor .octicon-link:before,
+.markdown-body h5:hover .anchor .octicon-link:before,
+.markdown-body h6:hover .anchor .octicon-link:before {
+  width: 16px;
+  height: 16px;
+  content: ' ';
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+  mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+}
+
+.markdown-body details,
+.markdown-body figcaption,
+.markdown-body figure {
+  display: block;
+}
+
+.markdown-body summary {
+  display: list-item;
+}
+
+.markdown-body [hidden] {
+  display: none !important;
+}
+
+.markdown-body a {
+  background-color: transparent;
+  color: var(--color-accent-fg);
+  text-decoration: none;
+}
+
+.markdown-body a:active,
+.markdown-body a:hover {
+  outline-width: 0;
+}
+
+.markdown-body abbr[title] {
+  border-bottom: none;
+  text-decoration: underline dotted;
+}
+
+.markdown-body b,
+.markdown-body strong {
+  font-weight: 600;
+}
+
+.markdown-body dfn {
+  font-style: italic;
+}
+
+.markdown-body h1 {
+  margin: .67em 0;
+  font-weight: 600;
+  padding-bottom: .3em;
+  font-size: 2em;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.markdown-body mark {
+  background-color: var(--color-attention-subtle);
+  color: var(--color-text-primary);
+}
+
+.markdown-body small {
+  font-size: 90%;
+}
+
+.markdown-body sub,
+.markdown-body sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.markdown-body sub {
+  bottom: -0.25em;
+}
+
+.markdown-body sup {
+  top: -0.5em;
+}
+
+.markdown-body img {
+  border-style: none;
+  max-width: 100%;
+  box-sizing: content-box;
+  background-color: var(--color-canvas-default);
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre,
+.markdown-body samp {
+  font-family: monospace,monospace;
+  font-size: 1em;
+}
+
+.markdown-body figure {
+  margin: 1em 40px;
+}
+
+.markdown-body hr {
+  box-sizing: content-box;
+  overflow: hidden;
+  background: transparent;
+  border-bottom: 1px solid var(--color-border-muted);
+  height: .25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: var(--color-border-default);
+  border: 0;
+}
+
+.markdown-body input {
+  font: inherit;
+  margin: 0;
+  overflow: visible;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.markdown-body [type=button],
+.markdown-body [type=reset],
+.markdown-body [type=submit] {
+  -webkit-appearance: button;
+}
+
+.markdown-body [type=button]::-moz-focus-inner,
+.markdown-body [type=reset]::-moz-focus-inner,
+.markdown-body [type=submit]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+.markdown-body [type=button]:-moz-focusring,
+.markdown-body [type=reset]:-moz-focusring,
+.markdown-body [type=submit]:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+.markdown-body [type=checkbox],
+.markdown-body [type=radio] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.markdown-body [type=number]::-webkit-inner-spin-button,
+.markdown-body [type=number]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+.markdown-body [type=search] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
+.markdown-body [type=search]::-webkit-search-cancel-button,
+.markdown-body [type=search]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+.markdown-body ::-webkit-input-placeholder {
+  color: inherit;
+  opacity: .54;
+}
+
+.markdown-body ::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body hr::before {
+  display: table;
+  content: "";
+}
+
+.markdown-body hr::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+}
+
+.markdown-body td,
+.markdown-body th {
+  padding: 0;
+}
+
+.markdown-body details summary {
+  cursor: pointer;
+}
+
+.markdown-body details:not([open])>*:not(summary) {
+  display: none !important;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  line-height: 10px;
+  color: var(--color-fg-default);
+  vertical-align: middle;
+  background-color: var(--color-canvas-subtle);
+  border: solid 1px var(--color-neutral-muted);
+  border-bottom-color: var(--color-neutral-muted);
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 var(--color-neutral-muted);
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-body h2 {
+  font-weight: 600;
+  padding-bottom: .3em;
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.markdown-body h3 {
+  font-weight: 600;
+  font-size: 1.25em;
+}
+
+.markdown-body h4 {
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.markdown-body h5 {
+  font-weight: 600;
+  font-size: .875em;
+}
+
+.markdown-body h6 {
+  font-weight: 600;
+  font-size: .85em;
+  color: var(--color-fg-muted);
+}
+
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.markdown-body blockquote {
+  margin: 0;
+  padding: 0 1em;
+  color: var(--color-fg-muted);
+  border-left: .25em solid var(--color-border-default);
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 2em;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+  margin-left: 0;
+}
+
+.markdown-body tt,
+.markdown-body code {
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  font-size: 12px;
+  word-wrap: normal;
+}
+
+.markdown-body .octicon {
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-body ::placeholder {
+  color: var(--color-fg-subtle);
+  opacity: 1;
+}
+
+.markdown-body input::-webkit-outer-spin-button,
+.markdown-body input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.markdown-body .pl-c {
+  color: var(--color-prettylights-syntax-comment);
+}
+
+.markdown-body .pl-c1,
+.markdown-body .pl-s .pl-v {
+  color: var(--color-prettylights-syntax-constant);
+}
+
+.markdown-body .pl-e,
+.markdown-body .pl-en {
+  color: var(--color-prettylights-syntax-entity);
+}
+
+.markdown-body .pl-smi,
+.markdown-body .pl-s .pl-s1 {
+  color: var(--color-prettylights-syntax-storage-modifier-import);
+}
+
+.markdown-body .pl-ent {
+  color: var(--color-prettylights-syntax-entity-tag);
+}
+
+.markdown-body .pl-k {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.markdown-body .pl-s,
+.markdown-body .pl-pds,
+.markdown-body .pl-s .pl-pse .pl-s1,
+.markdown-body .pl-sr,
+.markdown-body .pl-sr .pl-cce,
+.markdown-body .pl-sr .pl-sre,
+.markdown-body .pl-sr .pl-sra {
+  color: var(--color-prettylights-syntax-string);
+}
+
+.markdown-body .pl-v,
+.markdown-body .pl-smw {
+  color: var(--color-prettylights-syntax-variable);
+}
+
+.markdown-body .pl-bu {
+  color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
+}
+
+.markdown-body .pl-ii {
+  color: var(--color-prettylights-syntax-invalid-illegal-text);
+  background-color: var(--color-prettylights-syntax-invalid-illegal-bg);
+}
+
+.markdown-body .pl-c2 {
+  color: var(--color-prettylights-syntax-carriage-return-text);
+  background-color: var(--color-prettylights-syntax-carriage-return-bg);
+}
+
+.markdown-body .pl-sr .pl-cce {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-string-regexp);
+}
+
+.markdown-body .pl-ml {
+  color: var(--color-prettylights-syntax-markup-list);
+}
+
+.markdown-body .pl-mh,
+.markdown-body .pl-mh .pl-en,
+.markdown-body .pl-ms {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-markup-heading);
+}
+
+.markdown-body .pl-mi {
+  font-style: italic;
+  color: var(--color-prettylights-syntax-markup-italic);
+}
+
+.markdown-body .pl-mb {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-markup-bold);
+}
+
+.markdown-body .pl-md {
+  color: var(--color-prettylights-syntax-markup-deleted-text);
+  background-color: var(--color-prettylights-syntax-markup-deleted-bg);
+}
+
+.markdown-body .pl-mi1 {
+  color: var(--color-prettylights-syntax-markup-inserted-text);
+  background-color: var(--color-prettylights-syntax-markup-inserted-bg);
+}
+
+.markdown-body .pl-mc {
+  color: var(--color-prettylights-syntax-markup-changed-text);
+  background-color: var(--color-prettylights-syntax-markup-changed-bg);
+}
+
+.markdown-body .pl-mi2 {
+  color: var(--color-prettylights-syntax-markup-ignored-text);
+  background-color: var(--color-prettylights-syntax-markup-ignored-bg);
+}
+
+.markdown-body .pl-mdr {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-meta-diff-range);
+}
+
+.markdown-body .pl-ba {
+  color: var(--color-prettylights-syntax-brackethighlighter-angle);
+}
+
+.markdown-body .pl-sg {
+  color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+}
+
+.markdown-body .pl-corl {
+  text-decoration: underline;
+  color: var(--color-prettylights-syntax-constant-other-reference-link);
+}
+
+.markdown-body [data-catalyst] {
+  display: block;
+}
+
+.markdown-body g-emoji {
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1em;
+  font-style: normal !important;
+  font-weight: 400;
+  line-height: 1;
+  vertical-align: -0.075em;
+}
+
+.markdown-body g-emoji img {
+  width: 1em;
+  height: 1em;
+}
+
+.markdown-body::before {
+  display: table;
+  content: "";
+}
+
+.markdown-body::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdown-body a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.markdown-body .absent {
+  color: var(--color-danger-fg);
+}
+
+.markdown-body .anchor {
+  float: left;
+  padding-right: 4px;
+  margin-left: -20px;
+  line-height: 1;
+}
+
+.markdown-body .anchor:focus {
+  outline: none;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre,
+.markdown-body details {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown-body blockquote>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body sup>a::before {
+  content: "[";
+}
+
+.markdown-body sup>a::after {
+  content: "]";
+}
+
+.markdown-body h1 .octicon-link,
+.markdown-body h2 .octicon-link,
+.markdown-body h3 .octicon-link,
+.markdown-body h4 .octicon-link,
+.markdown-body h5 .octicon-link,
+.markdown-body h6 .octicon-link {
+  color: var(--color-fg-default);
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.markdown-body h1:hover .anchor,
+.markdown-body h2:hover .anchor,
+.markdown-body h3:hover .anchor,
+.markdown-body h4:hover .anchor,
+.markdown-body h5:hover .anchor,
+.markdown-body h6:hover .anchor {
+  text-decoration: none;
+}
+
+.markdown-body h1:hover .anchor .octicon-link,
+.markdown-body h2:hover .anchor .octicon-link,
+.markdown-body h3:hover .anchor .octicon-link,
+.markdown-body h4:hover .anchor .octicon-link,
+.markdown-body h5:hover .anchor .octicon-link,
+.markdown-body h6:hover .anchor .octicon-link {
+  visibility: visible;
+}
+
+.markdown-body h1 tt,
+.markdown-body h1 code,
+.markdown-body h2 tt,
+.markdown-body h2 code,
+.markdown-body h3 tt,
+.markdown-body h3 code,
+.markdown-body h4 tt,
+.markdown-body h4 code,
+.markdown-body h5 tt,
+.markdown-body h5 code,
+.markdown-body h6 tt,
+.markdown-body h6 code {
+  padding: 0 .2em;
+  font-size: inherit;
+}
+
+.markdown-body ul.no-list,
+.markdown-body ol.no-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.markdown-body ol[type="1"] {
+  list-style-type: decimal;
+}
+
+.markdown-body ol[type=a] {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body ol[type=i] {
+  list-style-type: lower-roman;
+}
+
+.markdown-body div>ol:not([type]) {
+  list-style-type: decimal;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body li>p {
+  margin-top: 16px;
+}
+
+.markdown-body li+li {
+  margin-top: .25em;
+}
+
+.markdown-body dl {
+  padding: 0;
+}
+
+.markdown-body dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.markdown-body dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.markdown-body table th {
+  font-weight: 600;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid var(--color-border-default);
+}
+
+.markdown-body table tr {
+  background-color: var(--color-canvas-default);
+  border-top: 1px solid var(--color-border-muted);
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: var(--color-canvas-subtle);
+}
+
+.markdown-body table img {
+  background-color: transparent;
+}
+
+.markdown-body img[align=right] {
+  padding-left: 20px;
+}
+
+.markdown-body img[align=left] {
+  padding-right: 20px;
+}
+
+.markdown-body .emoji {
+  max-width: none;
+  vertical-align: text-top;
+  background-color: transparent;
+}
+
+.markdown-body span.frame {
+  display: block;
+  overflow: hidden;
+}
+
+.markdown-body span.frame>span {
+  display: block;
+  float: left;
+  width: auto;
+  padding: 7px;
+  margin: 13px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border-default);
+}
+
+.markdown-body span.frame span img {
+  display: block;
+  float: left;
+}
+
+.markdown-body span.frame span span {
+  display: block;
+  padding: 5px 0 0;
+  clear: both;
+  color: var(--color-fg-default);
+}
+
+.markdown-body span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.markdown-body span.align-center>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.markdown-body span.align-center span img {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.markdown-body span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.markdown-body span.align-right>span {
+  display: block;
+  margin: 13px 0 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.markdown-body span.align-right span img {
+  margin: 0;
+  text-align: right;
+}
+
+.markdown-body span.float-left {
+  display: block;
+  float: left;
+  margin-right: 13px;
+  overflow: hidden;
+}
+
+.markdown-body span.float-left span {
+  margin: 13px 0 0;
+}
+
+.markdown-body span.float-right {
+  display: block;
+  float: right;
+  margin-left: 13px;
+  overflow: hidden;
+}
+
+.markdown-body span.float-right>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.markdown-body code,
+.markdown-body tt {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: var(--color-neutral-muted);
+  border-radius: 6px;
+}
+
+.markdown-body code br,
+.markdown-body tt br {
+  display: none;
+}
+
+.markdown-body del code {
+  text-decoration: inherit;
+}
+
+.markdown-body pre code {
+  font-size: 100%;
+}
+
+.markdown-body pre>code {
+  padding: 0;
+  margin: 0;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.markdown-body .highlight {
+  margin-bottom: 16px;
+}
+
+.markdown-body .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.markdown-body .highlight pre,
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: var(--color-canvas-subtle);
+  border-radius: 6px;
+}
+
+.markdown-body pre code,
+.markdown-body pre tt {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.markdown-body .csv-data td,
+.markdown-body .csv-data th {
+  padding: 5px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.markdown-body .csv-data .blob-num {
+  padding: 10px 8px 9px;
+  text-align: right;
+  background: var(--color-canvas-default);
+  border: 0;
+}
+
+.markdown-body .csv-data tr {
+  border-top: 0;
+}
+
+.markdown-body .csv-data th {
+  font-weight: 600;
+  background: var(--color-canvas-subtle);
+  border-top: 0;
+}
+
+.markdown-body .footnotes {
+  font-size: 12px;
+  color: var(--color-fg-muted);
+  border-top: 1px solid var(--color-border-default);
+}
+
+.markdown-body .footnotes ol {
+  padding-left: 16px;
+}
+
+.markdown-body .footnotes li {
+  position: relative;
+}
+
+.markdown-body .footnotes li:target::before {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -24px;
+  pointer-events: none;
+  content: "";
+  border: 2px solid var(--color-accent-emphasis);
+  border-radius: 6px;
+}
+
+.markdown-body .footnotes li:target {
+  color: var(--color-fg-default);
+}
+
+.markdown-body .footnotes .data-footnote-backref g-emoji {
+  font-family: monospace;
+}
+
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-body .task-list-item label {
+  font-weight: 400;
+}
+
+.markdown-body .task-list-item.enabled label {
+  cursor: pointer;
+}
+
+.markdown-body .task-list-item+.task-list-item {
+  margin-top: 3px;
+}
+
+.markdown-body .task-list-item .handle {
+  display: none;
+}
+
+.markdown-body .task-list-item-checkbox {
+  margin: 0 .2em .25em -1.6em;
+  vertical-align: middle;
+}
+
+.markdown-body .contains-task-list:dir(rtl) .task-list-item-checkbox {
+  margin: 0 -1.6em .25em .2em;
+}
+
+.markdown-body ::-webkit-calendar-picker-indicator {
+  filter: invert(50%);
+}
+		</style>
+        <style>
+                .markdown-body {
+                    box-sizing: border-box;
+                    min-width: 200px;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
+                }
+
+                @media (max-width: 767px) {
+                    .markdown-body {
+                        padding: 15px;
+                    }
+                }
+		</style>
+<style>
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 300px;
+  position: fixed;
+  height: 100vh;
+  overflow: auto;
+  border-right: 1px dashed #919191;
+}
+.sidebar ul {
+    list-style-type: none;
+}
+.sidebarmob {
+    display:none;
+}
+div.content {
+  margin-left: 300px;
+}
+.sidebar a {
+  display: block;
+  color: black;
+  text-decoration: none;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+  padding: 10px 10px 10px 0px;
+}
+.sidebar a:hover:not(.active) {
+  color: #0969da;
+}
+@media screen and (max-width: 700px) {
+  .sidebar {
+      display:none;
+  }
+  .sidebarmob {
+    display:block;
+  }
+  div.content {margin-left: 0;}
+}
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+    body{background-color: #0d1117}
+    .sidebar a {color: #c9d1d9}
+    .sidebar a:hover:not(.active) {
+      color: #58a6ff;
+    }
+}
+</style>
+<body style="margin:0">
+    
+    <div class="sidebar">
+        <ul>
+<li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
+<li><a href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
+<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
+<li><a href="#programmable" rel="nofollow">Programmable</a>
+
+<ul>
+<li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
+<li><a href="#in-guiconfig" rel="nofollow">in_guiconfig</a></li>
+<li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow">如何写 Tengo 脚本</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">如何调试脚本</a></li>
+</ul></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow">为什么以及如何关闭系统和浏览器安全 DNS</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a>
+
+<ul>
+<li><a href="#ios" rel="nofollow">iOS</a></li>
+<li><a href="#android" rel="nofollow">Android</a></li>
+<li><a href="#macos" rel="nofollow">macOS</a></li>
+<li><a href="#windows" rel="nofollow">Windows</a></li>
+</ul></li>
+<li><a href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow">Apple 推送问题</a></li>
+</ul>
+
+    </div>
+    <div class="content">
+        <div class="markdown-body">
+            <h1><a name="brook-图形客户端文档" class="anchor" href="#brook-%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Brook 图形客户端文档</h1>
+
+            <div class="sidebarmob">
+            <ul>
+<li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
+<li><a href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
+<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
+<li><a href="#programmable" rel="nofollow">Programmable</a>
+
+<ul>
+<li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
+<li><a href="#in-guiconfig" rel="nofollow">in_guiconfig</a></li>
+<li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow">如何写 Tengo 脚本</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">如何调试脚本</a></li>
+</ul></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow">为什么以及如何关闭系统和浏览器安全 DNS</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a>
+
+<ul>
+<li><a href="#ios" rel="nofollow">iOS</a></li>
+<li><a href="#android" rel="nofollow">Android</a></li>
+<li><a href="#macos" rel="nofollow">macOS</a></li>
+<li><a href="#windows" rel="nofollow">Windows</a></li>
+</ul></li>
+<li><a href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow">Apple 推送问题</a></li>
+</ul>
+
+            </div>
+            
+
+
+<h2><a name="本文适用的软件" class="anchor" href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+本文适用的软件</h2>
+
+<ul>
+<li><a href="https://github.com/txthinking/brook" rel="nofollow">Brook</a></li>
+<li><a href="https://www.txthinking.com/brook.html" rel="nofollow">Brook Plus</a></li>
+<li><a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew</a></li>
+<li><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></li>
+</ul>
+<h2><a name="intel-mac-gui-proxy-模式-windows-gui-proxy-模式-linux-gui-proxy-模式" class="anchor" href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</h2>
+
+<p>这个模式比较简单，会创建:</p>
+
+<ul>
+<li>Socks5 代理: <code>socks5://[::1]:1080</code> 或 <code>socks5://127.0.0.1:1080</code></li>
+<li>HTTP 代理: <code>http://[::1]:8010</code> 或 <code>http://127.0.0.1:8010</code></li>
+<li>PAC: <code>http://127.0.0.1:1093/proxy.pac</code> 或 <code>http://[::1]:1093/proxy.pac</code> 基于 Bypass Domain 列表</li>
+<li>Intel Mac GUI, Windows GUI 同时会配置 PAC 到系统代理。Linux GUI 可以配合 <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
+<li>什么是 socks5 和 http proxy? <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy.article" rel="nofollow">文章</a> 和 <a href="https://www.youtube.com/watch?v=Tb0_8odTxEI" rel="nofollow">视频</a></li>
+</ul>
+<h2><a name="ios-m1-mac-gui-android-gui-intel-mac-gui-tun-模式-windows-gui-tun-模式-linux-gui-tun-模式" class="anchor" href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</h2>
+
+<pre><code>所谓的互联网连接，是 IP 连接 IP，不是连接域名。所以域名会被先解析成IP再决定怎么去连接。
+</code></pre>
+<h2><a name="配置介绍" class="anchor" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+配置介绍</h2>
+
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>支持系统</th>
+<th>条件</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>导入服务器</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>brook link 列表</td>
+</tr>
+
+<tr>
+<td>System DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>系统 DNS. <strong>不要 bypass 此 IP</strong></td>
+</tr>
+
+<tr>
+<td>Fake DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>关闭系统/浏览器等自带的安全 DNS, 具体看下文</td>
+<td>解析域名为 Fake IP，发起连接时会再转换为域名，然后把域名地址送到服务端进行代理，同时由服务端来负责域名解析</td>
+</tr>
+
+<tr>
+<td>Block</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Block 开关</td>
+</tr>
+
+<tr>
+<td>Block Domain</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: 开启</td>
+<td>域名列表，匹配的域名会被阻断解析. <strong>域名是后缀匹配模式</strong></td>
+</tr>
+
+<tr>
+<td>Bypass</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Bypass 开关</td>
+</tr>
+
+<tr>
+<td>Bypass IP</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>CIDR 列表，匹配到的 IP 会被 bypass</td>
+</tr>
+
+<tr>
+<td>Bypass Geo IP</td>
+<td>iOS,Android</td>
+<td>/</td>
+<td>匹配到的 IP 会被 bypass. 提示: 全球 IP 变动频繁, 所以 Geo 库有时效性</td>
+</tr>
+
+<tr>
+<td>Bypass Apps</td>
+<td>Android</td>
+<td>/</td>
+<td>这些 App 会被 bypass</td>
+</tr>
+
+<tr>
+<td>Bypass DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>支持普通 DNS, 比如 <code>223.5.5.5:53</code>, 支持 DoH, 但需要通过参数 address 指定 DoH 的地址, 比如 <code>https://dns.alidns.com/dns-query?address=223.5.5.5%3A443</code> 用来解析 Bypass Domain. <strong>此 DNS 的 IP 会自动 Bypass</strong></td>
+</tr>
+
+<tr>
+<td>Bypass Domain</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: 开启</td>
+<td>域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, <strong>最终连接是否会被 Bypass，还取决于 Bypass IP</strong>. <strong>域名是后缀匹配模式</strong></td>
+</tr>
+
+<tr>
+<td>Hosts</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Hosts 开关</td>
+</tr>
+
+<tr>
+<td>Hosts List</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: 开启</td>
+<td>给域名指定 IP, v4, v6，如果值为空效果同 Block</td>
+</tr>
+
+<tr>
+<td>Programmable</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>可编程开关</td>
+</tr>
+
+<tr>
+<td>Script</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>脚本。可以控制上面所有的功能。以及上面没有的功能，<strong>全流程控制一切，具体看下文</strong>。</td>
+</tr>
+
+<tr>
+<td>Log</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>日志开关</td>
+</tr>
+
+<tr>
+<td>Log View</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>日志列表</td>
+</tr>
+
+<tr>
+<td>Log View Plus</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>日志列表，更易读，过滤条件等</td>
+</tr>
+
+<tr>
+<td>MITM Log View</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>MITM 日志列表，比如 https 的请求响应，十六进制，JSON，图片等</td>
+</tr>
+
+<tr>
+<td>TUN</td>
+<td>Mac,Windows,Linux</td>
+<td>/</td>
+<td>选择 proxy 模式 还是 tun 模式</td>
+</tr>
+
+<tr>
+<td>Capture Me</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>测试你的抓包或代理软件工作在系统代理还是 TUN</td>
+</tr>
+
+<tr>
+<td>深色主题</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>暗黑模式</td>
+</tr>
+
+<tr>
+<td>快捷方式</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>在首页快捷控制打开菜单里的功能</td>
+</tr>
+
+<tr>
+<td>系统托盘</td>
+<td>Windows</td>
+<td>/</td>
+<td>以系统托盘形式打开，然后从系统托盘处打开控制面板</td>
+</tr>
+</tbody>
+</table>
+<h2><a name="programmable" class="anchor" href="#programmable" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Programmable</h2>
+
+<pre><code>Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需要将处理结果赋值到全局变量 out 即可
+</code></pre>
+
+<p>完全掌控你自己的网络</p>
+
+<ul>
+<li>比如通过阻断 AAAA 来关闭 IPv6</li>
+<li>阻断系统浏览器内置安全 DNS</li>
+<li>重写 DST</li>
+<li>分流</li>
+<li>直接 Bypass 域名而无视是否解析出来的 IP 是否在 Bypass 里</li>
+<li>MITM 解密 HTTPS</li>
+<li>抓包</li>
+<li>修改包</li>
+<li>禁用 HTTP3</li>
+<li>等等等...</li>
+</ul>
+<h3><a name="传入变量介绍" class="anchor" href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+传入变量介绍</h3>
+
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>类型</th>
+<th>条件</th>
+<th>时机</th>
+<th>描述</th>
+<th>out 类型</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>in_guiconfig</td>
+<td>map</td>
+<td>/</td>
+<td>开启之前</td>
+<td>用以覆盖 GUI 的配置</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_dnsquery</td>
+<td>map</td>
+<td>FakeDNS: 开启</td>
+<td>当 DNS 查询发生时</td>
+<td>脚本可以决定如何处理此请求</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_address</td>
+<td>map</td>
+<td>/</td>
+<td>当要连接某地址时</td>
+<td>脚本可以决定如何进行连接</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_httprequest</td>
+<td>map</td>
+<td>/</td>
+<td>当有 HTTP(S)请求传入时</td>
+<td>脚本可以决定如何处理此请求</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_httprequest,in_httpresponse</td>
+<td>map</td>
+<td>/</td>
+<td>当有 HTTP(S)响应传入时</td>
+<td>脚本可以决定如何处理此响应</td>
+<td>map</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-guiconfig" class="anchor" href="#in-guiconfig" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_guiconfig</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>_</td>
+<td>bool</td>
+<td>向未来兼容，可忽略此 key</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 如果是 <code>error</code> 类型会被记录在日志。如果不是 <code>map</code> 类型则会被忽略, 如果是<code>map</code>那么明确指定每一个配置项</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>systemdns4</td>
+<td>string</td>
+<td>System DNS v4</td>
+</tr>
+
+<tr>
+<td>systemdns6</td>
+<td>string</td>
+<td>System DNS v6</td>
+</tr>
+
+<tr>
+<td>fakedns</td>
+<td>bool</td>
+<td>Fake DNS 开关</td>
+</tr>
+
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>GUI Block 开关</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td>GUI Bypass 开关</td>
+</tr>
+
+<tr>
+<td>bypassdns4</td>
+<td>string</td>
+<td>Bypass DNS v4</td>
+</tr>
+
+<tr>
+<td>bypassdns6</td>
+<td>string</td>
+<td>Bypass DNS v6</td>
+</tr>
+
+<tr>
+<td>hosts</td>
+<td>bool</td>
+<td>GUI Hosts 开关</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-dnsquery" class="anchor" href="#in-dnsquery" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_dnsquery</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>domain</td>
+<td>string</td>
+<td>域名</td>
+<td>google.com</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>查询类型</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 如果是 <code>error</code> 类型会被记录在日志。如果不是 <code>map</code> 类型则会被忽略</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>是否 Block, 默认 <code>false</code>. 与 GUI Block Domain 是或的关系</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>ip</td>
+<td>string</td>
+<td>直接指定 IP，仅当 <code>type</code> 为 <code>A</code>/<code>AAAA</code>有效</td>
+<td>1.2.3.4</td>
+</tr>
+
+<tr>
+<td>forcefakedns</td>
+<td>bool</td>
+<td>忽略 GUI Bypass Domain，使用 Fake DNS 来处理，仅当 <code>type</code> 为 <code>A</code>/<code>AAAA</code>有效，默认 <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>system</td>
+<td>bool</td>
+<td>使用 System DNS 来解析，默认 <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td>是否 Bypass, 默认 <code>false</code>, 如果为 <code>true</code> 则使用 Bypass DNS 来解析. 与 GUI Bypass Domain 是或的关系</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-address" class="anchor" href="#in-address" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_address</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>network</td>
+<td>string</td>
+<td>即将发起连接网络，取值 <code>tcp</code>/<code>udp</code></td>
+<td>tcp</td>
+</tr>
+
+<tr>
+<td>ipaddress</td>
+<td>string</td>
+<td>IP 类型的地址，与 domainaddress 只会存在一个。注意这两个之间没有任何关系</td>
+<td>1.2.3.4:443</td>
+</tr>
+
+<tr>
+<td>domainaddress</td>
+<td>string</td>
+<td>域名类型的地址，因为 FakeDNS 我们这里才能拿到域名地址</td>
+<td>google.com:443</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 如果是 <code>error</code> 类型会被记录在日志。如果不是 <code>map</code> 类型则会被忽略</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>是否 Block, 默认 <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>ipaddress</td>
+<td>string</td>
+<td>IP 类型地址，重写目的地</td>
+<td>1.2.3.4:443</td>
+</tr>
+
+<tr>
+<td>ipaddressfrombypassdns</td>
+<td>string</td>
+<td>使用 Bypass DNS 获取<code>A</code>或<code>AAAA</code> IP 并重写目的地, 仅当 <code>domainaddress</code> 存在时有效，取值 <code>A</code>/<code>AAAA</code></td>
+<td>A</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td><strong>仅在 iOS, Android 有效。</strong>是否 Bypass, 默认 <code>false</code>. 如果为 <code>true</code> 并且是 <code>domainaddress</code>, 那么必须指定 <code>ipaddress</code> 或 <code>ipaddressfrombypassdns</code>. 与 GUI Bypass IP 是或的关系</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitm</td>
+<td>bool</td>
+<td>是否进行 MITM, 默认 <code>false</code>. 仅当 <code>network</code> 为 <code>tcp</code> 时有效. 需要安装 CA，看下文介绍</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmprotocol</td>
+<td>string</td>
+<td>需要明确指定 MITM 协议, 取值 <code>http</code>/<code>https</code></td>
+<td>https</td>
+</tr>
+
+<tr>
+<td>mitmcertdomain</td>
+<td>string</td>
+<td>MITM 证书域名，默认从<code>domainaddress</code>里取。如果是 <code>ipaddress</code> 且 <code>mitm</code> 为 <code>true</code> 且 <code>mitmprotocol</code> 为 <code>https</code> 那么必须明确指定</td>
+<td>example.com</td>
+</tr>
+
+<tr>
+<td>mitmwithbody</td>
+<td>bool</td>
+<td>是否操作 http body，默认 <code>false</code>. <strong>会将请求和响应的 body 读取到内存里和脚本交互。iOS 50M 总内存限制可能会杀进程</strong></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmautohandlecompress</td>
+<td>bool</td>
+<td>和脚本交互时是否自动解压缩 http body, 默认 <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmclienttimeout</td>
+<td>int</td>
+<td>Timeout for MITM talk to server, second, default 0</td>
+<td>0</td>
+</tr>
+
+<tr>
+<td>mitmserverreadtimeout</td>
+<td>int</td>
+<td>Timeout for MITM read from client, second, default 0</td>
+<td>0</td>
+</tr>
+
+<tr>
+<td>mitmserverwritetimeout</td>
+<td>int</td>
+<td>Timeout for MITM write to client, second, default 0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-httprequest" class="anchor" href="#in-httprequest" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_httprequest</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>URL</td>
+<td>string</td>
+<td>URL</td>
+<td><code>https://example.com/hello</code></td>
+</tr>
+
+<tr>
+<td>Method</td>
+<td>string</td>
+<td>HTTP method</td>
+<td>GET</td>
+</tr>
+
+<tr>
+<td>Body</td>
+<td>bytes</td>
+<td>HTTP request body</td>
+<td>/</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>string</td>
+<td>其他字段均为 HTTP header</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 必须设置为一个 request 或 response</p>
+<h3><a name="in-httpresponse" class="anchor" href="#in-httpresponse" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_httpresponse</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>StatusCode</td>
+<td>int</td>
+<td>HTTP status code</td>
+<td>200</td>
+</tr>
+
+<tr>
+<td>Body</td>
+<td>bytes</td>
+<td>HTTP response body</td>
+<td>/</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>string</td>
+<td>其他字段均为 HTTP header</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 必须设置为一个 response</p>
+<h3><a name="如何写-tengo-脚本" class="anchor" href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+如何写 Tengo 脚本</h3>
+
+<p><a href="https://github.com/d5/tengo/blob/master/docs/tutorial.md" rel="nofollow">Tengo Language Syntax</a></p>
+
+<p>Library</p>
+
+<ul>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-text.md" rel="nofollow">text</a>: regular expressions, string conversion, and manipulation</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-math.md" rel="nofollow">math</a>: mathematical constants and functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-times.md" rel="nofollow">times</a>: time-related functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-rand.md" rel="nofollow">rand</a>: random functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-fmt.md" rel="nofollow">fmt</a>: formatting functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-json.md" rel="nofollow">json</a>: JSON functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-enum.md" rel="nofollow">enum</a>: Enumeration functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-hex.md" rel="nofollow">hex</a>: hex encoding and decoding functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-base64.md" rel="nofollow">base64</a>: base64 encoding and decoding functions</li>
+
+<li><p><code>brook</code>: brook module</p>
+
+<pre><code>Constants
+
+* os: string, linux/darwin/windows/ios/android. If ios app run on mac, it is ios
+* iosapponmac: bool, ios app run on mac
+
+Functions
+
+* splithostport(address string) =&gt; map/error: splits a network address of the form &#34;host:port&#34; to { &#34;host&#34;: &#34;xxx&#34;, &#34;port&#34;: &#34;xxx&#34; }
+* country(ip string) =&gt; string/error: get country code from ip
+* cidrcontainsip(cidr string, ip string) =&gt; bool/error: reports whether the network includes ip
+* parseurl(url string) =&gt; map/error: parses a raw url into a map, keys: scheme/host/path/rawpath/rawquery
+* parsequery(query string) =&gt; map/error: parses a raw query into a kv map
+* map2query(kv map) =&gt; string/error: convert map{string:string} into a query string
+* bytes2ints(b bytes) =&gt; array/error: convert bytes into [int]
+* ints2bytes(ints array) =&gt; bytes/error: convert [int] into bytes
+* bytescompare(a bytes, b bytes) =&gt; int/error: returns an integer comparing two bytes lexicographically. The result will be 0 if a == b, -1 if a &lt; b, and +1 if a &gt; b
+* bytescontains(b bytes, sub bytes) =&gt; bool/error: reports whether sub is within b
+* byteshasprefix(s bytes, prefix bytes) =&gt; bool/error: tests whether the bytes s begins with prefix
+* byteshassuffix(s bytes, suffix bytes) =&gt; bool/error: tests whether the bytes s ends with suffix
+* bytesindex(s bytes, sep bytes) =&gt; int/error: returns the index of the first instance of sep in s, or -1 if sep is not present in s
+* byteslastindex(s bytes, sep bytes) =&gt; int/error: returns the index of the last instance of sep in s, or -1 if sep is not present in s
+* bytesreplace(s bytes, old bytes, new bytes, n int) =&gt; bytes/error: returns a copy of the s with the first n non-overlapping instances of old replaced by new. If n &lt; 0, there is no limit on the number of replacements
+* pathescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL path segment, replacing special characters (including /) with %XX sequences as needed
+* pathunescape(s string) =&gt; string/error: does the inverse transformation of pathescape
+* queryescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL query
+* queryunescape(s string) =&gt; string/error: does the inverse transformation of queryescape
+* hexdecode(s string) =&gt; bytes/error: returns the bytes represented by the hexadecimal string s
+* hexencode(s string) =&gt; string/error: returns the hexadecimal encoding of src
+</code></pre></li>
+</ul>
+
+<p>示例</p>
+
+<p><a href="https://github.com/txthinking/bypass/blob/master/example_script.tengo" rel="nofollow">https://github.com/txthinking/bypass/blob/master/example_script.tengo</a></p>
+<h3><a name="如何调试脚本" class="anchor" href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+如何调试脚本</h3>
+
+<ul>
+<li>建议使用 <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> 在电脑上打印调试</li>
+<li>可以使用 <a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">mitmproxy helper</a> 和 <a href="https://www.txthinking.com/wireshark.html" rel="nofollow">Wireshark Helper</a> 抓包来确定要修改什么</li>
+</ul>
+<h2><a name="为什么以及如何关闭系统和浏览器安全-dns" class="anchor" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+为什么以及如何关闭系统和浏览器安全 DNS</h2>
+
+<p>因为安全 DNS 开启，Fake DNS 就无法工作. 所以我们要关闭它:</p>
+
+<ul>
+<li>Android: Settings -&gt; Network &amp; internet -&gt; Private DNS -&gt; Off</li>
+<li>Chrome on Mobile: Settings -&gt; Privacy and security -&gt; Use secure DNS -&gt; Off</li>
+<li>Chrome on Desktop: Settings -&gt; Privacy and security -&gt; Security -&gt; Use secure DNS -&gt; Off</li>
+<li>Windows: Windows Settings -&gt; Network &amp; Internet -&gt; Your Network -&gt; DNS settings -&gt; Edit -&gt; Preferred DNS -&gt; Unencrypted only -&gt; 8.8.8.8</li>
+</ul>
+
+<p>其他系统和软件，请自行查找是否存在以及如何关闭</p>
+<h2><a name="安装-ca" class="anchor" href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+安装 CA</h2>
+
+<p><a href="https://txthinking.github.io/ca/ca.pem" rel="nofollow">https://txthinking.github.io/ca/ca.pem</a></p>
+<h3><a name="ios" class="anchor" href="#ios" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS</h3>
+
+<p><a href="https://www.youtube.com/watch?v=HSGPC2vpDGk" rel="nofollow">https://www.youtube.com/watch?v=HSGPC2vpDGk</a></p>
+<h3><a name="android" class="anchor" href="#android" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Android</h3>
+
+<p>Android 分系统 CA 和用户 CA，必须要 ROOT 后安装到系统 CA 里</p>
+<h3><a name="macos" class="anchor" href="#macos" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+macOS</h3>
+
+<pre><code>nami install mad ca.txthinking
+sudo mad install --ca ~/.nami/bin/ca.pem
+</code></pre>
+<h3><a name="windows" class="anchor" href="#windows" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Windows</h3>
+
+<p>打开 GitBash</p>
+
+<pre><code>nami install mad ca.txthinking
+</code></pre>
+
+<p>然后用管理员打开 GitBash</p>
+
+<pre><code>mad install --ca ~/.nami/bin/ca.pem
+</code></pre>
+
+<p>注意 GitBash 或 Firefox 等软件可能不读取系统 CA，安装后可以用系统 Edge 浏览器测试</p>
+<h2><a name="apple-推送问题" class="anchor" href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Apple 推送问题</h2>
+
+<p>要接收推送，Apple Server 只允许 Ethernet, cellular data, Wi-Fi 连接. 所以你需要 Bypass 掉相关域名和 IP. <a href="https://support.apple.com/en-us/HT210060" rel="nofollow">参考链接</a></p>
+
+        </div>
+    </div>
+    
+</body>
+</html>

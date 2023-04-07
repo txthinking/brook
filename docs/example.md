@@ -1,4 +1,7 @@
-## Examples
+# Examples
+
+<!--SIDEBAR-->
+<!--G-R3M673HK5V-->
 
 List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself
 
