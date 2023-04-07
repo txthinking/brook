@@ -972,37 +972,37 @@ To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connect
 
 ## overview
 
-![overview](svg/overview.svg)
+![overview](https://txthinking.github.io/brook/svg/overview.svg)
 
 ## withoutBrookProtocol
 
-![wbp](svg/wbp.svg)
+![wbp](https://txthinking.github.io/brook/svg/wbp.svg)
 
 ## relayoverbrook
 
-![relayoverbrook](svg/relayoverbrook.svg)
+![relayoverbrook](https://txthinking.github.io/brook/svg/relayoverbrook.svg)
 
 ## dnsserveroverbrook
 
-![dnsserveroverbrook](svg/dnsserveroverbrook.svg)
+![dnsserveroverbrook](https://txthinking.github.io/brook/svg/dnsserveroverbrook.svg)
 
 ## relay
 
-![relay](svg/relay.svg)
+![relay](https://txthinking.github.io/brook/svg/relay.svg)
 
 ## dnsserver
 
-![dnsserver](svg/dnsserver.svg)
+![dnsserver](https://txthinking.github.io/brook/svg/dnsserver.svg)
 
 ## tproxy
 
-![tproxy](svg/tproxy.svg)
+![tproxy](https://txthinking.github.io/brook/svg/tproxy.svg)
 
 ## gui
 
-![gui](svg/gui.svg)
+![gui](https://txthinking.github.io/brook/svg/gui.svg)
 
 ## script
 
-![script](svg/script.svg)
+![script](https://txthinking.github.io/brook/svg/script.svg)
 
