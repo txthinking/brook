@@ -15,8 +15,15 @@
 package brook
 
 import (
+	"log"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
+	c, err := NewDNSClient("https://cloudflare-dns.com/dns-query?address=1.1.1.1:443")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println(c.A("bot.txthinking.com"))
 }

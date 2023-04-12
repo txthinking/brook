@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"sync"
 	"time"
@@ -87,6 +88,15 @@ func (p *Logger) TouchBrook() {
 	brook.DNSGate = func(addr *net.UDPAddr, m *dns.Msg, l1 *net.UDPConn) (bool, error) {
 		brook.Log(brook.Error{"from": addr.String(), "dns": dns.Type(m.Question[0].Qtype).String(), "domain": m.Question[0].Name[0 : len(m.Question[0].Name)-1]})
 		return f2(addr, m, l1)
+	}
+	f4 := brook.DOHGate
+	brook.DOHGate = func(m *dns.Msg, w http.ResponseWriter, r *http.Request) (done bool, err error) {
+		s := r.RemoteAddr
+		if r.Header.Get("X-Forwarded-For") != "" {
+			s = r.Header.Get("X-Forwarded-For")
+		}
+		brook.Log(brook.Error{"from": s, "dns": dns.Type(m.Question[0].Qtype).String(), "domain": m.Question[0].Name[0 : len(m.Question[0].Name)-1]})
+		return f4(m, w, r)
 	}
 	f3 := brook.DHCPServerGate
 	brook.DHCPServerGate = func(inmt string, in dhcp4.Packet, outmt string, ip net.IP, err error) {
