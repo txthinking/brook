@@ -27,8 +27,12 @@ import (
 	"net"
 	"time"
 
+	utls "github.com/refraction-networking/utls"
+
 	x1 "github.com/txthinking/x"
 )
+
+var ClientHelloID utls.ClientHelloID
 
 func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout int) (net.Conn, error) {
 	var c net.Conn
@@ -49,23 +53,49 @@ func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout in
 		}
 	}
 	if tc != nil {
-		c1 := tls.Client(c, tc)
-		if !tc.InsecureSkipVerify {
-			if err := c1.Handshake(); err != nil {
-				c1.Close()
-				return nil, err
+		if ClientHelloID.Client == "" {
+			c1 := tls.Client(c, tc)
+			if !tc.InsecureSkipVerify {
+				if err := c1.Handshake(); err != nil {
+					c1.Close()
+					return nil, err
+				}
+				s := host
+				h, _, err := net.SplitHostPort(host)
+				if err == nil {
+					s = h
+				}
+				if err := c1.VerifyHostname(s); err != nil {
+					c1.Close()
+					return nil, err
+				}
 			}
-			s := host
-			h, _, err := net.SplitHostPort(host)
-			if err == nil {
-				s = h
-			}
-			if err := c1.VerifyHostname(s); err != nil {
-				c1.Close()
-				return nil, err
-			}
+			c = c1
 		}
-		c = c1
+		if ClientHelloID.Client != "" {
+			c1 := utls.UClient(c, &utls.Config{
+				ServerName:         tc.ServerName,
+				NextProtos:         tc.NextProtos,
+				InsecureSkipVerify: tc.InsecureSkipVerify,
+				RootCAs:            tc.RootCAs,
+			}, ClientHelloID)
+			if !tc.InsecureSkipVerify {
+				if err := c1.Handshake(); err != nil {
+					c1.Close()
+					return nil, err
+				}
+				s := host
+				h, _, err := net.SplitHostPort(host)
+				if err == nil {
+					s = h
+				}
+				if err := c1.VerifyHostname(s); err != nil {
+					c1.Close()
+					return nil, err
+				}
+			}
+			c = c1
+		}
 	}
 	p := x1.BP16.Get().([]byte)
 	if _, err := io.ReadFull(rand.Reader, p); err != nil {

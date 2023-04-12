@@ -37,6 +37,7 @@ import (
 	"net/url"
 
 	"github.com/miekg/dns"
+	utls "github.com/refraction-networking/utls"
 	"github.com/txthinking/brook"
 	"github.com/txthinking/brook/plugins/block"
 	"github.com/txthinking/brook/plugins/dialwithdns"
@@ -1778,6 +1779,16 @@ func main() {
 				if c.String("link") != "" {
 					link = c.String("link")
 				}
+				_, _, v, err := brook.ParseLink(link)
+				if err != nil {
+					return err
+				}
+				if v.Get("tlsfingerprint") == "chrome" {
+					brook.ClientHelloID = utls.HelloChrome_Auto
+				}
+				if v.Get("tlsfingerprint") == "firefox" {
+					brook.ClientHelloID = utls.HelloFirefox_Auto
+				}
 				s, err := brook.NewTproxy(c.String("listen"), link, c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
@@ -1867,6 +1878,10 @@ func main() {
 				&cli.StringFlag{
 					Name:  "ca",
 					Usage: "When server is brook wssserver or brook quicserver, specify ca for untrusted cert, such as /path/to/ca.pem",
+				},
+				&cli.StringFlag{
+					Name:  "tlsfingerprint",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1970,12 +1985,18 @@ func main() {
 				if h == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				kind, _, _, err := brook.ParseLink(c.String("link"))
+				kind, _, v, err := brook.ParseLink(c.String("link"))
 				if err != nil {
 					return err
 				}
 				if kind == "socks5" {
 					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
+				}
+				if v.Get("tlsfingerprint") == "chrome" {
+					brook.ClientHelloID = utls.HelloChrome_Auto
+				}
+				if v.Get("tlsfingerprint") == "firefox" {
+					brook.ClientHelloID = utls.HelloFirefox_Auto
 				}
 				s, err := brook.NewBrookLink(c.String("link"))
 				if err != nil {
