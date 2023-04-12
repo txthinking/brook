@@ -2360,6 +2360,10 @@ func main() {
 			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
+					Name:  "interface",
+					Usage: "Select interface on multi interface device. Linux only",
+				},
+				&cli.StringFlag{
 					Name:  "serverip",
 					Usage: "DHCP server IP, the IP of the this machine, you shoud set a static IP to this machine before doing this, such as: 192.168.1.10",
 				},
@@ -2397,7 +2401,7 @@ func main() {
 				if c.String("cache") != "" && !filepath.IsAbs(c.String("cache")) {
 					return errors.New("--cache must be with absolute path")
 				}
-				s, err := brook.NewDHCPServer(c.String("serverip"), c.String("start"), c.String("netmask"), c.Int("count"), c.String("gateway"), c.StringSlice("dnsserver"), c.String("cache"))
+				s, err := brook.NewDHCPServer(c.String("interface"), c.String("serverip"), c.String("start"), c.String("netmask"), c.Int("count"), c.String("gateway"), c.StringSlice("dnsserver"), c.String("cache"))
 				if err != nil {
 					return err
 				}

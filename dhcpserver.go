@@ -36,7 +36,7 @@ type DHCPServer struct {
 	Cache    string
 }
 
-func NewDHCPServer(serverip, start, mask string, count int, gateway string, dnsserver []string, cache string) (*DHCPServer, error) {
+func NewDHCPServer(iface, serverip, start, mask string, count int, gateway string, dnsserver []string, cache string) (*DHCPServer, error) {
 	if net.ParseIP(serverip).To4() == nil || net.ParseIP(start).To4() == nil || net.ParseIP(mask).To4() == nil || net.ParseIP(gateway).To4() == nil {
 		return nil, errors.New("Invalid v4 IP")
 	}
@@ -64,7 +64,7 @@ func NewDHCPServer(serverip, start, mask string, count int, gateway string, dnss
 			return nil, err
 		}
 	}
-	l, err := net.ListenPacket("udp4", ":67")
+	l, err := DHCPListen(iface)
 	if err != nil {
 		return nil, err
 	}
