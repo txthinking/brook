@@ -1921,6 +1921,9 @@ func main() {
 				if c.Bool("withoutBrookProtocol") {
 					v.Set("withoutBrookProtocol", "true")
 				}
+				if c.String("tlsfingerprint") != "" {
+					v.Set("tlsfingerprint", c.String("tlsfingerprint"))
+				}
 				if c.String("ca") != "" {
 					b, err := ioutil.ReadFile(c.String("ca"))
 					if err != nil {
