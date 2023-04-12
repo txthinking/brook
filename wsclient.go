@@ -75,7 +75,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, 
 		if err != nil {
 			return nil, err
 		}
-		x.TLSConfig = &tls.Config{ServerName: h}
+		x.TLSConfig = &tls.Config{ServerName: h, NextProtos: []string{"http/1.1"}}
 	}
 	return x, nil
 }

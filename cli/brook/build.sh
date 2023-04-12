@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# ./build.sh dev
+#
 
 if [ $# -ne 1 ]; then
     echo "./build.sh version"
