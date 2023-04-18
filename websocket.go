@@ -32,9 +32,7 @@ import (
 	x1 "github.com/txthinking/x"
 )
 
-var ClientHelloID utls.ClientHelloID
-
-func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout int) (net.Conn, error) {
+func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout int, tlsfingerprint utls.ClientHelloID) (net.Conn, error) {
 	var c net.Conn
 	var err error
 	if src == "" || dst == "" {
@@ -53,7 +51,7 @@ func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout in
 		}
 	}
 	if tc != nil {
-		if ClientHelloID.Client == "" {
+		if tlsfingerprint.Client == "" {
 			c1 := tls.Client(c, tc)
 			if !tc.InsecureSkipVerify {
 				if err := c1.Handshake(); err != nil {
@@ -72,13 +70,13 @@ func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout in
 			}
 			c = c1
 		}
-		if ClientHelloID.Client != "" {
+		if tlsfingerprint.Client != "" {
 			c1 := utls.UClient(c, &utls.Config{
 				ServerName:         tc.ServerName,
 				NextProtos:         tc.NextProtos,
 				InsecureSkipVerify: tc.InsecureSkipVerify,
 				RootCAs:            tc.RootCAs,
-			}, ClientHelloID)
+			}, tlsfingerprint)
 			if !tc.InsecureSkipVerify {
 				if err := c1.Handshake(); err != nil {
 					c1.Close()

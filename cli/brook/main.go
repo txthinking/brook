@@ -42,6 +42,7 @@ import (
 	"github.com/txthinking/brook/plugins/block"
 	"github.com/txthinking/brook/plugins/dialwithdns"
 	"github.com/txthinking/brook/plugins/dialwithip"
+	"github.com/txthinking/brook/plugins/dialwithnic"
 	"github.com/txthinking/brook/plugins/logger"
 	"github.com/txthinking/brook/plugins/pprof"
 	"github.com/txthinking/brook/plugins/prometheus"
@@ -58,7 +59,7 @@ func main() {
 	df := func() {}
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20230404"
+	app.Version = "20230404.5.1"
 	app.Usage = "A cross-platform network tool designed for developers"
 	app.Authors = []*cli.Author{
 		{
@@ -96,6 +97,10 @@ func main() {
 		&cli.StringFlag{
 			Name:  "dialWithIP6",
 			Usage: "When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used",
+		},
+		&cli.StringFlag{
+			Name:  "dialWithNIC",
+			Usage: "When the current machine establishes a network connection to the outside, both TCP and UDP, it is used to specify the NIC used",
 		},
 		&cli.StringFlag{
 			Name:  "dialWithSocks5",
@@ -181,6 +186,10 @@ func main() {
 			if err != nil {
 				return err
 			}
+			p.TouchBrook()
+		}
+		if c.String("dialWithNIC") != "" {
+			p := dialwithnic.NewDialWithNIC(c.String("dialWithNIC"))
 			p.TouchBrook()
 		}
 		if c.String("dialWithSocks5") != "" {
@@ -798,6 +807,10 @@ func main() {
 					Name:  "ca",
 					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
 				},
+				&cli.StringFlag{
+					Name:  "tlsfingerprint",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
+				},
 				&cli.BoolFlag{
 					Name:  "withoutBrookProtocol",
 					Usage: "The data will not be encrypted with brook protocol",
@@ -865,6 +878,12 @@ func main() {
 						return errors.New("failed to parse root certificate")
 					}
 					s.TLSConfig.RootCAs = roots
+				}
+				if c.String("tlsfingerprint") == "chrome" {
+					s.TLSFingerprint = utls.HelloChrome_Auto
+				}
+				if c.String("tlsfingerprint") == "firefox" {
+					s.TLSFingerprint = utls.HelloFirefox_Auto
 				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -1199,6 +1218,10 @@ func main() {
 					Name:  "ca",
 					Usage: "When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem",
 				},
+				&cli.StringFlag{
+					Name:  "tlsfingerprint",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
+				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
@@ -1244,6 +1267,7 @@ func main() {
 					}
 					v.Set("ca", string(b))
 				}
+				v.Set("tlsfingerprint", c.String("tlsfingerprint"))
 				v.Set("password", c.String("password"))
 				s, err := brook.NewRelayOverBrook(c.String("from"), brook.Link(kind, c.String("server"), v), c.String("to"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
@@ -1327,6 +1351,10 @@ func main() {
 					Name:  "ca",
 					Usage: "When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem",
 				},
+				&cli.StringFlag{
+					Name:  "tlsfingerprint",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
+				},
 				&cli.BoolFlag{
 					Name:  "withoutBrookProtocol",
 					Usage: "When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol",
@@ -1389,6 +1417,7 @@ func main() {
 					}
 					v.Set("ca", string(b))
 				}
+				v.Set("tlsfingerprint", c.String("tlsfingerprint"))
 				v.Set("password", c.String("password"))
 				s, err := brook.NewRelayOverBrook(c.String("listen"), brook.Link(kind, c.String("server"), v), c.String("dns"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
@@ -1505,6 +1534,10 @@ func main() {
 				&cli.StringFlag{
 					Name:  "ca",
 					Usage: "When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem",
+				},
+				&cli.StringFlag{
+					Name:  "tlsfingerprint",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
 				},
 				&cli.StringFlag{
 					Name:  "link",
@@ -1774,20 +1807,11 @@ func main() {
 					}
 					v.Set("ca", string(b))
 				}
+				v.Set("tlsfingerprint", c.String("tlsfingerprint"))
 				v.Set("password", c.String("password"))
 				link := brook.Link(kind, c.String("server"), v)
 				if c.String("link") != "" {
 					link = c.String("link")
-				}
-				_, _, v, err := brook.ParseLink(link)
-				if err != nil {
-					return err
-				}
-				if v.Get("tlsfingerprint") == "chrome" {
-					brook.ClientHelloID = utls.HelloChrome_Auto
-				}
-				if v.Get("tlsfingerprint") == "firefox" {
-					brook.ClientHelloID = utls.HelloFirefox_Auto
 				}
 				s, err := brook.NewTproxy(c.String("listen"), link, c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
@@ -1988,18 +2012,12 @@ func main() {
 				if h == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				kind, _, v, err := brook.ParseLink(c.String("link"))
+				kind, _, _, err := brook.ParseLink(c.String("link"))
 				if err != nil {
 					return err
 				}
 				if kind == "socks5" {
 					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
-				}
-				if v.Get("tlsfingerprint") == "chrome" {
-					brook.ClientHelloID = utls.HelloChrome_Auto
-				}
-				if v.Get("tlsfingerprint") == "firefox" {
-					brook.ClientHelloID = utls.HelloFirefox_Auto
 				}
 				s, err := brook.NewBrookLink(c.String("link"))
 				if err != nil {

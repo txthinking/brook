@@ -23,19 +23,21 @@ import (
 	"os/exec"
 	"runtime"
 
+	utls "github.com/refraction-networking/utls"
 	"github.com/txthinking/brook/limits"
 	crypto1 "github.com/txthinking/crypto"
 	"github.com/txthinking/socks5"
 )
 
 type BrookLink struct {
-	Kind     string
-	Address  string
-	Host     string
-	Path     string
-	Password []byte
-	V        url.Values
-	Tc       *tls.Config
+	Kind           string
+	Address        string
+	Host           string
+	Path           string
+	Password       []byte
+	V              url.Values
+	Tc             *tls.Config
+	TLSFingerprint utls.ClientHelloID
 
 	S5         *socks5.Server
 	Pcf        *PacketConnFactory
@@ -54,6 +56,7 @@ func NewBrookLink(link string) (*BrookLink, error) {
 		address = server
 	}
 	var tc *tls.Config
+	var tlsfingerprint utls.ClientHelloID
 	if kind == "socks5" || kind == "wsserver" || kind == "wssserver" || kind == "quicserver" {
 		u, err := url.Parse(server)
 		if err != nil {
@@ -99,15 +102,24 @@ func NewBrookLink(link string) (*BrookLink, error) {
 				}
 			}
 		}
+		if kind == "wssserver" {
+			if v.Get("tlsfingerprint") == "chrome" {
+				tlsfingerprint = utls.HelloChrome_Auto
+			}
+			if v.Get("tlsfingerprint") == "firefox" {
+				tlsfingerprint = utls.HelloFirefox_Auto
+			}
+		}
 	}
 	return &BrookLink{
-		Kind:     kind,
-		Address:  address,
-		Host:     host,
-		Path:     path,
-		Password: p,
-		V:        v,
-		Tc:       tc,
+		Kind:           kind,
+		Address:        address,
+		Host:           host,
+		Path:           path,
+		Password:       p,
+		V:              v,
+		Tc:             tc,
+		TLSFingerprint: tlsfingerprint,
 	}, nil
 }
 
@@ -150,7 +162,7 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 	}
 	if blk.Kind == "wsserver" || blk.Kind == "wssserver" {
 		if network == "tcp" {
-			rc, err := WebSocketDial("", "", blk.Address, blk.Host, blk.Path, blk.Tc, tcptimeout)
+			rc, err := WebSocketDial("", "", blk.Address, blk.Host, blk.Path, blk.Tc, tcptimeout, blk.TLSFingerprint)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -167,7 +179,7 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 			}
 			return sc, rc, nil
 		}
-		rc, err := WebSocketDial(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address, blk.Host, blk.Path, blk.Tc, tcptimeout)
+		rc, err := WebSocketDial(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address, blk.Host, blk.Path, blk.Tc, tcptimeout, blk.TLSFingerprint)
 		if err != nil {
 			return nil, nil, err
 		}

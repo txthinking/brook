@@ -19,6 +19,7 @@ import (
 	"net"
 	"net/url"
 
+	utls "github.com/refraction-networking/utls"
 	"github.com/txthinking/brook/limits"
 	crypto1 "github.com/txthinking/crypto"
 	"github.com/txthinking/socks5"
@@ -29,6 +30,7 @@ type WSClient struct {
 	ServerHost        string
 	ServerAddress     string
 	TLSConfig         *tls.Config
+	TLSFingerprint    utls.ClientHelloID
 	Password          []byte
 	TCPTimeout        int
 	UDPTimeout        int
@@ -90,7 +92,7 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 		if sa == "" {
 			sa = x.ServerHost
 		}
-		rc, err := WebSocketDial("", "", sa, x.ServerHost, x.Path, x.TLSConfig, x.TCPTimeout)
+		rc, err := WebSocketDial("", "", sa, x.ServerHost, x.Path, x.TLSConfig, x.TCPTimeout, x.TLSFingerprint)
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
@@ -150,7 +152,7 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 	if sa == "" {
 		sa = x.ServerHost
 	}
-	rc, err := WebSocketDial(addr.String(), d.Address(), sa, x.ServerHost, x.Path, x.TLSConfig, x.TCPTimeout)
+	rc, err := WebSocketDial(addr.String(), d.Address(), sa, x.ServerHost, x.Path, x.TLSConfig, x.TCPTimeout, x.TLSFingerprint)
 	if err != nil {
 		return err
 	}
