@@ -212,7 +212,7 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 
 **--tcpTimeout**="": time (s) (default: 0)
 
-**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
 
 **--udpTimeout**="": time (s) (default: 60)
 
@@ -292,7 +292,7 @@ Run as relay over brook, both TCP and UDP, this means access [from address] is e
 
 **--tcpTimeout**="": time (s) (default: 0)
 
-**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
 
 **--to, -t**="": Address which relay to, like: 1.2.3.4:9999
 
@@ -332,7 +332,7 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 **--tcpTimeout**="": time (s) (default: 0)
 
-**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
 
 **--udpTimeout**="": time (s) (default: 60)
 
@@ -384,7 +384,7 @@ Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linu
 
 **--tcpTimeout**="": time (s) (default: 0)
 
-**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
 
 **--udpTimeout**="": time (s) (default: 60)
 
@@ -410,7 +410,7 @@ Generate brook link
 
 **--server, -s**="": Support brook server, brook wsserver, brook wssserver, socks5 server, brook quicserver. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080, quic://google.com:443
 
-**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
 
 **--udpovertcp**: When server is brook server, UDP over TCP
 
