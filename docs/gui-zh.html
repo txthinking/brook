@@ -1235,70 +1235,70 @@ iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, 
 </tr>
 
 <tr>
-<td>System DNS</td>
+<td>系统 DNS</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>系统 DNS. <strong>不要 bypass 此 IP</strong></td>
 </tr>
 
 <tr>
-<td>Fake DNS</td>
+<td>虚拟 DNS</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
-<td>关闭系统/浏览器等自带的安全 DNS, 具体看下文</td>
+<td><strong>关闭或 block 系统/浏览器等安全 DNS, 具体看下文</strong></td>
 <td>解析域名为 Fake IP，发起连接时会再转换为域名，然后把域名地址送到服务端进行代理，同时由服务端来负责域名解析</td>
 </tr>
 
 <tr>
-<td>Block</td>
+<td>屏蔽</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>Block 开关</td>
 </tr>
 
 <tr>
-<td>Block Domain</td>
+<td>屏蔽域名</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>Fake DNS: 开启</td>
 <td>域名列表，匹配的域名会被阻断解析. <strong>域名是后缀匹配模式</strong></td>
 </tr>
 
 <tr>
-<td>Bypass</td>
+<td>跳过</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>Bypass 开关</td>
 </tr>
 
 <tr>
-<td>Bypass IP</td>
+<td>跳过 IP</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>CIDR 列表，匹配到的 IP 会被 bypass</td>
 </tr>
 
 <tr>
-<td>Bypass Geo IP</td>
-<td>iOS,Android</td>
+<td>跳过 Geo IP</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>匹配到的 IP 会被 bypass. 提示: 全球 IP 变动频繁, 所以 Geo 库有时效性</td>
 </tr>
 
 <tr>
-<td>Bypass Apps</td>
+<td>跳过 Apps</td>
 <td>Android</td>
 <td>/</td>
 <td>这些 App 会被 bypass</td>
 </tr>
 
 <tr>
-<td>Bypass DNS</td>
+<td>跳过 DNS</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>支持普通 DNS, 比如 <code>223.5.5.5:53</code>, 支持 DoH, 但需要通过参数 address 指定 DoH 的地址, 比如 <code>https://dns.alidns.com/dns-query?address=223.5.5.5%3A443</code> 用来解析 Bypass Domain. <strong>此 DNS 的 IP 会自动 Bypass</strong></td>
 </tr>
 
 <tr>
-<td>Bypass Domain</td>
+<td>跳过域名</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>Fake DNS: 开启</td>
 <td>域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, <strong>最终连接是否会被 Bypass，还取决于 Bypass IP</strong>. <strong>域名是后缀匹配模式</strong></td>
@@ -1312,49 +1312,49 @@ iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, 
 </tr>
 
 <tr>
-<td>Hosts List</td>
+<td>Host 列表</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>Fake DNS: 开启</td>
 <td>给域名指定 IP, v4, v6，如果值为空效果同 Block</td>
 </tr>
 
 <tr>
-<td>Programmable</td>
+<td>可编程</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>可编程开关</td>
 </tr>
 
 <tr>
-<td>Script</td>
+<td>脚本</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>脚本。可以控制上面所有的功能。以及上面没有的功能，<strong>全流程控制一切，具体看下文</strong>。</td>
 </tr>
 
 <tr>
-<td>Log</td>
+<td>日志</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>日志开关</td>
 </tr>
 
 <tr>
-<td>Log View</td>
+<td>查看日志</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>日志列表</td>
 </tr>
 
 <tr>
-<td>Log View Plus</td>
+<td>日志 Plus</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>日志列表，更易读，过滤条件等</td>
 </tr>
 
 <tr>
-<td>MITM Log View</td>
+<td>查看 MITM</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>MITM 日志列表，比如 https 的请求响应，十六进制，JSON，图片等</td>
@@ -1362,16 +1362,44 @@ iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, 
 
 <tr>
 <td>TUN</td>
-<td>Mac,Windows,Linux</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
-<td>选择 proxy 模式 还是 tun 模式</td>
+<td>选择 proxy 模式 还是 tun 模式. iOS 和 Android 强制 TUN 模式</td>
 </tr>
 
 <tr>
-<td>Capture Me</td>
+<td>抓我</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>测试你的抓包或代理软件工作在系统代理还是 TUN</td>
+</tr>
+
+<tr>
+<td>DNS 客户端</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>DNS 客户端</td>
+</tr>
+
+<tr>
+<td>DOH 客户端</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>DOH 客户端</td>
+</tr>
+
+<tr>
+<td>Echo 客户端</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Echo 客户端</td>
+</tr>
+
+<tr>
+<td>测试 Socks5</td>
+<td>iOS,Android,Mac,Linux</td>
+<td>/</td>
+<td>Test socks5 server</td>
 </tr>
 
 <tr>
@@ -1713,7 +1741,7 @@ in_address</h3>
 <tr>
 <td>bypass</td>
 <td>bool</td>
-<td><strong>仅在 iOS, Android 有效。</strong>是否 Bypass, 默认 <code>false</code>. 如果为 <code>true</code> 并且是 <code>domainaddress</code>, 那么必须指定 <code>ipaddress</code> 或 <code>ipaddressfrombypassdns</code>. 与 GUI Bypass IP 是或的关系</td>
+<td>是否 Bypass, 默认 <code>false</code>. 如果为 <code>true</code> 并且是 <code>domainaddress</code>, 那么必须指定 <code>ipaddress</code> 或 <code>ipaddressfrombypassdns</code>. 与 GUI Bypass IP 是或的关系</td>
 <td>false</td>
 </tr>
 
@@ -1928,6 +1956,7 @@ Functions
 <li>Chrome on Mobile: Settings -&gt; Privacy and security -&gt; Use secure DNS -&gt; Off</li>
 <li>Chrome on Desktop: Settings -&gt; Privacy and security -&gt; Security -&gt; Use secure DNS -&gt; Off</li>
 <li>Windows: Windows Settings -&gt; Network &amp; Internet -&gt; Your Network -&gt; DNS settings -&gt; Edit -&gt; Preferred DNS -&gt; Unencrypted only -&gt; 8.8.8.8</li>
+<li>iOS / Mac 避免升级到安全 DNS : 可以通过脚本阻断相关 DST。也可以自建个普通 DNS: <code>brook dnsserver --listen :53</code></li>
 </ul>
 
 <p>其他系统和软件，请自行查找是否存在以及如何关闭</p>

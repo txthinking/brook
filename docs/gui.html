@@ -1243,8 +1243,8 @@ Configuration Introduction</h2>
 
 <tr>
 <td>Fake DNS</td>
-<td>iOS, Android, Mac, Windows, Linux</td>
-<td>Turn off the security DNS that comes with the system/browser, see below for details</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td><strong>Turn off or block the security DNS that comes with the system/browser/etc, see below for details</strong></td>
 <td>The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution</td>
 </tr>
 
@@ -1278,7 +1278,7 @@ Configuration Introduction</h2>
 
 <tr>
 <td>Bypass Geo IP</td>
-<td>iOS,Android</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>The matched IP will be bypassed. Note: Global IP changes frequently, so the Geo library is time-sensitive</td>
 </tr>
@@ -1362,9 +1362,9 @@ Configuration Introduction</h2>
 
 <tr>
 <td>TUN</td>
-<td>Mac,Windows,Linux</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
-<td>Choose proxy mode or tun mode</td>
+<td>Choose proxy mode or tun. iOS and Android force TUN mode mode</td>
 </tr>
 
 <tr>
@@ -1372,6 +1372,34 @@ Configuration Introduction</h2>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
 <td>Test your packet capture or proxy software is working as a system proxy or TUN</td>
+</tr>
+
+<tr>
+<td>DNS Client</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>DNS client</td>
+</tr>
+
+<tr>
+<td>DOH Client</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>DOH client</td>
+</tr>
+
+<tr>
+<td>Echo Client</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Echo client</td>
+</tr>
+
+<tr>
+<td>Test Socks5</td>
+<td>iOS,Android,Mac,Linux</td>
+<td>/</td>
+<td>Test socks5 server</td>
 </tr>
 
 <tr>
@@ -1713,7 +1741,7 @@ in_address</h3>
 <tr>
 <td>bypass</td>
 <td>bool</td>
-<td><strong>Only available on iOS, Android.</strong> Bypass, default <code>false</code>. If <code>true</code> and <code>domainaddress</code>, then <code>ipaddress</code> or <code>ipaddressfrombypassdns</code> must be specified. It is an OR relationship with GUI Bypass IP</td>
+<td>Bypass, default <code>false</code>. If <code>true</code> and <code>domainaddress</code>, then <code>ipaddress</code> or <code>ipaddressfrombypassdns</code> must be specified. It is an OR relationship with GUI Bypass IP</td>
 <td>false</td>
 </tr>
 
@@ -1928,6 +1956,7 @@ Why and How to Turn Off System and Browser Security DNS</h2>
 <li>Chrome on Mobile: Settings -&gt; Privacy and security -&gt; Use secure DNS -&gt; Off</li>
 <li>Chrome on Desktop: Settings -&gt; Privacy and security -&gt; Security -&gt; Use secure DNS -&gt; Off</li>
 <li>Windows: Windows Settings -&gt; Network &amp; Internet -&gt; Your Network -&gt; DNS settings -&gt; Edit -&gt; Preferred DNS -&gt; Unencrypted only -&gt; 8.8.8.8</li>
+<li>iOS/Mac avoid upgrading to secure DNS: related DST can be blocked by script. You can also create a DNS by yourself: <code>brook dnsserver --listen :53</code></li>
 </ul>
 
 <p>Other systems and software, please find out whether it exists and how to close it</p>

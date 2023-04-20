@@ -809,7 +809,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "tlsfingerprint",
-					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
 				},
 				&cli.BoolFlag{
 					Name:  "withoutBrookProtocol",
@@ -881,9 +881,6 @@ func main() {
 				}
 				if c.String("tlsfingerprint") == "chrome" {
 					s.TLSFingerprint = utls.HelloChrome_Auto
-				}
-				if c.String("tlsfingerprint") == "firefox" {
-					s.TLSFingerprint = utls.HelloFirefox_Auto
 				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -1220,7 +1217,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "tlsfingerprint",
-					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1353,7 +1350,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "tlsfingerprint",
-					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
 				},
 				&cli.BoolFlag{
 					Name:  "withoutBrookProtocol",
@@ -1537,7 +1534,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "tlsfingerprint",
-					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
 				},
 				&cli.StringFlag{
 					Name:  "link",
@@ -1905,7 +1902,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "tlsfingerprint",
-					Usage: "When server is brook wssserver, select tls fingerprint, value can be chrome or firefox",
+					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -2204,20 +2201,40 @@ func main() {
 					Name:    "type",
 					Aliases: []string{"t"},
 					Usage:   "Type, such as A",
-					Value:   "NS",
+					Value:   "A",
+				},
+				&cli.BoolFlag{
+					Name:  "short",
+					Usage: "Short for A/AAAA",
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.String("domain") == "" {
+					return cli.ShowSubcommandHelp(c)
+				}
 				t, ok := dns.StringToType[c.String("type")]
 				if !ok {
 					return errors.New("invalid type")
 				}
 				dc := &brook.DNSClient{Server: c.String("dns")}
 				m := &dns.Msg{}
-				m.SetQuestion(c.String("domain")+".", t)
+				m.SetQuestion(strings.TrimRight(c.String("domain"), ".")+".", t)
 				m, err := dc.Exchange(m)
 				if err != nil {
 					return err
+				}
+				if c.Bool("short") && (c.String("type") == "A" || c.String("type") == "AAAA") {
+					for _, v := range m.Answer {
+						if t, ok := v.(*dns.A); ok {
+							fmt.Println(t.A)
+							return nil
+						}
+						if t, ok := v.(*dns.AAAA); ok {
+							fmt.Println(t.AAAA)
+							return nil
+						}
+					}
+					return nil
 				}
 				fmt.Println(m)
 				return nil
@@ -2369,10 +2386,17 @@ func main() {
 					Name:    "type",
 					Aliases: []string{"t"},
 					Usage:   "Type, such as A",
-					Value:   "NS",
+					Value:   "A",
+				},
+				&cli.BoolFlag{
+					Name:  "short",
+					Usage: "Short for A/AAAA",
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.String("domain") == "" {
+					return cli.ShowSubcommandHelp(c)
+				}
 				t, ok := dns.StringToType[c.String("type")]
 				if !ok {
 					return errors.New("invalid type")
@@ -2382,10 +2406,23 @@ func main() {
 					return err
 				}
 				m := &dns.Msg{}
-				m.SetQuestion(c.String("domain")+".", t)
+				m.SetQuestion(strings.TrimRight(c.String("domain"), ".")+".", t)
 				m, err = dc.Exchange(m)
 				if err != nil {
 					return err
+				}
+				if c.Bool("short") && (c.String("type") == "A" || c.String("type") == "AAAA") {
+					for _, v := range m.Answer {
+						if t, ok := v.(*dns.A); ok {
+							fmt.Println(t.A)
+							return nil
+						}
+						if t, ok := v.(*dns.AAAA); ok {
+							fmt.Println(t.AAAA)
+							return nil
+						}
+					}
+					return nil
 				}
 				fmt.Println(m)
 				return nil

@@ -90,6 +90,9 @@ func NewBrookLink(link string) (*BrookLink, error) {
 				}
 				tc.RootCAs = roots
 			}
+			if kind == "wssserver" {
+				tc.NextProtos = []string{"http/1.1"}
+			}
 			if kind == "quicserver" {
 				tc.NextProtos = []string{"h3"}
 			}
@@ -105,9 +108,6 @@ func NewBrookLink(link string) (*BrookLink, error) {
 		if kind == "wssserver" {
 			if v.Get("tlsfingerprint") == "chrome" {
 				tlsfingerprint = utls.HelloChrome_Auto
-			}
-			if v.Get("tlsfingerprint") == "firefox" {
-				tlsfingerprint = utls.HelloFirefox_Auto
 			}
 		}
 	}

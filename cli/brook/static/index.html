@@ -422,7 +422,7 @@
                     </ul>
                     <div>{{zh ? '或者:' : 'Or:'}}</div>
                     <ul>
-                        <li>{{ zh ? '停止内置的DNS服务，在这里直接监听:53' : 'Stop built-in DNS server, and listen :53 here'}}</li>
+                        <li>{{ zh ? '停止内置的DNS服务，在这里直接监听:53. 如果你允许客户端使用其他公有 DNS Server, 这里需要指定监听地址，比如 192.168.1.1:53' : 'Stop built-in DNS server, and listen :53 here. If you allow clients to use other public DNS Servers, you need to specify the listening address here, such as 192.168.1.1:53'}}</li>
                     </ul>
                 </div>
                 <div v-if="page=='dnsForDefault'">
@@ -445,7 +445,7 @@
             </div>
         </main>
         <footer style="display:flex;justify-content:space-around;">
-            <a href="https://www.txthinking.com">Brook v20230401. A project by txthinking.com</a>
+            <a href="https://www.txthinking.com">Brook v20230404.5.1. A project by txthinking.com</a>
         </footer>
     </body>
 </html>

@@ -32,6 +32,9 @@ Table of Contents
    * [connect](#connect)
    * [relay](#relay)
    * [dnsserver](#dnsserver)
+   * [dnsclient](#dnsclient)
+   * [dohserver](#dohserver)
+   * [dohclient](#dohclient)
    * [dhcpserver](#dhcpserver)
    * [socks5](#socks5)
    * [socks5tohttp](#socks5tohttp)
@@ -120,8 +123,11 @@ Brook - A cross-platform network tool designed for developers
 Brook
 
 ```
+[--dialWithDNSPrefer]=[value]
+[--dialWithDNS]=[value]
 [--dialWithIP4]=[value]
 [--dialWithIP6]=[value]
+[--dialWithNIC]=[value]
 [--dialWithSocks5Password]=[value]
 [--dialWithSocks5TCPTimeout]=[value]
 [--dialWithSocks5UDPTimeout]=[value]
@@ -144,9 +150,15 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 # GLOBAL OPTIONS
 
+**--dialWithDNS**="": When a domain name needs to be resolved, use the specified DNS. Such as 8.8.8.8:53 or https://dns.google/dns-query?address=8.8.8.8%3A443, the address is required. Note that for client-side commands, this does not affect the client passing the domain address to the server
+
+**--dialWithDNSPrefer**="": This is used with the dialWithDNS parameter. Prefer A record or AAAA record. Value is A or AAAA
+
 **--dialWithIP4**="": When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used
 
 **--dialWithIP6**="": When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used
+
+**--dialWithNIC**="": When the current machine establishes a network connection to the outside, both TCP and UDP, it is used to specify the NIC used
 
 **--dialWithSocks5**="": When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081
 
@@ -315,6 +327,8 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 
 **--tcpTimeout**="": time (s) (default: 0)
 
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+
 **--udpTimeout**="": time (s) (default: 60)
 
 **--withoutBrookProtocol**: The data will not be encrypted with brook protocol
@@ -393,6 +407,8 @@ Run as relay over brook, both TCP and UDP, this means access [from address] is e
 
 **--tcpTimeout**="": time (s) (default: 0)
 
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+
 **--to, -t**="": Address which relay to, like: 1.2.3.4:9999
 
 **--udpTimeout**="": time (s) (default: 60)
@@ -419,7 +435,7 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 **--dns**="": DNS server for resolving domains NOT in list (default: 8.8.8.8:53)
 
-**--dnsForBypass**="": DNS server for resolving domains in bypass list (default: 223.5.5.5:53)
+**--dnsForBypass**="": DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or https://dns.alidns.com/dns-query?address=223.5.5.5:443, the address is required (default: 223.5.5.5:53)
 
 **--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
 
@@ -430,6 +446,8 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 **--server, -s**="": brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
 
 **--tcpTimeout**="": time (s) (default: 0)
+
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
 
 **--udpTimeout**="": time (s) (default: 60)
 
@@ -459,7 +477,7 @@ Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linu
 
 **--disableAAAA**: Disable AAAA query
 
-**--dnsForBypass**="": DNS server for resolving domains in bypass list (default: 223.5.5.5:53)
+**--dnsForBypass**="": DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or https://dns.alidns.com/dns-query?address=223.5.5.5:443, the address is required (default: 223.5.5.5:53)
 
 **--dnsForDefault**="": DNS server for resolving domains NOT in list (default: 8.8.8.8:53)
 
@@ -480,6 +498,8 @@ Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linu
 **--server, -s**="": brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
 
 **--tcpTimeout**="": time (s) (default: 0)
+
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
 
 **--udpTimeout**="": time (s) (default: 60)
 
@@ -504,6 +524,8 @@ Generate brook link
 **--password, -p**="": Password
 
 **--server, -s**="": Support brook server, brook wsserver, brook wssserver, socks5 server, brook quicserver. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080, quic://google.com:443
+
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
 
 **--udpovertcp**: When server is brook server, UDP over TCP
 
@@ -541,7 +563,7 @@ Run as standalone relay, both TCP and UDP, this means access [from address] is e
 
 ## dnsserver
 
-Run as standalone dns server, both TCP and UDP
+Run as standalone dns server
 
 **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
@@ -549,13 +571,63 @@ Run as standalone dns server, both TCP and UDP
 
 **--disableAAAA**: Disable AAAA query
 
-**--dns**="": DNS server which forward to (default: 8.8.8.8:53)
+**--dns**="": DNS server which forward to. Such as 8.8.8.8:53 or https://dns.google/dns-query?address=8.8.8.8%3A443, the address is required (default: 8.8.8.8:53)
 
 **--listen, -l**="": Listen address, like: 127.0.0.1:53
 
 **--tcpTimeout**="": time (s) (default: 0)
 
 **--udpTimeout**="": time (s) (default: 60)
+
+## dnsclient
+
+Send a dns query
+
+**--dns, -s**="": DNS server, such as 8.8.8.8:53 (default: 8.8.8.8:53)
+
+**--domain, -d**="": Domain
+
+**--short**: Short for A/AAAA
+
+**--type, -t**="": Type, such as A (default: A)
+
+## dohserver
+
+Run as standalone doh server
+
+**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+
+**--cert**="": The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically
+
+**--certkey**="": The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically
+
+**--disableA**: Disable A query
+
+**--disableAAAA**: Disable AAAA query
+
+**--dns**="": DNS server which forward to. Such as 8.8.8.8:53 or https://dns.google/dns-query?address=8.8.8.8%3A443, the address is required (default: 8.8.8.8:53)
+
+**--domainaddress**="": Such as: domain.com:443, if you want to create a https server. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used
+
+**--listen**="": listen address, if you want to create a http server behind nico
+
+**--path**="": URL path (default: /dns-query)
+
+**--tcpTimeout**="": time (s) (default: 0)
+
+**--udpTimeout**="": time (s) (default: 60)
+
+## dohclient
+
+Send a dns query
+
+**--doh, -s**="": DOH server, the address is required (default: https://dns.google/dns-query?address=8.8.8.8%3A443)
+
+**--domain, -d**="": Domain
+
+**--short**: Short for A/AAAA
+
+**--type, -t**="": Type, such as A (default: A)
 
 ## dhcpserver
 
@@ -568,6 +640,8 @@ Run as standalone dhcp server. Note that you need to stop other dhcp servers, if
 **--dnsserver**="": The dns server which you want to assign to clients, such as: 192.168.1.1 or 8.8.8.8
 
 **--gateway**="": The router gateway which you want to assign to clients, such as: 192.168.1.1
+
+**--interface**="": Select interface on multi interface device. Linux only
 
 **--netmask**="": Subnet netmask which you want to assign to clients (default: 255.255.255.0)
 
@@ -725,12 +799,12 @@ The so-called Internet connection is IP to IP connection, not domain name connec
 | -------------- | --------------------------------- | ----------------------------------------------------------------------------------- | --- |
 | Import Servers | iOS,Android,Mac,Windows,Linux     | /                                                                                   | brook link list                                                                                                                                                                                                                                                                       |
 | System DNS     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | System DNS. **Do not bypass this IP**                                                                                                                                                                                                                                                 |
-| Fake DNS       | iOS, Android, Mac, Windows, Linux | Turn off the security DNS that comes with the system/browser, see below for details | The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution                                                |
+| Fake DNS       | iOS,Android,Mac,Windows,Linux | **Turn off or block the security DNS that comes with the system/browser/etc, see below for details** | The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution                                                |
 | Block          | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Block switch                                                                                                                                                                                                                                                                          |
 | Block Domain   | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | Domain name list, matching domain names will be blocked. **Domain name is suffix matching mode**                                                                                                                                                                                      |
 | Bypass         | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Bypass switch                                                                                                                                                                                                                                                                         |
 | Bypass IP      | iOS,Android,Mac,Windows,Linux     | /                                                                                   | CIDR list, matched IP will be bypassed                                                                                                                                                                                                                                                |
-| Bypass Geo IP  | iOS,Android                       | /                                                                                   | The matched IP will be bypassed. Note: Global IP changes frequently, so the Geo library is time-sensitive                                                                                                                                                                             |
+| Bypass Geo IP  | iOS,Android,Mac,Windows,Linux                       | /                                                                                   | The matched IP will be bypassed. Note: Global IP changes frequently, so the Geo library is time-sensitive                                                                                                                                                                             |
 | Bypass Apps    | Android                           | /                                                                                   | These apps will be bypassed                                                                                                                                                                                                                                                           |
 | Bypass DNS     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Support normal DNS, such as `223.5.5.5:53`, support DoH, but need to specify the address of DoH through the parameter address, such as `https://dns. alidns.com/dns-query?address=223.5.5.5%3A443` is used to resolve Bypass Domain. **The IP of this DNS will automatically Bypass** |
 | Bypass Domain  | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | List of domain names, matching domain names will use Bypass DNS resolution to get IP, **whether the final connection will be bypassed depends on the Bypass IP** . **The domain name is a suffix matching pattern**                                                                   |
@@ -742,8 +816,12 @@ The so-called Internet connection is IP to IP connection, not domain name connec
 | Log View       | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log List                                                                                                                                                                                                                                                                              |
 | Log View Plus  | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log list, easier to read, filter conditions, etc.                                                                                                                                                                                                                                     |
 | MITM Log View  | iOS,Android,Mac,Windows,Linux     | /                                                                                   | MITM log list, such as https request response, hexadecimal, JSON, image, etc.                                                                                                                                                                                                         |
-| TUN            | Mac,Windows,Linux                 | /                                                                                   | Choose proxy mode or tun mode                                                                                                                                                                                                                                                         |
+| TUN            | iOS,Android,Mac,Windows,Linux                 | /                                                                                   | Choose proxy mode or tun. iOS and Android force TUN mode mode                                                                                                                                                                                                                                                         |
 | Capture Me     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Test your packet capture or proxy software is working as a system proxy or TUN                                                                                                                                                                                                        |
+| DNS Client    | iOS,Android,Mac,Windows,Linux | /                                           | DNS client                                                                                   |
+| DOH Client    | iOS,Android,Mac,Windows,Linux | /                                           | DOH client                                                                                                           |
+| Echo Client    | iOS,Android,Mac,Windows,Linux | /                                           | Echo client                                                                   |
+| Test Socks5    | iOS,Android,Mac,Linux | /                                           | Test socks5 server                                                                    |
 | Dark Mode      | iOS,Android,Mac,Windows,Linux     | /                                                                                   | System / Light / Dark                                                                                                                                                                                                                                                                 |     |
 | Shortcut       | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Quickly control the functions in the menu on the home page                                                                                                                                                                                                                            |
 | System Tray    | Windows                           | /                                                                                   | Open as systray, then open dashboard from the systray                                                                                                                                                                                                                                 |
@@ -828,7 +906,7 @@ Take full control of your own network
 | block                  | bool   | Whether Block, default `false`                                                                                                                                                                          | false       |
 | ipaddress              | string | IP type address, rewrite destination                                                                                                                                                                    | 1.2.3.4:443 |
 | ipaddressfrombypassdns | string | Use Bypass DNS to obtain `A` or `AAAA` IP and rewrite the destination, only valid when `domainaddress` exists, the value `A`/`AAAA`                                                                     | A           |
-| bypass                 | bool   | **Only available on iOS, Android.** Bypass, default `false`. If `true` and `domainaddress`, then `ipaddress` or `ipaddressfrombypassdns` must be specified. It is an OR relationship with GUI Bypass IP | false       |
+| bypass                 | bool   | Bypass, default `false`. If `true` and `domainaddress`, then `ipaddress` or `ipaddressfrombypassdns` must be specified. It is an OR relationship with GUI Bypass IP | false       |
 | mitm                   | bool   | Whether to perform MITM, default `false`. Only valid when `network` is `tcp`. Need to install CA, see below                                                                                             | false       |
 | mitmprotocol           | string | MITM protocol needs to be specified explicitly, the value is `http`/`https`                                                                                                                             | https       |
 | mitmcertdomain         | string | The MITM certificate domain name, which is taken from `domainaddress` by default. If `ipaddress` and `mitm` is `true` and `mitmprotocol` is `https` then must be must be specified explicitly           | example.com |
@@ -924,6 +1002,7 @@ Because if Security DNS is turned on, the Fake DNS will not work. So we have to 
 -   Chrome on Mobile: Settings -> Privacy and security -> Use secure DNS -> Off
 -   Chrome on Desktop: Settings -> Privacy and security -> Security -> Use secure DNS -> Off
 -   Windows: Windows Settings -> Network & Internet -> Your Network -> DNS settings -> Edit -> Preferred DNS -> Unencrypted only -> 8.8.8.8
+-   iOS/Mac avoid upgrading to secure DNS: related DST can be blocked by script. You can also create a DNS by yourself: `brook dnsserver --listen :53`
 
 Other systems and software, please find out whether it exists and how to close it
 

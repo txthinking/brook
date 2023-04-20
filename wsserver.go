@@ -106,14 +106,14 @@ func (s *WSServer) ListenAndServe() error {
 				Log(err)
 			}
 		}()
-		t = &tls.Config{GetCertificate: m.GetCertificate}
+		t = &tls.Config{GetCertificate: m.GetCertificate, ServerName: s.Domain, NextProtos: []string{"http/1.1"}}
 	}
 	if s.Cert != nil && s.CertKey != nil {
 		ct, err := tls.X509KeyPair(s.Cert, s.CertKey)
 		if err != nil {
 			return err
 		}
-		t = &tls.Config{Certificates: []tls.Certificate{ct}, ServerName: s.Domain}
+		t = &tls.Config{Certificates: []tls.Certificate{ct}, ServerName: s.Domain, NextProtos: []string{"http/1.1"}}
 	}
 	s.HTTPServer = &http.Server{
 		Addr:         s.Addr,

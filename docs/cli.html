@@ -1141,6 +1141,9 @@ div.content {
 <li><a href="#connect" rel="nofollow">connect</a></li>
 <li><a href="#relay" rel="nofollow">relay</a></li>
 <li><a href="#dnsserver" rel="nofollow">dnsserver</a></li>
+<li><a href="#dnsclient" rel="nofollow">dnsclient</a></li>
+<li><a href="#dohserver" rel="nofollow">dohserver</a></li>
+<li><a href="#dohclient" rel="nofollow">dohclient</a></li>
 <li><a href="#dhcpserver" rel="nofollow">dhcpserver</a></li>
 <li><a href="#socks5" rel="nofollow">socks5</a></li>
 <li><a href="#socks5tohttp" rel="nofollow">socks5tohttp</a></li>
@@ -1185,6 +1188,9 @@ div.content {
 <li><a href="#connect" rel="nofollow">connect</a></li>
 <li><a href="#relay" rel="nofollow">relay</a></li>
 <li><a href="#dnsserver" rel="nofollow">dnsserver</a></li>
+<li><a href="#dnsclient" rel="nofollow">dnsclient</a></li>
+<li><a href="#dohserver" rel="nofollow">dohserver</a></li>
+<li><a href="#dohclient" rel="nofollow">dohclient</a></li>
 <li><a href="#dhcpserver" rel="nofollow">dhcpserver</a></li>
 <li><a href="#socks5" rel="nofollow">socks5</a></li>
 <li><a href="#socks5tohttp" rel="nofollow">socks5tohttp</a></li>
@@ -1210,8 +1216,11 @@ SYNOPSIS</h1>
 
 <p>Brook</p>
 
-<pre><code>[--dialWithIP4]=[value]
+<pre><code>[--dialWithDNSPrefer]=[value]
+[--dialWithDNS]=[value]
+[--dialWithIP4]=[value]
 [--dialWithIP6]=[value]
+[--dialWithNIC]=[value]
 [--dialWithSocks5Password]=[value]
 [--dialWithSocks5TCPTimeout]=[value]
 [--dialWithSocks5UDPTimeout]=[value]
@@ -1233,9 +1242,15 @@ SYNOPSIS</h1>
 <h1><a name="global-options" class="anchor" href="#global-options" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 GLOBAL OPTIONS</h1>
 
+<p><strong>--dialWithDNS</strong>=&#34;&#34;: When a domain name needs to be resolved, use the specified DNS. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required. Note that for client-side commands, this does not affect the client passing the domain address to the server</p>
+
+<p><strong>--dialWithDNSPrefer</strong>=&#34;&#34;: This is used with the dialWithDNS parameter. Prefer A record or AAAA record. Value is A or AAAA</p>
+
 <p><strong>--dialWithIP4</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used</p>
 
 <p><strong>--dialWithIP6</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used</p>
+
+<p><strong>--dialWithNIC</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside, both TCP and UDP, it is used to specify the NIC used</p>
 
 <p><strong>--dialWithSocks5</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081</p>
 
@@ -1403,6 +1418,8 @@ wssclient</h2>
 
 <p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
 
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be chrome or firefox</p>
+
 <p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
 
 <p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
@@ -1481,6 +1498,8 @@ relayoverbrook</h2>
 
 <p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
 
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be chrome or firefox</p>
+
 <p><strong>--to, -t</strong>=&#34;&#34;: Address which relay to, like: 1.2.3.4:9999</p>
 
 <p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
@@ -1507,7 +1526,7 @@ dnsserveroverbrook</h2>
 
 <p><strong>--dns</strong>=&#34;&#34;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p>
 
-<p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list (default: 223.5.5.5:53)</p>
+<p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443" rel="nofollow">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p>
 
 <p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
 
@@ -1518,6 +1537,8 @@ dnsserveroverbrook</h2>
 <p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p>
 
 <p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be chrome or firefox</p>
 
 <p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
 
@@ -1547,7 +1568,7 @@ tproxy</h2>
 
 <p><strong>--disableAAAA</strong>: Disable AAAA query</p>
 
-<p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list (default: 223.5.5.5:53)</p>
+<p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443" rel="nofollow">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p>
 
 <p><strong>--dnsForDefault</strong>=&#34;&#34;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p>
 
@@ -1568,6 +1589,8 @@ tproxy</h2>
 <p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p>
 
 <p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be chrome or firefox</p>
 
 <p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
 
@@ -1592,6 +1615,8 @@ link</h2>
 <p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
 
 <p><strong>--server, -s</strong>=&#34;&#34;: Support brook server, brook wsserver, brook wssserver, socks5 server, brook quicserver. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080, quic://google.com:443</p>
+
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be chrome or firefox</p>
 
 <p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
 
@@ -1629,7 +1654,7 @@ relay</h2>
 <h2><a name="dnsserver" class="anchor" href="#dnsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 dnsserver</h2>
 
-<p>Run as standalone dns server, both TCP and UDP</p>
+<p>Run as standalone dns server</p>
 
 <p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
 
@@ -1637,13 +1662,63 @@ dnsserver</h2>
 
 <p><strong>--disableAAAA</strong>: Disable AAAA query</p>
 
-<p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to (default: 8.8.8.8:53)</p>
+<p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p>
 
 <p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:53</p>
 
 <p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
 
 <p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+<h2><a name="dnsclient" class="anchor" href="#dnsclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsclient</h2>
+
+<p>Send a dns query</p>
+
+<p><strong>--dns, -s</strong>=&#34;&#34;: DNS server, such as 8.8.8.8:53 (default: 8.8.8.8:53)</p>
+
+<p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p>
+
+<p><strong>--short</strong>: Short for A/AAAA</p>
+
+<p><strong>--type, -t</strong>=&#34;&#34;: Type, such as A (default: A)</p>
+<h2><a name="dohserver" class="anchor" href="#dohserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dohserver</h2>
+
+<p>Run as standalone doh server</p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
+
+<p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
+
+<p><strong>--disableA</strong>: Disable A query</p>
+
+<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
+
+<p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p>
+
+<p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443, if you want to create a https server. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p>
+
+<p><strong>--listen</strong>=&#34;&#34;: listen address, if you want to create a http server behind nico</p>
+
+<p><strong>--path</strong>=&#34;&#34;: URL path (default: /dns-query)</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+<h2><a name="dohclient" class="anchor" href="#dohclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dohclient</h2>
+
+<p>Send a dns query</p>
+
+<p><strong>--doh, -s</strong>=&#34;&#34;: DOH server, the address is required (default: <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>)</p>
+
+<p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p>
+
+<p><strong>--short</strong>: Short for A/AAAA</p>
+
+<p><strong>--type, -t</strong>=&#34;&#34;: Type, such as A (default: A)</p>
 <h2><a name="dhcpserver" class="anchor" href="#dhcpserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 dhcpserver</h2>
 
@@ -1656,6 +1731,8 @@ dhcpserver</h2>
 <p><strong>--dnsserver</strong>=&#34;&#34;: The dns server which you want to assign to clients, such as: 192.168.1.1 or 8.8.8.8</p>
 
 <p><strong>--gateway</strong>=&#34;&#34;: The router gateway which you want to assign to clients, such as: 192.168.1.1</p>
+
+<p><strong>--interface</strong>=&#34;&#34;: Select interface on multi interface device. Linux only</p>
 
 <p><strong>--netmask</strong>=&#34;&#34;: Subnet netmask which you want to assign to clients (default: 255.255.255.0)</p>
 

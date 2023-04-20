@@ -77,16 +77,30 @@ func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout in
 				InsecureSkipVerify: tc.InsecureSkipVerify,
 				RootCAs:            tc.RootCAs,
 			}, tlsfingerprint)
+			s := host
+			h, _, err := net.SplitHostPort(host)
+			if err == nil {
+				s = h
+			}
+			if err := c1.BuildHandshakeState(); err != nil {
+				return nil, err
+			}
+			for _, v := range c1.Extensions {
+				if vv, ok := v.(*utls.ALPNExtension); ok {
+					if tlsfingerprint.Client == "Chrome" {
+						vv.AlpnProtocols = []string{"http/1.1"}
+					}
+					break
+				}
+			}
+			if err := c1.BuildHandshakeState(); err != nil {
+				return nil, err
+			}
+			if err := c1.Handshake(); err != nil {
+				c1.Close()
+				return nil, err
+			}
 			if !tc.InsecureSkipVerify {
-				if err := c1.Handshake(); err != nil {
-					c1.Close()
-					return nil, err
-				}
-				s := host
-				h, _, err := net.SplitHostPort(host)
-				if err == nil {
-					s = h
-				}
 				if err := c1.VerifyHostname(s); err != nil {
 					c1.Close()
 					return nil, err

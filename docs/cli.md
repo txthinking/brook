@@ -8,8 +8,11 @@ Brook - A cross-platform network tool designed for developers
 Brook
 
 ```
+[--dialWithDNSPrefer]=[value]
+[--dialWithDNS]=[value]
 [--dialWithIP4]=[value]
 [--dialWithIP6]=[value]
+[--dialWithNIC]=[value]
 [--dialWithSocks5Password]=[value]
 [--dialWithSocks5TCPTimeout]=[value]
 [--dialWithSocks5UDPTimeout]=[value]
@@ -32,9 +35,15 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 # GLOBAL OPTIONS
 
+**--dialWithDNS**="": When a domain name needs to be resolved, use the specified DNS. Such as 8.8.8.8:53 or https://dns.google/dns-query?address=8.8.8.8%3A443, the address is required. Note that for client-side commands, this does not affect the client passing the domain address to the server
+
+**--dialWithDNSPrefer**="": This is used with the dialWithDNS parameter. Prefer A record or AAAA record. Value is A or AAAA
+
 **--dialWithIP4**="": When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used
 
 **--dialWithIP6**="": When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used
+
+**--dialWithNIC**="": When the current machine establishes a network connection to the outside, both TCP and UDP, it is used to specify the NIC used
 
 **--dialWithSocks5**="": When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081
 
@@ -203,6 +212,8 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 
 **--tcpTimeout**="": time (s) (default: 0)
 
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+
 **--udpTimeout**="": time (s) (default: 60)
 
 **--withoutBrookProtocol**: The data will not be encrypted with brook protocol
@@ -281,6 +292,8 @@ Run as relay over brook, both TCP and UDP, this means access [from address] is e
 
 **--tcpTimeout**="": time (s) (default: 0)
 
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
+
 **--to, -t**="": Address which relay to, like: 1.2.3.4:9999
 
 **--udpTimeout**="": time (s) (default: 60)
@@ -307,7 +320,7 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 **--dns**="": DNS server for resolving domains NOT in list (default: 8.8.8.8:53)
 
-**--dnsForBypass**="": DNS server for resolving domains in bypass list (default: 223.5.5.5:53)
+**--dnsForBypass**="": DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or https://dns.alidns.com/dns-query?address=223.5.5.5:443, the address is required (default: 223.5.5.5:53)
 
 **--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
 
@@ -318,6 +331,8 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 **--server, -s**="": brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
 
 **--tcpTimeout**="": time (s) (default: 0)
+
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
 
 **--udpTimeout**="": time (s) (default: 60)
 
@@ -347,7 +362,7 @@ Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linu
 
 **--disableAAAA**: Disable AAAA query
 
-**--dnsForBypass**="": DNS server for resolving domains in bypass list (default: 223.5.5.5:53)
+**--dnsForBypass**="": DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or https://dns.alidns.com/dns-query?address=223.5.5.5:443, the address is required (default: 223.5.5.5:53)
 
 **--dnsForDefault**="": DNS server for resolving domains NOT in list (default: 8.8.8.8:53)
 
@@ -368,6 +383,8 @@ Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linu
 **--server, -s**="": brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
 
 **--tcpTimeout**="": time (s) (default: 0)
+
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
 
 **--udpTimeout**="": time (s) (default: 60)
 
@@ -392,6 +409,8 @@ Generate brook link
 **--password, -p**="": Password
 
 **--server, -s**="": Support brook server, brook wsserver, brook wssserver, socks5 server, brook quicserver. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080, quic://google.com:443
+
+**--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be chrome or firefox
 
 **--udpovertcp**: When server is brook server, UDP over TCP
 
@@ -429,7 +448,7 @@ Run as standalone relay, both TCP and UDP, this means access [from address] is e
 
 ## dnsserver
 
-Run as standalone dns server, both TCP and UDP
+Run as standalone dns server
 
 **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
 
@@ -437,13 +456,63 @@ Run as standalone dns server, both TCP and UDP
 
 **--disableAAAA**: Disable AAAA query
 
-**--dns**="": DNS server which forward to (default: 8.8.8.8:53)
+**--dns**="": DNS server which forward to. Such as 8.8.8.8:53 or https://dns.google/dns-query?address=8.8.8.8%3A443, the address is required (default: 8.8.8.8:53)
 
 **--listen, -l**="": Listen address, like: 127.0.0.1:53
 
 **--tcpTimeout**="": time (s) (default: 0)
 
 **--udpTimeout**="": time (s) (default: 60)
+
+## dnsclient
+
+Send a dns query
+
+**--dns, -s**="": DNS server, such as 8.8.8.8:53 (default: 8.8.8.8:53)
+
+**--domain, -d**="": Domain
+
+**--short**: Short for A/AAAA
+
+**--type, -t**="": Type, such as A (default: A)
+
+## dohserver
+
+Run as standalone doh server
+
+**--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+
+**--cert**="": The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically
+
+**--certkey**="": The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically
+
+**--disableA**: Disable A query
+
+**--disableAAAA**: Disable AAAA query
+
+**--dns**="": DNS server which forward to. Such as 8.8.8.8:53 or https://dns.google/dns-query?address=8.8.8.8%3A443, the address is required (default: 8.8.8.8:53)
+
+**--domainaddress**="": Such as: domain.com:443, if you want to create a https server. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used
+
+**--listen**="": listen address, if you want to create a http server behind nico
+
+**--path**="": URL path (default: /dns-query)
+
+**--tcpTimeout**="": time (s) (default: 0)
+
+**--udpTimeout**="": time (s) (default: 60)
+
+## dohclient
+
+Send a dns query
+
+**--doh, -s**="": DOH server, the address is required (default: https://dns.google/dns-query?address=8.8.8.8%3A443)
+
+**--domain, -d**="": Domain
+
+**--short**: Short for A/AAAA
+
+**--type, -t**="": Type, such as A (default: A)
 
 ## dhcpserver
 
@@ -456,6 +525,8 @@ Run as standalone dhcp server. Note that you need to stop other dhcp servers, if
 **--dnsserver**="": The dns server which you want to assign to clients, such as: 192.168.1.1 or 8.8.8.8
 
 **--gateway**="": The router gateway which you want to assign to clients, such as: 192.168.1.1
+
+**--interface**="": Select interface on multi interface device. Linux only
 
 **--netmask**="": Subnet netmask which you want to assign to clients (default: 255.255.255.0)
 

@@ -54,6 +54,7 @@ brook://wsserver?password=hello&wsserver=ws%3A%2F%2F1.2.3.4%3A9999%2Fws
     -   `insecure`: `true` [Optional]
     -   `withoutBrookProtocol`: `true` [Optional]
     -   `ca`: CA content [Optional]
+    -   `tlsfingerprint`: `chrome` [Optional]
 
 Example
 

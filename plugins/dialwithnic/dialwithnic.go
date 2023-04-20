@@ -40,15 +40,28 @@ func (p *DialWithNIC) IP(v46 string) (net.IP, error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, v := range addrs {
-		if v46 == "6" && v.(*net.IPNet).IP.IsGlobalUnicast() && v.(*net.IPNet).IP.To4() == nil {
-			return v.(*net.IPNet).IP, nil
+	if v46 == "6" {
+		for _, v := range addrs {
+			if v.(*net.IPNet).IP.IsGlobalUnicast() && v.(*net.IPNet).IP.To4() == nil {
+				return v.(*net.IPNet).IP, nil
+			}
 		}
-		if v46 == "4" && v.(*net.IPNet).IP.IsGlobalUnicast() && v.(*net.IPNet).IP.To4() != nil {
-			return v.(*net.IPNet).IP, nil
-		}
+		return nil, errors.New("no ipv6 from nic")
 	}
-	return nil, errors.New("no " + v46 + " ip from " + p.NIC)
+	if v46 == "4" {
+		for _, v := range addrs {
+			if v.(*net.IPNet).IP.IsGlobalUnicast() && !v.(*net.IPNet).IP.IsPrivate() && v.(*net.IPNet).IP.To4() != nil {
+				return v.(*net.IPNet).IP, nil
+			}
+		}
+		for _, v := range addrs {
+			if v.(*net.IPNet).IP.IsGlobalUnicast() && v.(*net.IPNet).IP.IsPrivate() && v.(*net.IPNet).IP.To4() != nil {
+				return v.(*net.IPNet).IP, nil
+			}
+		}
+		return nil, errors.New("no ipv4 from nic")
+	}
+	return nil, errors.New("black hole")
 }
 
 func (p *DialWithNIC) TouchBrook() {
