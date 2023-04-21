@@ -639,7 +639,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "wssserver",
-			Usage: "Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server",
+			Usage: "Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket secure server",
 			BashComplete: func(c *cli.Context) {
 				l := c.Command.VisibleFlags()
 				for _, v := range l {
