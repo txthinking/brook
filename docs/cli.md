@@ -164,7 +164,7 @@ Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks
 
 ## wssserver
 
-Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server
+Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket secure server
 
 **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
 
