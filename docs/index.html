@@ -69,6 +69,24 @@
                 <li><a target="_blank" style="color: #ffffff" href="https://github.com/txthinking">GitHub</a></li>
             </ul>
         </nav>
+        <nav class="container-fluid" style="background: linear-gradient(to right, #5fceae, #447ef0)">                                                                                                       
+            <ul>                                                                                                                                                                                            
+                <li></li>                                                                                                                                                                                   
+            </ul>                                                                                                                                                                                           
+            <ul>                                                                                                                                                                                            
+                <li>                                                                                  
+                    <div style="padding:10px 0px">                                                                                                                                                          
+                        <a style="background-color:red;" v-if="!zh" href="https://docs.google.com/forms/d/e/1FAIpQLScHkbvTNnhmbWps6d1eDrTXSNQgEv9ADyrMJ890dH36XW6THA/viewform?usp=sf_link" role="button">Are
+ you willing to pay Plus to support cross-platform Brook to continued development?</a>                                                                                                                      
+                        <a style="background-color:red;" v-if="zh" href="https://docs.google.com/forms/d/e/1FAIpQLScHkbvTNnhmbWps6d1eDrTXSNQgEv9ADyrMJ890dH36XW6THA/viewform?usp=sf_link" role="button">你愿
+意支付 Plus 以支持跨平台小众 Brook 可持续发展吗？</a>                                                 
+                    </div>                                                                                                                                                                                  
+                </li>                                                                                                                                                                                       
+            </ul>                                                                                                                                                                                           
+            <ul>                                                                                                                                                                                            
+                <li></li>                                                                                                                                                                                   
+            </ul>                                                                                                                                                                                           
+        </nav>
         <main class="container">
             <center><h1>{{ zh ? '一个为开发者设计的跨平台网络工具' : 'A cross-platform network tool designed for developers' }}</h1></center>
             <div style="display: flex; justify-content: center; flex-wrap: wrap">
@@ -102,9 +120,9 @@
                 <div style="width: 30px"></div>
                 <div style="padding-bottom:20px;"><a class="contrast outline" href="https://t.me/s/txthinking_news" target="_blank" role="button" style="display:flex;align-items:center;"><div>Telegram</div> <div class="newtab"></div></a></div>
             </div>
-            <div v-if="zh" style="display: flex; justify-content: center; flex-wrap: wrap">
+            <!-- <div v-if="zh" style="display: flex; justify-content: center; flex-wrap: wrap">
                 <a class="contrast outline" style="border-color: #b04386; color: #b04386" href="https://www.txthinking.com/shiliew.html?utm_source=brookdocs" target="_blank" role="button"> Sponsors ❤️ Shiliew - Not just VPN </a>
-            </div>
+            </div> -->
             <div class="dm" v-if="p==0">
                 <article>
                     <div><h6>{{ zh ? '服务端' : 'Server' }}</h6></div>
