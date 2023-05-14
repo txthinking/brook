@@ -71,7 +71,6 @@ Table of Contents
    * [Configuration Introduction](#configuration-introduction)
    * [Programmable](#programmable)
       * [Introduction to incoming variables](#introduction-to-incoming-variables)
-      * [in_guiconfig](#in_guiconfig)
       * [in_dnsquery](#in_dnsquery)
       * [in_address](#in_address)
       * [in_httprequest](#in_httprequest)
@@ -92,7 +91,6 @@ Table of Contents
    * [配置介绍](#配置介绍)
    * [Programmable](#programmable-1)
       * [传入变量介绍](#传入变量介绍)
-      * [in_guiconfig](#in_guiconfig-1)
       * [in_dnsquery](#in_dnsquery-1)
       * [in_address](#in_address-1)
       * [in_httprequest](#in_httprequest-1)
@@ -1046,30 +1044,10 @@ Take full control of your own network
 
 | variable                       | type | condition   | timing                            | description                                       | out type |
 | ------------------------------ | ---- | ----------- | --------------------------------- | ------------------------------------------------- | -------- |
-| in_guiconfig                   | map  | /           | before connected                  | to override GUI configuration                     | map      |
 | in_dnsquery                    | map  | FakeDNS: On | When a DNS query occurs           | Script can decide how to handle this request      | map      |
 | in_address                     | map  | /           | When connecting to an address     | script can decide how to connect                  | map      |
 | in_httprequest                 | map  | /           | When an HTTP(S) request comes in  | the script can decide how to handle this request  | map      |
 | in_httprequest,in_httpresponse | map  | /           | when an HTTP(S) response comes in | the script can decide how to handle this response | map      |
-
-### in_guiconfig
-
-| Key | Type | Description                                       |
-| --- | ---- | ------------------------------------------------- |
-| \_  | bool | For future compatibility, this key can be ignored |
-
-`out`, if it is `error` type will be recorded in the log. Ignored if not of type `map`, if it is `map` then explicitly specify each configuration item.
-
-| Key        | Type   | Description       |
-| ---------- | ------ | ----------------- |
-| systemdns4 | string | System DNS v4     |
-| systemdns6 | string | System DNS v6     |
-| fakedns    | bool   | Fake DNS switch   |
-| block      | bool   | GUI Block switch  |
-| bypass     | bool   | GUI Bypass switch |
-| bypassdns4 | string | Bypass DNS v4     |
-| bypassdns6 | string | Bypass DNS v6     |
-| hosts      | bool   | GUI Hosts switch  |
 
 ### in_dnsquery
 
@@ -1325,30 +1303,10 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 
 | 变量                           | 类型 | 条件          | 时机                   | 描述                       | out 类型 |
 | ------------------------------ | ---- | ------------- | ---------------------- | -------------------------- | -------- |
-| in_guiconfig                   | map  | /             | 开启之前               | 用以覆盖 GUI 的配置        | map      |
 | in_dnsquery                    | map  | FakeDNS: 开启 | 当 DNS 查询发生时      | 脚本可以决定如何处理此请求 | map      |
 | in_address                     | map  | /             | 当要连接某地址时       | 脚本可以决定如何进行连接   | map      |
 | in_httprequest                 | map  | /             | 当有 HTTP(S)请求传入时 | 脚本可以决定如何处理此请求 | map      |
 | in_httprequest,in_httpresponse | map  | /             | 当有 HTTP(S)响应传入时 | 脚本可以决定如何处理此响应 | map      |
-
-### in_guiconfig
-
-| Key | 类型 | 描述                     |
-| --- | ---- | ------------------------ |
-| \_  | bool | 向未来兼容，可忽略此 key |
-
-`out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略, 如果是`map`那么明确指定每一个配置项
-
-| Key        | 类型   | 描述            |
-| ---------- | ------ | --------------- |
-| systemdns4 | string | System DNS v4   |
-| systemdns6 | string | System DNS v6   |
-| fakedns    | bool   | Fake DNS 开关   |
-| block      | bool   | GUI Block 开关  |
-| bypass     | bool   | GUI Bypass 开关 |
-| bypassdns4 | string | Bypass DNS v4   |
-| bypassdns6 | string | Bypass DNS v6   |
-| hosts      | bool   | GUI Hosts 开关  |
 
 ### in_dnsquery
 

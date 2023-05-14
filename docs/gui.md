@@ -82,30 +82,10 @@ Take full control of your own network
 
 | variable                       | type | condition   | timing                            | description                                       | out type |
 | ------------------------------ | ---- | ----------- | --------------------------------- | ------------------------------------------------- | -------- |
-| in_guiconfig                   | map  | /           | before connected                  | to override GUI configuration                     | map      |
 | in_dnsquery                    | map  | FakeDNS: On | When a DNS query occurs           | Script can decide how to handle this request      | map      |
 | in_address                     | map  | /           | When connecting to an address     | script can decide how to connect                  | map      |
 | in_httprequest                 | map  | /           | When an HTTP(S) request comes in  | the script can decide how to handle this request  | map      |
 | in_httprequest,in_httpresponse | map  | /           | when an HTTP(S) response comes in | the script can decide how to handle this response | map      |
-
-### in_guiconfig
-
-| Key | Type | Description                                       |
-| --- | ---- | ------------------------------------------------- |
-| \_  | bool | For future compatibility, this key can be ignored |
-
-`out`, if it is `error` type will be recorded in the log. Ignored if not of type `map`, if it is `map` then explicitly specify each configuration item.
-
-| Key        | Type   | Description       |
-| ---------- | ------ | ----------------- |
-| systemdns4 | string | System DNS v4     |
-| systemdns6 | string | System DNS v6     |
-| fakedns    | bool   | Fake DNS switch   |
-| block      | bool   | GUI Block switch  |
-| bypass     | bool   | GUI Bypass switch |
-| bypassdns4 | string | Bypass DNS v4     |
-| bypassdns6 | string | Bypass DNS v6     |
-| hosts      | bool   | GUI Hosts switch  |
 
 ### in_dnsquery
 

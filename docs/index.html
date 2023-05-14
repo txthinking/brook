@@ -1200,7 +1200,6 @@ div.content {
 <li><a href="#configuration-introduction" rel="nofollow">Configuration Introduction</a></li>
 <li><a href="#programmable" rel="nofollow">Programmable</a></li>
 <li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
-<li><a href="#in-guiconfig" rel="nofollow">in_guiconfig</a></li>
 <li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
 <li><a href="#in-address" rel="nofollow">in_address</a></li>
 <li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
@@ -1224,7 +1223,6 @@ div.content {
 <li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
 <li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
 <li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
-<li><a href="#in-guiconfig-1" rel="nofollow">in_guiconfig</a></li>
 <li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
 <li><a href="#in-address-1" rel="nofollow">in_address</a></li>
 <li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
@@ -1346,7 +1344,6 @@ div.content {
 <li><a href="#configuration-introduction" rel="nofollow">Configuration Introduction</a></li>
 <li><a href="#programmable" rel="nofollow">Programmable</a></li>
 <li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
-<li><a href="#in-guiconfig" rel="nofollow">in_guiconfig</a></li>
 <li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
 <li><a href="#in-address" rel="nofollow">in_address</a></li>
 <li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
@@ -1370,7 +1367,6 @@ div.content {
 <li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
 <li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
 <li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
-<li><a href="#in-guiconfig-1" rel="nofollow">in_guiconfig</a></li>
 <li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
 <li><a href="#in-address-1" rel="nofollow">in_address</a></li>
 <li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
@@ -2532,15 +2528,6 @@ Introduction to incoming variables</h3>
 
 <tbody>
 <tr>
-<td>in_guiconfig</td>
-<td>map</td>
-<td>/</td>
-<td>before connected</td>
-<td>to override GUI configuration</td>
-<td>map</td>
-</tr>
-
-<tr>
 <td>in_dnsquery</td>
 <td>map</td>
 <td>FakeDNS: On</td>
@@ -2574,88 +2561,6 @@ Introduction to incoming variables</h3>
 <td>when an HTTP(S) response comes in</td>
 <td>the script can decide how to handle this response</td>
 <td>map</td>
-</tr>
-</tbody>
-</table>
-<h3><a name="in-guiconfig" class="anchor" href="#in-guiconfig" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-in_guiconfig</h3>
-
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>_</td>
-<td>bool</td>
-<td>For future compatibility, this key can be ignored</td>
-</tr>
-</tbody>
-</table>
-
-<p><code>out</code>, if it is <code>error</code> type will be recorded in the log. Ignored if not of type <code>map</code>, if it is <code>map</code> then explicitly specify each configuration item.</p>
-
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>systemdns4</td>
-<td>string</td>
-<td>System DNS v4</td>
-</tr>
-
-<tr>
-<td>systemdns6</td>
-<td>string</td>
-<td>System DNS v6</td>
-</tr>
-
-<tr>
-<td>fakedns</td>
-<td>bool</td>
-<td>Fake DNS switch</td>
-</tr>
-
-<tr>
-<td>block</td>
-<td>bool</td>
-<td>GUI Block switch</td>
-</tr>
-
-<tr>
-<td>bypass</td>
-<td>bool</td>
-<td>GUI Bypass switch</td>
-</tr>
-
-<tr>
-<td>bypassdns4</td>
-<td>string</td>
-<td>Bypass DNS v4</td>
-</tr>
-
-<tr>
-<td>bypassdns6</td>
-<td>string</td>
-<td>Bypass DNS v6</td>
-</tr>
-
-<tr>
-<td>hosts</td>
-<td>bool</td>
-<td>GUI Hosts switch</td>
 </tr>
 </tbody>
 </table>
@@ -3347,15 +3252,6 @@ Programmable</h2>
 
 <tbody>
 <tr>
-<td>in_guiconfig</td>
-<td>map</td>
-<td>/</td>
-<td>开启之前</td>
-<td>用以覆盖 GUI 的配置</td>
-<td>map</td>
-</tr>
-
-<tr>
 <td>in_dnsquery</td>
 <td>map</td>
 <td>FakeDNS: 开启</td>
@@ -3389,88 +3285,6 @@ Programmable</h2>
 <td>当有 HTTP(S)响应传入时</td>
 <td>脚本可以决定如何处理此响应</td>
 <td>map</td>
-</tr>
-</tbody>
-</table>
-<h3><a name="in-guiconfig" class="anchor" href="#in-guiconfig" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-in_guiconfig</h3>
-
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>_</td>
-<td>bool</td>
-<td>向未来兼容，可忽略此 key</td>
-</tr>
-</tbody>
-</table>
-
-<p><code>out</code>, 如果是 <code>error</code> 类型会被记录在日志。如果不是 <code>map</code> 类型则会被忽略, 如果是<code>map</code>那么明确指定每一个配置项</p>
-
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>systemdns4</td>
-<td>string</td>
-<td>System DNS v4</td>
-</tr>
-
-<tr>
-<td>systemdns6</td>
-<td>string</td>
-<td>System DNS v6</td>
-</tr>
-
-<tr>
-<td>fakedns</td>
-<td>bool</td>
-<td>Fake DNS 开关</td>
-</tr>
-
-<tr>
-<td>block</td>
-<td>bool</td>
-<td>GUI Block 开关</td>
-</tr>
-
-<tr>
-<td>bypass</td>
-<td>bool</td>
-<td>GUI Bypass 开关</td>
-</tr>
-
-<tr>
-<td>bypassdns4</td>
-<td>string</td>
-<td>Bypass DNS v4</td>
-</tr>
-
-<tr>
-<td>bypassdns6</td>
-<td>string</td>
-<td>Bypass DNS v6</td>
-</tr>
-
-<tr>
-<td>hosts</td>
-<td>bool</td>
-<td>GUI Hosts 开关</td>
 </tr>
 </tbody>
 </table>
