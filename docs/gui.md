@@ -1,4 +1,4 @@
-# Brook GUI Documentation
+# GUI Documentation
 
 <!--SIDEBAR-->
 <!--G-R3M673HK5V-->

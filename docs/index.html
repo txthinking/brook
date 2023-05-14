@@ -1,321 +1,3952 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html>
     <head>
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M673HK5V"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
-
-            gtag("config", "G-R3M673HK5V");
-        </script>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.5.3/css/pico.min.css" />
-        <script src="https://unpkg.com/vue@3.2.29/dist/vue.global.prod.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Brook</title>
+        
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M673HK5V"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+            gtag('config', 'G-R3M673HK5V');
+		</script>
+        
+		<style>
+@media (prefers-color-scheme: dark) {
+  .markdown-body {
+    color-scheme: dark;
+    --color-prettylights-syntax-comment: #8b949e;
+    --color-prettylights-syntax-constant: #79c0ff;
+    --color-prettylights-syntax-entity: #d2a8ff;
+    --color-prettylights-syntax-storage-modifier-import: #c9d1d9;
+    --color-prettylights-syntax-entity-tag: #7ee787;
+    --color-prettylights-syntax-keyword: #ff7b72;
+    --color-prettylights-syntax-string: #a5d6ff;
+    --color-prettylights-syntax-variable: #ffa657;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
+    --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+    --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+    --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+    --color-prettylights-syntax-carriage-return-bg: #b62324;
+    --color-prettylights-syntax-string-regexp: #7ee787;
+    --color-prettylights-syntax-markup-list: #f2cc60;
+    --color-prettylights-syntax-markup-heading: #1f6feb;
+    --color-prettylights-syntax-markup-italic: #c9d1d9;
+    --color-prettylights-syntax-markup-bold: #c9d1d9;
+    --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+    --color-prettylights-syntax-markup-deleted-bg: #67060c;
+    --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+    --color-prettylights-syntax-markup-inserted-bg: #033a16;
+    --color-prettylights-syntax-markup-changed-text: #ffdfb6;
+    --color-prettylights-syntax-markup-changed-bg: #5a1e02;
+    --color-prettylights-syntax-markup-ignored-text: #c9d1d9;
+    --color-prettylights-syntax-markup-ignored-bg: #1158c7;
+    --color-prettylights-syntax-meta-diff-range: #d2a8ff;
+    --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
+    --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+    --color-fg-default: #c9d1d9;
+    --color-fg-muted: #8b949e;
+    --color-fg-subtle: #484f58;
+    --color-canvas-default: #0d1117;
+    --color-canvas-subtle: #161b22;
+    --color-border-default: #30363d;
+    --color-border-muted: #21262d;
+    --color-neutral-muted: rgba(110,118,129,0.4);
+    --color-accent-fg: #58a6ff;
+    --color-accent-emphasis: #1f6feb;
+    --color-attention-subtle: rgba(187,128,9,0.15);
+    --color-danger-fg: #f85149;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .markdown-body {
+    color-scheme: light;
+    --color-prettylights-syntax-comment: #6e7781;
+    --color-prettylights-syntax-constant: #0550ae;
+    --color-prettylights-syntax-entity: #8250df;
+    --color-prettylights-syntax-storage-modifier-import: #24292f;
+    --color-prettylights-syntax-entity-tag: #116329;
+    --color-prettylights-syntax-keyword: #cf222e;
+    --color-prettylights-syntax-string: #0a3069;
+    --color-prettylights-syntax-variable: #953800;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
+    --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
+    --color-prettylights-syntax-invalid-illegal-bg: #82071e;
+    --color-prettylights-syntax-carriage-return-text: #f6f8fa;
+    --color-prettylights-syntax-carriage-return-bg: #cf222e;
+    --color-prettylights-syntax-string-regexp: #116329;
+    --color-prettylights-syntax-markup-list: #3b2300;
+    --color-prettylights-syntax-markup-heading: #0550ae;
+    --color-prettylights-syntax-markup-italic: #24292f;
+    --color-prettylights-syntax-markup-bold: #24292f;
+    --color-prettylights-syntax-markup-deleted-text: #82071e;
+    --color-prettylights-syntax-markup-deleted-bg: #FFEBE9;
+    --color-prettylights-syntax-markup-inserted-text: #116329;
+    --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
+    --color-prettylights-syntax-markup-changed-text: #953800;
+    --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
+    --color-prettylights-syntax-markup-ignored-text: #eaeef2;
+    --color-prettylights-syntax-markup-ignored-bg: #0550ae;
+    --color-prettylights-syntax-meta-diff-range: #8250df;
+    --color-prettylights-syntax-brackethighlighter-angle: #57606a;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #8c959f;
+    --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+    --color-fg-default: #24292f;
+    --color-fg-muted: #57606a;
+    --color-fg-subtle: #6e7781;
+    --color-canvas-default: #ffffff;
+    --color-canvas-subtle: #f6f8fa;
+    --color-border-default: #d0d7de;
+    --color-border-muted: hsla(210,18%,87%,1);
+    --color-neutral-muted: rgba(175,184,193,0.2);
+    --color-accent-fg: #0969da;
+    --color-accent-emphasis: #0969da;
+    --color-attention-subtle: #fff8c5;
+    --color-danger-fg: #cf222e;
+  }
+}
+
+.markdown-body {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  margin: 0;
+  color: var(--color-fg-default);
+  background-color: var(--color-canvas-default);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.markdown-body .octicon {
+  display: inline-block;
+  fill: currentColor;
+  vertical-align: text-bottom;
+}
+
+.markdown-body h1:hover .anchor .octicon-link:before,
+.markdown-body h2:hover .anchor .octicon-link:before,
+.markdown-body h3:hover .anchor .octicon-link:before,
+.markdown-body h4:hover .anchor .octicon-link:before,
+.markdown-body h5:hover .anchor .octicon-link:before,
+.markdown-body h6:hover .anchor .octicon-link:before {
+  width: 16px;
+  height: 16px;
+  content: ' ';
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+  mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+}
+
+.markdown-body details,
+.markdown-body figcaption,
+.markdown-body figure {
+  display: block;
+}
+
+.markdown-body summary {
+  display: list-item;
+}
+
+.markdown-body [hidden] {
+  display: none !important;
+}
+
+.markdown-body a {
+  background-color: transparent;
+  color: var(--color-accent-fg);
+  text-decoration: none;
+}
+
+.markdown-body a:active,
+.markdown-body a:hover {
+  outline-width: 0;
+}
+
+.markdown-body abbr[title] {
+  border-bottom: none;
+  text-decoration: underline dotted;
+}
+
+.markdown-body b,
+.markdown-body strong {
+  font-weight: 600;
+}
+
+.markdown-body dfn {
+  font-style: italic;
+}
+
+.markdown-body h1 {
+  margin: .67em 0;
+  font-weight: 600;
+  padding-bottom: .3em;
+  font-size: 2em;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.markdown-body mark {
+  background-color: var(--color-attention-subtle);
+  color: var(--color-text-primary);
+}
+
+.markdown-body small {
+  font-size: 90%;
+}
+
+.markdown-body sub,
+.markdown-body sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.markdown-body sub {
+  bottom: -0.25em;
+}
+
+.markdown-body sup {
+  top: -0.5em;
+}
+
+.markdown-body img {
+  border-style: none;
+  max-width: 100%;
+  box-sizing: content-box;
+  background-color: var(--color-canvas-default);
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre,
+.markdown-body samp {
+  font-family: monospace,monospace;
+  font-size: 1em;
+}
+
+.markdown-body figure {
+  margin: 1em 40px;
+}
+
+.markdown-body hr {
+  box-sizing: content-box;
+  overflow: hidden;
+  background: transparent;
+  border-bottom: 1px solid var(--color-border-muted);
+  height: .25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: var(--color-border-default);
+  border: 0;
+}
+
+.markdown-body input {
+  font: inherit;
+  margin: 0;
+  overflow: visible;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.markdown-body [type=button],
+.markdown-body [type=reset],
+.markdown-body [type=submit] {
+  -webkit-appearance: button;
+}
+
+.markdown-body [type=button]::-moz-focus-inner,
+.markdown-body [type=reset]::-moz-focus-inner,
+.markdown-body [type=submit]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+.markdown-body [type=button]:-moz-focusring,
+.markdown-body [type=reset]:-moz-focusring,
+.markdown-body [type=submit]:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+.markdown-body [type=checkbox],
+.markdown-body [type=radio] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.markdown-body [type=number]::-webkit-inner-spin-button,
+.markdown-body [type=number]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+.markdown-body [type=search] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
+.markdown-body [type=search]::-webkit-search-cancel-button,
+.markdown-body [type=search]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+.markdown-body ::-webkit-input-placeholder {
+  color: inherit;
+  opacity: .54;
+}
+
+.markdown-body ::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body hr::before {
+  display: table;
+  content: "";
+}
+
+.markdown-body hr::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+}
+
+.markdown-body td,
+.markdown-body th {
+  padding: 0;
+}
+
+.markdown-body details summary {
+  cursor: pointer;
+}
+
+.markdown-body details:not([open])>*:not(summary) {
+  display: none !important;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  line-height: 10px;
+  color: var(--color-fg-default);
+  vertical-align: middle;
+  background-color: var(--color-canvas-subtle);
+  border: solid 1px var(--color-neutral-muted);
+  border-bottom-color: var(--color-neutral-muted);
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 var(--color-neutral-muted);
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-body h2 {
+  font-weight: 600;
+  padding-bottom: .3em;
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.markdown-body h3 {
+  font-weight: 600;
+  font-size: 1.25em;
+}
+
+.markdown-body h4 {
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.markdown-body h5 {
+  font-weight: 600;
+  font-size: .875em;
+}
+
+.markdown-body h6 {
+  font-weight: 600;
+  font-size: .85em;
+  color: var(--color-fg-muted);
+}
+
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.markdown-body blockquote {
+  margin: 0;
+  padding: 0 1em;
+  color: var(--color-fg-muted);
+  border-left: .25em solid var(--color-border-default);
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 2em;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+  margin-left: 0;
+}
+
+.markdown-body tt,
+.markdown-body code {
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  font-size: 12px;
+  word-wrap: normal;
+}
+
+.markdown-body .octicon {
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-body ::placeholder {
+  color: var(--color-fg-subtle);
+  opacity: 1;
+}
+
+.markdown-body input::-webkit-outer-spin-button,
+.markdown-body input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.markdown-body .pl-c {
+  color: var(--color-prettylights-syntax-comment);
+}
+
+.markdown-body .pl-c1,
+.markdown-body .pl-s .pl-v {
+  color: var(--color-prettylights-syntax-constant);
+}
+
+.markdown-body .pl-e,
+.markdown-body .pl-en {
+  color: var(--color-prettylights-syntax-entity);
+}
+
+.markdown-body .pl-smi,
+.markdown-body .pl-s .pl-s1 {
+  color: var(--color-prettylights-syntax-storage-modifier-import);
+}
+
+.markdown-body .pl-ent {
+  color: var(--color-prettylights-syntax-entity-tag);
+}
+
+.markdown-body .pl-k {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.markdown-body .pl-s,
+.markdown-body .pl-pds,
+.markdown-body .pl-s .pl-pse .pl-s1,
+.markdown-body .pl-sr,
+.markdown-body .pl-sr .pl-cce,
+.markdown-body .pl-sr .pl-sre,
+.markdown-body .pl-sr .pl-sra {
+  color: var(--color-prettylights-syntax-string);
+}
+
+.markdown-body .pl-v,
+.markdown-body .pl-smw {
+  color: var(--color-prettylights-syntax-variable);
+}
+
+.markdown-body .pl-bu {
+  color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
+}
+
+.markdown-body .pl-ii {
+  color: var(--color-prettylights-syntax-invalid-illegal-text);
+  background-color: var(--color-prettylights-syntax-invalid-illegal-bg);
+}
+
+.markdown-body .pl-c2 {
+  color: var(--color-prettylights-syntax-carriage-return-text);
+  background-color: var(--color-prettylights-syntax-carriage-return-bg);
+}
+
+.markdown-body .pl-sr .pl-cce {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-string-regexp);
+}
+
+.markdown-body .pl-ml {
+  color: var(--color-prettylights-syntax-markup-list);
+}
+
+.markdown-body .pl-mh,
+.markdown-body .pl-mh .pl-en,
+.markdown-body .pl-ms {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-markup-heading);
+}
+
+.markdown-body .pl-mi {
+  font-style: italic;
+  color: var(--color-prettylights-syntax-markup-italic);
+}
+
+.markdown-body .pl-mb {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-markup-bold);
+}
+
+.markdown-body .pl-md {
+  color: var(--color-prettylights-syntax-markup-deleted-text);
+  background-color: var(--color-prettylights-syntax-markup-deleted-bg);
+}
+
+.markdown-body .pl-mi1 {
+  color: var(--color-prettylights-syntax-markup-inserted-text);
+  background-color: var(--color-prettylights-syntax-markup-inserted-bg);
+}
+
+.markdown-body .pl-mc {
+  color: var(--color-prettylights-syntax-markup-changed-text);
+  background-color: var(--color-prettylights-syntax-markup-changed-bg);
+}
+
+.markdown-body .pl-mi2 {
+  color: var(--color-prettylights-syntax-markup-ignored-text);
+  background-color: var(--color-prettylights-syntax-markup-ignored-bg);
+}
+
+.markdown-body .pl-mdr {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-meta-diff-range);
+}
+
+.markdown-body .pl-ba {
+  color: var(--color-prettylights-syntax-brackethighlighter-angle);
+}
+
+.markdown-body .pl-sg {
+  color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+}
+
+.markdown-body .pl-corl {
+  text-decoration: underline;
+  color: var(--color-prettylights-syntax-constant-other-reference-link);
+}
+
+.markdown-body [data-catalyst] {
+  display: block;
+}
+
+.markdown-body g-emoji {
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1em;
+  font-style: normal !important;
+  font-weight: 400;
+  line-height: 1;
+  vertical-align: -0.075em;
+}
+
+.markdown-body g-emoji img {
+  width: 1em;
+  height: 1em;
+}
+
+.markdown-body::before {
+  display: table;
+  content: "";
+}
+
+.markdown-body::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdown-body a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.markdown-body .absent {
+  color: var(--color-danger-fg);
+}
+
+.markdown-body .anchor {
+  float: left;
+  padding-right: 4px;
+  margin-left: -20px;
+  line-height: 1;
+}
+
+.markdown-body .anchor:focus {
+  outline: none;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre,
+.markdown-body details {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown-body blockquote>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body sup>a::before {
+  content: "[";
+}
+
+.markdown-body sup>a::after {
+  content: "]";
+}
+
+.markdown-body h1 .octicon-link,
+.markdown-body h2 .octicon-link,
+.markdown-body h3 .octicon-link,
+.markdown-body h4 .octicon-link,
+.markdown-body h5 .octicon-link,
+.markdown-body h6 .octicon-link {
+  color: var(--color-fg-default);
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.markdown-body h1:hover .anchor,
+.markdown-body h2:hover .anchor,
+.markdown-body h3:hover .anchor,
+.markdown-body h4:hover .anchor,
+.markdown-body h5:hover .anchor,
+.markdown-body h6:hover .anchor {
+  text-decoration: none;
+}
+
+.markdown-body h1:hover .anchor .octicon-link,
+.markdown-body h2:hover .anchor .octicon-link,
+.markdown-body h3:hover .anchor .octicon-link,
+.markdown-body h4:hover .anchor .octicon-link,
+.markdown-body h5:hover .anchor .octicon-link,
+.markdown-body h6:hover .anchor .octicon-link {
+  visibility: visible;
+}
+
+.markdown-body h1 tt,
+.markdown-body h1 code,
+.markdown-body h2 tt,
+.markdown-body h2 code,
+.markdown-body h3 tt,
+.markdown-body h3 code,
+.markdown-body h4 tt,
+.markdown-body h4 code,
+.markdown-body h5 tt,
+.markdown-body h5 code,
+.markdown-body h6 tt,
+.markdown-body h6 code {
+  padding: 0 .2em;
+  font-size: inherit;
+}
+
+.markdown-body ul.no-list,
+.markdown-body ol.no-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.markdown-body ol[type="1"] {
+  list-style-type: decimal;
+}
+
+.markdown-body ol[type=a] {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body ol[type=i] {
+  list-style-type: lower-roman;
+}
+
+.markdown-body div>ol:not([type]) {
+  list-style-type: decimal;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body li>p {
+  margin-top: 16px;
+}
+
+.markdown-body li+li {
+  margin-top: .25em;
+}
+
+.markdown-body dl {
+  padding: 0;
+}
+
+.markdown-body dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.markdown-body dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.markdown-body table th {
+  font-weight: 600;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid var(--color-border-default);
+}
+
+.markdown-body table tr {
+  background-color: var(--color-canvas-default);
+  border-top: 1px solid var(--color-border-muted);
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: var(--color-canvas-subtle);
+}
+
+.markdown-body table img {
+  background-color: transparent;
+}
+
+.markdown-body img[align=right] {
+  padding-left: 20px;
+}
+
+.markdown-body img[align=left] {
+  padding-right: 20px;
+}
+
+.markdown-body .emoji {
+  max-width: none;
+  vertical-align: text-top;
+  background-color: transparent;
+}
+
+.markdown-body span.frame {
+  display: block;
+  overflow: hidden;
+}
+
+.markdown-body span.frame>span {
+  display: block;
+  float: left;
+  width: auto;
+  padding: 7px;
+  margin: 13px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border-default);
+}
+
+.markdown-body span.frame span img {
+  display: block;
+  float: left;
+}
+
+.markdown-body span.frame span span {
+  display: block;
+  padding: 5px 0 0;
+  clear: both;
+  color: var(--color-fg-default);
+}
+
+.markdown-body span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.markdown-body span.align-center>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.markdown-body span.align-center span img {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.markdown-body span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.markdown-body span.align-right>span {
+  display: block;
+  margin: 13px 0 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.markdown-body span.align-right span img {
+  margin: 0;
+  text-align: right;
+}
+
+.markdown-body span.float-left {
+  display: block;
+  float: left;
+  margin-right: 13px;
+  overflow: hidden;
+}
+
+.markdown-body span.float-left span {
+  margin: 13px 0 0;
+}
+
+.markdown-body span.float-right {
+  display: block;
+  float: right;
+  margin-left: 13px;
+  overflow: hidden;
+}
+
+.markdown-body span.float-right>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.markdown-body code,
+.markdown-body tt {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: var(--color-neutral-muted);
+  border-radius: 6px;
+}
+
+.markdown-body code br,
+.markdown-body tt br {
+  display: none;
+}
+
+.markdown-body del code {
+  text-decoration: inherit;
+}
+
+.markdown-body pre code {
+  font-size: 100%;
+}
+
+.markdown-body pre>code {
+  padding: 0;
+  margin: 0;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.markdown-body .highlight {
+  margin-bottom: 16px;
+}
+
+.markdown-body .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.markdown-body .highlight pre,
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: var(--color-canvas-subtle);
+  border-radius: 6px;
+}
+
+.markdown-body pre code,
+.markdown-body pre tt {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.markdown-body .csv-data td,
+.markdown-body .csv-data th {
+  padding: 5px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.markdown-body .csv-data .blob-num {
+  padding: 10px 8px 9px;
+  text-align: right;
+  background: var(--color-canvas-default);
+  border: 0;
+}
+
+.markdown-body .csv-data tr {
+  border-top: 0;
+}
+
+.markdown-body .csv-data th {
+  font-weight: 600;
+  background: var(--color-canvas-subtle);
+  border-top: 0;
+}
+
+.markdown-body .footnotes {
+  font-size: 12px;
+  color: var(--color-fg-muted);
+  border-top: 1px solid var(--color-border-default);
+}
+
+.markdown-body .footnotes ol {
+  padding-left: 16px;
+}
+
+.markdown-body .footnotes li {
+  position: relative;
+}
+
+.markdown-body .footnotes li:target::before {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -24px;
+  pointer-events: none;
+  content: "";
+  border: 2px solid var(--color-accent-emphasis);
+  border-radius: 6px;
+}
+
+.markdown-body .footnotes li:target {
+  color: var(--color-fg-default);
+}
+
+.markdown-body .footnotes .data-footnote-backref g-emoji {
+  font-family: monospace;
+}
+
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-body .task-list-item label {
+  font-weight: 400;
+}
+
+.markdown-body .task-list-item.enabled label {
+  cursor: pointer;
+}
+
+.markdown-body .task-list-item+.task-list-item {
+  margin-top: 3px;
+}
+
+.markdown-body .task-list-item .handle {
+  display: none;
+}
+
+.markdown-body .task-list-item-checkbox {
+  margin: 0 .2em .25em -1.6em;
+  vertical-align: middle;
+}
+
+.markdown-body .contains-task-list:dir(rtl) .task-list-item-checkbox {
+  margin: 0 -1.6em .25em .2em;
+}
+
+.markdown-body ::-webkit-calendar-picker-indicator {
+  filter: invert(50%);
+}
+		</style>
         <style>
-            [data-theme="light"],
-            :root:not([data-theme="dark"]) {
-                --primary: #000000;
-                --primary-inverse: #ffffff;
-            }
-            @media (min-width: 992px) {
-                .dm {
-                    display: flex;
-                    justify-content: center;
+                .markdown-body {
+                    box-sizing: border-box;
+                    min-width: 200px;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
                 }
-                .dm > article {
-                    width: 500px;
+
+                @media (max-width: 767px) {
+                    .markdown-body {
+                        padding: 15px;
+                    }
                 }
-            }
-            .newtab {
-                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==)
-                no-repeat center;
-                width: 1em;
-                height: 1em;
-            }
-        </style>
-        <script>
-            window.addEventListener("DOMContentLoaded", async (e) => {
-                var app = {
-                    data() {
-                        return {
-                            p: 0,
-                            zh: navigator.language.toLowerCase().startsWith("zh-"),
-                            mob: navigator.userAgent.toLowerCase().indexOf("iphone") != -1 || navigator.userAgent.toLowerCase().indexOf("android") != -1,
-                        };
-                    },
-                };
-                Vue.createApp(app).mount("body");
-            });
-        </script>
-    </head>
-    <body style="margin: 0">
-        <nav class="container-fluid" style="background-color: #000000">
+		</style>
+<style>
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 300px;
+  position: fixed;
+  height: 100vh;
+  overflow: auto;
+  border-right: 1px dashed #919191;
+}
+.sidebar ul {
+    list-style-type: none;
+}
+.sidebarmob {
+    display:none;
+}
+div.content {
+  margin-left: 300px;
+}
+.sidebar a {
+  display: block;
+  color: black;
+  text-decoration: none;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+  padding: 10px 10px 10px 0px;
+}
+.sidebar a:hover:not(.active) {
+  color: #0969da;
+}
+@media screen and (max-width: 700px) {
+  .sidebar {
+      display:none;
+  }
+  .sidebarmob {
+    display:block;
+  }
+  div.content {margin-left: 0;}
+}
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+    body{background-color: #0d1117}
+    .sidebar a {color: #c9d1d9}
+    .sidebar a:hover:not(.active) {
+      color: #58a6ff;
+    }
+}
+</style>
+<body style="margin:0">
+    
+    <div class="sidebar">
+        <ul>
+<li><a href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow">Getting Started 快速上手</a>
+
+<ul>
+<li><a href="#server" rel="nofollow">Server</a></li>
+<li><a href="#gui-client" rel="nofollow">GUI Client</a></li>
+<li><a href="#cli-client" rel="nofollow">CLI Client</a></li>
+</ul></li>
+<li><a href="#install-cli-%E5%AE%89%E8%A3%85%E5%91%BD%E4%BB%A4%E8%A1%8C" rel="nofollow">Install CLI 安装命令行</a>
+
+<ul>
+<li><a href="#nami" rel="nofollow">nami</a></li>
+<li><a href="#brook" rel="nofollow">brook</a></li>
+<li><a href="#joker" rel="nofollow">joker</a></li>
+<li><a href="#jinbe" rel="nofollow">jinbe</a></li>
+<li><a href="#tun2brook" rel="nofollow">tun2brook</a></li>
+<li><a href="#via-pacman" rel="nofollow">via pacman</a></li>
+<li><a href="#via-brew" rel="nofollow">via brew</a></li>
+<li><a href="#via-docker" rel="nofollow">via docker</a></li>
+</ul></li>
+<li><a href="#daemon-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow">Daemon 守护进程</a></li>
+<li><a href="#auto-start-at-boot-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF" rel="nofollow">Auto Start at Boot 开机自启</a></li>
+<li><a href="#one-click-script-%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC" rel="nofollow">One Click Script 一键脚本</a></li>
+<li><a href="#install-gui-%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow">Install GUI 安装图形客户端</a>
+
+<ul>
+<li><a href="#ios--m1-mac" rel="nofollow">iOS / M1 Mac</a></li>
+<li><a href="#android" rel="nofollow">Android</a></li>
+<li><a href="#intel-mac" rel="nofollow">Intel Mac</a></li>
+<li><a href="#windows" rel="nofollow">Windows</a></li>
+<li><a href="#linux-gui" rel="nofollow">Linux GUI</a></li>
+<li><a href="#openwrt-ipk" rel="nofollow">OpenWrt IPK</a></li>
+</ul></li>
+<li><a href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow">CLI Documentation 命令行文档</a></li>
+<li><a href="#name" rel="nofollow">NAME</a></li>
+<li><a href="#synopsis" rel="nofollow">SYNOPSIS</a></li>
+<li><a href="#global-options" rel="nofollow">GLOBAL OPTIONS</a></li>
+<li><a href="#commands" rel="nofollow">COMMANDS</a>
+
+<ul>
+<li><a href="#server-1" rel="nofollow">server</a></li>
+<li><a href="#client" rel="nofollow">client</a></li>
+<li><a href="#wsserver" rel="nofollow">wsserver</a></li>
+<li><a href="#wsclient" rel="nofollow">wsclient</a></li>
+<li><a href="#wssserver" rel="nofollow">wssserver</a></li>
+<li><a href="#wssclient" rel="nofollow">wssclient</a></li>
+<li><a href="#quicserver" rel="nofollow">quicserver</a></li>
+<li><a href="#quicclient" rel="nofollow">quicclient</a></li>
+<li><a href="#relayoverbrook" rel="nofollow">relayoverbrook</a></li>
+<li><a href="#dnsserveroverbrook" rel="nofollow">dnsserveroverbrook</a></li>
+<li><a href="#tproxy" rel="nofollow">tproxy</a></li>
+<li><a href="#link" rel="nofollow">link</a></li>
+<li><a href="#connect" rel="nofollow">connect</a></li>
+<li><a href="#relay" rel="nofollow">relay</a></li>
+<li><a href="#dnsserver" rel="nofollow">dnsserver</a></li>
+<li><a href="#dnsclient" rel="nofollow">dnsclient</a></li>
+<li><a href="#dohserver" rel="nofollow">dohserver</a></li>
+<li><a href="#dohclient" rel="nofollow">dohclient</a></li>
+<li><a href="#dhcpserver" rel="nofollow">dhcpserver</a></li>
+<li><a href="#socks5" rel="nofollow">socks5</a></li>
+<li><a href="#socks5tohttp" rel="nofollow">socks5tohttp</a></li>
+<li><a href="#pac" rel="nofollow">pac</a></li>
+<li><a href="#testsocks5" rel="nofollow">testsocks5</a></li>
+<li><a href="#testbrook" rel="nofollow">testbrook</a></li>
+<li><a href="#echoserver" rel="nofollow">echoserver</a></li>
+<li><a href="#echoclient" rel="nofollow">echoclient</a></li>
+<li><a href="#completion" rel="nofollow">completion</a></li>
+<li><a href="#mdpage" rel="nofollow">mdpage</a></li>
+<li><a href="#help-h" rel="nofollow">help, h</a></li>
+<li><a href="#manpage" rel="nofollow">manpage</a></li>
+<li><a href="#help-h-1" rel="nofollow">help, h</a></li>
+</ul></li>
+<li><a href="#gui-documentation" rel="nofollow">GUI Documentation</a>
+
+<ul>
+<li><a href="#software-for-which-this-article-applies" rel="nofollow">Software for which this article applies</a></li>
+<li><a href="#intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode" rel="nofollow">Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode</a></li>
+<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun mode, Windows GUI tun mode, Linux GUI tun mode</a></li>
+<li><a href="#configuration-introduction" rel="nofollow">Configuration Introduction</a></li>
+<li><a href="#programmable" rel="nofollow">Programmable</a></li>
+<li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
+<li><a href="#in-guiconfig" rel="nofollow">in_guiconfig</a></li>
+<li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#how-to-write-tengo-script" rel="nofollow">How to write Tengo script</a></li>
+<li><a href="#how-to-debug-script" rel="nofollow">How to debug script</a></li>
+<li><a href="#why-and-how-to-turn-off-system-and-browser-security-dns" rel="nofollow">Why and How to Turn Off System and Browser Security DNS</a></li>
+<li><a href="#install-ca" rel="nofollow">Install CA</a></li>
+<li><a href="#ios" rel="nofollow">iOS</a></li>
+<li><a href="#android-1" rel="nofollow">Android</a></li>
+<li><a href="#macos" rel="nofollow">macOS</a></li>
+<li><a href="#windows-1" rel="nofollow">Windows</a></li>
+<li><a href="#apple-push-problem" rel="nofollow">Apple Push Problem</a></li>
+</ul></li>
+<li><a href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow">图形客户端文档</a>
+
+<ul>
+<li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
+<li><a href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
+<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
+<li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
+<li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
+<li><a href="#in-guiconfig-1" rel="nofollow">in_guiconfig</a></li>
+<li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address-1" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse-1" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow">如何写 Tengo 脚本</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">如何调试脚本</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow">为什么以及如何关闭系统和浏览器安全 DNS</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a></li>
+<li><a href="#ios-1" rel="nofollow">iOS</a></li>
+<li><a href="#android-2" rel="nofollow">Android</a></li>
+<li><a href="#macos-1" rel="nofollow">macOS</a></li>
+<li><a href="#windows-2" rel="nofollow">Windows</a></li>
+<li><a href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow">Apple 推送问题</a></li>
+</ul></li>
+<li><a href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow">Diagram 图解</a>
+
+<ul>
+<li><a href="#overview" rel="nofollow">overview</a></li>
+<li><a href="#withoutbrookprotocol" rel="nofollow">withoutBrookProtocol</a></li>
+<li><a href="#relayoverbrook-1" rel="nofollow">relayoverbrook</a></li>
+<li><a href="#dnsserveroverbrook-1" rel="nofollow">dnsserveroverbrook</a></li>
+<li><a href="#relay-1" rel="nofollow">relay</a></li>
+<li><a href="#dnsserver-1" rel="nofollow">dnsserver</a></li>
+<li><a href="#tproxy-1" rel="nofollow">tproxy</a></li>
+<li><a href="#gui" rel="nofollow">gui</a></li>
+<li><a href="#script" rel="nofollow">script</a></li>
+</ul></li>
+<li><a href="#protocol" rel="nofollow">Protocol</a></li>
+<li><a href="#blog" rel="nofollow">Blog</a></li>
+<li><a href="#youtube" rel="nofollow">YouTube</a></li>
+<li><a href="#telegram" rel="nofollow">Telegram</a></li>
+<li><a href="#pastebin" rel="nofollow">Pastebin</a></li>
+</ul>
+
+    </div>
+    <div class="content">
+        <div class="markdown-body">
+            <h1><a name="brook" class="anchor" href="#brook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Brook</h1>
+
+            <div class="sidebarmob">
             <ul>
-                <li>
-                    <a href="https://github.com/txthinking/brook"><strong style="color: #ffffff">Brook</strong></a>
-                </li>
-            </ul>
-            <ul>
-                <li><a target="_blank" style="color: #ffffff" href="https://www.txthinking.com/talks/">Talks</a></li>
-                <li><a target="_blank" style="color: #ffffff" href="https://www.youtube.com/txthinking">YouTube</a></li>
-                <li><a target="_blank" style="color: #ffffff" href="https://t.me/brookgroup">Telegram</a></li>
-                <li><a target="_blank" style="color: #ffffff" href="https://github.com/txthinking">GitHub</a></li>
-            </ul>
-        </nav>
-        <nav class="container-fluid" style="background: linear-gradient(to right, #5fceae, #447ef0)">                                                                                                       
-            <ul>                                                                                                                                                                                            
-                <li></li>                                                                                                                                                                                   
-            </ul>                                                                                                                                                                                           
-            <ul>                                                                                                                                                                                            
-                <li>                                                                                  
-                    <div style="padding:10px 0px">                                                                                                                                                          
-                        <a style="background-color:red;" v-if="!zh" href="https://docs.google.com/forms/d/e/1FAIpQLScHkbvTNnhmbWps6d1eDrTXSNQgEv9ADyrMJ890dH36XW6THA/viewform?usp=sf_link" role="button">Are
- you willing to pay Plus to support cross-platform Brook to continued development?</a>                                                                                                                      
-                        <a style="background-color:red;" v-if="zh" href="https://docs.google.com/forms/d/e/1FAIpQLScHkbvTNnhmbWps6d1eDrTXSNQgEv9ADyrMJ890dH36XW6THA/viewform?usp=sf_link" role="button">你愿
-意支付 Plus 以支持跨平台小众 Brook 可持续发展吗？</a>                                                 
-                    </div>                                                                                                                                                                                  
-                </li>                                                                                                                                                                                       
-            </ul>                                                                                                                                                                                           
-            <ul>                                                                                                                                                                                            
-                <li></li>                                                                                                                                                                                   
-            </ul>                                                                                                                                                                                           
-        </nav>
-        <main class="container">
-            <center><h1>{{ zh ? '一个为开发者设计的跨平台网络工具' : 'A cross-platform network tool designed for developers' }}</h1></center>
-            <div style="display: flex; justify-content: center; flex-wrap: wrap">
-                <div><button :class="p!=0 ? 'contrast outline' : ''" @click="()=>this.p=0">{{ zh ? '快速上手' : 'Getting Started' }}</button></div>
+<li><a href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow">Getting Started 快速上手</a>
+
+<ul>
+<li><a href="#server" rel="nofollow">Server</a></li>
+<li><a href="#gui-client" rel="nofollow">GUI Client</a></li>
+<li><a href="#cli-client" rel="nofollow">CLI Client</a></li>
+</ul></li>
+<li><a href="#install-cli-%E5%AE%89%E8%A3%85%E5%91%BD%E4%BB%A4%E8%A1%8C" rel="nofollow">Install CLI 安装命令行</a>
+
+<ul>
+<li><a href="#nami" rel="nofollow">nami</a></li>
+<li><a href="#brook" rel="nofollow">brook</a></li>
+<li><a href="#joker" rel="nofollow">joker</a></li>
+<li><a href="#jinbe" rel="nofollow">jinbe</a></li>
+<li><a href="#tun2brook" rel="nofollow">tun2brook</a></li>
+<li><a href="#via-pacman" rel="nofollow">via pacman</a></li>
+<li><a href="#via-brew" rel="nofollow">via brew</a></li>
+<li><a href="#via-docker" rel="nofollow">via docker</a></li>
+</ul></li>
+<li><a href="#daemon-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow">Daemon 守护进程</a></li>
+<li><a href="#auto-start-at-boot-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF" rel="nofollow">Auto Start at Boot 开机自启</a></li>
+<li><a href="#one-click-script-%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC" rel="nofollow">One Click Script 一键脚本</a></li>
+<li><a href="#install-gui-%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow">Install GUI 安装图形客户端</a>
+
+<ul>
+<li><a href="#ios--m1-mac" rel="nofollow">iOS / M1 Mac</a></li>
+<li><a href="#android" rel="nofollow">Android</a></li>
+<li><a href="#intel-mac" rel="nofollow">Intel Mac</a></li>
+<li><a href="#windows" rel="nofollow">Windows</a></li>
+<li><a href="#linux-gui" rel="nofollow">Linux GUI</a></li>
+<li><a href="#openwrt-ipk" rel="nofollow">OpenWrt IPK</a></li>
+</ul></li>
+<li><a href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow">CLI Documentation 命令行文档</a></li>
+<li><a href="#name" rel="nofollow">NAME</a></li>
+<li><a href="#synopsis" rel="nofollow">SYNOPSIS</a></li>
+<li><a href="#global-options" rel="nofollow">GLOBAL OPTIONS</a></li>
+<li><a href="#commands" rel="nofollow">COMMANDS</a>
+
+<ul>
+<li><a href="#server-1" rel="nofollow">server</a></li>
+<li><a href="#client" rel="nofollow">client</a></li>
+<li><a href="#wsserver" rel="nofollow">wsserver</a></li>
+<li><a href="#wsclient" rel="nofollow">wsclient</a></li>
+<li><a href="#wssserver" rel="nofollow">wssserver</a></li>
+<li><a href="#wssclient" rel="nofollow">wssclient</a></li>
+<li><a href="#quicserver" rel="nofollow">quicserver</a></li>
+<li><a href="#quicclient" rel="nofollow">quicclient</a></li>
+<li><a href="#relayoverbrook" rel="nofollow">relayoverbrook</a></li>
+<li><a href="#dnsserveroverbrook" rel="nofollow">dnsserveroverbrook</a></li>
+<li><a href="#tproxy" rel="nofollow">tproxy</a></li>
+<li><a href="#link" rel="nofollow">link</a></li>
+<li><a href="#connect" rel="nofollow">connect</a></li>
+<li><a href="#relay" rel="nofollow">relay</a></li>
+<li><a href="#dnsserver" rel="nofollow">dnsserver</a></li>
+<li><a href="#dnsclient" rel="nofollow">dnsclient</a></li>
+<li><a href="#dohserver" rel="nofollow">dohserver</a></li>
+<li><a href="#dohclient" rel="nofollow">dohclient</a></li>
+<li><a href="#dhcpserver" rel="nofollow">dhcpserver</a></li>
+<li><a href="#socks5" rel="nofollow">socks5</a></li>
+<li><a href="#socks5tohttp" rel="nofollow">socks5tohttp</a></li>
+<li><a href="#pac" rel="nofollow">pac</a></li>
+<li><a href="#testsocks5" rel="nofollow">testsocks5</a></li>
+<li><a href="#testbrook" rel="nofollow">testbrook</a></li>
+<li><a href="#echoserver" rel="nofollow">echoserver</a></li>
+<li><a href="#echoclient" rel="nofollow">echoclient</a></li>
+<li><a href="#completion" rel="nofollow">completion</a></li>
+<li><a href="#mdpage" rel="nofollow">mdpage</a></li>
+<li><a href="#help-h" rel="nofollow">help, h</a></li>
+<li><a href="#manpage" rel="nofollow">manpage</a></li>
+<li><a href="#help-h-1" rel="nofollow">help, h</a></li>
+</ul></li>
+<li><a href="#gui-documentation" rel="nofollow">GUI Documentation</a>
+
+<ul>
+<li><a href="#software-for-which-this-article-applies" rel="nofollow">Software for which this article applies</a></li>
+<li><a href="#intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode" rel="nofollow">Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode</a></li>
+<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun mode, Windows GUI tun mode, Linux GUI tun mode</a></li>
+<li><a href="#configuration-introduction" rel="nofollow">Configuration Introduction</a></li>
+<li><a href="#programmable" rel="nofollow">Programmable</a></li>
+<li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
+<li><a href="#in-guiconfig" rel="nofollow">in_guiconfig</a></li>
+<li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#how-to-write-tengo-script" rel="nofollow">How to write Tengo script</a></li>
+<li><a href="#how-to-debug-script" rel="nofollow">How to debug script</a></li>
+<li><a href="#why-and-how-to-turn-off-system-and-browser-security-dns" rel="nofollow">Why and How to Turn Off System and Browser Security DNS</a></li>
+<li><a href="#install-ca" rel="nofollow">Install CA</a></li>
+<li><a href="#ios" rel="nofollow">iOS</a></li>
+<li><a href="#android-1" rel="nofollow">Android</a></li>
+<li><a href="#macos" rel="nofollow">macOS</a></li>
+<li><a href="#windows-1" rel="nofollow">Windows</a></li>
+<li><a href="#apple-push-problem" rel="nofollow">Apple Push Problem</a></li>
+</ul></li>
+<li><a href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow">图形客户端文档</a>
+
+<ul>
+<li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
+<li><a href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
+<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
+<li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
+<li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
+<li><a href="#in-guiconfig-1" rel="nofollow">in_guiconfig</a></li>
+<li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address-1" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse-1" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow">如何写 Tengo 脚本</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">如何调试脚本</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow">为什么以及如何关闭系统和浏览器安全 DNS</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a></li>
+<li><a href="#ios-1" rel="nofollow">iOS</a></li>
+<li><a href="#android-2" rel="nofollow">Android</a></li>
+<li><a href="#macos-1" rel="nofollow">macOS</a></li>
+<li><a href="#windows-2" rel="nofollow">Windows</a></li>
+<li><a href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow">Apple 推送问题</a></li>
+</ul></li>
+<li><a href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow">Diagram 图解</a>
+
+<ul>
+<li><a href="#overview" rel="nofollow">overview</a></li>
+<li><a href="#withoutbrookprotocol" rel="nofollow">withoutBrookProtocol</a></li>
+<li><a href="#relayoverbrook-1" rel="nofollow">relayoverbrook</a></li>
+<li><a href="#dnsserveroverbrook-1" rel="nofollow">dnsserveroverbrook</a></li>
+<li><a href="#relay-1" rel="nofollow">relay</a></li>
+<li><a href="#dnsserver-1" rel="nofollow">dnsserver</a></li>
+<li><a href="#tproxy-1" rel="nofollow">tproxy</a></li>
+<li><a href="#gui" rel="nofollow">gui</a></li>
+<li><a href="#script" rel="nofollow">script</a></li>
+</ul></li>
+<li><a href="#protocol" rel="nofollow">Protocol</a></li>
+<li><a href="#blog" rel="nofollow">Blog</a></li>
+<li><a href="#youtube" rel="nofollow">YouTube</a></li>
+<li><a href="#telegram" rel="nofollow">Telegram</a></li>
+<li><a href="#pastebin" rel="nofollow">Pastebin</a></li>
+</ul>
+
             </div>
-            <div style="display: flex; justify-content: center; flex-wrap: wrap">
-                <div><button :class="p!=1 ? 'contrast outline' : ''" @click="()=>this.p=1">{{ zh ? '安装命令行' : 'Install CLI' }}</button></div>
-                <div style="width: 30px"></div>
-                <div><button :class="p!=2 ? 'contrast outline' : ''" @click="()=>this.p=2">{{ zh ? '安装图形端' : 'Install GUI' }}</button></div>
-            </div>
-            <div style="display: flex; justify-content: center; flex-wrap: wrap">
-                <div><button :class="p!=3 ? 'contrast outline' : ''" @click="()=>this.p=3">{{ zh ? '命令行文档' : 'CLI Documentation' }}</button></div>
-                <div style="width: 30px"></div>
-                <div><button :class="p!=8 ? 'contrast outline' : ''" @click="()=>this.p=8">{{ zh ? '图形端文档' : 'GUI Documentation' }}</button></div>
-                <div style="width: 30px"></div>
-                <div><button :class="p!=9 ? 'contrast outline' : ''" @click="()=>this.p=9">{{ zh ? '图解' : 'Diagram' }}</button></div>
-            </div>
-            <div style="display: flex; justify-content: center; flex-wrap: wrap">
-                <div><button :class="p!=4 ? 'contrast outline' : ''" @click="()=>this.p=4">{{ zh ? '守护进程' : 'Daemon' }}</button></div>
-                <div style="width: 30px"></div>
-                <div><button :class="p!=5 ? 'contrast outline' : ''" @click="()=>this.p=5">{{ zh ? '开机自启' : 'Auto Start at Boot' }}</button></div>
-                <div style="width: 30px"></div>
-                <div><button :class="p!=6 ? 'contrast outline' : ''" @click="()=>this.p=6">{{ zh ? '一键脚本' : 'One Click Script' }}</button></div>
-            </div>
-            <div style="display: flex; justify-content: center; flex-wrap: wrap">
-                <div style="padding-bottom:20px;"><a class="contrast outline" href="https://www.txthinking.com/talks/" target="_blank" role="button" style="display:flex;align-items:center;"><div>{{ zh ? '博客' : 'Blog' }}</div> <div class="newtab"></div></a></div>
-                <div style="width: 30px"></div>
-                <div style="padding-bottom:20px;"><a class="contrast outline" href="https://youtube.com/txthinking" target="_blank" role="button" style="display:flex;align-items:center;"><div>YouTube</div> <div class="newtab"></div></a></div>
-                <div style="width: 30px"></div>
-                <div style="padding-bottom:20px;"><a class="contrast outline" href="https://t.me/s/txthinking_news" target="_blank" role="button" style="display:flex;align-items:center;"><div>Telegram</div> <div class="newtab"></div></a></div>
-                <div style="width: 30px"></div>
-                <div style="padding-bottom:20px;"><a class="contrast outline" href="https://ooo.soso.ooo" target="_blank" role="button" style="display:flex;align-items:center;"><div>Pastebin</div> <div class="newtab"></div></a></div>
-            </div>
-            <!-- <div v-if="zh" style="display: flex; justify-content: center; flex-wrap: wrap">
-                <a class="contrast outline" style="border-color: #b04386; color: #b04386" href="https://www.txthinking.com/shiliew.html?utm_source=brookdocs" target="_blank" role="button"> Sponsors ❤️ Shiliew - Not just VPN </a>
-            </div> -->
-            <div class="dm" v-if="p==0">
-                <article>
-                    <div><h6>{{ zh ? '服务端' : 'Server' }}</h6></div>
-                    <pre><code>bash <(curl https://bash.ooo/nami.sh)</code></pre>
-                    <pre><code>nami install joker brook
-joker brook server -l :9999 -p hello</code></pre>
-                    <div style="padding: 20px"><hr /></div>
-                    <div>
-                        <div>
-                            <h6>{{ zh ? '图形客户端' : 'GUI Client' }} <i style="font-size: 10px">{{ zh ? '替换 1.2.3.4 为你的服务器IP' : 'replace 1.2.3.4 with your server IP'}}</i></h6>
-                        </div>
-                        <div>
-                            <div style="font-size: 14px">brook server: <code style="font-size: 12px">1.2.3.4:9999</code></div>
-                            <div style="height: 5px"></div>
-                            <div style="font-size: 14px">password: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code style="font-size: 12px">hello</code></div>
-                        </div>
-                        <div style="height: 20px"></div>
-                        <div>
-                            <h6>{{ zh ? '命令客户端' : 'CLI Client'}} <i style="font-size: 10px">{{ zh ? '创建' : 'create' }} socks5://127.0.0.1:1080</i></h6>
-                        </div>
-                        <code style="font-size: 12px">brook client -s 1.2.3.4:9999 -p hello</code>
-                    </div>
-                </article>
-            </div>
-            <div class="dm" v-if="p==1">
-                <article>
-                    <div>
-                        <h6><a href="https://github.com/txthinking/nami" target="_blank">nami</a> <i style="font-size: 10px">{{ zh ? '从任何地方下载任何东西' : 'The easy way to download anything from anywhere' }}</i></h6>
-                    </div>
-                    <pre><code>bash <(curl https://bash.ooo/nami.sh)</code></pre>
-                    <div>
-                        <h6><a href="https://github.com/txthinking/brook" target="_blank">brook</a></h6>
-                    </div>
-                    <pre><code>nami install brook</code></pre>
-                    <hr />
-                    <div>
-                        <h6><a href="https://github.com/txthinking/joker" target="_blank">joker</a> <i style="font-size: 10px">{{ zh ? '守护进程' : 'daemon' }}</i></h6>
-                    </div>
-                    <pre><code>nami install joker</code></pre>
-                    <div>
-                        <h6><a href="https://github.com/txthinking/jinbe" target="_blank">jinbe</a> <i style="font-size: 10px">{{ zh ? '开机自启. 感谢小猫猫' : 'auto start at boot. thanks to the cute cat' }}</i></h6>
-                    </div>
-                    <pre><code>nami install jinbe</code></pre>
-                    <div>
-                        <h6><a href="https://github.com/txthinking/tun2brook" target="_blank">tun2brook</a> <i style="font-size: 10px">{{ zh ? '客户端侧代理系统所有流量' : 'proxy all traffic on client-side' }}</i></h6>
-                    </div>
-                    <pre><code>nami install tun2brook</code></pre>
-                    <hr />
-                    <div>
-                        <h6>
-                            via pacman <a style="text-decoration: none" href="https://archlinux.org/packages/community/x86_64/brook/" target="_blank"><i style="font-size: 10px">{{ zh ? '由 felixonmars 维护' : 'maintained by felixonmars' }}</i></a>
-                        </h6>
-                    </div>
-                    <pre><code>pacman -S brook</code></pre>
-                    <div>
-                        <h6>
-                            via brew <a style="text-decoration: none" href="https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/brook.rb" target="_blank"><i style="font-size: 10px">{{ zh ? '维护者' : 'maintainers' }}</i></a>
-                        </h6>
-                    </div>
-                    <pre><code>brew install brook</code></pre>
-                    <div>
-                        <h6>
-                            via docker <a style="text-decoration: none" href="https://hub.docker.com/r/teddysun/brook" target="_blank"><i style="font-size: 10px">{{ zh ? '由 teddysun 维护' : 'maintained by teddysun' }}</i></a>
-                        </h6>
-                    </div>
-                    <pre><code>docker pull teddysun/brook</code></pre>
-                </article>
-            </div>
-            <div v-if="p==2">
-                <article>
-                    <div style="display: flex; flex-direction: row; justify-content: space-around; flex-wrap: wrap">
-                        <a href="https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642" target="_blank"
-                            ><div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
-                                <img src="./images/appstore.png" style="width: 50px; height: 50px" />
-                                <div style="font-size: 12px">iOS / M1 Mac</div>
-                            </div></a
-                        ><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk"
-                            ><div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
-                                <img src="./images/android.png" style="width: 50px; height: 50px" />
-                                <div style="font-size: 12px">Android APK</div>
-                            </div></a
-                        ><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.dmg"
-                            ><div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
-                                <img src="./images/mac.png" style="width: 50px; height: 50px" />
-                                <div style="font-size: 12px">Intel Mac</div>
-                            </div></a
-                        >
-                        <div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
-                            <a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin" target="_blank">
-                                <img src="./images/linux.png" style="width: 50px; height: 50px" />
-                            </a>
-                            <div style="font-size: 12px">Linux GUI</div>
-                            <abbr style="font-size: 12px" :data-tooltip="zh ? '在 Ubuntu 22.04 上开发测试' : 'Developing and testing on Ubuntu 22.04'">tip</abbr>
-                            <a style="font-size: 12px; color: grey" href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" target="_blank">Socks5 Configurator</a>
-                        </div>
-                        <a href="https://github.com/txthinking/brook/releases/latest/download/Brook.exe"
-                            ><div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
-                                <img src="./images/windows.png" style="width: 50px; height: 50px" />
-                                <div style="font-size: 12px">Windows EXE</div>
-                            </div></a
-                        >
-                        <div style="display: flex; flex-direction: column; align-items: center; padding: 30px">
-                            <a href="https://github.com/txthinking/brook/releases" target="_blank">
-                                <img src="./images/openwrt.png" style="width: 50px; height: 50px" />
-                            </a>
-                            <div style="font-size: 12px">OpenWrt IPK</div>
-                            <abbr style="font-size: 12px" :data-tooltip="zh ? '安装之后需要刷新页面会看到菜单' : 'After installation, you need to refresh the page to see the menu'">tip</abbr>
-                        </div>
-                    </div>
-                </article>
-            </div>
-            <div class="dm" v-if="p==4">
-                <article>
-                    <div>
-                        <h6>{{ zh ? '使用 joker 运行 brook 守护进程' : 'Run the brook daemon with joker' }}</h6>
-                    </div>
-                    <pre><code>joker brook server -l :9999 -p hello</code></pre>
-                    <div>
-                        <h6>{{ zh ? '查看最后一个命令的 ID' : 'Get the last command ID' }}</h6>
-                    </div>
-                    <pre><code>joker last</code></pre>
-                    <div>
-                        <h6>{{ zh ? '查看某个命令的输出和错误' : 'View output and error of a command' }}</h6>
-                    </div>
-                    <pre><code>joker log ID</code></pre>
-                    <div>
-                        <h6>{{ zh ? '查看运行的命令列表' : 'View running commmands' }}</h6>
-                    </div>
-                    <pre><code>joker list</code></pre>
-                    <div>
-                        <h6>{{ zh ? '停止某个命令' : 'Stop a running command' }}</h6>
-                    </div>
-                    <pre><code>joker stop ID</code></pre>
-                </article>
-            </div>
-            <div class="dm" v-if="p==5">
-                <article>
-                    <div>
-                        <h6>{{ zh ? '添加开机自启命令' : 'Add one auto-start command at boot' }}</h6>
-                    </div>
-                    <pre><code>jinbe joker brook server -l :9999 -p hello</code></pre>
-                    <div>
-                        <h6>{{ zh ? '查看添加的开机命令' : 'View added commmands' }}</h6>
-                    </div>
-                    <pre><code>jinbe list</code></pre>
-                    <div>
-                        <h6>{{ zh ? '移除某个开机命令' : 'Remove one added command' }}</h6>
-                    </div>
-                    <pre><code>jinbe remove ID</code></pre>
-                </article>
-            </div>
-            <div class="dm" v-if="p==6">
-                <article>
-                    <pre><code>bash <(curl https://bash.ooo/brook.sh)</code></pre>
-                </article>
-            </div>
-            <div v-if="p==3">
-                <article style="padding: 10px;">
-                    <div style="display:flex;justify-content:center;padding-bottom:10px;">
-                        <a href="cli.html" target="_blank"><div class="newtab"></div></a>
-                    </div>
-                    <iframe src="cli.html" :style="!mob ? 'width: 100%; height: 17000px' : 'width: 100%; height: 26000px'"></iframe>
-                </article>
-            </div>
-            <div v-if="p==9">
-                <article style="padding: 10px;">
-                    <div style="display:flex;justify-content:center;padding-bottom:10px;">
-                        <a href="diagram.html" target="_blank"><div class="newtab"></div></a>
-                    </div>
-                    <iframe src="diagram.html" style="width: 100%; height: 10000px"></iframe>
-                </article>
-            </div>
-            <div v-if="p==7">
-                <article style="padding: 10px;">
-                    <div style="display:flex;justify-content:center;padding-bottom:10px;">
-                        <a :href="zh ? 'example-zh.html' : 'example.html'" target="_blank"><div class="newtab"></div></a>
-                    </div>
-                    <iframe :src="zh ? 'example-zh.html' : 'example.html'" :style="!mob ? 'width: 100%; height: 6500px' : 'width: 100%; height: 9000px'"></iframe>
-                </article>
-            </div>
-            <div v-if="p==8">
-                <article style="padding: 10px;">
-                    <div style="display:flex;justify-content:center;padding-bottom:10px;">
-                        <a :href="zh ? 'gui-zh.html' : 'gui.html'" target="_blank"><div class="newtab"></div></a>
-                    </div>
-                    <iframe :src="zh ? 'gui-zh.html' : 'gui.html'" :style="!mob ? 'width: 100%; height: 11000px' : 'width: 100%; height: 14500px'"></iframe>
-                </article>
-            </div>
-        </main>
-        <footer class="container" style="font-size: 14px">
-            <center>
-                <p style="font-size: 14px"><a style="font-size: 14px" href="https://github.com/txthinking/brook/tree/master/protocol">Undetectable Protocol</a></p>
-            </center>
-        </footer>
-    </body>
+            
+
+
+
+<p>A cross-platform network tool</p>
+<h1><a name="getting-started-快速上手" class="anchor" href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Getting Started 快速上手</h1>
+<h2><a name="server" class="anchor" href="#server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Server</h2>
+
+<pre><code>bash &lt;(curl https://bash.ooo/nami.sh)
+</code></pre>
+
+<pre><code>nami install brook
+</code></pre>
+
+<pre><code>brook server -l :9999 -p hello
+</code></pre>
+<h2><a name="gui-client" class="anchor" href="#gui-client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+GUI Client</h2>
+
+<table>
+<thead>
+<tr>
+<th>iOS / M1 Mac</th>
+<th>Android</th>
+<th>Intel Mac</th>
+<th>Windows</th>
+<th>Linux</th>
+<th>OpenWrt</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><a href="https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642" rel="nofollow"><img src="./images/appstore.png" alt=""></a></td>
+<td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk" rel="nofollow"><img src="./images/android.png" alt=""></a></td>
+<td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.dmg" rel="nofollow"><img src="./images/mac.png" alt=""></a></td>
+<td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.exe" rel="nofollow"><img src="./images/windows.png" alt="Windows"></a></td>
+<td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin" rel="nofollow"><img src="./images/linux.png" alt=""></a></td>
+<td><a href="https://github.com/txthinking/brook/releases" rel="nofollow"><img src="./images/openwrt.png" alt="OpenWrt"></a></td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>Linux: <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a><br/>
+OpenWrt: After installation, you need to refresh the page to see the menu</p>
+</blockquote>
+
+<ul>
+<li>brook server: <code>1.2.3.4:9999</code> replace 1.2.3.4 with your server IP</li>
+<li>password: <code>hello</code></li>
+</ul>
+<h2><a name="cli-client" class="anchor" href="#cli-client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+CLI Client</h2>
+
+<pre><code>brook client -s 1.2.3.4:9999 -p hello --socks5 127.0.0.1:1080
+</code></pre>
+<h1><a name="install-cli-安装命令行" class="anchor" href="#install-cli-%E5%AE%89%E8%A3%85%E5%91%BD%E4%BB%A4%E8%A1%8C" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Install CLI 安装命令行</h1>
+<h2><a name="nami" class="anchor" href="#nami" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+nami</h2>
+
+<p>The easy way to download anything from anywhere</p>
+
+<pre><code>bash &lt;(curl https://bash.ooo/nami.sh)
+</code></pre>
+<h2><a name="brook" class="anchor" href="#brook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+brook</h2>
+
+<p>A cross-platform network tool</p>
+
+<pre><code>nami install brook
+</code></pre>
+<h2><a name="joker" class="anchor" href="#joker" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+joker</h2>
+
+<p>Joker can turn process into daemon</p>
+
+<pre><code>nami install joker
+</code></pre>
+<h2><a name="jinbe" class="anchor" href="#jinbe" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+jinbe</h2>
+
+<p>Auto start at boot. thanks to the cute cat</p>
+
+<pre><code>nami install jinbe
+</code></pre>
+<h2><a name="tun2brook" class="anchor" href="#tun2brook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+tun2brook</h2>
+
+<p>Proxy all traffic just one line command</p>
+
+<pre><code>nami install tun2brook
+</code></pre>
+<h2><a name="via-pacman" class="anchor" href="#via-pacman" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+via pacman</h2>
+
+<p>maintained by felixonmars</p>
+
+<pre><code>pacman -S brook
+</code></pre>
+<h2><a name="via-brew" class="anchor" href="#via-brew" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+via brew</h2>
+
+<pre><code>brew install brook
+</code></pre>
+<h2><a name="via-docker" class="anchor" href="#via-docker" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+via docker</h2>
+
+<p>maintained by teddysun</p>
+
+<pre><code>docker pull teddysun/brook
+</code></pre>
+<h1><a name="daemon-守护进程" class="anchor" href="#daemon-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Daemon 守护进程</h1>
+
+<p>Run the brook daemon with joker</p>
+
+<pre><code>joker brook server -l :9999 -p hello
+</code></pre>
+
+<p>Get the last command ID</p>
+
+<pre><code>joker last
+</code></pre>
+
+<p>View output and error of a command</p>
+
+<pre><code>joker log ID
+</code></pre>
+
+<p>View running commmands</p>
+
+<pre><code>joker list
+</code></pre>
+
+<p>Stop a running command</p>
+
+<pre><code>joker stop ID
+</code></pre>
+<h1><a name="auto-start-at-boot-开机自启" class="anchor" href="#auto-start-at-boot-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Auto Start at Boot 开机自启</h1>
+
+<p>Add one auto-start command at boot</p>
+
+<pre><code>jinbe joker brook server -l :9999 -p hello
+</code></pre>
+
+<p>View added commmands</p>
+
+<pre><code>jinbe list
+</code></pre>
+
+<p>Remove one added command</p>
+
+<pre><code>jinbe remove ID
+</code></pre>
+<h1><a name="one-click-script-一键脚本" class="anchor" href="#one-click-script-%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+One Click Script 一键脚本</h1>
+
+<pre><code>bash &lt;(curl https://bash.ooo/brook.sh)
+</code></pre>
+<h1><a name="install-gui-安装图形客户端" class="anchor" href="#install-gui-%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Install GUI 安装图形客户端</h1>
+<h2><a name="ios-m1-mac" class="anchor" href="#ios-m1-mac" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS / M1 Mac</h2>
+
+<p><a href="https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642" rel="nofollow"><img src="./images/appstore.png" alt=""></a></p>
+<h2><a name="android" class="anchor" href="#android" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Android</h2>
+
+<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk" rel="nofollow"><img src="./images/android.png" alt=""></a></p>
+<h2><a name="intel-mac" class="anchor" href="#intel-mac" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Intel Mac</h2>
+
+<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.dmg" rel="nofollow"><img src="./images/mac.png" alt=""></a></p>
+<h2><a name="windows" class="anchor" href="#windows" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Windows</h2>
+
+<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.exe" rel="nofollow"><img src="./images/windows.png" alt="Windows"></a></p>
+<h2><a name="linux-gui" class="anchor" href="#linux-gui" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Linux GUI</h2>
+
+<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin" rel="nofollow"><img src="./images/linux.png" alt=""></a></p>
+
+<p>Developing and testing on Ubuntu 22.04</p>
+
+<p><a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></p>
+<h2><a name="openwrt-ipk" class="anchor" href="#openwrt-ipk" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+OpenWrt IPK</h2>
+
+<p><a href="https://github.com/txthinking/brook/releases" rel="nofollow"><img src="./images/openwrt.png" alt="OpenWrt"></a></p>
+
+<p>After installation, you need to refresh the page to see the menu</p>
+<h1><a name="cli-documentation-命令行文档" class="anchor" href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+CLI Documentation 命令行文档</h1>
+<h1><a name="name" class="anchor" href="#name" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+NAME</h1>
+
+<p>Brook - A cross-platform network tool</p>
+<h1><a name="synopsis" class="anchor" href="#synopsis" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+SYNOPSIS</h1>
+
+<p>Brook</p>
+
+<pre><code>[--dialWithDNSPrefer]=[value]
+[--dialWithDNS]=[value]
+[--dialWithIP4]=[value]
+[--dialWithIP6]=[value]
+[--dialWithNIC]=[value]
+[--dialWithSocks5Password]=[value]
+[--dialWithSocks5TCPTimeout]=[value]
+[--dialWithSocks5UDPTimeout]=[value]
+[--dialWithSocks5Username]=[value]
+[--dialWithSocks5]=[value]
+[--help|-h]
+[--log]=[value]
+[--pprof]=[value]
+[--prometheusPath]=[value]
+[--prometheus]=[value]
+[--tag]=[value]
+[--version|-v]
+</code></pre>
+
+<p><strong>Usage</strong>:</p>
+
+<pre><code>Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
+</code></pre>
+<h1><a name="global-options" class="anchor" href="#global-options" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+GLOBAL OPTIONS</h1>
+
+<p><strong>--dialWithDNS</strong>=&#34;&#34;: When a domain name needs to be resolved, use the specified DNS. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required. Note that for client-side commands, this does not affect the client passing the domain address to the server</p>
+
+<p><strong>--dialWithDNSPrefer</strong>=&#34;&#34;: This is used with the dialWithDNS parameter. Prefer A record or AAAA record. Value is A or AAAA</p>
+
+<p><strong>--dialWithIP4</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used</p>
+
+<p><strong>--dialWithIP6</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used</p>
+
+<p><strong>--dialWithNIC</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside, both TCP and UDP, it is used to specify the NIC used</p>
+
+<p><strong>--dialWithSocks5</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081</p>
+
+<p><strong>--dialWithSocks5Password</strong>=&#34;&#34;: If there is</p>
+
+<p><strong>--dialWithSocks5TCPTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--dialWithSocks5UDPTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--dialWithSocks5Username</strong>=&#34;&#34;: If there is</p>
+
+<p><strong>--help, -h</strong>: show help</p>
+
+<p><strong>--log</strong>=&#34;&#34;: Enable log. A valid value is file path or &#39;console&#39;. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true</p>
+
+<p><strong>--pprof</strong>=&#34;&#34;: go http pprof listen addr, such as :6060</p>
+
+<p><strong>--prometheus</strong>=&#34;&#34;: prometheus http listen addr, such as :7070. If it is transmitted on the public network, it is recommended to use it with nico</p>
+
+<p><strong>--prometheusPath</strong>=&#34;&#34;: prometheus http path, such as /xxx. If it is transmitted on the public network, a hard-to-guess value is recommended</p>
+
+<p><strong>--tag</strong>=&#34;&#34;: Tag can be used to the process, will be append into log, such as: &#39;key1:value1&#39;</p>
+
+<p><strong>--version, -v</strong>: print the version</p>
+<h1><a name="commands" class="anchor" href="#commands" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+COMMANDS</h1>
+<h2><a name="server" class="anchor" href="#server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+server</h2>
+
+<p>Run as brook server, both TCP and UDP</p>
+
+<p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
+
+<p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:9999&#39;</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Server password</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
+<h2><a name="client" class="anchor" href="#client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+client</h2>
+
+<p>Run as brook client, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook client &lt;-&gt; $ brook server &lt;-&gt; dst]</p>
+
+<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Brook server password</p>
+
+<p><strong>--server, -s</strong>=&#34;&#34;: Brook server address, like: 1.2.3.4:9999</p>
+
+<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
+
+<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--udpovertcp</strong>: UDP over TCP</p>
+<h2><a name="wsserver" class="anchor" href="#wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+wsserver</h2>
+
+<p>Run as brook wsserver, both TCP and UDP, it will start a standard http server and websocket server</p>
+
+<p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
+
+<p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:80&#39;</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Server password</p>
+
+<p><strong>--path</strong>=&#34;&#34;: URL path (default: /ws)</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
+
+<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
+<h2><a name="wsclient" class="anchor" href="#wsclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+wsclient</h2>
+
+<p>Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook wsclient &lt;-&gt; $ brook wsserver &lt;-&gt; dst]</p>
+
+<p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
+
+<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Brook wsserver password</p>
+
+<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
+
+<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
+
+<p><strong>--wsserver, -s</strong>=&#34;&#34;: Brook wsserver address, like: ws://1.2.3.4:80, if no path then /ws will be used. Do not omit the port under any circumstances</p>
+<h2><a name="wssserver" class="anchor" href="#wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+wssserver</h2>
+
+<p>Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server</p>
+
+<p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
+
+<p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p>
+
+<p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
+
+<p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
+
+<p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Server password</p>
+
+<p><strong>--path</strong>=&#34;&#34;: URL path (default: /ws)</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
+
+<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
+<h2><a name="wssclient" class="anchor" href="#wssclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+wssclient</h2>
+
+<p>Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook wssclient &lt;-&gt; $ brook wssserver &lt;-&gt; dst]</p>
+
+<p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
+
+<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem</p>
+
+<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
+
+<p><strong>--insecure</strong>: Client do not verify the server&#39;s certificate chain and host name</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Brook wssserver password</p>
+
+<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
+
+<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
+
+<p><strong>--wssserver, -s</strong>=&#34;&#34;: Brook wssserver address, like: wss://google.com:443, if no path then /ws will be used. Do not omit the port under any circumstances</p>
+<h2><a name="quicserver" class="anchor" href="#quicserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+quicserver</h2>
+
+<p>Run as brook quicserver, both TCP and UDP</p>
+
+<p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
+
+<p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p>
+
+<p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
+
+<p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
+
+<p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Server password</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
+
+<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
+<h2><a name="quicclient" class="anchor" href="#quicclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+quicclient</h2>
+
+<p>Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook quicclient &lt;-&gt; $ brook quicserver &lt;-&gt; dst]. (Note that the global dial parameter is ignored now)</p>
+
+<p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
+
+<p><strong>--ca</strong>=&#34;&#34;: Specify ca instead of insecure, such as /path/to/ca.pem</p>
+
+<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
+
+<p><strong>--insecure</strong>: Client do not verify the server&#39;s certificate chain and host name</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Brook quicserver password</p>
+
+<p><strong>--quicserver, -s</strong>=&#34;&#34;: Brook quicserver address, like: quic://google.com:443. Do not omit the port under any circumstances</p>
+
+<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
+
+<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
+<h2><a name="relayoverbrook" class="anchor" href="#relayoverbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+relayoverbrook</h2>
+
+<p>Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src &lt;-&gt; from address &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; to address]</p>
+
+<p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
+
+<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p>
+
+<p><strong>--from, -f, -l</strong>=&#34;&#34;: Listen address: like &#39;:9999&#39;</p>
+
+<p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
+
+<p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
+
+<p><strong>--to, -t</strong>=&#34;&#34;: Address which relay to, like: 1.2.3.4:9999</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
+
+<p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
+<h2><a name="dnsserveroverbrook" class="anchor" href="#dnsserveroverbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsserveroverbrook</h2>
+
+<p>Run as dns server over brook, both TCP and UDP, [src &lt;-&gt; $ brook dnserversoverbrook &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dns] or [src &lt;-&gt; $ brook dnsserveroverbrook &lt;-&gt; dnsForBypass]</p>
+
+<p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--bypassDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p>
+
+<p><strong>--disableA</strong>: Disable A query</p>
+
+<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
+
+<p><strong>--dns</strong>=&#34;&#34;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p>
+
+<p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443" rel="nofollow">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p>
+
+<p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:53</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
+
+<p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
+
+<p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
+<h2><a name="tproxy" class="anchor" href="#tproxy" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+tproxy</h2>
+
+<p>Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src &lt;-&gt; $ brook tproxy &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dst]</p>
+
+<p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--bypassCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
+
+<p><strong>--bypassCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
+
+<p><strong>--bypassDomainList</strong>=&#34;&#34;: One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--bypassGeoIP</strong>=&#34;&#34;: Bypass IP by Geo country code, such as US</p>
+
+<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p>
+
+<p><strong>--disableA</strong>: Disable A query</p>
+
+<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
+
+<p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443" rel="nofollow">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p>
+
+<p><strong>--dnsForDefault</strong>=&#34;&#34;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p>
+
+<p><strong>--dnsListen</strong>=&#34;&#34;: Start a DNS server, like: &#39;:53&#39;. MUST contain IP, like &#39;192.168.1.1:53&#39;, if you expect your gateway to accept requests from clients to other public DNS servers at the same time</p>
+
+<p><strong>--doNotRunScripts</strong>: This will not change iptables and others if you want to do by yourself</p>
+
+<p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
+
+<p><strong>--link</strong>=&#34;&#34;: brook link. This will ignore server, password, udpovertcp, address, insecure, withoutBrookProtocol, ca</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, DO NOT contain IP, just like: &#39;:8888&#39;. No need to operate iptables by default! (default: :8888)</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
+
+<p><strong>--redirectDNS</strong>=&#34;&#34;: It is usually the value of dnsListen. If the client has set custom DNS instead of dnsListen, this parameter can be intercepted and forwarded to dnsListen. Usually you don&#39;t need to set this, only if you want to control it instead of being proxied directly as normal UDP data.</p>
+
+<p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+
+<p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
+
+<p><strong>--webListen</strong>=&#34;&#34;: Ignore all other parameters, run web UI, like: &#39;:9999&#39;</p>
+
+<p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
+<h2><a name="link" class="anchor" href="#link" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+link</h2>
+
+<p>Generate brook link</p>
+
+<p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
+
+<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca for untrusted cert, such as /path/to/ca.pem</p>
+
+<p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
+
+<p><strong>--name</strong>=&#34;&#34;: Give this server a name</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
+
+<p><strong>--server, -s</strong>=&#34;&#34;: Support brook server, brook wsserver, brook wssserver, socks5 server, brook quicserver. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080, quic://google.com:443</p>
+
+<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
+
+<p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
+
+<p><strong>--username, -u</strong>=&#34;&#34;: Username, when server is socks5 server</p>
+
+<p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
+<h2><a name="connect" class="anchor" href="#connect" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+connect</h2>
+
+<p>Run as client and connect to brook link, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook connect &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dst]</p>
+
+<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
+
+<p><strong>--link, -l</strong>=&#34;&#34;: brook link, you can get it via $ brook link</p>
+
+<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
+
+<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+<h2><a name="relay" class="anchor" href="#relay" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+relay</h2>
+
+<p>Run as standalone relay, both TCP and UDP, this means access [from address] is equal to access [to address], [src &lt;-&gt; from address &lt;-&gt; to address]</p>
+
+<p><strong>--from, -f, -l</strong>=&#34;&#34;: Listen address: like &#39;:9999&#39;</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--to, -t</strong>=&#34;&#34;: Address which relay to, like: 1.2.3.4:9999</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+<h2><a name="dnsserver" class="anchor" href="#dnsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsserver</h2>
+
+<p>Run as standalone dns server</p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--disableA</strong>: Disable A query</p>
+
+<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
+
+<p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:53</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+<h2><a name="dnsclient" class="anchor" href="#dnsclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsclient</h2>
+
+<p>Send a dns query</p>
+
+<p><strong>--dns, -s</strong>=&#34;&#34;: DNS server, such as 8.8.8.8:53 (default: 8.8.8.8:53)</p>
+
+<p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p>
+
+<p><strong>--short</strong>: Short for A/AAAA</p>
+
+<p><strong>--type, -t</strong>=&#34;&#34;: Type, such as A (default: A)</p>
+<h2><a name="dohserver" class="anchor" href="#dohserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dohserver</h2>
+
+<p>Run as standalone doh server</p>
+
+<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
+
+<p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
+
+<p><strong>--disableA</strong>: Disable A query</p>
+
+<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
+
+<p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p>
+
+<p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443, if you want to create a https server. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p>
+
+<p><strong>--listen</strong>=&#34;&#34;: listen address, if you want to create a http server behind nico</p>
+
+<p><strong>--path</strong>=&#34;&#34;: URL path (default: /dns-query)</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
+<h2><a name="dohclient" class="anchor" href="#dohclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dohclient</h2>
+
+<p>Send a dns query</p>
+
+<p><strong>--doh, -s</strong>=&#34;&#34;: DOH server, the address is required (default: <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>)</p>
+
+<p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p>
+
+<p><strong>--short</strong>: Short for A/AAAA</p>
+
+<p><strong>--type, -t</strong>=&#34;&#34;: Type, such as A (default: A)</p>
+<h2><a name="dhcpserver" class="anchor" href="#dhcpserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dhcpserver</h2>
+
+<p>Run as standalone dhcp server. Note that you need to stop other dhcp servers, if there are.</p>
+
+<p><strong>--cache</strong>=&#34;&#34;: Cache file, local absolute file path, default is $HOME/.brook.dhcpserver</p>
+
+<p><strong>--count</strong>=&#34;&#34;: IP range from the start, which you want to assign to clients (default: 100)</p>
+
+<p><strong>--dnsserver</strong>=&#34;&#34;: The dns server which you want to assign to clients, such as: 192.168.1.1 or 8.8.8.8</p>
+
+<p><strong>--gateway</strong>=&#34;&#34;: The router gateway which you want to assign to clients, such as: 192.168.1.1</p>
+
+<p><strong>--interface</strong>=&#34;&#34;: Select interface on multi interface device. Linux only</p>
+
+<p><strong>--netmask</strong>=&#34;&#34;: Subnet netmask which you want to assign to clients (default: 255.255.255.0)</p>
+
+<p><strong>--serverip</strong>=&#34;&#34;: DHCP server IP, the IP of the this machine, you shoud set a static IP to this machine before doing this, such as: 192.168.1.10</p>
+
+<p><strong>--start</strong>=&#34;&#34;: Start IP which you want to assign to clients, such as: 192.168.1.100</p>
+<h2><a name="socks5" class="anchor" href="#socks5" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+socks5</h2>
+
+<p>Run as standalone standard socks5 server, both TCP and UDP</p>
+
+<p><strong>--limitUDP</strong>: The server MAY use this information to limit access to the UDP association. This usually causes connection failures in a NAT environment, where most clients are.</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: Socks5 server listen address, like: :1080 or 1.2.3.4:1080</p>
+
+<p><strong>--password</strong>=&#34;&#34;: Password, optional</p>
+
+<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: Connection deadline time (s) (default: 0)</p>
+
+<p><strong>--udpTimeout</strong>=&#34;&#34;: Connection deadline time (s) (default: 60)</p>
+
+<p><strong>--username</strong>=&#34;&#34;: User name, optional</p>
+<h2><a name="socks5tohttp" class="anchor" href="#socks5tohttp" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+socks5tohttp</h2>
+
+<p>Convert socks5 to http proxy, [src &lt;-&gt; listen address(http proxy) &lt;-&gt; socks5 address &lt;-&gt; dst]</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: HTTP proxy which will be create: like: 127.0.0.1:8010</p>
+
+<p><strong>--socks5, -s</strong>=&#34;&#34;: Socks5 server address, like: 127.0.0.1:1080</p>
+
+<p><strong>--socks5password</strong>=&#34;&#34;: Socks5 password, optional</p>
+
+<p><strong>--socks5username</strong>=&#34;&#34;: Socks5 username, optional</p>
+
+<p><strong>--tcpTimeout</strong>=&#34;&#34;: Connection tcp timeout (s) (default: 0)</p>
+<h2><a name="pac" class="anchor" href="#pac" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+pac</h2>
+
+<p>Run as PAC server or save PAC to file</p>
+
+<p><strong>--bypassDomainList, -b</strong>=&#34;&#34;: One domain per line, suffix match mode. http(s):// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
+
+<p><strong>--file, -f</strong>=&#34;&#34;: Save PAC to file, this will ignore listen address</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:1980</p>
+
+<p><strong>--proxy, -p</strong>=&#34;&#34;: Proxy, like: &#39;SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT&#39; (default: SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT)</p>
+<h2><a name="testsocks5" class="anchor" href="#testsocks5" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+testsocks5</h2>
+
+<p>Test UDP and TCP of socks5 server</p>
+
+<p><strong>--dns</strong>=&#34;&#34;: DNS server for connecting (default: 8.8.8.8:53)</p>
+
+<p><strong>--domain</strong>=&#34;&#34;: Domain for query (default: http3.ooo)</p>
+
+<p><strong>--password, -p</strong>=&#34;&#34;: Socks5 password</p>
+
+<p><strong>--socks5, -s</strong>=&#34;&#34;: Like: 127.0.0.1:1080</p>
+
+<p><strong>--username, -u</strong>=&#34;&#34;: Socks5 username</p>
+
+<p><strong>-a</strong>=&#34;&#34;: The A record of domain (default: 137.184.237.95)</p>
+<h2><a name="testbrook" class="anchor" href="#testbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+testbrook</h2>
+
+<p>Test UDP and TCP of brook server/wsserver/wssserver/quicserver. (Note that the global dial parameter is ignored now)</p>
+
+<p><strong>--dns</strong>=&#34;&#34;: DNS server for connecting (default: 8.8.8.8:53)</p>
+
+<p><strong>--domain</strong>=&#34;&#34;: Domain for query (default: http3.ooo)</p>
+
+<p><strong>--link, -l</strong>=&#34;&#34;: brook link. Get it via $ brook link</p>
+
+<p><strong>--socks5</strong>=&#34;&#34;: Temporarily listening socks5 (default: 127.0.0.1:11080)</p>
+
+<p><strong>-a</strong>=&#34;&#34;: The A record of domain (default: 137.184.237.95)</p>
+<h2><a name="echoserver" class="anchor" href="#echoserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+echoserver</h2>
+
+<p>Echo server, echo UDP and TCP address of routes</p>
+
+<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:7777&#39;</p>
+<h2><a name="echoclient" class="anchor" href="#echoclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+echoclient</h2>
+
+<p>Connect to echoserver, echo UDP and TCP address of routes</p>
+
+<p><strong>--server, -s</strong>=&#34;&#34;: Echo server address, such as 1.2.3.4:7777</p>
+
+<p><strong>--times</strong>=&#34;&#34;: Times of interactions (default: 1)</p>
+<h2><a name="completion" class="anchor" href="#completion" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+completion</h2>
+
+<p>Generate shell completions</p>
+
+<p><strong>--file, -f</strong>=&#34;&#34;: Write to file (default: brook_autocomplete)</p>
+<h2><a name="mdpage" class="anchor" href="#mdpage" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+mdpage</h2>
+
+<p>Generate markdown page</p>
+
+<p><strong>--file, -f</strong>=&#34;&#34;: Write to file, default print to stdout</p>
+
+<p><strong>--help, -h</strong>: show help</p>
+<h3><a name="help-h" class="anchor" href="#help-h" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+help, h</h3>
+
+<p>Shows a list of commands or help for one command</p>
+<h2><a name="manpage" class="anchor" href="#manpage" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+manpage</h2>
+
+<p>Generate man.1 page</p>
+
+<p><strong>--file, -f</strong>=&#34;&#34;: Write to file, default print to stdout. You should put to /path/to/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos</p>
+<h2><a name="help-h" class="anchor" href="#help-h" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+help, h</h2>
+
+<p>Shows a list of commands or help for one command</p>
+<h1><a name="gui-documentation" class="anchor" href="#gui-documentation" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+GUI Documentation</h1>
+
+
+
+
+<h2><a name="software-for-which-this-article-applies" class="anchor" href="#software-for-which-this-article-applies" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Software for which this article applies</h2>
+
+<ul>
+<li><a href="https://github.com/txthinking/brook" rel="nofollow">Brook</a></li>
+<li><a href="https://www.txthinking.com/brook.html" rel="nofollow">Brook Plus</a></li>
+<li><a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew</a></li>
+<li><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></li>
+</ul>
+<h2><a name="intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode" class="anchor" href="#intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode</h2>
+
+<p>This mode is very simple, will create:</p>
+
+<ul>
+<li>Socks5 proxy: <code>socks5://[::1]:1080</code> or <code>socks5://127.0.0.1:1080</code></li>
+<li>HTTP proxy: <code>http://[::1]:8010</code> or <code>http://127.0.0.1:8010</code></li>
+<li>PAC: <code>http://127.0.0.1:1093/proxy.pac</code> or <code>http://[::1]:1093/proxy.pac</code> based on Bypass Domain list</li>
+<li>Intel Mac GUI, Windows GUI set PAC to system proxy。Linux GUI can work with <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
+<li>What is socks5 and http proxy? <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article" rel="nofollow">Article</a> and <a href="https://www.youtube.com/watch?v=sBCB-X7BoP8" rel="nofollow">Video</a></li>
+</ul>
+<h2><a name="ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode" class="anchor" href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun mode, Windows GUI tun mode, Linux GUI tun mode</h2>
+
+<pre><code>The so-called Internet connection is IP to IP connection, not domain name connection. Therefore, the domain name will be resolved into IP before deciding how to connect.
+</code></pre>
+<h2><a name="configuration-introduction" class="anchor" href="#configuration-introduction" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Configuration Introduction</h2>
+
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th>Support Systems</th>
+<th>Conditions</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Import Servers</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>brook link list</td>
+</tr>
+
+<tr>
+<td>System DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>System DNS. <strong>Do not bypass this IP</strong></td>
+</tr>
+
+<tr>
+<td>Fake DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td><strong>Turn off or block the security DNS that comes with the system/browser/etc, see below for details</strong></td>
+<td>The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution</td>
+</tr>
+
+<tr>
+<td>Block</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Block switch</td>
+</tr>
+
+<tr>
+<td>Block Domain</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: On</td>
+<td>Domain name list, matching domain names will be blocked. <strong>Domain name is suffix matching mode</strong></td>
+</tr>
+
+<tr>
+<td>Bypass</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Bypass switch</td>
+</tr>
+
+<tr>
+<td>Bypass IP</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>CIDR list, matched IP will be bypassed</td>
+</tr>
+
+<tr>
+<td>Bypass Geo IP</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>The matched IP will be bypassed. Note: Global IP changes frequently, so the Geo library is time-sensitive</td>
+</tr>
+
+<tr>
+<td>Bypass Apps</td>
+<td>Android</td>
+<td>/</td>
+<td>These apps will be bypassed</td>
+</tr>
+
+<tr>
+<td>Bypass DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Support normal DNS, such as <code>223.5.5.5:53</code>, support DoH, but need to specify the address of DoH through the parameter address, such as <code>https://dns. alidns.com/dns-query?address=223.5.5.5%3A443</code> is used to resolve Bypass Domain. <strong>The IP of this DNS will automatically Bypass</strong></td>
+</tr>
+
+<tr>
+<td>Bypass Domain</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: On</td>
+<td>List of domain names, matching domain names will use Bypass DNS resolution to get IP, <strong>whether the final connection will be bypassed depends on the Bypass IP</strong> . <strong>The domain name is a suffix matching pattern</strong></td>
+</tr>
+
+<tr>
+<td>Hosts</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Hosts switch</td>
+</tr>
+
+<tr>
+<td>Hosts List</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: On</td>
+<td>Specify IP, v4, v6 for the domain name, if the value is empty, the effect is the same as Block</td>
+</tr>
+
+<tr>
+<td>Programmable</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Programmable switch</td>
+</tr>
+
+<tr>
+<td>Script</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Script. All functions above can be controlled. And more and more, <strong>The whole process can be controled, see below for details</strong>.</td>
+</tr>
+
+<tr>
+<td>Log</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Log switch</td>
+</tr>
+
+<tr>
+<td>Log View</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Log List</td>
+</tr>
+
+<tr>
+<td>Log View Plus</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Log list, easier to read, filter conditions, etc.</td>
+</tr>
+
+<tr>
+<td>MITM Log View</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>MITM log list, such as https request response, hexadecimal, JSON, image, etc.</td>
+</tr>
+
+<tr>
+<td>TUN</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Choose proxy mode or tun. iOS and Android force TUN mode mode</td>
+</tr>
+
+<tr>
+<td>Capture Me</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Test your packet capture or proxy software is working as a system proxy or TUN</td>
+</tr>
+
+<tr>
+<td>DNS Client</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>DNS client</td>
+</tr>
+
+<tr>
+<td>DOH Client</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>DOH client</td>
+</tr>
+
+<tr>
+<td>Echo Client</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Echo client</td>
+</tr>
+
+<tr>
+<td>Test Socks5</td>
+<td>iOS,Android,Mac,Linux</td>
+<td>/</td>
+<td>Test socks5 server</td>
+</tr>
+
+<tr>
+<td>Dark Mode</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>System / Light / Dark</td>
+</tr>
+
+<tr>
+<td>Shortcut</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Quickly control the functions in the menu on the home page</td>
+</tr>
+
+<tr>
+<td>System Tray</td>
+<td>Windows</td>
+<td>/</td>
+<td>Open as systray, then open dashboard from the systray</td>
+</tr>
+</tbody>
+</table>
+<h2><a name="programmable" class="anchor" href="#programmable" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Programmable</h2>
+
+<pre><code>Brook GUI will pass different global variables to the script at different times, and the script only needs to assign the processing result to the global variable out
+</code></pre>
+
+<p>Take full control of your own network</p>
+
+<ul>
+<li>Like turning off IPv6 by blocking AAAA</li>
+<li>Block system/browser built-in secure DNS</li>
+<li>Override DST</li>
+<li>Flexible and finer rules</li>
+<li>Directly bypass the domain name regardless of whether the resolved IP is in Bypass</li>
+<li>MITM decrypt HTTPS</li>
+<li>Packet capture</li>
+<li>Packet modify</li>
+<li>Disable HTTP3</li>
+<li>more and more...</li>
+</ul>
+<h3><a name="introduction-to-incoming-variables" class="anchor" href="#introduction-to-incoming-variables" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Introduction to incoming variables</h3>
+
+<table>
+<thead>
+<tr>
+<th>variable</th>
+<th>type</th>
+<th>condition</th>
+<th>timing</th>
+<th>description</th>
+<th>out type</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>in_guiconfig</td>
+<td>map</td>
+<td>/</td>
+<td>before connected</td>
+<td>to override GUI configuration</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_dnsquery</td>
+<td>map</td>
+<td>FakeDNS: On</td>
+<td>When a DNS query occurs</td>
+<td>Script can decide how to handle this request</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_address</td>
+<td>map</td>
+<td>/</td>
+<td>When connecting to an address</td>
+<td>script can decide how to connect</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_httprequest</td>
+<td>map</td>
+<td>/</td>
+<td>When an HTTP(S) request comes in</td>
+<td>the script can decide how to handle this request</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_httprequest,in_httpresponse</td>
+<td>map</td>
+<td>/</td>
+<td>when an HTTP(S) response comes in</td>
+<td>the script can decide how to handle this response</td>
+<td>map</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-guiconfig" class="anchor" href="#in-guiconfig" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_guiconfig</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>_</td>
+<td>bool</td>
+<td>For future compatibility, this key can be ignored</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, if it is <code>error</code> type will be recorded in the log. Ignored if not of type <code>map</code>, if it is <code>map</code> then explicitly specify each configuration item.</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>systemdns4</td>
+<td>string</td>
+<td>System DNS v4</td>
+</tr>
+
+<tr>
+<td>systemdns6</td>
+<td>string</td>
+<td>System DNS v6</td>
+</tr>
+
+<tr>
+<td>fakedns</td>
+<td>bool</td>
+<td>Fake DNS switch</td>
+</tr>
+
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>GUI Block switch</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td>GUI Bypass switch</td>
+</tr>
+
+<tr>
+<td>bypassdns4</td>
+<td>string</td>
+<td>Bypass DNS v4</td>
+</tr>
+
+<tr>
+<td>bypassdns6</td>
+<td>string</td>
+<td>Bypass DNS v6</td>
+</tr>
+
+<tr>
+<td>hosts</td>
+<td>bool</td>
+<td>GUI Hosts switch</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-dnsquery" class="anchor" href="#in-dnsquery" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_dnsquery</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>domain</td>
+<td>string</td>
+<td>domain name</td>
+<td>google.com</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>query type</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, if it is <code>error</code> type will be recorded in the log. Ignored if not of type <code>map</code></p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>Whether Block, default <code>false</code>. It is an OR relationship with GUI Block Domain</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>ip</td>
+<td>string</td>
+<td>Specify IP directly, only valid when <code>type</code> is <code>A</code>/<code>AAAA</code></td>
+<td>1.2.3.4</td>
+</tr>
+
+<tr>
+<td>forcefakedns</td>
+<td>bool</td>
+<td>Ignore GUI Bypass Domain, handle with Fake DNS, only valid when <code>type</code> is <code>A</code>/<code>AAAA</code>, default <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>system</td>
+<td>bool</td>
+<td>Get IP from system DNS, default <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td>whether to Bypass, default <code>false</code>, if <code>true</code> then use bypass DNS to resolve. It is an OR relationship with GUI Bypass Domain</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-address" class="anchor" href="#in-address" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_address</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>network</td>
+<td>string</td>
+<td>Network type, the value <code>tcp</code>/<code>udp</code></td>
+<td>tcp</td>
+</tr>
+
+<tr>
+<td>ipaddress</td>
+<td>string</td>
+<td>IP type address. There is only of ipaddress and domainaddress. Note that there is no relationship between these two</td>
+<td>1.2.3.4:443</td>
+</tr>
+
+<tr>
+<td>domainaddress</td>
+<td>string</td>
+<td>Domain type address, because of FakeDNS we can get the domain name address here</td>
+<td>google.com:443</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, if it is <code>error</code> type will be recorded in the log. Ignored if not of type <code>map</code></p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>Whether Block, default <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>ipaddress</td>
+<td>string</td>
+<td>IP type address, rewrite destination</td>
+<td>1.2.3.4:443</td>
+</tr>
+
+<tr>
+<td>ipaddressfrombypassdns</td>
+<td>string</td>
+<td>Use Bypass DNS to obtain <code>A</code> or <code>AAAA</code> IP and rewrite the destination, only valid when <code>domainaddress</code> exists, the value <code>A</code>/<code>AAAA</code></td>
+<td>A</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td>Bypass, default <code>false</code>. If <code>true</code> and <code>domainaddress</code>, then <code>ipaddress</code> or <code>ipaddressfrombypassdns</code> must be specified. It is an OR relationship with GUI Bypass IP</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitm</td>
+<td>bool</td>
+<td>Whether to perform MITM, default <code>false</code>. Only valid when <code>network</code> is <code>tcp</code>. Need to install CA, see below</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmprotocol</td>
+<td>string</td>
+<td>MITM protocol needs to be specified explicitly, the value is <code>http</code>/<code>https</code></td>
+<td>https</td>
+</tr>
+
+<tr>
+<td>mitmcertdomain</td>
+<td>string</td>
+<td>The MITM certificate domain name, which is taken from <code>domainaddress</code> by default. If <code>ipaddress</code> and <code>mitm</code> is <code>true</code> and <code>mitmprotocol</code> is <code>https</code> then must be must be specified explicitly</td>
+<td>example.com</td>
+</tr>
+
+<tr>
+<td>mitmwithbody</td>
+<td>bool</td>
+<td>Whether to manipulate the http body, default <code>false</code>. <strong>will read the body of the request and response into the memory and interact with the script. iOS 50M total memory limit may kill process</strong></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmautohandlecompress</td>
+<td>bool</td>
+<td>Whether to automatically decompress the http body when interacting with the script, default <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmclienttimeout</td>
+<td>int</td>
+<td>Timeout for MITM talk to server, second, default 0</td>
+<td>0</td>
+</tr>
+
+<tr>
+<td>mitmserverreadtimeout</td>
+<td>int</td>
+<td>Timeout for MITM read from client, second, default 0</td>
+<td>0</td>
+</tr>
+
+<tr>
+<td>mitmserverwritetimeout</td>
+<td>int</td>
+<td>Timeout for MITM write to client, second, default 0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-httprequest" class="anchor" href="#in-httprequest" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_httprequest</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>URL</td>
+<td>string</td>
+<td>URL</td>
+<td><code>https://example.com/hello</code></td>
+</tr>
+
+<tr>
+<td>Method</td>
+<td>string</td>
+<td>HTTP method</td>
+<td>GET</td>
+</tr>
+
+<tr>
+<td>Body</td>
+<td>bytes</td>
+<td>HTTP request body</td>
+<td>/</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>string</td>
+<td>other fields are HTTP headers</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, must be set to a request or response</p>
+<h3><a name="in-httpresponse" class="anchor" href="#in-httpresponse" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_httpresponse</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>StatusCode</td>
+<td>int</td>
+<td>HTTP status code</td>
+<td>200</td>
+</tr>
+
+<tr>
+<td>Body</td>
+<td>bytes</td>
+<td>HTTP response body</td>
+<td>/</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>string</td>
+<td>other fields are HTTP headers</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, must be set to a response</p>
+<h3><a name="how-to-write-tengo-script" class="anchor" href="#how-to-write-tengo-script" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+How to write Tengo script</h3>
+
+<p><a href="https://github.com/d5/tengo/blob/master/docs/tutorial.md" rel="nofollow">Tengo Language Syntax</a></p>
+
+<p>Library</p>
+
+<ul>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-text.md" rel="nofollow">text</a>: regular expressions, string conversion, and manipulation</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-math.md" rel="nofollow">math</a>: mathematical constants and functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-times.md" rel="nofollow">times</a>: time-related functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-rand.md" rel="nofollow">rand</a>: random functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-fmt.md" rel="nofollow">fmt</a>: formatting functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-json.md" rel="nofollow">json</a>: JSON functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-enum.md" rel="nofollow">enum</a>: Enumeration functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-hex.md" rel="nofollow">hex</a>: hex encoding and decoding functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-base64.md" rel="nofollow">base64</a>: base64 encoding and decoding functions</li>
+
+<li><p><code>brook</code>: brook module</p>
+
+<pre><code>Constants
+
+* os: string, linux/darwin/windows/ios/android. If ios app run on mac, it is ios
+* iosapponmac: bool, ios app run on mac
+
+Functions
+
+* splithostport(address string) =&gt; map/error: splits a network address of the form &#34;host:port&#34; to { &#34;host&#34;: &#34;xxx&#34;, &#34;port&#34;: &#34;xxx&#34; }
+* country(ip string) =&gt; string/error: get country code from ip
+* cidrcontainsip(cidr string, ip string) =&gt; bool/error: reports whether the network includes ip
+* parseurl(url string) =&gt; map/error: parses a raw url into a map, keys: scheme/host/path/rawpath/rawquery
+* parsequery(query string) =&gt; map/error: parses a raw query into a kv map
+* map2query(kv map) =&gt; string/error: convert map{string:string} into a query string
+* bytes2ints(b bytes) =&gt; array/error: convert bytes into [int]
+* ints2bytes(ints array) =&gt; bytes/error: convert [int] into bytes
+* bytescompare(a bytes, b bytes) =&gt; int/error: returns an integer comparing two bytes lexicographically. The result will be 0 if a == b, -1 if a &lt; b, and +1 if a &gt; b
+* bytescontains(b bytes, sub bytes) =&gt; bool/error: reports whether sub is within b
+* byteshasprefix(s bytes, prefix bytes) =&gt; bool/error: tests whether the bytes s begins with prefix
+* byteshassuffix(s bytes, suffix bytes) =&gt; bool/error: tests whether the bytes s ends with suffix
+* bytesindex(s bytes, sep bytes) =&gt; int/error: returns the index of the first instance of sep in s, or -1 if sep is not present in s
+* byteslastindex(s bytes, sep bytes) =&gt; int/error: returns the index of the last instance of sep in s, or -1 if sep is not present in s
+* bytesreplace(s bytes, old bytes, new bytes, n int) =&gt; bytes/error: returns a copy of the s with the first n non-overlapping instances of old replaced by new. If n &lt; 0, there is no limit on the number of replacements
+* pathescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL path segment, replacing special characters (including /) with %XX sequences as needed
+* pathunescape(s string) =&gt; string/error: does the inverse transformation of pathescape
+* queryescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL query
+* queryunescape(s string) =&gt; string/error: does the inverse transformation of queryescape
+* hexdecode(s string) =&gt; bytes/error: returns the bytes represented by the hexadecimal string s
+* hexencode(s string) =&gt; string/error: returns the hexadecimal encoding of src
+</code></pre></li>
+</ul>
+
+<p>Example</p>
+
+<p><a href="https://github.com/txthinking/bypass/blob/master/example_script.tengo" rel="nofollow">https://github.com/txthinking/bypass/blob/master/example_script.tengo</a></p>
+<h3><a name="how-to-debug-script" class="anchor" href="#how-to-debug-script" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+How to debug script</h3>
+
+<ul>
+<li>It is recommended to use <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> on desktop to debug with print</li>
+<li>It is recommended to use <a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">mitmproxy helper</a> and <a href="https://www.txthinking.com/wireshark.html" rel="nofollow">Wireshark Helper</a> to capture packets to determine what to modify</li>
+</ul>
+<h2><a name="why-and-how-to-turn-off-system-and-browser-security-dns" class="anchor" href="#why-and-how-to-turn-off-system-and-browser-security-dns" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Why and How to Turn Off System and Browser Security DNS</h2>
+
+<p>Because if Security DNS is turned on, the Fake DNS will not work. So we have to turn it off:</p>
+
+<ul>
+<li>Android: Settings -&gt; Network &amp; internet -&gt; Private DNS -&gt; Off</li>
+<li>Chrome on Mobile: Settings -&gt; Privacy and security -&gt; Use secure DNS -&gt; Off</li>
+<li>Chrome on Desktop: Settings -&gt; Privacy and security -&gt; Security -&gt; Use secure DNS -&gt; Off</li>
+<li>Windows: Windows Settings -&gt; Network &amp; Internet -&gt; Your Network -&gt; DNS settings -&gt; Edit -&gt; Preferred DNS -&gt; Unencrypted only -&gt; 8.8.8.8</li>
+<li>iOS/Mac avoid requesting secure DNS: related DST can be blocked by script. You can also create a DNS by yourself: <code>brook dnsserver --listen :53</code></li>
+</ul>
+
+<p>Other systems and software, please find out whether it exists and how to close it</p>
+<h2><a name="install-ca" class="anchor" href="#install-ca" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Install CA</h2>
+
+<p><a href="https://txthinking.github.io/ca/ca.pem" rel="nofollow">https://txthinking.github.io/ca/ca.pem</a></p>
+<h3><a name="ios" class="anchor" href="#ios" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS</h3>
+
+<p><a href="https://www.youtube.com/watch?v=HSGPC2vpDGk" rel="nofollow">https://www.youtube.com/watch?v=HSGPC2vpDGk</a></p>
+<h3><a name="android" class="anchor" href="#android" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Android</h3>
+
+<p>Android has user CA and system CA, must be installed in the system CA after ROOT</p>
+<h3><a name="macos" class="anchor" href="#macos" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+macOS</h3>
+
+<pre><code>nami install mad ca.txthinking
+sudo mad install --ca ~/.nami/bin/ca.pem
+</code></pre>
+<h3><a name="windows" class="anchor" href="#windows" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Windows</h3>
+
+<p>Open GitBash</p>
+
+<pre><code>nami install mad ca.txthinking
+</code></pre>
+
+<p>Then open GitBash with admin</p>
+
+<pre><code>mad install --ca ~/.nami/bin/ca.pem
+</code></pre>
+
+<p>Note that software such as GitBash or Firefox may not read the system CA, you can use the system Edge browser to test after installation</p>
+<h2><a name="apple-push-problem" class="anchor" href="#apple-push-problem" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Apple Push Problem</h2>
+
+<p>To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connections. So you need to Bypass the relevant domain name and IP. <a href="https://support.apple.com/en-us/HT210060" rel="nofollow">Reference link</a></p>
+<h1><a name="图形客户端文档" class="anchor" href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+图形客户端文档</h1>
+
+
+
+
+<h2><a name="本文适用的软件" class="anchor" href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+本文适用的软件</h2>
+
+<ul>
+<li><a href="https://github.com/txthinking/brook" rel="nofollow">Brook</a></li>
+<li><a href="https://www.txthinking.com/brook.html" rel="nofollow">Brook Plus</a></li>
+<li><a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew</a></li>
+<li><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></li>
+</ul>
+<h2><a name="intel-mac-gui-proxy-模式-windows-gui-proxy-模式-linux-gui-proxy-模式" class="anchor" href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</h2>
+
+<p>这个模式比较简单，会创建:</p>
+
+<ul>
+<li>Socks5 代理: <code>socks5://[::1]:1080</code> 或 <code>socks5://127.0.0.1:1080</code></li>
+<li>HTTP 代理: <code>http://[::1]:8010</code> 或 <code>http://127.0.0.1:8010</code></li>
+<li>PAC: <code>http://127.0.0.1:1093/proxy.pac</code> 或 <code>http://[::1]:1093/proxy.pac</code> 基于 Bypass Domain 列表</li>
+<li>Intel Mac GUI, Windows GUI 同时会配置 PAC 到系统代理。Linux GUI 可以配合 <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
+<li>什么是 socks5 和 http proxy? <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy.article" rel="nofollow">文章</a> 和 <a href="https://www.youtube.com/watch?v=Tb0_8odTxEI" rel="nofollow">视频</a></li>
+</ul>
+<h2><a name="ios-m1-mac-gui-android-gui-intel-mac-gui-tun-模式-windows-gui-tun-模式-linux-gui-tun-模式" class="anchor" href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</h2>
+
+<pre><code>所谓的互联网连接，是 IP 连接 IP，不是连接域名。所以域名会被先解析成IP再决定怎么去连接。
+</code></pre>
+<h2><a name="配置介绍" class="anchor" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+配置介绍</h2>
+
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>支持系统</th>
+<th>条件</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>导入服务器</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>brook link 列表</td>
+</tr>
+
+<tr>
+<td>系统 DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>系统 DNS. <strong>不要 bypass 此 IP</strong></td>
+</tr>
+
+<tr>
+<td>虚拟 DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td><strong>关闭或 block 系统/浏览器等安全 DNS, 具体看下文</strong></td>
+<td>解析域名为 Fake IP，发起连接时会再转换为域名，然后把域名地址送到服务端进行代理，同时由服务端来负责域名解析</td>
+</tr>
+
+<tr>
+<td>屏蔽</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Block 开关</td>
+</tr>
+
+<tr>
+<td>屏蔽域名</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: 开启</td>
+<td>域名列表，匹配的域名会被阻断解析. <strong>域名是后缀匹配模式</strong></td>
+</tr>
+
+<tr>
+<td>跳过</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Bypass 开关</td>
+</tr>
+
+<tr>
+<td>跳过 IP</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>CIDR 列表，匹配到的 IP 会被 bypass</td>
+</tr>
+
+<tr>
+<td>跳过 Geo IP</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>匹配到的 IP 会被 bypass. 提示: 全球 IP 变动频繁, 所以 Geo 库有时效性</td>
+</tr>
+
+<tr>
+<td>跳过 Apps</td>
+<td>Android</td>
+<td>/</td>
+<td>这些 App 会被 bypass</td>
+</tr>
+
+<tr>
+<td>跳过 DNS</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>支持普通 DNS, 比如 <code>223.5.5.5:53</code>, 支持 DoH, 但需要通过参数 address 指定 DoH 的地址, 比如 <code>https://dns.alidns.com/dns-query?address=223.5.5.5%3A443</code> 用来解析 Bypass Domain. <strong>此 DNS 的 IP 会自动 Bypass</strong></td>
+</tr>
+
+<tr>
+<td>跳过域名</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: 开启</td>
+<td>域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, <strong>最终连接是否会被 Bypass，还取决于 Bypass IP</strong>. <strong>域名是后缀匹配模式</strong></td>
+</tr>
+
+<tr>
+<td>Hosts</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Hosts 开关</td>
+</tr>
+
+<tr>
+<td>Host 列表</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>Fake DNS: 开启</td>
+<td>给域名指定 IP, v4, v6，如果值为空效果同 Block</td>
+</tr>
+
+<tr>
+<td>可编程</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>可编程开关</td>
+</tr>
+
+<tr>
+<td>脚本</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>脚本。可以控制上面所有的功能。以及上面没有的功能，<strong>全流程控制一切，具体看下文</strong>。</td>
+</tr>
+
+<tr>
+<td>日志</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>日志开关</td>
+</tr>
+
+<tr>
+<td>查看日志</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>日志列表</td>
+</tr>
+
+<tr>
+<td>日志 Plus</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>日志列表，更易读，过滤条件等</td>
+</tr>
+
+<tr>
+<td>查看 MITM</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>MITM 日志列表，比如 https 的请求响应，十六进制，JSON，图片等</td>
+</tr>
+
+<tr>
+<td>TUN</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>选择 proxy 模式 还是 tun 模式. iOS 和 Android 强制 TUN 模式</td>
+</tr>
+
+<tr>
+<td>抓我</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>测试你的抓包或代理软件工作在系统代理还是 TUN</td>
+</tr>
+
+<tr>
+<td>DNS 客户端</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>DNS 客户端</td>
+</tr>
+
+<tr>
+<td>DOH 客户端</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>DOH 客户端</td>
+</tr>
+
+<tr>
+<td>Echo 客户端</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>Echo 客户端</td>
+</tr>
+
+<tr>
+<td>测试 Socks5</td>
+<td>iOS,Android,Mac,Linux</td>
+<td>/</td>
+<td>Test socks5 server</td>
+</tr>
+
+<tr>
+<td>深色主题</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>暗黑模式</td>
+</tr>
+
+<tr>
+<td>快捷方式</td>
+<td>iOS,Android,Mac,Windows,Linux</td>
+<td>/</td>
+<td>在首页快捷控制打开菜单里的功能</td>
+</tr>
+
+<tr>
+<td>系统托盘</td>
+<td>Windows</td>
+<td>/</td>
+<td>以系统托盘形式打开，然后从系统托盘处打开控制面板</td>
+</tr>
+</tbody>
+</table>
+<h2><a name="programmable" class="anchor" href="#programmable" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Programmable</h2>
+
+<pre><code>Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需要将处理结果赋值到全局变量 out 即可
+</code></pre>
+
+<p>完全掌控你自己的网络</p>
+
+<ul>
+<li>比如通过阻断 AAAA 来关闭 IPv6</li>
+<li>阻断系统浏览器内置安全 DNS</li>
+<li>重写 DST</li>
+<li>分流</li>
+<li>直接 Bypass 域名而无视是否解析出来的 IP 是否在 Bypass 里</li>
+<li>MITM 解密 HTTPS</li>
+<li>抓包</li>
+<li>修改包</li>
+<li>禁用 HTTP3</li>
+<li>等等等...</li>
+</ul>
+<h3><a name="传入变量介绍" class="anchor" href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+传入变量介绍</h3>
+
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>类型</th>
+<th>条件</th>
+<th>时机</th>
+<th>描述</th>
+<th>out 类型</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>in_guiconfig</td>
+<td>map</td>
+<td>/</td>
+<td>开启之前</td>
+<td>用以覆盖 GUI 的配置</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_dnsquery</td>
+<td>map</td>
+<td>FakeDNS: 开启</td>
+<td>当 DNS 查询发生时</td>
+<td>脚本可以决定如何处理此请求</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_address</td>
+<td>map</td>
+<td>/</td>
+<td>当要连接某地址时</td>
+<td>脚本可以决定如何进行连接</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_httprequest</td>
+<td>map</td>
+<td>/</td>
+<td>当有 HTTP(S)请求传入时</td>
+<td>脚本可以决定如何处理此请求</td>
+<td>map</td>
+</tr>
+
+<tr>
+<td>in_httprequest,in_httpresponse</td>
+<td>map</td>
+<td>/</td>
+<td>当有 HTTP(S)响应传入时</td>
+<td>脚本可以决定如何处理此响应</td>
+<td>map</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-guiconfig" class="anchor" href="#in-guiconfig" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_guiconfig</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>_</td>
+<td>bool</td>
+<td>向未来兼容，可忽略此 key</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 如果是 <code>error</code> 类型会被记录在日志。如果不是 <code>map</code> 类型则会被忽略, 如果是<code>map</code>那么明确指定每一个配置项</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>systemdns4</td>
+<td>string</td>
+<td>System DNS v4</td>
+</tr>
+
+<tr>
+<td>systemdns6</td>
+<td>string</td>
+<td>System DNS v6</td>
+</tr>
+
+<tr>
+<td>fakedns</td>
+<td>bool</td>
+<td>Fake DNS 开关</td>
+</tr>
+
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>GUI Block 开关</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td>GUI Bypass 开关</td>
+</tr>
+
+<tr>
+<td>bypassdns4</td>
+<td>string</td>
+<td>Bypass DNS v4</td>
+</tr>
+
+<tr>
+<td>bypassdns6</td>
+<td>string</td>
+<td>Bypass DNS v6</td>
+</tr>
+
+<tr>
+<td>hosts</td>
+<td>bool</td>
+<td>GUI Hosts 开关</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-dnsquery" class="anchor" href="#in-dnsquery" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_dnsquery</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>domain</td>
+<td>string</td>
+<td>域名</td>
+<td>google.com</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>查询类型</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 如果是 <code>error</code> 类型会被记录在日志。如果不是 <code>map</code> 类型则会被忽略</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>是否 Block, 默认 <code>false</code>. 与 GUI Block Domain 是或的关系</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>ip</td>
+<td>string</td>
+<td>直接指定 IP，仅当 <code>type</code> 为 <code>A</code>/<code>AAAA</code>有效</td>
+<td>1.2.3.4</td>
+</tr>
+
+<tr>
+<td>forcefakedns</td>
+<td>bool</td>
+<td>忽略 GUI Bypass Domain，使用 Fake DNS 来处理，仅当 <code>type</code> 为 <code>A</code>/<code>AAAA</code>有效，默认 <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>system</td>
+<td>bool</td>
+<td>使用 System DNS 来解析，默认 <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td>是否 Bypass, 默认 <code>false</code>, 如果为 <code>true</code> 则使用 Bypass DNS 来解析. 与 GUI Bypass Domain 是或的关系</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-address" class="anchor" href="#in-address" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_address</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>network</td>
+<td>string</td>
+<td>即将发起连接网络，取值 <code>tcp</code>/<code>udp</code></td>
+<td>tcp</td>
+</tr>
+
+<tr>
+<td>ipaddress</td>
+<td>string</td>
+<td>IP 类型的地址，与 domainaddress 只会存在一个。注意这两个之间没有任何关系</td>
+<td>1.2.3.4:443</td>
+</tr>
+
+<tr>
+<td>domainaddress</td>
+<td>string</td>
+<td>域名类型的地址，因为 FakeDNS 我们这里才能拿到域名地址</td>
+<td>google.com:443</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 如果是 <code>error</code> 类型会被记录在日志。如果不是 <code>map</code> 类型则会被忽略</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>block</td>
+<td>bool</td>
+<td>是否 Block, 默认 <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>ipaddress</td>
+<td>string</td>
+<td>IP 类型地址，重写目的地</td>
+<td>1.2.3.4:443</td>
+</tr>
+
+<tr>
+<td>ipaddressfrombypassdns</td>
+<td>string</td>
+<td>使用 Bypass DNS 获取<code>A</code>或<code>AAAA</code> IP 并重写目的地, 仅当 <code>domainaddress</code> 存在时有效，取值 <code>A</code>/<code>AAAA</code></td>
+<td>A</td>
+</tr>
+
+<tr>
+<td>bypass</td>
+<td>bool</td>
+<td>是否 Bypass, 默认 <code>false</code>. 如果为 <code>true</code> 并且是 <code>domainaddress</code>, 那么必须指定 <code>ipaddress</code> 或 <code>ipaddressfrombypassdns</code>. 与 GUI Bypass IP 是或的关系</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitm</td>
+<td>bool</td>
+<td>是否进行 MITM, 默认 <code>false</code>. 仅当 <code>network</code> 为 <code>tcp</code> 时有效. 需要安装 CA，看下文介绍</td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmprotocol</td>
+<td>string</td>
+<td>需要明确指定 MITM 协议, 取值 <code>http</code>/<code>https</code></td>
+<td>https</td>
+</tr>
+
+<tr>
+<td>mitmcertdomain</td>
+<td>string</td>
+<td>MITM 证书域名，默认从<code>domainaddress</code>里取。如果是 <code>ipaddress</code> 且 <code>mitm</code> 为 <code>true</code> 且 <code>mitmprotocol</code> 为 <code>https</code> 那么必须明确指定</td>
+<td>example.com</td>
+</tr>
+
+<tr>
+<td>mitmwithbody</td>
+<td>bool</td>
+<td>是否操作 http body，默认 <code>false</code>. <strong>会将请求和响应的 body 读取到内存里和脚本交互。iOS 50M 总内存限制可能会杀进程</strong></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmautohandlecompress</td>
+<td>bool</td>
+<td>和脚本交互时是否自动解压缩 http body, 默认 <code>false</code></td>
+<td>false</td>
+</tr>
+
+<tr>
+<td>mitmclienttimeout</td>
+<td>int</td>
+<td>Timeout for MITM talk to server, second, default 0</td>
+<td>0</td>
+</tr>
+
+<tr>
+<td>mitmserverreadtimeout</td>
+<td>int</td>
+<td>Timeout for MITM read from client, second, default 0</td>
+<td>0</td>
+</tr>
+
+<tr>
+<td>mitmserverwritetimeout</td>
+<td>int</td>
+<td>Timeout for MITM write to client, second, default 0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="in-httprequest" class="anchor" href="#in-httprequest" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_httprequest</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>URL</td>
+<td>string</td>
+<td>URL</td>
+<td><code>https://example.com/hello</code></td>
+</tr>
+
+<tr>
+<td>Method</td>
+<td>string</td>
+<td>HTTP method</td>
+<td>GET</td>
+</tr>
+
+<tr>
+<td>Body</td>
+<td>bytes</td>
+<td>HTTP request body</td>
+<td>/</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>string</td>
+<td>其他字段均为 HTTP header</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 必须设置为一个 request 或 response</p>
+<h3><a name="in-httpresponse" class="anchor" href="#in-httpresponse" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_httpresponse</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>StatusCode</td>
+<td>int</td>
+<td>HTTP status code</td>
+<td>200</td>
+</tr>
+
+<tr>
+<td>Body</td>
+<td>bytes</td>
+<td>HTTP response body</td>
+<td>/</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>string</td>
+<td>其他字段均为 HTTP header</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 必须设置为一个 response</p>
+<h3><a name="如何写-tengo-脚本" class="anchor" href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+如何写 Tengo 脚本</h3>
+
+<p><a href="https://github.com/d5/tengo/blob/master/docs/tutorial.md" rel="nofollow">Tengo Language Syntax</a></p>
+
+<p>Library</p>
+
+<ul>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-text.md" rel="nofollow">text</a>: regular expressions, string conversion, and manipulation</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-math.md" rel="nofollow">math</a>: mathematical constants and functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-times.md" rel="nofollow">times</a>: time-related functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-rand.md" rel="nofollow">rand</a>: random functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-fmt.md" rel="nofollow">fmt</a>: formatting functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-json.md" rel="nofollow">json</a>: JSON functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-enum.md" rel="nofollow">enum</a>: Enumeration functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-hex.md" rel="nofollow">hex</a>: hex encoding and decoding functions</li>
+<li><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-base64.md" rel="nofollow">base64</a>: base64 encoding and decoding functions</li>
+
+<li><p><code>brook</code>: brook module</p>
+
+<pre><code>Constants
+
+* os: string, linux/darwin/windows/ios/android. If ios app run on mac, it is ios
+* iosapponmac: bool, ios app run on mac
+
+Functions
+
+* splithostport(address string) =&gt; map/error: splits a network address of the form &#34;host:port&#34; to { &#34;host&#34;: &#34;xxx&#34;, &#34;port&#34;: &#34;xxx&#34; }
+* country(ip string) =&gt; string/error: get country code from ip
+* cidrcontainsip(cidr string, ip string) =&gt; bool/error: reports whether the network includes ip
+* parseurl(url string) =&gt; map/error: parses a raw url into a map, keys: scheme/host/path/rawpath/rawquery
+* parsequery(query string) =&gt; map/error: parses a raw query into a kv map
+* map2query(kv map) =&gt; string/error: convert map{string:string} into a query string
+* bytes2ints(b bytes) =&gt; array/error: convert bytes into [int]
+* ints2bytes(ints array) =&gt; bytes/error: convert [int] into bytes
+* bytescompare(a bytes, b bytes) =&gt; int/error: returns an integer comparing two bytes lexicographically. The result will be 0 if a == b, -1 if a &lt; b, and +1 if a &gt; b
+* bytescontains(b bytes, sub bytes) =&gt; bool/error: reports whether sub is within b
+* byteshasprefix(s bytes, prefix bytes) =&gt; bool/error: tests whether the bytes s begins with prefix
+* byteshassuffix(s bytes, suffix bytes) =&gt; bool/error: tests whether the bytes s ends with suffix
+* bytesindex(s bytes, sep bytes) =&gt; int/error: returns the index of the first instance of sep in s, or -1 if sep is not present in s
+* byteslastindex(s bytes, sep bytes) =&gt; int/error: returns the index of the last instance of sep in s, or -1 if sep is not present in s
+* bytesreplace(s bytes, old bytes, new bytes, n int) =&gt; bytes/error: returns a copy of the s with the first n non-overlapping instances of old replaced by new. If n &lt; 0, there is no limit on the number of replacements
+* pathescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL path segment, replacing special characters (including /) with %XX sequences as needed
+* pathunescape(s string) =&gt; string/error: does the inverse transformation of pathescape
+* queryescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL query
+* queryunescape(s string) =&gt; string/error: does the inverse transformation of queryescape
+* hexdecode(s string) =&gt; bytes/error: returns the bytes represented by the hexadecimal string s
+* hexencode(s string) =&gt; string/error: returns the hexadecimal encoding of src
+</code></pre></li>
+</ul>
+
+<p>示例</p>
+
+<p><a href="https://github.com/txthinking/bypass/blob/master/example_script.tengo" rel="nofollow">https://github.com/txthinking/bypass/blob/master/example_script.tengo</a></p>
+<h3><a name="如何调试脚本" class="anchor" href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+如何调试脚本</h3>
+
+<ul>
+<li>建议使用 <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> 在电脑上打印调试</li>
+<li>可以使用 <a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">mitmproxy helper</a> 和 <a href="https://www.txthinking.com/wireshark.html" rel="nofollow">Wireshark Helper</a> 抓包来确定要修改什么</li>
+</ul>
+<h2><a name="为什么以及如何关闭系统和浏览器安全-dns" class="anchor" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+为什么以及如何关闭系统和浏览器安全 DNS</h2>
+
+<p>因为安全 DNS 开启，Fake DNS 就无法工作. 所以我们要关闭它:</p>
+
+<ul>
+<li>Android: Settings -&gt; Network &amp; internet -&gt; Private DNS -&gt; Off</li>
+<li>Chrome on Mobile: Settings -&gt; Privacy and security -&gt; Use secure DNS -&gt; Off</li>
+<li>Chrome on Desktop: Settings -&gt; Privacy and security -&gt; Security -&gt; Use secure DNS -&gt; Off</li>
+<li>Windows: Windows Settings -&gt; Network &amp; Internet -&gt; Your Network -&gt; DNS settings -&gt; Edit -&gt; Preferred DNS -&gt; Unencrypted only -&gt; 8.8.8.8</li>
+<li>iOS / Mac 避免请求安全 DNS : 可以通过脚本阻断相关 DST。也可以自建个普通 DNS: <code>brook dnsserver --listen :53</code></li>
+</ul>
+
+<p>其他系统和软件，请自行查找是否存在以及如何关闭</p>
+<h2><a name="安装-ca" class="anchor" href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+安装 CA</h2>
+
+<p><a href="https://txthinking.github.io/ca/ca.pem" rel="nofollow">https://txthinking.github.io/ca/ca.pem</a></p>
+<h3><a name="ios" class="anchor" href="#ios" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS</h3>
+
+<p><a href="https://www.youtube.com/watch?v=HSGPC2vpDGk" rel="nofollow">https://www.youtube.com/watch?v=HSGPC2vpDGk</a></p>
+<h3><a name="android" class="anchor" href="#android" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Android</h3>
+
+<p>Android 分系统 CA 和用户 CA，必须要 ROOT 后安装到系统 CA 里</p>
+<h3><a name="macos" class="anchor" href="#macos" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+macOS</h3>
+
+<pre><code>nami install mad ca.txthinking
+sudo mad install --ca ~/.nami/bin/ca.pem
+</code></pre>
+<h3><a name="windows" class="anchor" href="#windows" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Windows</h3>
+
+<p>打开 GitBash</p>
+
+<pre><code>nami install mad ca.txthinking
+</code></pre>
+
+<p>然后用管理员打开 GitBash</p>
+
+<pre><code>mad install --ca ~/.nami/bin/ca.pem
+</code></pre>
+
+<p>注意 GitBash 或 Firefox 等软件可能不读取系统 CA，安装后可以用系统 Edge 浏览器测试</p>
+<h2><a name="apple-推送问题" class="anchor" href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Apple 推送问题</h2>
+
+<p>要接收推送，Apple Server 只允许 Ethernet, cellular data, Wi-Fi 连接. 所以你需要 Bypass 掉相关域名和 IP. <a href="https://support.apple.com/en-us/HT210060" rel="nofollow">参考链接</a></p>
+<h1><a name="diagram-图解" class="anchor" href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Diagram 图解</h1>
+
+
+
+
+<h2><a name="overview" class="anchor" href="#overview" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+overview</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/overview.svg" alt="overview"></p>
+<h2><a name="withoutbrookprotocol" class="anchor" href="#withoutbrookprotocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+withoutBrookProtocol</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/wbp.svg" alt="wbp"></p>
+<h2><a name="relayoverbrook" class="anchor" href="#relayoverbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+relayoverbrook</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/relayoverbrook.svg" alt="relayoverbrook"></p>
+<h2><a name="dnsserveroverbrook" class="anchor" href="#dnsserveroverbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsserveroverbrook</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/dnsserveroverbrook.svg" alt="dnsserveroverbrook"></p>
+<h2><a name="relay" class="anchor" href="#relay" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+relay</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/relay.svg" alt="relay"></p>
+<h2><a name="dnsserver" class="anchor" href="#dnsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsserver</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/dnsserver.svg" alt="dnsserver"></p>
+<h2><a name="tproxy" class="anchor" href="#tproxy" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+tproxy</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/tproxy.svg" alt="tproxy"></p>
+<h2><a name="gui" class="anchor" href="#gui" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+gui</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/gui.svg" alt="gui"></p>
+<h2><a name="script" class="anchor" href="#script" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+script</h2>
+
+<p><img src="https://txthinking.github.io/brook/svg/script.svg" alt="script"></p>
+<h1><a name="protocol" class="anchor" href="#protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Protocol</h1>
+
+<p><a href="https://github.com/txthinking/brook/tree/master/protocol" rel="nofollow">https://github.com/txthinking/brook/tree/master/protocol</a></p>
+<h1><a name="blog" class="anchor" href="#blog" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Blog</h1>
+
+<p><a href="https://www.txthinking.com/talks/" rel="nofollow">https://www.txthinking.com/talks/</a></p>
+<h1><a name="youtube" class="anchor" href="#youtube" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+YouTube</h1>
+
+<p><a href="https://www.youtube.com/txthinking" rel="nofollow">https://www.youtube.com/txthinking</a></p>
+<h1><a name="telegram" class="anchor" href="#telegram" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Telegram</h1>
+
+<p><a href="https://t.me/s/txthinking_news" rel="nofollow">https://t.me/s/txthinking_news</a></p>
+<h1><a name="pastebin" class="anchor" href="#pastebin" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Pastebin</h1>
+
+<p><a href="https://ooo.soso.ooo" rel="nofollow">https://ooo.soso.ooo</a></p>
+
+        </div>
+    </div>
+    
+</body>
 </html>

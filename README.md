@@ -1,24 +1,40 @@
 # Brook
-
-A cross-platform network tool designed for developers.
-
-[❤️  *A txthinking project*](https://www.txthinking.com)
-
+A cross-platform network tool
 
 Table of Contents
 =================
 
-* [Documentation](#documentation)
-* [Getting Started](#getting-started)
+* [Brook](#brook)
+* [Getting Started 快速上手](#getting-started-快速上手)
    * [Server](#server)
-   * [Client](#client)
-* [Brook CLI Documentation](#brook-cli-documentation)
+   * [GUI Client](#gui-client)
+   * [CLI Client](#cli-client)
+* [Install CLI 安装命令行](#install-cli-安装命令行)
+   * [nami](#nami)
+   * [brook](#brook-1)
+   * [joker](#joker)
+   * [jinbe](#jinbe)
+   * [tun2brook](#tun2brook)
+   * [via pacman](#via-pacman)
+   * [via brew](#via-brew)
+   * [via docker](#via-docker)
+* [Daemon 守护进程](#daemon-守护进程)
+* [Auto Start at Boot 开机自启](#auto-start-at-boot-开机自启)
+* [One Click Script 一键脚本](#one-click-script-一键脚本)
+* [Install GUI 安装图形客户端](#install-gui-安装图形客户端)
+   * [iOS / M1 Mac](#ios--m1-mac)
+   * [Android](#android)
+   * [Intel Mac](#intel-mac)
+   * [Windows](#windows)
+   * [Linux GUI](#linux-gui)
+   * [OpenWrt IPK](#openwrt-ipk)
+* [CLI Documentation 命令行文档](#cli-documentation-命令行文档)
 * [NAME](#name)
 * [SYNOPSIS](#synopsis)
 * [GLOBAL OPTIONS](#global-options)
 * [COMMANDS](#commands)
    * [server](#server-1)
-   * [client](#client-1)
+   * [client](#client)
    * [wsserver](#wsserver)
    * [wsclient](#wsclient)
    * [wssserver](#wssserver)
@@ -48,7 +64,7 @@ Table of Contents
       * [help, h](#help-h)
    * [manpage](#manpage)
    * [help, h](#help-h-1)
-* [Brook GUI Documentation](#brook-gui-documentation)
+* [GUI Documentation](#gui-documentation)
    * [Software for which this article applies](#software-for-which-this-article-applies)
    * [Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode](#intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode)
    * [iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun mode, Windows GUI tun mode, Linux GUI tun mode](#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode)
@@ -65,11 +81,32 @@ Table of Contents
    * [Why and How to Turn Off System and Browser Security DNS](#why-and-how-to-turn-off-system-and-browser-security-dns)
    * [Install CA](#install-ca)
       * [iOS](#ios)
-      * [Android](#android)
+      * [Android](#android-1)
       * [macOS](#macos)
-      * [Windows](#windows)
+      * [Windows](#windows-1)
    * [Apple Push Problem](#apple-push-problem)
-* [Brook Diagram](#brook-diagram)
+* [图形客户端文档](#图形客户端文档)
+   * [本文适用的软件](#本文适用的软件)
+   * [Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式](#intel-mac-gui-proxy-模式-windows-gui-proxy-模式-linux-gui-proxy-模式)
+   * [iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式](#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-模式-windows-gui-tun-模式-linux-gui-tun-模式)
+   * [配置介绍](#配置介绍)
+   * [Programmable](#programmable-1)
+      * [传入变量介绍](#传入变量介绍)
+      * [in_guiconfig](#in_guiconfig-1)
+      * [in_dnsquery](#in_dnsquery-1)
+      * [in_address](#in_address-1)
+      * [in_httprequest](#in_httprequest-1)
+      * [in_httpresponse](#in_httpresponse-1)
+      * [如何写 Tengo 脚本](#如何写-tengo-脚本)
+      * [如何调试脚本](#如何调试脚本)
+   * [为什么以及如何关闭系统和浏览器安全 DNS](#为什么以及如何关闭系统和浏览器安全-dns)
+   * [安装 CA](#安装-ca)
+      * [iOS](#ios-1)
+      * [Android](#android-2)
+      * [macOS](#macos-1)
+      * [Windows](#windows-2)
+   * [Apple 推送问题](#apple-推送问题)
+* [Diagram 图解](#diagram-图解)
    * [overview](#overview)
    * [withoutBrookProtocol](#withoutbrookprotocol)
    * [relayoverbrook](#relayoverbrook-1)
@@ -79,11 +116,17 @@ Table of Contents
    * [tproxy](#tproxy-1)
    * [gui](#gui)
    * [script](#script)
+* [Protocol](#protocol)
+* [Blog](#blog)
+* [YouTube](#youtube)
+* [Telegram](#telegram)
+* [Pastebin](#pastebin)
 
-# Documentation
-
-👉 [**Documentation**](https://txthinking.github.io/brook/)
-# Getting Started
+# Brook
+<!--SIDEBAR-->
+<!--G-R3M673HK5V-->
+A cross-platform network tool
+# Getting Started 快速上手
 
 ## Server
 
@@ -99,24 +142,178 @@ nami install brook
 brook server -l :9999 -p hello
 ```
 
-## Client
+## GUI Client
 
-[GUI Client](https://txthinking.github.io/brook/)
+| iOS / M1 Mac | Android      | Intel Mac    |Windows      |Linux        |OpenWrt      |
+| --- | --- | --- | --- | --- | --- |
+| [![](./images/appstore.png)](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642) | [![](./images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk) | [![](./images/mac.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg) | [![Windows](./images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.exe) | [![](./images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin) | [![OpenWrt](./images/openwrt.png)](https://github.com/txthinking/brook/releases) |
 
-> replace 1.2.3.4 with your server IP
+> Linux: [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)<br/>
+> OpenWrt: After installation, you need to refresh the page to see the menu
 
--   brook server: `1.2.3.4:9999`
+-   brook server: `1.2.3.4:9999` replace 1.2.3.4 with your server IP
 -   password: `hello`
 
-[CLI Client](https://txthinking.github.io/brook/)
+## CLI Client
 
-> create socks5://127.0.0.1:1080
+```
+brook client -s 1.2.3.4:9999 -p hello --socks5 127.0.0.1:1080
+```
+# Install CLI 安装命令行
 
-`brook client -s 1.2.3.4:9999 -p hello`
-# Brook CLI Documentation
+## nami
+
+The easy way to download anything from anywhere
+
+```
+bash <(curl https://bash.ooo/nami.sh)
+```
+
+## brook
+
+A cross-platform network tool
+
+```
+nami install brook
+```
+
+## joker
+
+Joker can turn process into daemon
+
+```
+nami install joker
+```
+
+## jinbe
+
+Auto start at boot. thanks to the cute cat
+
+```
+nami install jinbe
+```
+
+## tun2brook
+
+Proxy all traffic just one line command
+
+```
+nami install tun2brook
+```
+
+## via pacman
+
+maintained by felixonmars
+
+```
+pacman -S brook
+```
+
+## via brew
+
+```
+brew install brook
+```
+
+## via docker
+
+maintained by teddysun
+
+```
+docker pull teddysun/brook
+```
+# Daemon 守护进程
+
+Run the brook daemon with joker
+
+```
+joker brook server -l :9999 -p hello
+```
+
+Get the last command ID
+
+```
+joker last
+```
+
+View output and error of a command
+
+```
+joker log ID
+```
+
+View running commmands
+
+```
+joker list
+```
+
+Stop a running command
+
+```
+joker stop ID
+```
+
+# Auto Start at Boot 开机自启
+
+Add one auto-start command at boot
+
+```
+jinbe joker brook server -l :9999 -p hello
+```
+
+View added commmands
+
+```
+jinbe list
+```
+
+Remove one added command
+
+```
+jinbe remove ID
+```
+
+# One Click Script 一键脚本
+
+```
+bash <(curl https://bash.ooo/brook.sh)
+```
+# Install GUI 安装图形客户端
+
+## iOS / M1 Mac
+
+[![](./images/appstore.png)](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+
+## Android
+
+[![](./images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
+
+## Intel Mac
+
+[![](./images/mac.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
+
+## Windows
+
+[![Windows](./images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
+
+## Linux GUI
+
+[![](./images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin)
+
+Developing and testing on Ubuntu 22.04
+
+[Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
+
+## OpenWrt IPK
+
+[![OpenWrt](./images/openwrt.png)](https://github.com/txthinking/brook/releases)
+
+After installation, you need to refresh the page to see the menu
+# CLI Documentation 命令行文档
 # NAME
 
-Brook - A cross-platform network tool designed for developers
+Brook - A cross-platform network tool
 
 # SYNOPSIS
 
@@ -765,7 +962,7 @@ Generate man.1 page
 
 Shows a list of commands or help for one command
 
-# Brook GUI Documentation
+# GUI Documentation
 
 <!--SIDEBAR-->
 <!--G-R3M673HK5V-->
@@ -1044,7 +1241,286 @@ Note that software such as GitBash or Firefox may not read the system CA, you ca
 ## Apple Push Problem
 
 To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connections. So you need to Bypass the relevant domain name and IP. [Reference link](https://support.apple.com/en-us/HT210060)
-# Brook Diagram
+# 图形客户端文档
+
+<!--SIDEBAR-->
+<!--G-R3M673HK5V-->
+
+## 本文适用的软件
+
+-   [Brook](https://github.com/txthinking/brook)
+-   [Brook Plus](https://www.txthinking.com/brook.html)
+-   [Shiliew](https://www.txthinking.com/shiliew.html)
+-   [tun2brook](https://github.com/txthinking/tun2brook)
+
+## Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式
+
+这个模式比较简单，会创建:
+
+-   Socks5 代理: `socks5://[::1]:1080` 或 `socks5://127.0.0.1:1080`
+-   HTTP 代理: `http://[::1]:8010` 或 `http://127.0.0.1:8010`
+-   PAC: `http://127.0.0.1:1093/proxy.pac` 或 `http://[::1]:1093/proxy.pac` 基于 Bypass Domain 列表
+-   Intel Mac GUI, Windows GUI 同时会配置 PAC 到系统代理。Linux GUI 可以配合 [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
+-   什么是 socks5 和 http proxy? [文章](https://www.txthinking.com/talks/articles/socks5-and-http-proxy.article) 和 [视频](https://www.youtube.com/watch?v=Tb0_8odTxEI)
+
+## iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式
+
+```
+所谓的互联网连接，是 IP 连接 IP，不是连接域名。所以域名会被先解析成IP再决定怎么去连接。
+```
+
+## 配置介绍
+
+| 配置    | 支持系统                      | 条件                 | 描述 |
+| ------------- | ----------------------------- | ------------------------------------------- |  --- |
+| 导入服务器    | iOS,Android,Mac,Windows,Linux | /                                           | brook link 列表                                                                                                                                                                                             |
+| 系统 DNS    | iOS,Android,Mac,Windows,Linux | /                                           | 系统 DNS. **不要 bypass 此 IP**                                                                                                                                                                             |
+| 虚拟 DNS      | iOS,Android,Mac,Windows,Linux | **关闭或 block 系统/浏览器等安全 DNS, 具体看下文** | 解析域名为 Fake IP，发起连接时会再转换为域名，然后把域名地址送到服务端进行代理，同时由服务端来负责域名解析                                                                                                  |
+| 屏蔽         | iOS,Android,Mac,Windows,Linux | /                                           | Block 开关                                                                                                                                                                                                  |
+| 屏蔽域名  | iOS,Android,Mac,Windows,Linux | Fake DNS: 开启                              | 域名列表，匹配的域名会被阻断解析. **域名是后缀匹配模式**                                                                                                                                                    |
+| 跳过        | iOS,Android,Mac,Windows,Linux | /                                           | Bypass 开关                                                                                                                                                                                                 |
+| 跳过 IP     | iOS,Android,Mac,Windows,Linux | /                                           | CIDR 列表，匹配到的 IP 会被 bypass                                                                                                                                                                          |
+| 跳过 Geo IP | iOS,Android,Mac,Windows,Linux                   | /                                           | 匹配到的 IP 会被 bypass. 提示: 全球 IP 变动频繁, 所以 Geo 库有时效性                                                                                                                                        |
+| 跳过 Apps   | Android                       | /                                           | 这些 App 会被 bypass                                                                                                                                                                                        |
+|  跳过 DNS    | iOS,Android,Mac,Windows,Linux | /                                           | 支持普通 DNS, 比如 `223.5.5.5:53`, 支持 DoH, 但需要通过参数 address 指定 DoH 的地址, 比如 `https://dns.alidns.com/dns-query?address=223.5.5.5%3A443` 用来解析 Bypass Domain. **此 DNS 的 IP 会自动 Bypass** |
+| 跳过域名 | iOS,Android,Mac,Windows,Linux | Fake DNS: 开启                              | 域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, **最终连接是否会被 Bypass，还取决于 Bypass IP**. **域名是后缀匹配模式**                                                                                |
+| Hosts         | iOS,Android,Mac,Windows,Linux | /                                           | Hosts 开关                                                                                                                                                                                                  |
+| Host 列表    | iOS,Android,Mac,Windows,Linux | Fake DNS: 开启                              | 给域名指定 IP, v4, v6，如果值为空效果同 Block                                                                                                                                                               |
+| 可编程  | iOS,Android,Mac,Windows,Linux | /                                           | 可编程开关                                                                                                                                                                                                  |
+| 脚本        | iOS,Android,Mac,Windows,Linux | /                                           | 脚本。可以控制上面所有的功能。以及上面没有的功能，**全流程控制一切，具体看下文**。                                                                                                                          |
+| 日志           | iOS,Android,Mac,Windows,Linux | /                                           | 日志开关                                                                                                                                                                                                    |
+| 查看日志      | iOS,Android,Mac,Windows,Linux | /                                           | 日志列表                                                                                                                                                                                                    |
+| 日志 Plus | iOS,Android,Mac,Windows,Linux | /                                           | 日志列表，更易读，过滤条件等                                                                                                                                                                                |
+| 查看 MITM | iOS,Android,Mac,Windows,Linux | /                                           | MITM 日志列表，比如 https 的请求响应，十六进制，JSON，图片等                                                                                                                                                |
+| TUN           | iOS,Android,Mac,Windows,Linux             | /                                           | 选择 proxy 模式 还是 tun 模式. iOS 和 Android 强制 TUN 模式                                               |
+| 抓我    | iOS,Android,Mac,Windows,Linux | /                                           | 测试你的抓包或代理软件工作在系统代理还是 TUN                                                                                                                                                                |
+| DNS 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | DNS 客户端                                                                                                                              |
+| DOH 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | DOH 客户端                                                                                                                              |
+| Echo 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | Echo 客户端                                                                    |
+| 测试 Socks5    | iOS,Android,Mac,Linux | /                                           | Test socks5 server                                                                    |
+| 深色主题      | iOS,Android,Mac,Windows,Linux | /                                           | 暗黑模式                                                                                                                                                                                                    |     |
+| 快捷方式      | iOS,Android,Mac,Windows,Linux | /                                           | 在首页快捷控制打开菜单里的功能                                                                                                                                                                              |
+| 系统托盘      | Windows                       | /                                           | 以系统托盘形式打开，然后从系统托盘处打开控制面板                                                                                                                                                            |
+
+## Programmable
+
+```
+Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需要将处理结果赋值到全局变量 out 即可
+```
+
+完全掌控你自己的网络
+
+-   比如通过阻断 AAAA 来关闭 IPv6
+-   阻断系统浏览器内置安全 DNS
+-   重写 DST
+-   分流
+-   直接 Bypass 域名而无视是否解析出来的 IP 是否在 Bypass 里
+-   MITM 解密 HTTPS
+-   抓包
+-   修改包
+-   禁用 HTTP3
+-   等等等...
+
+### 传入变量介绍
+
+| 变量                           | 类型 | 条件          | 时机                   | 描述                       | out 类型 |
+| ------------------------------ | ---- | ------------- | ---------------------- | -------------------------- | -------- |
+| in_guiconfig                   | map  | /             | 开启之前               | 用以覆盖 GUI 的配置        | map      |
+| in_dnsquery                    | map  | FakeDNS: 开启 | 当 DNS 查询发生时      | 脚本可以决定如何处理此请求 | map      |
+| in_address                     | map  | /             | 当要连接某地址时       | 脚本可以决定如何进行连接   | map      |
+| in_httprequest                 | map  | /             | 当有 HTTP(S)请求传入时 | 脚本可以决定如何处理此请求 | map      |
+| in_httprequest,in_httpresponse | map  | /             | 当有 HTTP(S)响应传入时 | 脚本可以决定如何处理此响应 | map      |
+
+### in_guiconfig
+
+| Key | 类型 | 描述                     |
+| --- | ---- | ------------------------ |
+| \_  | bool | 向未来兼容，可忽略此 key |
+
+`out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略, 如果是`map`那么明确指定每一个配置项
+
+| Key        | 类型   | 描述            |
+| ---------- | ------ | --------------- |
+| systemdns4 | string | System DNS v4   |
+| systemdns6 | string | System DNS v6   |
+| fakedns    | bool   | Fake DNS 开关   |
+| block      | bool   | GUI Block 开关  |
+| bypass     | bool   | GUI Bypass 开关 |
+| bypassdns4 | string | Bypass DNS v4   |
+| bypassdns6 | string | Bypass DNS v6   |
+| hosts      | bool   | GUI Hosts 开关  |
+
+### in_dnsquery
+
+| Key    | 类型   | 描述     | 示例       |
+| ------ | ------ | -------- | ---------- |
+| domain | string | 域名     | google.com |
+| type   | string | 查询类型 | A          |
+
+`out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略
+
+| Key          | 类型   | 描述                                                                                               | 示例    |
+| ------------ | ------ | -------------------------------------------------------------------------------------------------- | ------- |
+| block        | bool   | 是否 Block, 默认 `false`. 与 GUI Block Domain 是或的关系                                           | false   |
+| ip           | string | 直接指定 IP，仅当 `type` 为 `A`/`AAAA`有效                                                         | 1.2.3.4 |
+| forcefakedns | bool   | 忽略 GUI Bypass Domain，使用 Fake DNS 来处理，仅当 `type` 为 `A`/`AAAA`有效，默认 `false`          | false   |
+| system       | bool   | 使用 System DNS 来解析，默认 `false`                                                               | false   |
+| bypass       | bool   | 是否 Bypass, 默认 `false`, 如果为 `true` 则使用 Bypass DNS 来解析. 与 GUI Bypass Domain 是或的关系 | false   |
+
+### in_address
+
+| Key           | 类型   | 描述                                                                     | 示例           |
+| ------------- | ------ | ------------------------------------------------------------------------ | -------------- |
+| network       | string | 即将发起连接网络，取值 `tcp`/`udp`                                       | tcp            |
+| ipaddress     | string | IP 类型的地址，与 domainaddress 只会存在一个。注意这两个之间没有任何关系 | 1.2.3.4:443    |
+| domainaddress | string | 域名类型的地址，因为 FakeDNS 我们这里才能拿到域名地址                    | google.com:443 |
+
+`out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略
+
+| Key                    | 类型   | 描述                                                                                                                                                                           | 示例        |
+| ---------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
+| block                  | bool   | 是否 Block, 默认 `false`                                                                                                                                                       | false       |
+| ipaddress              | string | IP 类型地址，重写目的地                                                                                                                                                        | 1.2.3.4:443 |
+| ipaddressfrombypassdns | string | 使用 Bypass DNS 获取`A`或`AAAA` IP 并重写目的地, 仅当 `domainaddress` 存在时有效，取值 `A`/`AAAA`                                                                              | A           |
+| bypass                 | bool   | 是否 Bypass, 默认 `false`. 如果为 `true` 并且是 `domainaddress`, 那么必须指定 `ipaddress` 或 `ipaddressfrombypassdns`. 与 GUI Bypass IP 是或的关系 | false       |
+| mitm                   | bool   | 是否进行 MITM, 默认 `false`. 仅当 `network` 为 `tcp` 时有效. 需要安装 CA，看下文介绍                                                                                           | false       |
+| mitmprotocol           | string | 需要明确指定 MITM 协议, 取值 `http`/`https`                                                                                                                                    | https       |
+| mitmcertdomain         | string | MITM 证书域名，默认从`domainaddress`里取。如果是 `ipaddress` 且 `mitm` 为 `true` 且 `mitmprotocol` 为 `https` 那么必须明确指定                                                 | example.com |
+| mitmwithbody           | bool   | 是否操作 http body，默认 `false`. **会将请求和响应的 body 读取到内存里和脚本交互。iOS 50M 总内存限制可能会杀进程**                                                             | false       |
+| mitmautohandlecompress | bool   | 和脚本交互时是否自动解压缩 http body, 默认 `false`                                                                                                                             | false       |
+| mitmclienttimeout      | int    | Timeout for MITM talk to server, second, default 0                                                                                                                             | 0           |
+| mitmserverreadtimeout  | int    | Timeout for MITM read from client, second, default 0                                                                                                                           | 0           |
+| mitmserverwritetimeout | int    | Timeout for MITM write to client, second, default 0                                                                                                                            | 0           |
+
+### in_httprequest
+
+| Key    | 类型   | 描述                     | 示例                        |
+| ------ | ------ | ------------------------ | --------------------------- |
+| URL    | string | URL                      | `https://example.com/hello` |
+| Method | string | HTTP method              | GET                         |
+| Body   | bytes  | HTTP request body        | /                           |
+| ...    | string | 其他字段均为 HTTP header | /                           |
+
+`out`, 必须设置为一个 request 或 response
+
+### in_httpresponse
+
+| Key        | 类型   | 描述                     | 示例 |
+| ---------- | ------ | ------------------------ | ---- |
+| StatusCode | int    | HTTP status code         | 200  |
+| Body       | bytes  | HTTP response body       | /    |
+| ...        | string | 其他字段均为 HTTP header | /    |
+
+`out`, 必须设置为一个 response
+
+### 如何写 Tengo 脚本
+
+[Tengo Language Syntax](https://github.com/d5/tengo/blob/master/docs/tutorial.md)
+
+Library
+
+-   [text](https://github.com/d5/tengo/blob/master/docs/stdlib-text.md): regular expressions, string conversion, and manipulation
+-   [math](https://github.com/d5/tengo/blob/master/docs/stdlib-math.md): mathematical constants and functions
+-   [times](https://github.com/d5/tengo/blob/master/docs/stdlib-times.md): time-related functions
+-   [rand](https://github.com/d5/tengo/blob/master/docs/stdlib-rand.md): random functions
+-   [fmt](https://github.com/d5/tengo/blob/master/docs/stdlib-fmt.md): formatting functions
+-   [json](https://github.com/d5/tengo/blob/master/docs/stdlib-json.md): JSON functions
+-   [enum](https://github.com/d5/tengo/blob/master/docs/stdlib-enum.md): Enumeration functions
+-   [hex](https://github.com/d5/tengo/blob/master/docs/stdlib-hex.md): hex encoding and decoding functions
+-   [base64](https://github.com/d5/tengo/blob/master/docs/stdlib-base64.md): base64 encoding and decoding functions
+-   `brook`: brook module
+
+    ```
+    Constants
+
+    * os: string, linux/darwin/windows/ios/android. If ios app run on mac, it is ios
+    * iosapponmac: bool, ios app run on mac
+
+    Functions
+
+    * splithostport(address string) => map/error: splits a network address of the form "host:port" to { "host": "xxx", "port": "xxx" }
+    * country(ip string) => string/error: get country code from ip
+    * cidrcontainsip(cidr string, ip string) => bool/error: reports whether the network includes ip
+    * parseurl(url string) => map/error: parses a raw url into a map, keys: scheme/host/path/rawpath/rawquery
+    * parsequery(query string) => map/error: parses a raw query into a kv map
+    * map2query(kv map) => string/error: convert map{string:string} into a query string
+    * bytes2ints(b bytes) => array/error: convert bytes into [int]
+    * ints2bytes(ints array) => bytes/error: convert [int] into bytes
+    * bytescompare(a bytes, b bytes) => int/error: returns an integer comparing two bytes lexicographically. The result will be 0 if a == b, -1 if a < b, and +1 if a > b
+    * bytescontains(b bytes, sub bytes) => bool/error: reports whether sub is within b
+    * byteshasprefix(s bytes, prefix bytes) => bool/error: tests whether the bytes s begins with prefix
+    * byteshassuffix(s bytes, suffix bytes) => bool/error: tests whether the bytes s ends with suffix
+    * bytesindex(s bytes, sep bytes) => int/error: returns the index of the first instance of sep in s, or -1 if sep is not present in s
+    * byteslastindex(s bytes, sep bytes) => int/error: returns the index of the last instance of sep in s, or -1 if sep is not present in s
+    * bytesreplace(s bytes, old bytes, new bytes, n int) => bytes/error: returns a copy of the s with the first n non-overlapping instances of old replaced by new. If n < 0, there is no limit on the number of replacements
+    * pathescape(s string) => string/error: escapes the string so it can be safely placed inside a URL path segment, replacing special characters (including /) with %XX sequences as needed
+    * pathunescape(s string) => string/error: does the inverse transformation of pathescape
+    * queryescape(s string) => string/error: escapes the string so it can be safely placed inside a URL query
+    * queryunescape(s string) => string/error: does the inverse transformation of queryescape
+    * hexdecode(s string) => bytes/error: returns the bytes represented by the hexadecimal string s
+    * hexencode(s string) => string/error: returns the hexadecimal encoding of src
+    ```
+
+示例
+
+https://github.com/txthinking/bypass/blob/master/example_script.tengo
+
+### 如何调试脚本
+
+-   建议使用 [tun2brook](https://github.com/txthinking/tun2brook) 在电脑上打印调试
+-   可以使用 [mitmproxy helper](https://www.txthinking.com/mitmproxy.html) 和 [Wireshark Helper](https://www.txthinking.com/wireshark.html) 抓包来确定要修改什么
+
+## 为什么以及如何关闭系统和浏览器安全 DNS
+
+因为安全 DNS 开启，Fake DNS 就无法工作. 所以我们要关闭它:
+
+-   Android: Settings -> Network & internet -> Private DNS -> Off
+-   Chrome on Mobile: Settings -> Privacy and security -> Use secure DNS -> Off
+-   Chrome on Desktop: Settings -> Privacy and security -> Security -> Use secure DNS -> Off
+-   Windows: Windows Settings -> Network & Internet -> Your Network -> DNS settings -> Edit -> Preferred DNS -> Unencrypted only -> 8.8.8.8
+-   iOS / Mac 避免请求安全 DNS : 可以通过脚本阻断相关 DST。也可以自建个普通 DNS: `brook dnsserver --listen :53`
+
+其他系统和软件，请自行查找是否存在以及如何关闭
+
+## 安装 CA
+
+https://txthinking.github.io/ca/ca.pem
+
+### iOS
+
+https://www.youtube.com/watch?v=HSGPC2vpDGk
+
+### Android
+
+Android 分系统 CA 和用户 CA，必须要 ROOT 后安装到系统 CA 里
+
+### macOS
+
+```
+nami install mad ca.txthinking
+sudo mad install --ca ~/.nami/bin/ca.pem
+```
+
+### Windows
+
+打开 GitBash
+
+```
+nami install mad ca.txthinking
+```
+
+然后用管理员打开 GitBash
+
+```
+mad install --ca ~/.nami/bin/ca.pem
+```
+
+注意 GitBash 或 Firefox 等软件可能不读取系统 CA，安装后可以用系统 Edge 浏览器测试
+
+## Apple 推送问题
+
+要接收推送，Apple Server 只允许 Ethernet, cellular data, Wi-Fi 连接. 所以你需要 Bypass 掉相关域名和 IP. [参考链接](https://support.apple.com/en-us/HT210060)
+# Diagram 图解
 
 <!--SIDEBAR-->
 <!--G-R3M673HK5V-->
@@ -1085,3 +1561,13 @@ To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connect
 
 ![script](https://txthinking.github.io/brook/svg/script.svg)
 
+# Protocol
+https://github.com/txthinking/brook/tree/master/protocol
+# Blog
+https://www.txthinking.com/talks/
+# YouTube
+https://www.youtube.com/txthinking
+# Telegram
+https://t.me/s/txthinking_news
+# Pastebin
+https://ooo.soso.ooo
