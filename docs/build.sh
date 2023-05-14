@@ -3,7 +3,7 @@
 echo '# Brook' > ../readme.md
 echo '<!--SIDEBAR-->' >> ../readme.md
 echo '<!--G-R3M673HK5V-->' >> ../readme.md
-echo 'A cross-platform network tool' >> ../readme.md
+echo 'A cross-platform network tool. 一个跨平台网络工具' >> ../readme.md
 
 cat getting-started.md >> ../readme.md
 
@@ -15,6 +15,10 @@ cat one-click-script.md >> ../readme.md
 cat install-gui.md >> ../readme.md
 
 echo '# CLI Documentation 命令行文档' >> ../readme.md
+cd ../cli/brook
+go build
+mv brook ~/.nami/bin/
+cd ../../docs
 brook mdpage >> ../readme.md
 cat gui.md >> ../readme.md
 cat gui-zh.md >> ../readme.md
@@ -34,7 +38,7 @@ echo 'https://ooo.soso.ooo' >> ../readme.md
 markdown ../readme.md ./index.html
 
 echo '# Brook' > _.md
-echo 'A cross-platform network tool' >> _.md
+echo 'A cross-platform network tool. 一个跨平台网络工具' >> _.md
 mdtoc ../readme.md >> _.md
 cat ../readme.md >> _.md
 mv _.md ../readme.md

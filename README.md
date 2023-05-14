@@ -1,5 +1,5 @@
 # Brook
-A cross-platform network tool
+A cross-platform network tool. 一个跨平台网络工具
 
 Table of Contents
 =================
@@ -125,7 +125,7 @@ Table of Contents
 # Brook
 <!--SIDEBAR-->
 <!--G-R3M673HK5V-->
-A cross-platform network tool
+A cross-platform network tool. 一个跨平台网络工具
 # Getting Started 快速上手
 
 ## Server
@@ -146,7 +146,7 @@ brook server -l :9999 -p hello
 
 | iOS / M1 Mac | Android      | Intel Mac    |Windows      |Linux        |OpenWrt      |
 | --- | --- | --- | --- | --- | --- |
-| [![](./images/appstore.png)](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642) | [![](./images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk) | [![](./images/mac.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg) | [![Windows](./images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.exe) | [![](./images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin) | [![OpenWrt](./images/openwrt.png)](https://github.com/txthinking/brook/releases) |
+| [![](https://brook.app/images/appstore.png)](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642) | [![](https://brook.app/images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk) | [![](https://brook.app/images/mac.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg) | [![Windows](https://brook.app/images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.exe) | [![](https://brook.app/images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin) | [![OpenWrt](https://brook.app/images/openwrt.png)](https://github.com/txthinking/brook/releases) |
 
 > Linux: [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)<br/>
 > OpenWrt: After installation, you need to refresh the page to see the menu
@@ -283,23 +283,23 @@ bash <(curl https://bash.ooo/brook.sh)
 
 ## iOS / M1 Mac
 
-[![](./images/appstore.png)](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
+[![](https://brook.app/images/appstore.png)](https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642)
 
 ## Android
 
-[![](./images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
+[![](https://brook.app/images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
 
 ## Intel Mac
 
-[![](./images/mac.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
+[![](https://brook.app/images/mac.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.dmg)
 
 ## Windows
 
-[![Windows](./images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
+[![Windows](https://brook.app/images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.exe)
 
 ## Linux GUI
 
-[![](./images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin)
+[![](https://brook.app/images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin)
 
 Developing and testing on Ubuntu 22.04
 
@@ -307,7 +307,7 @@ Developing and testing on Ubuntu 22.04
 
 ## OpenWrt IPK
 
-[![OpenWrt](./images/openwrt.png)](https://github.com/txthinking/brook/releases)
+[![OpenWrt](https://brook.app/images/openwrt.png)](https://github.com/txthinking/brook/releases)
 
 After installation, you need to refresh the page to see the menu
 # CLI Documentation 命令行文档
