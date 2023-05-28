@@ -10,17 +10,17 @@
 -   [Shiliew](https://www.txthinking.com/shiliew.html)
 -   [tun2brook](https://github.com/txthinking/tun2brook)
 
-## Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式
+## Windows GUI proxy 模式, Linux GUI proxy 模式
 
 这个模式比较简单，会创建:
 
 -   Socks5 代理: `socks5://[::1]:1080` 或 `socks5://127.0.0.1:1080`
 -   HTTP 代理: `http://[::1]:8010` 或 `http://127.0.0.1:8010`
 -   PAC: `http://127.0.0.1:1093/proxy.pac` 或 `http://[::1]:1093/proxy.pac` 基于 Bypass Domain 列表
--   Intel Mac GUI, Windows GUI 同时会配置 PAC 到系统代理。Linux GUI 可以配合 [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
+-   Windows GUI 同时会配置 PAC 到系统代理。Linux GUI 可以配合 [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
 -   什么是 socks5 和 http proxy? [文章](https://www.txthinking.com/talks/articles/socks5-and-http-proxy.article) 和 [视频](https://www.youtube.com/watch?v=Tb0_8odTxEI)
 
-## iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式
+## iOS, Mac, Android, Windows TUN 模式, Linux TUN 模式
 
 ```
 所谓的互联网连接，是 IP 连接 IP，不是连接域名。所以域名会被先解析成IP再决定怎么去连接。
@@ -32,15 +32,15 @@
 | ------------- | ----------------------------- | ------------------------------------------- |  --- |
 | 导入服务器    | iOS,Android,Mac,Windows,Linux | /                                           | brook link 列表                                                                                                                                                                                             |
 | 系统 DNS    | iOS,Android,Mac,Windows,Linux | /                                           | 系统 DNS. **不要 bypass 此 IP**                                                                                                                                                                             |
-| 虚拟 DNS      | iOS,Android,Mac,Windows,Linux | **关闭或 block 系统/浏览器等安全 DNS, 具体看下文** | 解析域名为 Fake IP，发起连接时会再转换为域名，然后把域名地址送到服务端进行代理，同时由服务端来负责域名解析                                                                                                  |
+| 虚拟 DNS      | iOS,Android,Mac,Windows,Linux | [如何避免 Brook 的 虚拟 DNS 不生效](https://www.txthinking.com/talks/articles/brook-fakedns.article) | 解析域名为 Fake IP，发起连接时会再转换为域名，然后把域名地址送到服务端进行代理，同时由服务端来负责域名解析                                                                                                  |
 | 屏蔽         | iOS,Android,Mac,Windows,Linux | /                                           | Block 开关                                                                                                                                                                                                  |
 | 屏蔽域名  | iOS,Android,Mac,Windows,Linux | Fake DNS: 开启                              | 域名列表，匹配的域名会被阻断解析. **域名是后缀匹配模式**                                                                                                                                                    |
 | 跳过        | iOS,Android,Mac,Windows,Linux | /                                           | Bypass 开关                                                                                                                                                                                                 |
 | 跳过 IP     | iOS,Android,Mac,Windows,Linux | /                                           | CIDR 列表，匹配到的 IP 会被 bypass                                                                                                                                                                          |
 | 跳过 Geo IP | iOS,Android,Mac,Windows,Linux                   | /                                           | 匹配到的 IP 会被 bypass. 提示: 全球 IP 变动频繁, 所以 Geo 库有时效性                                                                                                                                        |
-| 跳过 Apps   | Android                       | /                                           | 这些 App 会被 bypass                                                                                                                                                                                        |
+| 跳过 Apps   | Android, Mac                       | /                                           | 这些 App 会被 bypass                                                                                                                                                                                        |
 |  跳过 DNS    | iOS,Android,Mac,Windows,Linux | /                                           | 支持普通 DNS, 比如 `223.5.5.5:53`, 支持 DoH, 但需要通过参数 address 指定 DoH 的地址, 比如 `https://dns.alidns.com/dns-query?address=223.5.5.5%3A443` 用来解析 Bypass Domain. **此 DNS 的 IP 会自动 Bypass** |
-| 跳过域名 | iOS,Android,Mac,Windows,Linux | Fake DNS: 开启                              | 域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, **最终连接是否会被 Bypass，还取决于 Bypass IP**. **域名是后缀匹配模式**                                                                                |
+| 跳过域名 | iOS,Android,Mac,Windows,Linux | Fake DNS: 开启                              | 域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, **最终连接是否会被 Bypass，还取决于 Bypass IP**. **域名是后缀匹配模式.** 当然也可以用脚本直接跳过域名而无关其IP               |
 | Hosts         | iOS,Android,Mac,Windows,Linux | /                                           | Hosts 开关                                                                                                                                                                                                  |
 | Host 列表    | iOS,Android,Mac,Windows,Linux | Fake DNS: 开启                              | 给域名指定 IP, v4, v6，如果值为空效果同 Block                                                                                                                                                               |
 | 可编程  | iOS,Android,Mac,Windows,Linux | /                                           | 可编程开关                                                                                                                                                                                                  |
@@ -49,7 +49,7 @@
 | 查看日志      | iOS,Android,Mac,Windows,Linux | /                                           | 日志列表                                                                                                                                                                                                    |
 | 日志 Plus | iOS,Android,Mac,Windows,Linux | /                                           | 日志列表，更易读，过滤条件等                                                                                                                                                                                |
 | 查看 MITM | iOS,Android,Mac,Windows,Linux | /                                           | MITM 日志列表，比如 https 的请求响应，十六进制，JSON，图片等                                                                                                                                                |
-| TUN           | iOS,Android,Mac,Windows,Linux             | /                                           | 选择 proxy 模式 还是 tun 模式. iOS 和 Android 强制 TUN 模式                                               |
+| TUN           | iOS,Android,Mac,Windows,Linux             | /                                           | 选择 Proxy/TUN/App 模式. iOS,Android,Mac 默认 TUN 模式   |
 | 抓我    | iOS,Android,Mac,Windows,Linux | /                                           | 测试你的抓包或代理软件工作在系统代理还是 TUN                                                                                                                                                                |
 | DNS 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | DNS 客户端                                                                                                                              |
 | DOH 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | DOH 客户端                                                                                                                              |
@@ -65,27 +65,29 @@
 Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需要将处理结果赋值到全局变量 out 即可
 ```
 
-完全掌控你自己的网络
-
--   比如通过阻断 AAAA 来关闭 IPv6
--   阻断系统浏览器内置安全 DNS
--   重写 DST
--   分流
--   直接 Bypass 域名而无视是否解析出来的 IP 是否在 Bypass 里
--   MITM 解密 HTTPS
--   抓包
--   修改包
--   禁用 HTTP3
--   等等等...
-
 ### 传入变量介绍
 
 | 变量                           | 类型 | 条件          | 时机                   | 描述                       | out 类型 |
 | ------------------------------ | ---- | ------------- | ---------------------- | -------------------------- | -------- |
+| in_brooklinks                  | map  | / | 连接之前  | 预定义多个 brook link，之后可编程指定连接哪个 | map      |
 | in_dnsquery                    | map  | FakeDNS: 开启 | 当 DNS 查询发生时      | 脚本可以决定如何处理此请求 | map      |
 | in_address                     | map  | /             | 当要连接某地址时       | 脚本可以决定如何进行连接   | map      |
 | in_httprequest                 | map  | /             | 当有 HTTP(S)请求传入时 | 脚本可以决定如何处理此请求 | map      |
 | in_httprequest,in_httpresponse | map  | /             | 当有 HTTP(S)响应传入时 | 脚本可以决定如何处理此响应 | map      |
+
+### in_brooklinks
+
+| Key    | 类型   | 描述     | 示例       |
+| ------ | ------ | -------- | ---------- |
+| _ | bool | 占位，无实际意义    | true |
+
+`out`, 如果不是 `map` 类型则会被忽略
+
+| Key          | 类型   | 描述                                                                                               | 示例    |
+| ------------ | ------ | -------------------------------------------------------------------------------------------------- | ------- |
+| ...    | ... | ... | ... |
+| 自定义名字    | string | brook link | brook://...                           |
+| ...    | ... | ... | ... |
 
 ### in_dnsquery
 
@@ -93,6 +95,8 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | ------ | ------ | -------- | ---------- |
 | domain | string | 域名     | google.com |
 | type   | string | 查询类型 | A          |
+| appid   | string | App ID. 仅 Mac | com.google.Chrome.helper          |
+| interface   | string | 网络接口. 仅 Mac | en0          |
 
 `out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略
 
@@ -103,6 +107,7 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | forcefakedns | bool   | 忽略 GUI Bypass Domain，使用 Fake DNS 来处理，仅当 `type` 为 `A`/`AAAA`有效，默认 `false`          | false   |
 | system       | bool   | 使用 System DNS 来解析，默认 `false`                                                               | false   |
 | bypass       | bool   | 是否 Bypass, 默认 `false`, 如果为 `true` 则使用 Bypass DNS 来解析. 与 GUI Bypass Domain 是或的关系 | false   |
+| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的 brook link | 自定义名字   |
 
 ### in_address
 
@@ -111,6 +116,8 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | network       | string | 即将发起连接网络，取值 `tcp`/`udp`                                       | tcp            |
 | ipaddress     | string | IP 类型的地址，与 domainaddress 只会存在一个。注意这两个之间没有任何关系 | 1.2.3.4:443    |
 | domainaddress | string | 域名类型的地址，因为 FakeDNS 我们这里才能拿到域名地址                    | google.com:443 |
+| appid   | string | App ID. 仅 Mac | com.google.Chrome.helper          |
+| interface   | string | 网络接口. 仅 Mac | en0          |
 
 `out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略
 
@@ -123,11 +130,12 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | mitm                   | bool   | 是否进行 MITM, 默认 `false`. 仅当 `network` 为 `tcp` 时有效. 需要安装 CA，看下文介绍                                                                                           | false       |
 | mitmprotocol           | string | 需要明确指定 MITM 协议, 取值 `http`/`https`                                                                                                                                    | https       |
 | mitmcertdomain         | string | MITM 证书域名，默认从`domainaddress`里取。如果是 `ipaddress` 且 `mitm` 为 `true` 且 `mitmprotocol` 为 `https` 那么必须明确指定                                                 | example.com |
-| mitmwithbody           | bool   | 是否操作 http body，默认 `false`. **会将请求和响应的 body 读取到内存里和脚本交互。iOS 50M 总内存限制可能会杀进程**                                                             | false       |
+| mitmwithbody           | bool   | 是否操作 http body，默认 `false`. 会将请求和响应的 body 读取到内存里和脚本交互。iOS 50M 总内存限制可能会杀进程                                                             | false       |
 | mitmautohandlecompress | bool   | 和脚本交互时是否自动解压缩 http body, 默认 `false`                                                                                                                             | false       |
 | mitmclienttimeout      | int    | Timeout for MITM talk to server, second, default 0                                                                                                                             | 0           |
 | mitmserverreadtimeout  | int    | Timeout for MITM read from client, second, default 0                                                                                                                           | 0           |
 | mitmserverwritetimeout | int    | Timeout for MITM write to client, second, default 0                                                                                                                            | 0           |
+| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的 brook link | 自定义名字   |
 
 ### in_httprequest
 
@@ -150,7 +158,7 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 
 `out`, 必须设置为一个 response
 
-### 如何写 Tengo 脚本
+## 写脚本
 
 [Tengo Language Syntax](https://github.com/d5/tengo/blob/master/docs/tutorial.md)
 
@@ -198,26 +206,23 @@ Library
     * hexencode(s string) => string/error: returns the hexadecimal encoding of src
     ```
 
-示例
+## 调试脚本
 
-https://github.com/txthinking/bypass/blob/master/example_script.tengo
+建议使用 [tun2brook](https://github.com/txthinking/tun2brook) 在电脑上`fmt.println`调试
 
-### 如何调试脚本
+## 独立脚本例子
 
--   建议使用 [tun2brook](https://github.com/txthinking/tun2brook) 在电脑上打印调试
--   可以使用 [mitmproxy helper](https://www.txthinking.com/mitmproxy.html) 和 [Wireshark Helper](https://www.txthinking.com/wireshark.html) 抓包来确定要修改什么
+https://github.com/txthinking/bypass
 
-## 为什么以及如何关闭系统和浏览器安全 DNS
+## 脚本生成器
 
-因为安全 DNS 开启，Fake DNS 就无法工作. 所以我们要关闭它:
+https://modules.brook.app
 
--   Android: Settings -> Network & internet -> Private DNS -> Off
--   Chrome on Mobile: Settings -> Privacy and security -> Use secure DNS -> Off
--   Chrome on Desktop: Settings -> Privacy and security -> Security -> Use secure DNS -> Off
--   Windows: Windows Settings -> Network & Internet -> Your Network -> DNS settings -> Edit -> Preferred DNS -> Unencrypted only -> 8.8.8.8
--   iOS / Mac 避免请求安全 DNS : 可以通过脚本阻断相关 DST。也可以自建个普通 DNS: `brook dnsserver --listen :53`
+## 抓包
 
-其他系统和软件，请自行查找是否存在以及如何关闭
+-   [Brook 搭配 mitmproxy 进行手机 App 深度抓包](https://www.txthinking.com/talks/articles/brook-mitmproxy.article)
+-   [Brook 全平台抓包](https://www.txthinking.com/talks/articles/brook-packet-capture.article)
+-   [用 mitmproxy helper 抓包](https://www.txthinking.com/mitmproxy.html)
 
 ## 安装 CA
 
@@ -256,4 +261,4 @@ mad install --ca ~/.nami/bin/ca.pem
 
 ## Apple 推送问题
 
-要接收推送，Apple Server 只允许 Ethernet, cellular data, Wi-Fi 连接. 所以你需要 Bypass 掉相关域名和 IP. [参考链接](https://support.apple.com/en-us/HT210060)
+要接收推送，Apple Server 只允许 Ethernet, cellular data, Wi-Fi 连接. 所以你需要 Bypass 掉相关域名和 IP. [参考链接](https://github.com/txthinking/bypass/tree/master/apple)

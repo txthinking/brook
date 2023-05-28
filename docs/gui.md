@@ -10,7 +10,7 @@
 -   [Shiliew](https://www.txthinking.com/shiliew.html)
 -   [tun2brook](https://github.com/txthinking/tun2brook)
 
-## Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode
+## Windows Proxy mode, Linux Proxy mode
 
 This mode is very simple, will create:
 
@@ -20,7 +20,7 @@ This mode is very simple, will create:
 -   Intel Mac GUI, Windows GUI set PAC to system proxy。Linux GUI can work with [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
 -   What is socks5 and http proxy? [Article](https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article) and [Video](https://www.youtube.com/watch?v=sBCB-X7BoP8)
 
-## iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun mode, Windows GUI tun mode, Linux GUI tun mode
+## iOS, Mac, Android, Windows TUN mode, Linux TUN mode
 
 ```
 The so-called Internet connection is IP to IP connection, not domain name connection. Therefore, the domain name will be resolved into IP before deciding how to connect.
@@ -32,15 +32,15 @@ The so-called Internet connection is IP to IP connection, not domain name connec
 | -------------- | --------------------------------- | ----------------------------------------------------------------------------------- | --- |
 | Import Servers | iOS,Android,Mac,Windows,Linux     | /                                                                                   | brook link list                                                                                                                                                                                                                                                                       |
 | System DNS     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | System DNS. **Do not bypass this IP**                                                                                                                                                                                                                                                 |
-| Fake DNS       | iOS,Android,Mac,Windows,Linux | **Turn off or block the security DNS that comes with the system/browser/etc, see below for details** | The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution                                                |
+| Fake DNS       | iOS,Android,Mac,Windows,Linux | [How to prevent Brook's Fake DNS from not working](https://www.txthinking.com/talks/articles/brook-fakedns-en.article) | The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution                                                |
 | Block          | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Block switch                                                                                                                                                                                                                                                                          |
 | Block Domain   | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | Domain name list, matching domain names will be blocked. **Domain name is suffix matching mode**                                                                                                                                                                                      |
 | Bypass         | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Bypass switch                                                                                                                                                                                                                                                                         |
 | Bypass IP      | iOS,Android,Mac,Windows,Linux     | /                                                                                   | CIDR list, matched IP will be bypassed                                                                                                                                                                                                                                                |
 | Bypass Geo IP  | iOS,Android,Mac,Windows,Linux                       | /                                                                                   | The matched IP will be bypassed. Note: Global IP changes frequently, so the Geo library is time-sensitive                                                                                                                                                                             |
-| Bypass Apps    | Android                           | /                                                                                   | These apps will be bypassed                                                                                                                                                                                                                                                           |
+| Bypass Apps    | Android,Mac            | /                                                                                   | These apps will be bypassed                                                                                                                                                                                                                                                           |
 | Bypass DNS     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Support normal DNS, such as `223.5.5.5:53`, support DoH, but need to specify the address of DoH through the parameter address, such as `https://dns. alidns.com/dns-query?address=223.5.5.5%3A443` is used to resolve Bypass Domain. **The IP of this DNS will automatically Bypass** |
-| Bypass Domain  | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | List of domain names, matching domain names will use Bypass DNS resolution to get IP, **whether the final connection will be bypassed depends on the Bypass IP** . **The domain name is a suffix matching pattern**                                                                   |
+| Bypass Domain  | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | List of domain names, matching domain names will use Bypass DNS resolution to get IP, **whether the final connection will be bypassed depends on the Bypass IP** . **The domain name is a suffix matching pattern**. Of course, you can also use the script to bypass the domain regardless of its IP |
 | Hosts          | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Hosts switch                                                                                                                                                                                                                                                                          |
 | Hosts List     | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | Specify IP, v4, v6 for the domain name, if the value is empty, the effect is the same as Block                                                                                                                                                                                        |
 | Programmable   | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Programmable switch                                                                                                                                                                                                                                                                   |
@@ -49,7 +49,7 @@ The so-called Internet connection is IP to IP connection, not domain name connec
 | Log View       | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log List                                                                                                                                                                                                                                                                              |
 | Log View Plus  | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log list, easier to read, filter conditions, etc.                                                                                                                                                                                                                                     |
 | MITM Log View  | iOS,Android,Mac,Windows,Linux     | /                                                                                   | MITM log list, such as https request response, hexadecimal, JSON, image, etc.                                                                                                                                                                                                         |
-| TUN            | iOS,Android,Mac,Windows,Linux                 | /                                                                                   | Choose proxy mode or tun. iOS and Android force TUN mode mode                                                                                                                                                                                                                                                         |
+| TUN            | iOS,Android,Mac,Windows,Linux                 | / | Choose Proxy/TUN/App mode. iOS,Android,Mac default TUN mode mode                                                                                                                                                                                                                                                         |
 | Capture Me     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Test your packet capture or proxy software is working as a system proxy or TUN                                                                                                                                                                                                        |
 | DNS Client    | iOS,Android,Mac,Windows,Linux | /                                           | DNS client                                                                                   |
 | DOH Client    | iOS,Android,Mac,Windows,Linux | /                                           | DOH client                                                                                                           |
@@ -65,27 +65,29 @@ The so-called Internet connection is IP to IP connection, not domain name connec
 Brook GUI will pass different global variables to the script at different times, and the script only needs to assign the processing result to the global variable out
 ```
 
-Take full control of your own network
-
--   Like turning off IPv6 by blocking AAAA
--   Block system/browser built-in secure DNS
--   Override DST
--   Flexible and finer rules
--   Directly bypass the domain name regardless of whether the resolved IP is in Bypass
--   MITM decrypt HTTPS
--   Packet capture
--   Packet modify
--   Disable HTTP3
--   more and more...
-
 ### Introduction to incoming variables
 
 | variable                       | type | condition   | timing                            | description                                       | out type |
 | ------------------------------ | ---- | ----------- | --------------------------------- | ------------------------------------------------- | -------- |
+| in_brooklinks                  | map  | / | Before connecting  | Predefine multiple brook links, and then programmatically specify which one to connect to | map      |
 | in_dnsquery                    | map  | FakeDNS: On | When a DNS query occurs           | Script can decide how to handle this request      | map      |
 | in_address                     | map  | /           | When connecting to an address     | script can decide how to connect                  | map      |
 | in_httprequest                 | map  | /           | When an HTTP(S) request comes in  | the script can decide how to handle this request  | map      |
 | in_httprequest,in_httpresponse | map  | /           | when an HTTP(S) response comes in | the script can decide how to handle this response | map      |
+
+### in_brooklinks
+
+| Key    | Type   | Description | Example    |
+| ------ | ------ | -------- | ---------- |
+| _ | bool | meaningless    | true |
+
+`out`, ignored if not of type `map`
+
+| Key    | Type   | Description | Example    |
+| ------------ | ------ | -------------------------------------------------------------------------------------------------- | ------- |
+| ...    | ... | ... | ... |
+| custom name    | string | brook link | brook://...                           |
+| ...    | ... | ... | ... |
 
 ### in_dnsquery
 
@@ -93,6 +95,8 @@ Take full control of your own network
 | ------ | ------ | ----------- | ---------- |
 | domain | string | domain name | google.com |
 | type   | string | query type  | A          |
+| appid   | string | App ID. Mac only | com.google.Chrome.helper          |
+| interface   | string | network interface. Mac only | en0          |
 
 `out`, if it is `error` type will be recorded in the log. Ignored if not of type `map`
 
@@ -103,6 +107,7 @@ Take full control of your own network
 | forcefakedns | bool   | Ignore GUI Bypass Domain, handle with Fake DNS, only valid when `type` is `A`/`AAAA`, default `false`                         | false   |
 | system       | bool   | Get IP from system DNS, default `false`                                                                                       | false   |
 | bypass       | bool   | whether to Bypass, default `false`, if `true` then use bypass DNS to resolve. It is an OR relationship with GUI Bypass Domain | false   |
+| brooklinkkey | string   | When need to connect the Server，instead, connect to the brook link specified by the key in_brooklinks | custom name   |
 
 ### in_address
 
@@ -111,6 +116,8 @@ Take full control of your own network
 | network       | string | Network type, the value `tcp`/`udp`                                                                                 | tcp            |
 | ipaddress     | string | IP type address. There is only of ipaddress and domainaddress. Note that there is no relationship between these two | 1.2.3.4:443    |
 | domainaddress | string | Domain type address, because of FakeDNS we can get the domain name address here                                     | google.com:443 |
+| appid   | string | App ID. Mac only | com.google.Chrome.helper          |
+| interface   | string | network interface. Mac only | en0          |
 
 `out`, if it is `error` type will be recorded in the log. Ignored if not of type `map`
 
@@ -123,11 +130,12 @@ Take full control of your own network
 | mitm                   | bool   | Whether to perform MITM, default `false`. Only valid when `network` is `tcp`. Need to install CA, see below                                                                                             | false       |
 | mitmprotocol           | string | MITM protocol needs to be specified explicitly, the value is `http`/`https`                                                                                                                             | https       |
 | mitmcertdomain         | string | The MITM certificate domain name, which is taken from `domainaddress` by default. If `ipaddress` and `mitm` is `true` and `mitmprotocol` is `https` then must be must be specified explicitly           | example.com |
-| mitmwithbody           | bool   | Whether to manipulate the http body, default `false`. **will read the body of the request and response into the memory and interact with the script. iOS 50M total memory limit may kill process**      | false       |
+| mitmwithbody           | bool   | Whether to manipulate the http body, default `false`. will read the body of the request and response into the memory and interact with the script. iOS 50M total memory limit may kill process      | false       |
 | mitmautohandlecompress | bool   | Whether to automatically decompress the http body when interacting with the script, default `false`                                                                                                     | false       |
 | mitmclienttimeout      | int    | Timeout for MITM talk to server, second, default 0                                                                                                                                                      | 0           |
 | mitmserverreadtimeout  | int    | Timeout for MITM read from client, second, default 0                                                                                                                                                    | 0           |
 | mitmserverwritetimeout | int    | Timeout for MITM write to client, second, default 0                                                                                                                                                     | 0           |
+| brooklinkkey | string   | When need to connect the Server，instead, connect to the brook link specified by the key in_brooklinks | custom name   |
 
 ### in_httprequest
 
@@ -150,7 +158,7 @@ Take full control of your own network
 
 `out`, must be set to a response
 
-### How to write Tengo script
+## Write script
 
 [Tengo Language Syntax](https://github.com/d5/tengo/blob/master/docs/tutorial.md)
 
@@ -198,26 +206,23 @@ Library
     * hexencode(s string) => string/error: returns the hexadecimal encoding of src
     ```
 
-Example
+## Debug script
 
-https://github.com/txthinking/bypass/blob/master/example_script.tengo
+It is recommended to use [tun2brook](https://github.com/txthinking/tun2brook) on desktop to debug with `fmt.println`
 
-### How to debug script
+## Standalone Script Example
 
--   It is recommended to use [tun2brook](https://github.com/txthinking/tun2brook) on desktop to debug with print
--   It is recommended to use [mitmproxy helper](https://www.txthinking.com/mitmproxy.html) and [Wireshark Helper](https://www.txthinking.com/wireshark.html) to capture packets to determine what to modify
+https://github.com/txthinking/bypass
 
-## Why and How to Turn Off System and Browser Security DNS
+## Brook Script Builder
 
-Because if Security DNS is turned on, the Fake DNS will not work. So we have to turn it off:
+https://modules.brook.app
 
--   Android: Settings -> Network & internet -> Private DNS -> Off
--   Chrome on Mobile: Settings -> Privacy and security -> Use secure DNS -> Off
--   Chrome on Desktop: Settings -> Privacy and security -> Security -> Use secure DNS -> Off
--   Windows: Windows Settings -> Network & Internet -> Your Network -> DNS settings -> Edit -> Preferred DNS -> Unencrypted only -> 8.8.8.8
--   iOS/Mac avoid requesting secure DNS: related DST can be blocked by script. You can also create a DNS by yourself: `brook dnsserver --listen :53`
+## Packet Capture
 
-Other systems and software, please find out whether it exists and how to close it
+-   [Brook and mitmproxy for mobile app deep packet capture](https://www.txthinking.com/talks/articles/brook-mitmproxy-en.article)
+-   [Brook Packet Capture on All Platform](https://www.txthinking.com/talks/articles/brook-packet-capture-en.article)
+-   [mitmproxy helper](https://www.txthinking.com/mitmproxy.html)
 
 ## Install CA
 
@@ -256,4 +261,4 @@ Note that software such as GitBash or Firefox may not read the system CA, you ca
 
 ## Apple Push Problem
 
-To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connections. So you need to Bypass the relevant domain name and IP. [Reference link](https://support.apple.com/en-us/HT210060)
+To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connections. So you need to Bypass the relevant domain name and IP. [Reference link](https://github.com/txthinking/bypass/tree/master/apple)

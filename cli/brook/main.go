@@ -59,8 +59,8 @@ func main() {
 	df := func() {}
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20230601"
-	app.Usage = "A cross-platform network tool"
+	app.Version = "20230606"
+	app.Usage = "A cross-platform programmable network tool"
 	app.Authors = []*cli.Author{
 		{
 			Name:  "Cloud",
@@ -2375,7 +2375,7 @@ func main() {
 					Name:    "doh",
 					Aliases: []string{"s"},
 					Usage:   "DOH server, the address is required",
-					Value:   "https://dns.google/dns-query?address=8.8.8.8%3A443",
+					Value:   "https://dns.quad9.net/dns-query?address=9.9.9.9%3A443",
 				},
 				&cli.StringFlag{
 					Name:    "domain",

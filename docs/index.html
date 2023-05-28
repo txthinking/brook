@@ -1142,16 +1142,6 @@ div.content {
 <li><a href="#daemon-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow">Daemon 守护进程</a></li>
 <li><a href="#auto-start-at-boot-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF" rel="nofollow">Auto Start at Boot 开机自启</a></li>
 <li><a href="#one-click-script-%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC" rel="nofollow">One Click Script 一键脚本</a></li>
-<li><a href="#install-gui-%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow">Install GUI 安装图形客户端</a>
-
-<ul>
-<li><a href="#ios--m1-mac" rel="nofollow">iOS / M1 Mac</a></li>
-<li><a href="#android" rel="nofollow">Android</a></li>
-<li><a href="#intel-mac" rel="nofollow">Intel Mac</a></li>
-<li><a href="#windows" rel="nofollow">Windows</a></li>
-<li><a href="#linux-gui" rel="nofollow">Linux GUI</a></li>
-<li><a href="#openwrt-ipk" rel="nofollow">OpenWrt IPK</a></li>
-</ul></li>
 <li><a href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow">CLI Documentation 命令行文档</a></li>
 <li><a href="#name" rel="nofollow">NAME</a></li>
 <li><a href="#synopsis" rel="nofollow">SYNOPSIS</a></li>
@@ -1195,46 +1185,52 @@ div.content {
 
 <ul>
 <li><a href="#software-for-which-this-article-applies" rel="nofollow">Software for which this article applies</a></li>
-<li><a href="#intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode" rel="nofollow">Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode</a></li>
-<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun mode, Windows GUI tun mode, Linux GUI tun mode</a></li>
+<li><a href="#windows-proxy-mode-linux-proxy-mode" rel="nofollow">Windows Proxy mode, Linux Proxy mode</a></li>
+<li><a href="#ios-mac-android-windows-tun-mode-linux-tun-mode" rel="nofollow">iOS, Mac, Android, Windows TUN mode, Linux TUN mode</a></li>
 <li><a href="#configuration-introduction" rel="nofollow">Configuration Introduction</a></li>
 <li><a href="#programmable" rel="nofollow">Programmable</a></li>
 <li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
+<li><a href="#in-brooklinks" rel="nofollow">in_brooklinks</a></li>
 <li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
 <li><a href="#in-address" rel="nofollow">in_address</a></li>
 <li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
 <li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
-<li><a href="#how-to-write-tengo-script" rel="nofollow">How to write Tengo script</a></li>
-<li><a href="#how-to-debug-script" rel="nofollow">How to debug script</a></li>
-<li><a href="#why-and-how-to-turn-off-system-and-browser-security-dns" rel="nofollow">Why and How to Turn Off System and Browser Security DNS</a></li>
+<li><a href="#write-script" rel="nofollow">Write script</a></li>
+<li><a href="#debug-script" rel="nofollow">Debug script</a></li>
+<li><a href="#standalone-script-example" rel="nofollow">Standalone Script Example</a></li>
+<li><a href="#brook-script-builder" rel="nofollow">Brook Script Builder</a></li>
+<li><a href="#packet-capture" rel="nofollow">Packet Capture</a></li>
 <li><a href="#install-ca" rel="nofollow">Install CA</a></li>
 <li><a href="#ios" rel="nofollow">iOS</a></li>
-<li><a href="#android-1" rel="nofollow">Android</a></li>
+<li><a href="#android" rel="nofollow">Android</a></li>
 <li><a href="#macos" rel="nofollow">macOS</a></li>
-<li><a href="#windows-1" rel="nofollow">Windows</a></li>
+<li><a href="#windows" rel="nofollow">Windows</a></li>
 <li><a href="#apple-push-problem" rel="nofollow">Apple Push Problem</a></li>
 </ul></li>
 <li><a href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow">图形客户端文档</a>
 
 <ul>
 <li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
-<li><a href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
-<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</a></li>
+<li><a href="#windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
+<li><a href="#ios-mac-android-windows-tun-%E6%A8%A1%E5%BC%8F-linux-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, Mac, Android, Windows TUN 模式, Linux TUN 模式</a></li>
 <li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
 <li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
 <li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
+<li><a href="#in-brooklinks-1" rel="nofollow">in_brooklinks</a></li>
 <li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
 <li><a href="#in-address-1" rel="nofollow">in_address</a></li>
 <li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
 <li><a href="#in-httpresponse-1" rel="nofollow">in_httpresponse</a></li>
-<li><a href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow">如何写 Tengo 脚本</a></li>
-<li><a href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">如何调试脚本</a></li>
-<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow">为什么以及如何关闭系统和浏览器安全 DNS</a></li>
+<li><a href="#%E5%86%99%E8%84%9A%E6%9C%AC" rel="nofollow">写脚本</a></li>
+<li><a href="#%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">调试脚本</a></li>
+<li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90" rel="nofollow">独立脚本例子</a></li>
+<li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8" rel="nofollow">脚本生成器</a></li>
+<li><a href="#%E6%8A%93%E5%8C%85" rel="nofollow">抓包</a></li>
 <li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a></li>
 <li><a href="#ios-1" rel="nofollow">iOS</a></li>
-<li><a href="#android-2" rel="nofollow">Android</a></li>
+<li><a href="#android-1" rel="nofollow">Android</a></li>
 <li><a href="#macos-1" rel="nofollow">macOS</a></li>
-<li><a href="#windows-2" rel="nofollow">Windows</a></li>
+<li><a href="#windows-1" rel="nofollow">Windows</a></li>
 <li><a href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow">Apple 推送问题</a></li>
 </ul></li>
 <li><a href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow">Diagram 图解</a>
@@ -1255,6 +1251,8 @@ div.content {
 <li><a href="#youtube" rel="nofollow">YouTube</a></li>
 <li><a href="#telegram" rel="nofollow">Telegram</a></li>
 <li><a href="#pastebin" rel="nofollow">Pastebin</a></li>
+<li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90--standalone-script-example" rel="nofollow">独立脚本例子 | Standalone Script Example</a></li>
+<li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8--brook-script-builder" rel="nofollow">脚本生成器 | Brook Script Builder</a></li>
 </ul>
 
     </div>
@@ -1286,16 +1284,6 @@ div.content {
 <li><a href="#daemon-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow">Daemon 守护进程</a></li>
 <li><a href="#auto-start-at-boot-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF" rel="nofollow">Auto Start at Boot 开机自启</a></li>
 <li><a href="#one-click-script-%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC" rel="nofollow">One Click Script 一键脚本</a></li>
-<li><a href="#install-gui-%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow">Install GUI 安装图形客户端</a>
-
-<ul>
-<li><a href="#ios--m1-mac" rel="nofollow">iOS / M1 Mac</a></li>
-<li><a href="#android" rel="nofollow">Android</a></li>
-<li><a href="#intel-mac" rel="nofollow">Intel Mac</a></li>
-<li><a href="#windows" rel="nofollow">Windows</a></li>
-<li><a href="#linux-gui" rel="nofollow">Linux GUI</a></li>
-<li><a href="#openwrt-ipk" rel="nofollow">OpenWrt IPK</a></li>
-</ul></li>
 <li><a href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow">CLI Documentation 命令行文档</a></li>
 <li><a href="#name" rel="nofollow">NAME</a></li>
 <li><a href="#synopsis" rel="nofollow">SYNOPSIS</a></li>
@@ -1339,46 +1327,52 @@ div.content {
 
 <ul>
 <li><a href="#software-for-which-this-article-applies" rel="nofollow">Software for which this article applies</a></li>
-<li><a href="#intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode" rel="nofollow">Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode</a></li>
-<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun mode, Windows GUI tun mode, Linux GUI tun mode</a></li>
+<li><a href="#windows-proxy-mode-linux-proxy-mode" rel="nofollow">Windows Proxy mode, Linux Proxy mode</a></li>
+<li><a href="#ios-mac-android-windows-tun-mode-linux-tun-mode" rel="nofollow">iOS, Mac, Android, Windows TUN mode, Linux TUN mode</a></li>
 <li><a href="#configuration-introduction" rel="nofollow">Configuration Introduction</a></li>
 <li><a href="#programmable" rel="nofollow">Programmable</a></li>
 <li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
+<li><a href="#in-brooklinks" rel="nofollow">in_brooklinks</a></li>
 <li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
 <li><a href="#in-address" rel="nofollow">in_address</a></li>
 <li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
 <li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
-<li><a href="#how-to-write-tengo-script" rel="nofollow">How to write Tengo script</a></li>
-<li><a href="#how-to-debug-script" rel="nofollow">How to debug script</a></li>
-<li><a href="#why-and-how-to-turn-off-system-and-browser-security-dns" rel="nofollow">Why and How to Turn Off System and Browser Security DNS</a></li>
+<li><a href="#write-script" rel="nofollow">Write script</a></li>
+<li><a href="#debug-script" rel="nofollow">Debug script</a></li>
+<li><a href="#standalone-script-example" rel="nofollow">Standalone Script Example</a></li>
+<li><a href="#brook-script-builder" rel="nofollow">Brook Script Builder</a></li>
+<li><a href="#packet-capture" rel="nofollow">Packet Capture</a></li>
 <li><a href="#install-ca" rel="nofollow">Install CA</a></li>
 <li><a href="#ios" rel="nofollow">iOS</a></li>
-<li><a href="#android-1" rel="nofollow">Android</a></li>
+<li><a href="#android" rel="nofollow">Android</a></li>
 <li><a href="#macos" rel="nofollow">macOS</a></li>
-<li><a href="#windows-1" rel="nofollow">Windows</a></li>
+<li><a href="#windows" rel="nofollow">Windows</a></li>
 <li><a href="#apple-push-problem" rel="nofollow">Apple Push Problem</a></li>
 </ul></li>
 <li><a href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow">图形客户端文档</a>
 
 <ul>
 <li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
-<li><a href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
-<li><a href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</a></li>
+<li><a href="#windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
+<li><a href="#ios-mac-android-windows-tun-%E6%A8%A1%E5%BC%8F-linux-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, Mac, Android, Windows TUN 模式, Linux TUN 模式</a></li>
 <li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
 <li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
 <li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
+<li><a href="#in-brooklinks-1" rel="nofollow">in_brooklinks</a></li>
 <li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
 <li><a href="#in-address-1" rel="nofollow">in_address</a></li>
 <li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
 <li><a href="#in-httpresponse-1" rel="nofollow">in_httpresponse</a></li>
-<li><a href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow">如何写 Tengo 脚本</a></li>
-<li><a href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">如何调试脚本</a></li>
-<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow">为什么以及如何关闭系统和浏览器安全 DNS</a></li>
+<li><a href="#%E5%86%99%E8%84%9A%E6%9C%AC" rel="nofollow">写脚本</a></li>
+<li><a href="#%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">调试脚本</a></li>
+<li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90" rel="nofollow">独立脚本例子</a></li>
+<li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8" rel="nofollow">脚本生成器</a></li>
+<li><a href="#%E6%8A%93%E5%8C%85" rel="nofollow">抓包</a></li>
 <li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a></li>
 <li><a href="#ios-1" rel="nofollow">iOS</a></li>
-<li><a href="#android-2" rel="nofollow">Android</a></li>
+<li><a href="#android-1" rel="nofollow">Android</a></li>
 <li><a href="#macos-1" rel="nofollow">macOS</a></li>
-<li><a href="#windows-2" rel="nofollow">Windows</a></li>
+<li><a href="#windows-1" rel="nofollow">Windows</a></li>
 <li><a href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow">Apple 推送问题</a></li>
 </ul></li>
 <li><a href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow">Diagram 图解</a>
@@ -1399,6 +1393,8 @@ div.content {
 <li><a href="#youtube" rel="nofollow">YouTube</a></li>
 <li><a href="#telegram" rel="nofollow">Telegram</a></li>
 <li><a href="#pastebin" rel="nofollow">Pastebin</a></li>
+<li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90--standalone-script-example" rel="nofollow">独立脚本例子 | Standalone Script Example</a></li>
+<li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8--brook-script-builder" rel="nofollow">脚本生成器 | Brook Script Builder</a></li>
 </ul>
 
             </div>
@@ -1406,7 +1402,7 @@ div.content {
 
 
 
-<p>A cross-platform network tool. 一个跨平台网络工具</p>
+<p>A cross-platform programmable network tool. 一个跨平台可编程网络工具</p>
 <h1><a name="getting-started-快速上手" class="anchor" href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Getting Started 快速上手</h1>
 <h2><a name="server" class="anchor" href="#server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
@@ -1426,9 +1422,9 @@ GUI Client</h2>
 <table>
 <thead>
 <tr>
-<th>iOS / M1 Mac</th>
+<th>iOS</th>
 <th>Android</th>
-<th>Intel Mac</th>
+<th>Mac</th>
 <th>Windows</th>
 <th>Linux</th>
 <th>OpenWrt</th>
@@ -1437,9 +1433,9 @@ GUI Client</h2>
 
 <tbody>
 <tr>
-<td><a href="https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642" rel="nofollow"><img src="https://brook.app/images/appstore.png" alt=""></a></td>
+<td><a href="https://apps.apple.com/us/app/brook-network-tool/id1216002642" rel="nofollow"><img src="https://brook.app/images/appstore.png" alt=""></a></td>
 <td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk" rel="nofollow"><img src="https://brook.app/images/android.png" alt=""></a></td>
-<td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.dmg" rel="nofollow"><img src="https://brook.app/images/mac.png" alt=""></a></td>
+<td><a href="https://apps.apple.com/us/app/brook-network-tool/id1216002642" rel="nofollow"><img src="https://brook.app/images/mac.png" alt=""></a></td>
 <td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.exe" rel="nofollow"><img src="https://brook.app/images/windows.png" alt="Windows"></a></td>
 <td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin" rel="nofollow"><img src="https://brook.app/images/linux.png" alt=""></a></td>
 <td><a href="https://github.com/txthinking/brook/releases" rel="nofollow"><img src="https://brook.app/images/openwrt.png" alt="OpenWrt"></a></td>
@@ -1566,44 +1562,12 @@ One Click Script 一键脚本</h1>
 
 <pre><code>bash &lt;(curl https://bash.ooo/brook.sh)
 </code></pre>
-<h1><a name="install-gui-安装图形客户端" class="anchor" href="#install-gui-%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Install GUI 安装图形客户端</h1>
-<h2><a name="ios-m1-mac" class="anchor" href="#ios-m1-mac" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-iOS / M1 Mac</h2>
-
-<p><a href="https://apps.apple.com/us/app/brook-a-cross-platform-proxy/id1216002642" rel="nofollow"><img src="https://brook.app/images/appstore.png" alt=""></a></p>
-<h2><a name="android" class="anchor" href="#android" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Android</h2>
-
-<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk" rel="nofollow"><img src="https://brook.app/images/android.png" alt=""></a></p>
-<h2><a name="intel-mac" class="anchor" href="#intel-mac" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Intel Mac</h2>
-
-<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.dmg" rel="nofollow"><img src="https://brook.app/images/mac.png" alt=""></a></p>
-<h2><a name="windows" class="anchor" href="#windows" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Windows</h2>
-
-<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.exe" rel="nofollow"><img src="https://brook.app/images/windows.png" alt="Windows"></a></p>
-<h2><a name="linux-gui" class="anchor" href="#linux-gui" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Linux GUI</h2>
-
-<p><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin" rel="nofollow"><img src="https://brook.app/images/linux.png" alt=""></a></p>
-
-<p>Developing and testing on Ubuntu 22.04</p>
-
-<p><a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></p>
-<h2><a name="openwrt-ipk" class="anchor" href="#openwrt-ipk" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-OpenWrt IPK</h2>
-
-<p><a href="https://github.com/txthinking/brook/releases" rel="nofollow"><img src="https://brook.app/images/openwrt.png" alt="OpenWrt"></a></p>
-
-<p>After installation, you need to refresh the page to see the menu</p>
 <h1><a name="cli-documentation-命令行文档" class="anchor" href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 CLI Documentation 命令行文档</h1>
 <h1><a name="name" class="anchor" href="#name" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 NAME</h1>
 
-<p>Brook - A cross-platform network tool</p>
+<p>Brook - A cross-platform programmable network tool</p>
 <h1><a name="synopsis" class="anchor" href="#synopsis" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 SYNOPSIS</h1>
 
@@ -2105,7 +2069,7 @@ dohclient</h2>
 
 <p>Send a dns query</p>
 
-<p><strong>--doh, -s</strong>=&#34;&#34;: DOH server, the address is required (default: <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>)</p>
+<p><strong>--doh, -s</strong>=&#34;&#34;: DOH server, the address is required (default: <a href="https://dns.quad9.net/dns-query?address=9.9.9.9%3A443" rel="nofollow">https://dns.quad9.net/dns-query?address=9.9.9.9%3A443</a>)</p>
 
 <p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p>
 
@@ -2263,8 +2227,8 @@ Software for which this article applies</h2>
 <li><a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew</a></li>
 <li><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></li>
 </ul>
-<h2><a name="intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode" class="anchor" href="#intel-mac-gui-proxy-mode-windows-gui-proxy-mode-linux-gui-proxy-mode" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode</h2>
+<h2><a name="windows-proxy-mode-linux-proxy-mode" class="anchor" href="#windows-proxy-mode-linux-proxy-mode" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Windows Proxy mode, Linux Proxy mode</h2>
 
 <p>This mode is very simple, will create:</p>
 
@@ -2275,8 +2239,8 @@ Intel Mac GUI proxy mode, Windows GUI proxy mode, Linux GUI proxy mode</h2>
 <li>Intel Mac GUI, Windows GUI set PAC to system proxy。Linux GUI can work with <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
 <li>What is socks5 and http proxy? <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article" rel="nofollow">Article</a> and <a href="https://www.youtube.com/watch?v=sBCB-X7BoP8" rel="nofollow">Video</a></li>
 </ul>
-<h2><a name="ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode" class="anchor" href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-mode-windows-gui-tun-mode-linux-gui-tun-mode" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun mode, Windows GUI tun mode, Linux GUI tun mode</h2>
+<h2><a name="ios-mac-android-windows-tun-mode-linux-tun-mode" class="anchor" href="#ios-mac-android-windows-tun-mode-linux-tun-mode" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS, Mac, Android, Windows TUN mode, Linux TUN mode</h2>
 
 <pre><code>The so-called Internet connection is IP to IP connection, not domain name connection. Therefore, the domain name will be resolved into IP before deciding how to connect.
 </code></pre>
@@ -2311,7 +2275,7 @@ Configuration Introduction</h2>
 <tr>
 <td>Fake DNS</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
-<td><strong>Turn off or block the security DNS that comes with the system/browser/etc, see below for details</strong></td>
+<td><a href="https://www.txthinking.com/talks/articles/brook-fakedns-en.article" rel="nofollow">How to prevent Brook&#39;s Fake DNS from not working</a></td>
 <td>The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution</td>
 </tr>
 
@@ -2352,7 +2316,7 @@ Configuration Introduction</h2>
 
 <tr>
 <td>Bypass Apps</td>
-<td>Android</td>
+<td>Android,Mac</td>
 <td>/</td>
 <td>These apps will be bypassed</td>
 </tr>
@@ -2368,7 +2332,7 @@ Configuration Introduction</h2>
 <td>Bypass Domain</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>Fake DNS: On</td>
-<td>List of domain names, matching domain names will use Bypass DNS resolution to get IP, <strong>whether the final connection will be bypassed depends on the Bypass IP</strong> . <strong>The domain name is a suffix matching pattern</strong></td>
+<td>List of domain names, matching domain names will use Bypass DNS resolution to get IP, <strong>whether the final connection will be bypassed depends on the Bypass IP</strong> . <strong>The domain name is a suffix matching pattern</strong>. Of course, you can also use the script to bypass the domain regardless of its IP</td>
 </tr>
 
 <tr>
@@ -2431,7 +2395,7 @@ Configuration Introduction</h2>
 <td>TUN</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
-<td>Choose proxy mode or tun. iOS and Android force TUN mode mode</td>
+<td>Choose Proxy/TUN/App mode. iOS,Android,Mac default TUN mode mode</td>
 </tr>
 
 <tr>
@@ -2496,21 +2460,6 @@ Programmable</h2>
 
 <pre><code>Brook GUI will pass different global variables to the script at different times, and the script only needs to assign the processing result to the global variable out
 </code></pre>
-
-<p>Take full control of your own network</p>
-
-<ul>
-<li>Like turning off IPv6 by blocking AAAA</li>
-<li>Block system/browser built-in secure DNS</li>
-<li>Override DST</li>
-<li>Flexible and finer rules</li>
-<li>Directly bypass the domain name regardless of whether the resolved IP is in Bypass</li>
-<li>MITM decrypt HTTPS</li>
-<li>Packet capture</li>
-<li>Packet modify</li>
-<li>Disable HTTP3</li>
-<li>more and more...</li>
-</ul>
 <h3><a name="introduction-to-incoming-variables" class="anchor" href="#introduction-to-incoming-variables" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Introduction to incoming variables</h3>
 
@@ -2527,6 +2476,15 @@ Introduction to incoming variables</h3>
 </thead>
 
 <tbody>
+<tr>
+<td>in_brooklinks</td>
+<td>map</td>
+<td>/</td>
+<td>Before connecting</td>
+<td>Predefine multiple brook links, and then programmatically specify which one to connect to</td>
+<td>map</td>
+</tr>
+
 <tr>
 <td>in_dnsquery</td>
 <td>map</td>
@@ -2564,6 +2522,64 @@ Introduction to incoming variables</h3>
 </tr>
 </tbody>
 </table>
+<h3><a name="in-brooklinks" class="anchor" href="#in-brooklinks" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_brooklinks</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>_</td>
+<td>bool</td>
+<td>meaningless</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, ignored if not of type <code>map</code></p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+
+<tr>
+<td>custom name</td>
+<td>string</td>
+<td>brook link</td>
+<td>brook://...</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
 <h3><a name="in-dnsquery" class="anchor" href="#in-dnsquery" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 in_dnsquery</h3>
 
@@ -2590,6 +2606,20 @@ in_dnsquery</h3>
 <td>string</td>
 <td>query type</td>
 <td>A</td>
+</tr>
+
+<tr>
+<td>appid</td>
+<td>string</td>
+<td>App ID. Mac only</td>
+<td>com.google.Chrome.helper</td>
+</tr>
+
+<tr>
+<td>interface</td>
+<td>string</td>
+<td>network interface. Mac only</td>
+<td>en0</td>
 </tr>
 </tbody>
 </table>
@@ -2641,6 +2671,13 @@ in_dnsquery</h3>
 <td>whether to Bypass, default <code>false</code>, if <code>true</code> then use bypass DNS to resolve. It is an OR relationship with GUI Bypass Domain</td>
 <td>false</td>
 </tr>
+
+<tr>
+<td>brooklinkkey</td>
+<td>string</td>
+<td>When need to connect the Server，instead, connect to the brook link specified by the key in_brooklinks</td>
+<td>custom name</td>
+</tr>
 </tbody>
 </table>
 <h3><a name="in-address" class="anchor" href="#in-address" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
@@ -2676,6 +2713,20 @@ in_address</h3>
 <td>string</td>
 <td>Domain type address, because of FakeDNS we can get the domain name address here</td>
 <td>google.com:443</td>
+</tr>
+
+<tr>
+<td>appid</td>
+<td>string</td>
+<td>App ID. Mac only</td>
+<td>com.google.Chrome.helper</td>
+</tr>
+
+<tr>
+<td>interface</td>
+<td>string</td>
+<td>network interface. Mac only</td>
+<td>en0</td>
 </tr>
 </tbody>
 </table>
@@ -2745,7 +2796,7 @@ in_address</h3>
 <tr>
 <td>mitmwithbody</td>
 <td>bool</td>
-<td>Whether to manipulate the http body, default <code>false</code>. <strong>will read the body of the request and response into the memory and interact with the script. iOS 50M total memory limit may kill process</strong></td>
+<td>Whether to manipulate the http body, default <code>false</code>. will read the body of the request and response into the memory and interact with the script. iOS 50M total memory limit may kill process</td>
 <td>false</td>
 </tr>
 
@@ -2775,6 +2826,13 @@ in_address</h3>
 <td>int</td>
 <td>Timeout for MITM write to client, second, default 0</td>
 <td>0</td>
+</tr>
+
+<tr>
+<td>brooklinkkey</td>
+<td>string</td>
+<td>When need to connect the Server，instead, connect to the brook link specified by the key in_brooklinks</td>
+<td>custom name</td>
 </tr>
 </tbody>
 </table>
@@ -2861,8 +2919,8 @@ in_httpresponse</h3>
 </table>
 
 <p><code>out</code>, must be set to a response</p>
-<h3><a name="how-to-write-tengo-script" class="anchor" href="#how-to-write-tengo-script" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-How to write Tengo script</h3>
+<h2><a name="write-script" class="anchor" href="#write-script" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Write script</h2>
 
 <p><a href="https://github.com/d5/tengo/blob/master/docs/tutorial.md" rel="nofollow">Tengo Language Syntax</a></p>
 
@@ -2911,31 +2969,26 @@ Functions
 * hexencode(s string) =&gt; string/error: returns the hexadecimal encoding of src
 </code></pre></li>
 </ul>
+<h2><a name="debug-script" class="anchor" href="#debug-script" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Debug script</h2>
 
-<p>Example</p>
+<p>It is recommended to use <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> on desktop to debug with <code>fmt.println</code></p>
+<h2><a name="standalone-script-example" class="anchor" href="#standalone-script-example" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Standalone Script Example</h2>
 
-<p><a href="https://github.com/txthinking/bypass/blob/master/example_script.tengo" rel="nofollow">https://github.com/txthinking/bypass/blob/master/example_script.tengo</a></p>
-<h3><a name="how-to-debug-script" class="anchor" href="#how-to-debug-script" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-How to debug script</h3>
+<p><a href="https://github.com/txthinking/bypass" rel="nofollow">https://github.com/txthinking/bypass</a></p>
+<h2><a name="brook-script-builder" class="anchor" href="#brook-script-builder" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Brook Script Builder</h2>
+
+<p><a href="https://modules.brook.app" rel="nofollow">https://modules.brook.app</a></p>
+<h2><a name="packet-capture" class="anchor" href="#packet-capture" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Packet Capture</h2>
 
 <ul>
-<li>It is recommended to use <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> on desktop to debug with print</li>
-<li>It is recommended to use <a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">mitmproxy helper</a> and <a href="https://www.txthinking.com/wireshark.html" rel="nofollow">Wireshark Helper</a> to capture packets to determine what to modify</li>
+<li><a href="https://www.txthinking.com/talks/articles/brook-mitmproxy-en.article" rel="nofollow">Brook and mitmproxy for mobile app deep packet capture</a></li>
+<li><a href="https://www.txthinking.com/talks/articles/brook-packet-capture-en.article" rel="nofollow">Brook Packet Capture on All Platform</a></li>
+<li><a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">mitmproxy helper</a></li>
 </ul>
-<h2><a name="why-and-how-to-turn-off-system-and-browser-security-dns" class="anchor" href="#why-and-how-to-turn-off-system-and-browser-security-dns" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Why and How to Turn Off System and Browser Security DNS</h2>
-
-<p>Because if Security DNS is turned on, the Fake DNS will not work. So we have to turn it off:</p>
-
-<ul>
-<li>Android: Settings -&gt; Network &amp; internet -&gt; Private DNS -&gt; Off</li>
-<li>Chrome on Mobile: Settings -&gt; Privacy and security -&gt; Use secure DNS -&gt; Off</li>
-<li>Chrome on Desktop: Settings -&gt; Privacy and security -&gt; Security -&gt; Use secure DNS -&gt; Off</li>
-<li>Windows: Windows Settings -&gt; Network &amp; Internet -&gt; Your Network -&gt; DNS settings -&gt; Edit -&gt; Preferred DNS -&gt; Unencrypted only -&gt; 8.8.8.8</li>
-<li>iOS/Mac avoid requesting secure DNS: related DST can be blocked by script. You can also create a DNS by yourself: <code>brook dnsserver --listen :53</code></li>
-</ul>
-
-<p>Other systems and software, please find out whether it exists and how to close it</p>
 <h2><a name="install-ca" class="anchor" href="#install-ca" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Install CA</h2>
 
@@ -2971,7 +3024,7 @@ Windows</h3>
 <h2><a name="apple-push-problem" class="anchor" href="#apple-push-problem" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Apple Push Problem</h2>
 
-<p>To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connections. So you need to Bypass the relevant domain name and IP. <a href="https://support.apple.com/en-us/HT210060" rel="nofollow">Reference link</a></p>
+<p>To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connections. So you need to Bypass the relevant domain name and IP. <a href="https://github.com/txthinking/bypass/tree/master/apple" rel="nofollow">Reference link</a></p>
 <h1><a name="图形客户端文档" class="anchor" href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 图形客户端文档</h1>
 
@@ -2987,8 +3040,8 @@ Apple Push Problem</h2>
 <li><a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew</a></li>
 <li><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></li>
 </ul>
-<h2><a name="intel-mac-gui-proxy-模式-windows-gui-proxy-模式-linux-gui-proxy-模式" class="anchor" href="#intel-mac-gui-proxy-%E6%A8%A1%E5%BC%8F-windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</h2>
+<h2><a name="windows-gui-proxy-模式-linux-gui-proxy-模式" class="anchor" href="#windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Windows GUI proxy 模式, Linux GUI proxy 模式</h2>
 
 <p>这个模式比较简单，会创建:</p>
 
@@ -2996,11 +3049,11 @@ Intel Mac GUI proxy 模式, Windows GUI proxy 模式, Linux GUI proxy 模式</h2
 <li>Socks5 代理: <code>socks5://[::1]:1080</code> 或 <code>socks5://127.0.0.1:1080</code></li>
 <li>HTTP 代理: <code>http://[::1]:8010</code> 或 <code>http://127.0.0.1:8010</code></li>
 <li>PAC: <code>http://127.0.0.1:1093/proxy.pac</code> 或 <code>http://[::1]:1093/proxy.pac</code> 基于 Bypass Domain 列表</li>
-<li>Intel Mac GUI, Windows GUI 同时会配置 PAC 到系统代理。Linux GUI 可以配合 <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
+<li>Windows GUI 同时会配置 PAC 到系统代理。Linux GUI 可以配合 <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
 <li>什么是 socks5 和 http proxy? <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy.article" rel="nofollow">文章</a> 和 <a href="https://www.youtube.com/watch?v=Tb0_8odTxEI" rel="nofollow">视频</a></li>
 </ul>
-<h2><a name="ios-m1-mac-gui-android-gui-intel-mac-gui-tun-模式-windows-gui-tun-模式-linux-gui-tun-模式" class="anchor" href="#ios-m1-mac-gui-android-gui-intel-mac-gui-tun-%E6%A8%A1%E5%BC%8F-windows-gui-tun-%E6%A8%A1%E5%BC%8F-linux-gui-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, Linux GUI tun 模式</h2>
+<h2><a name="ios-mac-android-windows-tun-模式-linux-tun-模式" class="anchor" href="#ios-mac-android-windows-tun-%E6%A8%A1%E5%BC%8F-linux-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+iOS, Mac, Android, Windows TUN 模式, Linux TUN 模式</h2>
 
 <pre><code>所谓的互联网连接，是 IP 连接 IP，不是连接域名。所以域名会被先解析成IP再决定怎么去连接。
 </code></pre>
@@ -3035,7 +3088,7 @@ iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, 
 <tr>
 <td>虚拟 DNS</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
-<td><strong>关闭或 block 系统/浏览器等安全 DNS, 具体看下文</strong></td>
+<td><a href="https://www.txthinking.com/talks/articles/brook-fakedns.article" rel="nofollow">如何避免 Brook 的 虚拟 DNS 不生效</a></td>
 <td>解析域名为 Fake IP，发起连接时会再转换为域名，然后把域名地址送到服务端进行代理，同时由服务端来负责域名解析</td>
 </tr>
 
@@ -3076,7 +3129,7 @@ iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, 
 
 <tr>
 <td>跳过 Apps</td>
-<td>Android</td>
+<td>Android, Mac</td>
 <td>/</td>
 <td>这些 App 会被 bypass</td>
 </tr>
@@ -3092,7 +3145,7 @@ iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, 
 <td>跳过域名</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>Fake DNS: 开启</td>
-<td>域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, <strong>最终连接是否会被 Bypass，还取决于 Bypass IP</strong>. <strong>域名是后缀匹配模式</strong></td>
+<td>域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, <strong>最终连接是否会被 Bypass，还取决于 Bypass IP</strong>. <strong>域名是后缀匹配模式.</strong> 当然也可以用脚本直接跳过域名而无关其IP</td>
 </tr>
 
 <tr>
@@ -3155,7 +3208,7 @@ iOS, M1 Mac GUI, Android GUI, Intel Mac GUI tun 模式, Windows GUI tun 模式, 
 <td>TUN</td>
 <td>iOS,Android,Mac,Windows,Linux</td>
 <td>/</td>
-<td>选择 proxy 模式 还是 tun 模式. iOS 和 Android 强制 TUN 模式</td>
+<td>选择 Proxy/TUN/App 模式. iOS,Android,Mac 默认 TUN 模式</td>
 </tr>
 
 <tr>
@@ -3220,21 +3273,6 @@ Programmable</h2>
 
 <pre><code>Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需要将处理结果赋值到全局变量 out 即可
 </code></pre>
-
-<p>完全掌控你自己的网络</p>
-
-<ul>
-<li>比如通过阻断 AAAA 来关闭 IPv6</li>
-<li>阻断系统浏览器内置安全 DNS</li>
-<li>重写 DST</li>
-<li>分流</li>
-<li>直接 Bypass 域名而无视是否解析出来的 IP 是否在 Bypass 里</li>
-<li>MITM 解密 HTTPS</li>
-<li>抓包</li>
-<li>修改包</li>
-<li>禁用 HTTP3</li>
-<li>等等等...</li>
-</ul>
 <h3><a name="传入变量介绍" class="anchor" href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 传入变量介绍</h3>
 
@@ -3251,6 +3289,15 @@ Programmable</h2>
 </thead>
 
 <tbody>
+<tr>
+<td>in_brooklinks</td>
+<td>map</td>
+<td>/</td>
+<td>连接之前</td>
+<td>预定义多个 brook link，之后可编程指定连接哪个</td>
+<td>map</td>
+</tr>
+
 <tr>
 <td>in_dnsquery</td>
 <td>map</td>
@@ -3288,6 +3335,64 @@ Programmable</h2>
 </tr>
 </tbody>
 </table>
+<h3><a name="in-brooklinks" class="anchor" href="#in-brooklinks" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+in_brooklinks</h3>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>_</td>
+<td>bool</td>
+<td>占位，无实际意义</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>out</code>, 如果不是 <code>map</code> 类型则会被忽略</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+
+<tr>
+<td>自定义名字</td>
+<td>string</td>
+<td>brook link</td>
+<td>brook://...</td>
+</tr>
+
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
 <h3><a name="in-dnsquery" class="anchor" href="#in-dnsquery" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 in_dnsquery</h3>
 
@@ -3314,6 +3419,20 @@ in_dnsquery</h3>
 <td>string</td>
 <td>查询类型</td>
 <td>A</td>
+</tr>
+
+<tr>
+<td>appid</td>
+<td>string</td>
+<td>App ID. 仅 Mac</td>
+<td>com.google.Chrome.helper</td>
+</tr>
+
+<tr>
+<td>interface</td>
+<td>string</td>
+<td>网络接口. 仅 Mac</td>
+<td>en0</td>
 </tr>
 </tbody>
 </table>
@@ -3365,6 +3484,13 @@ in_dnsquery</h3>
 <td>是否 Bypass, 默认 <code>false</code>, 如果为 <code>true</code> 则使用 Bypass DNS 来解析. 与 GUI Bypass Domain 是或的关系</td>
 <td>false</td>
 </tr>
+
+<tr>
+<td>brooklinkkey</td>
+<td>string</td>
+<td>当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的 brook link</td>
+<td>自定义名字</td>
+</tr>
 </tbody>
 </table>
 <h3><a name="in-address" class="anchor" href="#in-address" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
@@ -3400,6 +3526,20 @@ in_address</h3>
 <td>string</td>
 <td>域名类型的地址，因为 FakeDNS 我们这里才能拿到域名地址</td>
 <td>google.com:443</td>
+</tr>
+
+<tr>
+<td>appid</td>
+<td>string</td>
+<td>App ID. 仅 Mac</td>
+<td>com.google.Chrome.helper</td>
+</tr>
+
+<tr>
+<td>interface</td>
+<td>string</td>
+<td>网络接口. 仅 Mac</td>
+<td>en0</td>
 </tr>
 </tbody>
 </table>
@@ -3469,7 +3609,7 @@ in_address</h3>
 <tr>
 <td>mitmwithbody</td>
 <td>bool</td>
-<td>是否操作 http body，默认 <code>false</code>. <strong>会将请求和响应的 body 读取到内存里和脚本交互。iOS 50M 总内存限制可能会杀进程</strong></td>
+<td>是否操作 http body，默认 <code>false</code>. 会将请求和响应的 body 读取到内存里和脚本交互。iOS 50M 总内存限制可能会杀进程</td>
 <td>false</td>
 </tr>
 
@@ -3499,6 +3639,13 @@ in_address</h3>
 <td>int</td>
 <td>Timeout for MITM write to client, second, default 0</td>
 <td>0</td>
+</tr>
+
+<tr>
+<td>brooklinkkey</td>
+<td>string</td>
+<td>当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的 brook link</td>
+<td>自定义名字</td>
 </tr>
 </tbody>
 </table>
@@ -3585,8 +3732,8 @@ in_httpresponse</h3>
 </table>
 
 <p><code>out</code>, 必须设置为一个 response</p>
-<h3><a name="如何写-tengo-脚本" class="anchor" href="#%E5%A6%82%E4%BD%95%E5%86%99-tengo-%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-如何写 Tengo 脚本</h3>
+<h2><a name="写脚本" class="anchor" href="#%E5%86%99%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+写脚本</h2>
 
 <p><a href="https://github.com/d5/tengo/blob/master/docs/tutorial.md" rel="nofollow">Tengo Language Syntax</a></p>
 
@@ -3635,31 +3782,26 @@ Functions
 * hexencode(s string) =&gt; string/error: returns the hexadecimal encoding of src
 </code></pre></li>
 </ul>
+<h2><a name="调试脚本" class="anchor" href="#%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+调试脚本</h2>
 
-<p>示例</p>
+<p>建议使用 <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> 在电脑上<code>fmt.println</code>调试</p>
+<h2><a name="独立脚本例子" class="anchor" href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+独立脚本例子</h2>
 
-<p><a href="https://github.com/txthinking/bypass/blob/master/example_script.tengo" rel="nofollow">https://github.com/txthinking/bypass/blob/master/example_script.tengo</a></p>
-<h3><a name="如何调试脚本" class="anchor" href="#%E5%A6%82%E4%BD%95%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-如何调试脚本</h3>
+<p><a href="https://github.com/txthinking/bypass" rel="nofollow">https://github.com/txthinking/bypass</a></p>
+<h2><a name="脚本生成器" class="anchor" href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+脚本生成器</h2>
+
+<p><a href="https://modules.brook.app" rel="nofollow">https://modules.brook.app</a></p>
+<h2><a name="抓包" class="anchor" href="#%E6%8A%93%E5%8C%85" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+抓包</h2>
 
 <ul>
-<li>建议使用 <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> 在电脑上打印调试</li>
-<li>可以使用 <a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">mitmproxy helper</a> 和 <a href="https://www.txthinking.com/wireshark.html" rel="nofollow">Wireshark Helper</a> 抓包来确定要修改什么</li>
+<li><a href="https://www.txthinking.com/talks/articles/brook-mitmproxy.article" rel="nofollow">Brook 搭配 mitmproxy 进行手机 App 深度抓包</a></li>
+<li><a href="https://www.txthinking.com/talks/articles/brook-packet-capture.article" rel="nofollow">Brook 全平台抓包</a></li>
+<li><a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">用 mitmproxy helper 抓包</a></li>
 </ul>
-<h2><a name="为什么以及如何关闭系统和浏览器安全-dns" class="anchor" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%B3%BB%E7%BB%9F%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8-dns" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-为什么以及如何关闭系统和浏览器安全 DNS</h2>
-
-<p>因为安全 DNS 开启，Fake DNS 就无法工作. 所以我们要关闭它:</p>
-
-<ul>
-<li>Android: Settings -&gt; Network &amp; internet -&gt; Private DNS -&gt; Off</li>
-<li>Chrome on Mobile: Settings -&gt; Privacy and security -&gt; Use secure DNS -&gt; Off</li>
-<li>Chrome on Desktop: Settings -&gt; Privacy and security -&gt; Security -&gt; Use secure DNS -&gt; Off</li>
-<li>Windows: Windows Settings -&gt; Network &amp; Internet -&gt; Your Network -&gt; DNS settings -&gt; Edit -&gt; Preferred DNS -&gt; Unencrypted only -&gt; 8.8.8.8</li>
-<li>iOS / Mac 避免请求安全 DNS : 可以通过脚本阻断相关 DST。也可以自建个普通 DNS: <code>brook dnsserver --listen :53</code></li>
-</ul>
-
-<p>其他系统和软件，请自行查找是否存在以及如何关闭</p>
 <h2><a name="安装-ca" class="anchor" href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 安装 CA</h2>
 
@@ -3695,7 +3837,7 @@ Windows</h3>
 <h2><a name="apple-推送问题" class="anchor" href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Apple 推送问题</h2>
 
-<p>要接收推送，Apple Server 只允许 Ethernet, cellular data, Wi-Fi 连接. 所以你需要 Bypass 掉相关域名和 IP. <a href="https://support.apple.com/en-us/HT210060" rel="nofollow">参考链接</a></p>
+<p>要接收推送，Apple Server 只允许 Ethernet, cellular data, Wi-Fi 连接. 所以你需要 Bypass 掉相关域名和 IP. <a href="https://github.com/txthinking/bypass/tree/master/apple" rel="nofollow">参考链接</a></p>
 <h1><a name="diagram-图解" class="anchor" href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Diagram 图解</h1>
 
@@ -3757,7 +3899,15 @@ Telegram</h1>
 <h1><a name="pastebin" class="anchor" href="#pastebin" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Pastebin</h1>
 
-<p><a href="https://ooo.soso.ooo" rel="nofollow">https://ooo.soso.ooo</a></p>
+<p><a href="https://paste.brook.app" rel="nofollow">https://paste.brook.app</a></p>
+<h1><a name="独立脚本例子-standalone-script-example" class="anchor" href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90-standalone-script-example" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+独立脚本例子 | Standalone Script Example</h1>
+
+<p><a href="https://github.com/txthinking/bypass" rel="nofollow">https://github.com/txthinking/bypass</a></p>
+<h1><a name="脚本生成器-brook-script-builder" class="anchor" href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8-brook-script-builder" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+脚本生成器 | Brook Script Builder</h1>
+
+<p><a href="https://modules.brook.app" rel="nofollow">https://modules.brook.app</a></p>
 
         </div>
     </div>
