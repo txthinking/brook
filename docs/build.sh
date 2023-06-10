@@ -4,6 +4,9 @@ echo '# Brook' > ../readme.md
 echo '<!--SIDEBAR-->' >> ../readme.md
 echo '<!--G-R3M673HK5V-->' >> ../readme.md
 echo 'A cross-platform programmable network tool. 一个跨平台可编程网络工具' >> ../readme.md
+echo '' >> ../readme.md
+echo '# Sponsor' >> ../readme.md
+echo '**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**' >> ../readme.md
 
 cat getting-started.md >> ../readme.md
 
@@ -41,6 +44,9 @@ markdown ../readme.md ./index.html
 
 echo '# Brook' > _.md
 echo 'A cross-platform programmable network tool. 一个跨平台可编程网络工具' >> _.md
+echo '' >> _.md
+echo '# Sponsor' >> _.md
+echo '**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**' >> _.md
 mdtoc ../readme.md >> _.md
 cat ../readme.md >> _.md
 mv _.md ../readme.md
