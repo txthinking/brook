@@ -17,7 +17,9 @@ package brook
 import (
 	"context"
 	"crypto/tls"
+	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -29,16 +31,17 @@ import (
 )
 
 type WSServer struct {
-	Password     []byte
-	Domain       string
-	Addr         string
-	HTTPServer   *http.Server
-	TCPTimeout   int
-	UDPTimeout   int
-	Path         string
-	Cert         []byte
-	CertKey      []byte
-	WithoutBrook bool
+	Password      []byte
+	Domain        string
+	Addr          string
+	HTTPServer    *http.Server
+	TCPTimeout    int
+	UDPTimeout    int
+	Path          string
+	Cert          []byte
+	CertKey       []byte
+	WithoutBrook  bool
+	XForwardedFor bool
 }
 
 func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int, withoutbrook bool) (*WSServer, error) {
@@ -150,26 +153,40 @@ func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	c := conn.UnderlyingConn()
 	defer c.Close()
+	from := c.RemoteAddr().String()
+	if s.XForwardedFor && r.Header.Get("X-Forwarded-For") != "" {
+		s1 := strings.Split(r.Header.Get("X-Forwarded-For"), ", ")[0]
+		h, _, err := net.SplitHostPort(s1)
+		if err != nil {
+			h = s1
+		}
+		if net.ParseIP(h) != nil {
+			_, p, err := net.SplitHostPort(from)
+			if err == nil {
+				from = net.JoinHostPort(h, p)
+			}
+		}
+	}
 	var ss Exchanger
 	if !s.WithoutBrook {
-		ss, err = NewStreamServer(s.Password, c.RemoteAddr().String(), c, s.TCPTimeout, s.UDPTimeout)
+		ss, err = NewStreamServer(s.Password, from, c, s.TCPTimeout, s.UDPTimeout)
 	}
 	if s.WithoutBrook {
-		ss, err = NewSimpleStreamServer(s.Password, c.RemoteAddr().String(), c, s.TCPTimeout, s.UDPTimeout)
+		ss, err = NewSimpleStreamServer(s.Password, from, c, s.TCPTimeout, s.UDPTimeout)
 	}
 	if err != nil {
-		Log(Error{"from": c.RemoteAddr().String(), "error": err.Error()})
+		Log(Error{"from": from, "error": err.Error()})
 		return
 	}
 	defer ss.Clean()
 	if ss.Network() == "tcp" {
 		if err := s.TCPHandle(ss); err != nil {
-			Log(Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+			Log(Error{"from": from, "dst": ss.Dst(), "error": err.Error()})
 		}
 	}
 	if ss.Network() == "udp" {
 		if err := s.UDPHandle(ss); err != nil {
-			Log(Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+			Log(Error{"from": from, "dst": ss.Dst(), "error": err.Error()})
 		}
 	}
 }

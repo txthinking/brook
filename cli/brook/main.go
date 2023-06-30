@@ -487,6 +487,10 @@ func main() {
 					Name:  "updateListInterval",
 					Usage: "Update list interval, second. default 0, only read one time on start",
 				},
+				&cli.BoolFlag{
+					Name:  "xForwardedFor",
+					Usage: "Replace the from field in --log, note that this may be forged",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("listen") == "" || c.String("password") == "" {
@@ -524,6 +528,7 @@ func main() {
 				if err != nil {
 					return err
 				}
+				s.XForwardedFor = c.Bool("xForwardedFor")
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
