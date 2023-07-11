@@ -121,6 +121,9 @@ Table of Contents
 * [Blog](#blog)
 * [YouTube](#youtube)
 * [Telegram](#telegram)
+* [brook-mamanger](#brook-mamanger)
+* [nico](#nico)
+* [Brook Deploy](#brook-deploy)
 * [Pastebin](#pastebin)
 * [独立脚本例子 | Standalone Script Example](#独立脚本例子--standalone-script-example)
 * [脚本生成器 | Brook Script Builder](#脚本生成器--brook-script-builder)
@@ -1512,6 +1515,12 @@ https://www.txthinking.com/talks/
 https://www.youtube.com/txthinking
 # Telegram
 https://t.me/s/txthinking_news
+# brook-mamanger
+https://github.com/txthinking/brook-manager
+# nico
+https://github.com/txthinking/nico
+# Brook Deploy
+https://www.txthinking.com/deploy.html
 # Pastebin
 https://paste.brook.app
 # 独立脚本例子 | Standalone Script Example

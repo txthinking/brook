@@ -33,6 +33,12 @@ echo '# YouTube' >> ../readme.md
 echo 'https://www.youtube.com/txthinking' >> ../readme.md
 echo '# Telegram' >> ../readme.md
 echo 'https://t.me/s/txthinking_news' >> ../readme.md
+echo '# brook-mamanger' >> ../readme.md
+echo 'https://github.com/txthinking/brook-manager' >> ../readme.md
+echo '# nico' >> ../readme.md
+echo 'https://github.com/txthinking/nico' >> ../readme.md
+echo '# Brook Deploy' >> ../readme.md
+echo 'https://www.txthinking.com/deploy.html' >> ../readme.md
 echo '# Pastebin' >> ../readme.md
 echo 'https://paste.brook.app' >> ../readme.md
 echo '# 独立脚本例子 | Standalone Script Example' >> ../readme.md
