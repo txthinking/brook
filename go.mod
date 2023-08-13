@@ -17,7 +17,7 @@ require (
 	github.com/txthinking/runnergroup v0.0.0-20230211072751-d11f16258c86
 	github.com/txthinking/socks5 v0.0.0-20230307062227-0e1677eca4ba
 	github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133
-	github.com/urfave/cli/v2 v2.23.0
+	github.com/urfave/cli/v2 v2.25.7
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/crypto v0.5.0
 	golang.org/x/net v0.10.0
