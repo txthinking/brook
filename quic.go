@@ -40,7 +40,7 @@ func QUICDialUDP(src, dst, addr, host string, tc *tls.Config, idleTime int) (net
 		rc.Close()
 		return nil, err
 	}
-	rc1, err := quic.Dial(rc, raddr.(*net.UDPAddr), host, tc, &quic.Config{MaxIdleTimeout: time.Duration(idleTime) * time.Second, EnableDatagrams: true})
+	rc1, err := quic.Dial(context.Background(), rc, raddr, tc, &quic.Config{MaxIdleTimeout: time.Duration(idleTime) * time.Second, EnableDatagrams: true})
 	if err != nil {
 		rc.Close()
 		return nil, err
@@ -70,7 +70,7 @@ func QUICDialTCP(src, dst, addr, host string, tc *tls.Config, idleTime int) (net
 		rc.Close()
 		return nil, err
 	}
-	rc1, err := quic.Dial(rc, raddr.(*net.UDPAddr), host, tc, &quic.Config{MaxIdleTimeout: time.Duration(idleTime) * time.Second})
+	rc1, err := quic.Dial(context.Background(), rc, raddr, tc, &quic.Config{MaxIdleTimeout: time.Duration(idleTime) * time.Second})
 	if err != nil {
 		rc.Close()
 		return nil, err
@@ -110,7 +110,7 @@ func (c *QUICConn) Read(b []byte) (int, error) {
 	if c.Stream != nil {
 		return c.Stream.Read(b)
 	}
-	b1, err := c.Conn.ReceiveMessage()
+	b1, err := c.Conn.ReceiveMessage(context.Background())
 	if err != nil {
 		return 0, err
 	}

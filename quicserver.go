@@ -172,7 +172,7 @@ func (s *QUICServer) ListenAndServe() error {
 					go func(c quic.Connection) {
 						defer c.CloseWithError(0, "defer")
 						for {
-							b, err := c.ReceiveMessage()
+							b, err := c.ReceiveMessage(context.Background())
 							if err != nil {
 								return
 							}
@@ -224,7 +224,7 @@ func (s *QUICServer) ListenAndServe() error {
 	})
 	go func() {
 		time.Sleep(1 * time.Second)
-		_, _ = quic.DialAddr(net.JoinHostPort(s.Domain, s.Addr[1:]), &tls.Config{NextProtos: []string{"h3"}}, nil)
+		_, _ = quic.DialAddr(context.Background(), net.JoinHostPort(s.Domain, s.Addr[1:]), &tls.Config{NextProtos: []string{"h3"}}, nil)
 	}()
 	return s.RunnerGroup.Wait()
 }
