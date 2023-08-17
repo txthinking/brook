@@ -10,7 +10,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/phuslu/iploc v1.0.20230606
 	github.com/prometheus/client_golang v1.14.0
-	github.com/quic-go/quic-go v0.37.4
+	github.com/quic-go/quic-go v0.37.5
 	github.com/refraction-networking/utls v1.3.2
 	github.com/tdewolff/minify v2.3.6+incompatible
 	github.com/txthinking/crypto v0.0.0-20210716135230-de9624a415a4
