@@ -6,7 +6,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/krolaw/dhcp4 v0.0.0-20190909130307-a50d88189771
-	github.com/miekg/dns v1.1.51
+	github.com/miekg/dns v1.1.56
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/phuslu/iploc v1.0.20230606
 	github.com/prometheus/client_golang v1.14.0
@@ -19,9 +19,9 @@ require (
 	github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133
 	github.com/urfave/cli/v2 v2.23.0
 	github.com/urfave/negroni v1.0.0
-	golang.org/x/crypto v0.5.0
-	golang.org/x/net v0.10.0
-	golang.org/x/sys v0.8.0
+	golang.org/x/crypto v0.13.0
+	golang.org/x/net v0.15.0
+	golang.org/x/sys v0.12.0
 )
 
 require (
@@ -46,8 +46,8 @@ require (
 	github.com/tdewolff/test v1.0.6 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	golang.org/x/exp v0.0.0-20221205204356-47842c84f3db // indirect
-	golang.org/x/mod v0.10.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
-	golang.org/x/tools v0.9.1 // indirect
+	golang.org/x/mod v0.12.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/tools v0.13.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 )
