@@ -18,7 +18,6 @@ import (
 	"bytes"
 	"context"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"text/template"
@@ -105,7 +104,7 @@ func (p *PAC) ListenAndServe() error {
 	if err != nil {
 		return err
 	}
-	p.Body, err = ioutil.ReadAll(r)
+	p.Body, err = io.ReadAll(r)
 	if err != nil {
 		return err
 	}
@@ -121,11 +120,11 @@ func (p *PAC) WriteToFile() error {
 	if err != nil {
 		return err
 	}
-	b, err := ioutil.ReadAll(r)
+	b, err := io.ReadAll(r)
 	if err != nil {
 		return err
 	}
-	if err := ioutil.WriteFile(p.File, b, 0644); err != nil {
+	if err := os.WriteFile(p.File, b, 0644); err != nil {
 		return err
 	}
 	return nil

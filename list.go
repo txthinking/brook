@@ -18,9 +18,10 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -181,13 +182,13 @@ func ReadList(url string) ([]string, error) {
 			return nil, err
 		}
 		defer r.Body.Close()
-		data, err = ioutil.ReadAll(r.Body)
+		data, err = io.ReadAll(r.Body)
 		if err != nil {
 			return nil, err
 		}
 	}
 	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
-		data, err = ioutil.ReadFile(url)
+		data, err = os.ReadFile(url)
 		if err != nil {
 			return nil, err
 		}
@@ -234,13 +235,13 @@ func ReadData(url string) ([]byte, error) {
 			return nil, err
 		}
 		defer r.Body.Close()
-		data, err = ioutil.ReadAll(r.Body)
+		data, err = io.ReadAll(r.Body)
 		if err != nil {
 			return nil, err
 		}
 	}
 	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
-		data, err = ioutil.ReadFile(url)
+		data, err = os.ReadFile(url)
 		if err != nil {
 			return nil, err
 		}
