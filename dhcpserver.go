@@ -17,7 +17,6 @@ package brook
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"net"
 	"os"
 	"path/filepath"
@@ -54,7 +53,7 @@ func NewDHCPServer(iface, serverip, start, mask string, count int, gateway strin
 		}
 		cache = filepath.Join(s, ".brook.dhcpserver")
 	}
-	b, err := ioutil.ReadFile(cache)
+	b, err := os.ReadFile(cache)
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
@@ -93,7 +92,7 @@ func (h *DHCPServer) Shutdown() error {
 		Log(err)
 	}
 	if err == nil {
-		if err := ioutil.WriteFile(h.Cache, b, 0644); err != nil {
+		if err := os.WriteFile(h.Cache, b, 0644); err != nil {
 			Log(err)
 		}
 	}

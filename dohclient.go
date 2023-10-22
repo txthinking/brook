@@ -17,7 +17,7 @@ package brook
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -71,7 +71,7 @@ func (c *DOHClient) Exchange(m *dns.Msg) (*dns.Msg, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
-	b, err = ioutil.ReadAll(res.Body)
+	b, err = io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

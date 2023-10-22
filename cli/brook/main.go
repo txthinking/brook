@@ -20,7 +20,6 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -756,14 +755,14 @@ func main() {
 					return err
 				}
 				if c.String("cert") != "" {
-					b, err := ioutil.ReadFile(c.String("cert"))
+					b, err := os.ReadFile(c.String("cert"))
 					if err != nil {
 						return err
 					}
 					s.Cert = b
 				}
 				if c.String("certkey") != "" {
-					b, err := ioutil.ReadFile(c.String("certkey"))
+					b, err := os.ReadFile(c.String("certkey"))
 					if err != nil {
 						return err
 					}
@@ -873,7 +872,7 @@ func main() {
 					s.TLSConfig.InsecureSkipVerify = true
 				}
 				if c.String("ca") != "" {
-					b, err := ioutil.ReadFile(c.String("ca"))
+					b, err := os.ReadFile(c.String("ca"))
 					if err != nil {
 						return err
 					}
@@ -1021,14 +1020,14 @@ func main() {
 					return err
 				}
 				if c.String("cert") != "" {
-					b, err := ioutil.ReadFile(c.String("cert"))
+					b, err := os.ReadFile(c.String("cert"))
 					if err != nil {
 						return err
 					}
 					s.Cert = b
 				}
 				if c.String("certkey") != "" {
-					b, err := ioutil.ReadFile(c.String("certkey"))
+					b, err := os.ReadFile(c.String("certkey"))
 					if err != nil {
 						return err
 					}
@@ -1134,7 +1133,7 @@ func main() {
 					s.TLSConfig.InsecureSkipVerify = true
 				}
 				if c.String("ca") != "" {
-					b, err := ioutil.ReadFile(c.String("ca"))
+					b, err := os.ReadFile(c.String("ca"))
 					if err != nil {
 						return err
 					}
@@ -1263,7 +1262,7 @@ func main() {
 					v.Set("withoutBrookProtocol", "true")
 				}
 				if c.String("ca") != "" {
-					b, err := ioutil.ReadFile(c.String("ca"))
+					b, err := os.ReadFile(c.String("ca"))
 					if err != nil {
 						return err
 					}
@@ -1413,7 +1412,7 @@ func main() {
 					v.Set("withoutBrookProtocol", "true")
 				}
 				if c.String("ca") != "" {
-					b, err := ioutil.ReadFile(c.String("ca"))
+					b, err := os.ReadFile(c.String("ca"))
 					if err != nil {
 						return err
 					}
@@ -1560,7 +1559,7 @@ func main() {
 				if c.String("webListen") != "" {
 					go func() {
 						time.Sleep(3 * time.Second)
-						_ = ioutil.WriteFile("/etc/resolv.conf", []byte("nameserver 8.8.8.8\nnameserver 2001:4860:4860::8888\n"), 0744)
+						_ = os.WriteFile("/etc/resolv.conf", []byte("nameserver 8.8.8.8\nnameserver 2001:4860:4860::8888\n"), 0744)
 					}()
 					web, err := fs.Sub(static, "static")
 					if err != nil {
@@ -1588,7 +1587,7 @@ func main() {
 							http.Error(w, "file exsits", 500)
 							return
 						}
-						err = ioutil.WriteFile("/root/.brook.web.password", []byte(r.FormValue("p")), 0600)
+						err = os.WriteFile("/root/.brook.web.password", []byte(r.FormValue("p")), 0600)
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1598,7 +1597,7 @@ func main() {
 					m.HandleFunc("/authp", func(w http.ResponseWriter, r *http.Request) {
 						lock.Lock()
 						defer lock.Unlock()
-						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						b, err := os.ReadFile("/root/.brook.web.password")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1612,7 +1611,7 @@ func main() {
 					m.HandleFunc("/httpread", func(w http.ResponseWriter, r *http.Request) {
 						lock.Lock()
 						defer lock.Unlock()
-						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						b, err := os.ReadFile("/root/.brook.web.password")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1631,7 +1630,7 @@ func main() {
 					m.HandleFunc("/logread", func(w http.ResponseWriter, r *http.Request) {
 						lock.Lock()
 						defer lock.Unlock()
-						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						b, err := os.ReadFile("/root/.brook.web.password")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1640,7 +1639,7 @@ func main() {
 							http.Error(w, "web ui password wrong", 500)
 							return
 						}
-						b, err = ioutil.ReadFile("/root/.brook.log")
+						b, err = os.ReadFile("/root/.brook.log")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1648,7 +1647,7 @@ func main() {
 						w.Write(b)
 					})
 					m.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
-						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						b, err := os.ReadFile("/root/.brook.web.password")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1693,7 +1692,7 @@ func main() {
 						}
 					})
 					m.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
-						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						b, err := os.ReadFile("/root/.brook.web.password")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1715,7 +1714,7 @@ func main() {
 						w.Write([]byte("disconnected"))
 					})
 					m.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-						b, err := ioutil.ReadFile("/root/.brook.web.password")
+						b, err := os.ReadFile("/root/.brook.web.password")
 						if err != nil {
 							http.Error(w, err.Error(), 500)
 							return
@@ -1803,7 +1802,7 @@ func main() {
 					v.Set("withoutBrookProtocol", "true")
 				}
 				if c.String("ca") != "" {
-					b, err := ioutil.ReadFile(c.String("ca"))
+					b, err := os.ReadFile(c.String("ca"))
 					if err != nil {
 						return err
 					}
@@ -1951,7 +1950,7 @@ func main() {
 					v.Set("tlsfingerprint", c.String("tlsfingerprint"))
 				}
 				if c.String("ca") != "" {
-					b, err := ioutil.ReadFile(c.String("ca"))
+					b, err := os.ReadFile(c.String("ca"))
 					if err != nil {
 						return err
 					}
@@ -2342,14 +2341,14 @@ func main() {
 					return err
 				}
 				if c.String("cert") != "" {
-					b, err := ioutil.ReadFile(c.String("cert"))
+					b, err := os.ReadFile(c.String("cert"))
 					if err != nil {
 						return err
 					}
 					s.Cert = b
 				}
 				if c.String("certkey") != "" {
-					b, err := ioutil.ReadFile(c.String("certkey"))
+					b, err := os.ReadFile(c.String("certkey"))
 					if err != nil {
 						return err
 					}
