@@ -198,7 +198,7 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 	}
 	if blk.Kind == "quicserver" {
 		if network == "tcp" {
-			rc, err := QUICDialTCP("", "", blk.Address, blk.Host, blk.Tc, tcptimeout)
+			rc, err := QUICDialTCP("", "", blk.Address, blk.Tc, tcptimeout)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -215,7 +215,7 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 			}
 			return sc, rc, nil
 		}
-		rc, err := QUICDialUDP(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address, blk.Host, blk.Tc, udptimeout)
+		rc, err := QUICDialUDP(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address, blk.Tc, udptimeout)
 		if err != nil {
 			return nil, nil, err
 		}

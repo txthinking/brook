@@ -23,7 +23,7 @@ import (
 	"github.com/quic-go/quic-go"
 )
 
-func QUICDialUDP(src, dst, addr, host string, tc *tls.Config, idleTime int) (net.Conn, error) {
+func QUICDialUDP(src, dst, addr string, tc *tls.Config, idleTime int) (net.Conn, error) {
 	var rc *net.UDPConn
 	var err error
 	if src == "" || dst == "" {
@@ -53,7 +53,7 @@ func QUICDialUDP(src, dst, addr, host string, tc *tls.Config, idleTime int) (net
 	}, nil
 }
 
-func QUICDialTCP(src, dst, addr, host string, tc *tls.Config, idleTime int) (net.Conn, error) {
+func QUICDialTCP(src, dst, addr string, tc *tls.Config, idleTime int) (net.Conn, error) {
 	var rc *net.UDPConn
 	var err error
 	if src == "" || dst == "" {

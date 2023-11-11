@@ -99,7 +99,7 @@ func (x *QUICClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Reque
 		if sa == "" {
 			sa = x.ServerHost
 		}
-		rc, err := QUICDialTCP("", "", sa, x.ServerHost, x.TLSConfig, x.TCPTimeout)
+		rc, err := QUICDialTCP("", "", sa, x.TLSConfig, x.TCPTimeout)
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
@@ -162,7 +162,7 @@ func (x *QUICClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Da
 	if sa == "" {
 		sa = x.ServerHost
 	}
-	rc, err := QUICDialUDP(addr.String(), d.Address(), sa, x.ServerHost, x.TLSConfig, x.UDPTimeout)
+	rc, err := QUICDialUDP(addr.String(), d.Address(), sa, x.TLSConfig, x.UDPTimeout)
 	if err != nil {
 		return err
 	}
