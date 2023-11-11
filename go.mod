@@ -8,7 +8,7 @@ require (
 	github.com/krolaw/dhcp4 v0.0.0-20190909130307-a50d88189771
 	github.com/miekg/dns v1.1.56
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/phuslu/iploc v1.0.20230929
+	github.com/phuslu/iploc v1.0.20231031
 	github.com/prometheus/client_golang v1.17.0
 	github.com/quic-go/quic-go v0.39.3
 	github.com/refraction-networking/utls v1.5.4
