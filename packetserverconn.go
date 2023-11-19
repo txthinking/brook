@@ -48,7 +48,7 @@ func (f *PacketServerConnFactory) Handle(addr *net.UDPAddr, b, p []byte, w func(
 		return nil, nil, errors.New("data too small")
 	}
 	ck := x.BP32.Get().([]byte)
-	if _, err := io.ReadFull(hkdf.New(sha256.New, p, b[:12], []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), ck); err != nil {
+	if _, err := io.ReadFull(hkdf.New(sha256.New, p, b[:12], ClientHKDFInfo), ck); err != nil {
 		x.BP32.Put(ck)
 		return nil, nil, err
 	}

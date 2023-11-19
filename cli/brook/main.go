@@ -131,8 +131,20 @@ func main() {
 			Name:  "prometheusPath",
 			Usage: "prometheus http path, such as /xxx. If it is transmitted on the public network, a hard-to-guess value is recommended",
 		},
+		&cli.StringFlag{
+			Name:  "clientHKDFInfo",
+			Usage: "client HKDF info, most time you don't need to change this, read brook protocol if you don't know what this is",
+			Value: "brook",
+		},
+		&cli.StringFlag{
+			Name:  "serverHKDFInfo",
+			Usage: "server HKDF info, most time you don't need to change this, read brook protocol if you don't know what this is",
+			Value: "brook",
+		},
 	}
 	app.Before = func(c *cli.Context) error {
+		brook.ClientHKDFInfo = []byte(c.String("clientHKDFInfo"))
+		brook.ServerHKDFInfo = []byte(c.String("serverHKDFInfo"))
 		if c.String("pprof") != "" {
 			p, err := pprof.NewPprof(c.String("pprof"))
 			if err != nil {
@@ -1542,7 +1554,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "link",
-					Usage: "brook link. This will ignore server, password, udpovertcp, address, insecure, withoutBrookProtocol, ca",
+					Usage: "brook link. This will ignore server, password, udpovertcp, address, insecure, withoutBrookProtocol, ca, tlsfingerprint",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1813,6 +1825,16 @@ func main() {
 				link := brook.Link(kind, c.String("server"), v)
 				if c.String("link") != "" {
 					link = c.String("link")
+					_, _, v, err := brook.ParseLink(link)
+					if err != nil {
+						return err
+					}
+					if s := v.Get("clientHKDFInfo"); s != "" {
+						brook.ClientHKDFInfo = []byte(s)
+					}
+					if s := v.Get("serverHKDFInfo"); s != "" {
+						brook.ServerHKDFInfo = []byte(s)
+					}
 				}
 				s, err := brook.NewTproxy(c.String("listen"), link, c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
@@ -1908,6 +1930,14 @@ func main() {
 					Name:  "tlsfingerprint",
 					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
 				},
+				&cli.StringFlag{
+					Name:  "clientHKDFInfo",
+					Usage: "client HKDF info, most time you don't need to change this, read brook protocol if you don't know what this is",
+				},
+				&cli.StringFlag{
+					Name:  "serverHKDFInfo",
+					Usage: "server HKDF info, most time you don't need to change this, read brook protocol if you don't know what this is",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("server") == "" {
@@ -1955,6 +1985,12 @@ func main() {
 						return err
 					}
 					v.Set("ca", string(b))
+				}
+				if c.String("clientHKDFInfo") != "" {
+					v.Set("clientHKDFInfo", c.String("clientHKDFInfo"))
+				}
+				if c.String("serverHKDFInfo") != "" {
+					v.Set("serverHKDFInfo", c.String("serverHKDFInfo"))
 				}
 				fmt.Println(brook.Link(s, c.String("server"), v))
 				return nil
@@ -2013,9 +2049,15 @@ func main() {
 				if h == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				kind, _, _, err := brook.ParseLink(c.String("link"))
+				kind, _, v, err := brook.ParseLink(c.String("link"))
 				if err != nil {
 					return err
+				}
+				if s := v.Get("clientHKDFInfo"); s != "" {
+					brook.ClientHKDFInfo = []byte(s)
+				}
+				if s := v.Get("serverHKDFInfo"); s != "" {
+					brook.ServerHKDFInfo = []byte(s)
 				}
 				if kind == "socks5" {
 					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")

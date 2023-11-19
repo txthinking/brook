@@ -21,7 +21,6 @@ import (
 
 	utls "github.com/refraction-networking/utls"
 	"github.com/txthinking/brook/limits"
-	crypto1 "github.com/txthinking/crypto"
 	"github.com/txthinking/socks5"
 )
 
@@ -57,7 +56,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, 
 	}
 	p := []byte(password)
 	if withoutbrook {
-		p, err = crypto1.SHA256Bytes([]byte(password))
+		p, err = SHA256Bytes([]byte(password))
 		if err != nil {
 			return nil, err
 		}

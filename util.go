@@ -15,6 +15,9 @@
 package brook
 
 import (
+	"crypto/sha256"
+	"errors"
+	"hash"
 	"net"
 	"net/url"
 	"time"
@@ -80,4 +83,18 @@ func Conn2Conn(c, rc net.Conn, bufsize, timeout int) {
 		}
 	}
 	return
+}
+
+func SHA256Bytes(s []byte) ([]byte, error) {
+	var h hash.Hash
+	h = sha256.New()
+	n, err := h.Write(s)
+	if err != nil {
+		return nil, err
+	}
+	if n != len(s) {
+		return nil, errors.New("Write length error")
+	}
+	r := h.Sum(nil)
+	return r, nil
 }

@@ -26,7 +26,6 @@ import (
 
 	"github.com/quic-go/quic-go"
 	"github.com/txthinking/brook/limits"
-	crypto1 "github.com/txthinking/crypto"
 	"github.com/txthinking/runnergroup"
 	"github.com/txthinking/socks5"
 	"golang.org/x/crypto/acme/autocert"
@@ -71,7 +70,7 @@ func NewQUICServer(addr, password, domain string, tcpTimeout, udpTimeout int, wi
 	}
 	if withoutbrook {
 		var err error
-		p, err = crypto1.SHA256Bytes([]byte(password))
+		p, err = SHA256Bytes([]byte(password))
 		if err != nil {
 			return nil, err
 		}
@@ -172,7 +171,7 @@ func (s *QUICServer) ListenAndServe() error {
 					go func(c quic.Connection) {
 						defer c.CloseWithError(0, "defer")
 						for {
-							b, err := c.ReceiveMessage(context.Background())
+							b, err := c.ReceiveDatagram(context.Background())
 							if err != nil {
 								return
 							}
@@ -182,7 +181,7 @@ func (s *QUICServer) ListenAndServe() error {
 									Log(Error{"from": c.RemoteAddr().String(), "error": err.Error()})
 									return 0, err
 								}
-								if err := c.SendMessage(b); err != nil {
+								if err := c.SendDatagram(b); err != nil {
 									return 0, err
 								}
 								return len(b), nil

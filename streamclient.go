@@ -61,7 +61,7 @@ func NewStreamClient(network string, password []byte, src string, server net.Con
 		return nil, err
 	}
 	ck := x.BP32.Get().([]byte)
-	if _, err := io.ReadFull(hkdf.New(sha256.New, password, c.cn, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), ck); err != nil {
+	if _, err := io.ReadFull(hkdf.New(sha256.New, password, c.cn, ClientHKDFInfo), ck); err != nil {
 		x.BP12.Put(c.cn)
 		x.BP32.Put(ck)
 		return nil, err
@@ -108,7 +108,7 @@ func NewStreamClient(network string, password []byte, src string, server net.Con
 		return nil, err
 	}
 	sk := x.BP32.Get().([]byte)
-	if _, err := io.ReadFull(hkdf.New(sha256.New, password, c.sn, []byte{0x62, 0x72, 0x6f, 0x6f, 0x6b}), sk); err != nil {
+	if _, err := io.ReadFull(hkdf.New(sha256.New, password, c.sn, ServerHKDFInfo), sk); err != nil {
 		x.BP12.Put(c.cn)
 		x.BP2048.Put(c.WB)
 		x.BP12.Put(c.sn)

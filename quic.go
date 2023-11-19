@@ -110,7 +110,7 @@ func (c *QUICConn) Read(b []byte) (int, error) {
 	if c.Stream != nil {
 		return c.Stream.Read(b)
 	}
-	b1, err := c.Conn.ReceiveMessage(context.Background())
+	b1, err := c.Conn.ReceiveDatagram(context.Background())
 	if err != nil {
 		return 0, err
 	}
@@ -122,7 +122,7 @@ func (c *QUICConn) Write(b []byte) (int, error) {
 	if c.Stream != nil {
 		return c.Stream.Write(b)
 	}
-	if err := c.Conn.SendMessage(b); err != nil {
+	if err := c.Conn.SendDatagram(b); err != nil {
 		return 0, err
 	}
 	return len(b), nil

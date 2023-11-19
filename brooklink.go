@@ -25,7 +25,6 @@ import (
 
 	utls "github.com/refraction-networking/utls"
 	"github.com/txthinking/brook/limits"
-	crypto1 "github.com/txthinking/crypto"
 	"github.com/txthinking/socks5"
 )
 
@@ -99,7 +98,7 @@ func NewBrookLink(link string) (*BrookLink, error) {
 		}
 		if kind == "wsserver" || kind == "wssserver" || kind == "quicserver" {
 			if v.Get("withoutBrookProtocol") == "true" {
-				p, err = crypto1.SHA256Bytes([]byte(v.Get("password")))
+				p, err = SHA256Bytes([]byte(v.Get("password")))
 				if err != nil {
 					return nil, err
 				}
