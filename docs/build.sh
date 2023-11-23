@@ -41,10 +41,6 @@ echo '# Brook Deploy' >> ../readme.md
 echo 'https://www.txthinking.com/deploy.html' >> ../readme.md
 echo '# Pastebin' >> ../readme.md
 echo 'https://paste.brook.app' >> ../readme.md
-echo '# 独立脚本例子 | Standalone Script Example' >> ../readme.md
-echo 'https://github.com/txthinking/bypass' >> ../readme.md
-echo '# 脚本生成器 | Brook Script Builder' >> ../readme.md
-echo 'https://modules.brook.app' >> ../readme.md
 
 markdown ../readme.md ./index.html
 
