@@ -1,0 +1,49 @@
+// 知乎登录弹窗，跳转外部链接
+modules = append(modules, {
+    dnsquery: func(m) {
+        if m.domain == "www.zhihu.com" || m.domain == "zhuanlan.zhihu.com" || m.domain == "link.zhihu.com" {
+            return {forcefakedns: true}
+        }
+    },
+    address: func(m) {
+        if m.domainaddress {
+            if m.domainaddress == "link.zhihu.com:443" {
+                if m.network == "tcp" {
+                    return {"mitm": true, "mitmprotocol": "https"}
+                }
+                if m.network == "udp" {
+                    return { "block": true }
+                }
+            }
+            if m.domainaddress == "www.zhihu.com:443" || m.domainaddress == "zhuanlan.zhihu.com:443" {
+                if m.network == "tcp" {
+                    return {ipaddressfrombypassdns: "A", bypass: true, "mitm": true, "mitmprotocol": "https", "mitmwithbody": true, "mitmautohandlecompress": true}
+                }
+                if m.network == "udp" {
+                    return { "block": true }
+                }
+            }
+        }
+    },
+    httprequest: func(request) {
+        text := import("text")
+        if text.has_prefix(request["URL"], "https://link.zhihu.com/") {
+            brook := import("brook")
+            s := brook.parsequery(brook.parseurl(request["URL"]).rawquery)["target"]
+            if s {
+                return {
+                    "StatusCode": 301,
+                    "Location": s
+                }
+            }
+        }
+    },
+    httpresponse: func(request, response) {
+        text := import("text")
+        if text.has_prefix(request["URL"], "https://zhuanlan.zhihu.com/p/") || text.has_prefix(request["URL"], "https://www.zhihu.com/question/") {
+            delete(response, "Content-Security-Policy")
+            response["Body"] = bytes(text.replace(string(response["Body"]), "<head>", `<head><script>function fuck(){var a = document.querySelector('.Modal-closeButton'); if(a) {a.click()} else {setTimeout(fuck, 1000)} } setTimeout(fuck, 1000)</script>`, 1))
+            return response
+        }
+    }
+})

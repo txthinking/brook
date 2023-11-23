@@ -1,0 +1,18 @@
+// Brook macOS 仅允许某个 App 联网
+// https://www.txthinking.com/talks/articles/brook-only-allow-app.article
+// How Brook macOS allows only an app to connect to the Internet
+// https://www.txthinking.com/talks/articles/brook-only-allow-app-en.article
+
+f := func() {
+    if in_dnsquery {
+        if in_dnsquery.appid && in_dnsquery.appid != "ru.keepcoder.Telegram" {
+            return {block: true}
+        }
+    }
+    if in_address {
+        if in_address.appid && in_address.appid != "ru.keepcoder.Telegram" {
+            return {block: true}
+        }
+    }
+}
+out := f()

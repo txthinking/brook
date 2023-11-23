@@ -1,0 +1,37 @@
+// Brook 如何跳过域名而不考虑其 IP
+// https://www.txthinking.com/talks/articles/brook-bypass-domain.article
+// How Brook bypass domain regardless of their IP
+// https://www.txthinking.com/talks/articles/brook-bypass-domain-en.article
+
+text := import("text")
+f := func() {
+  if in_dnsquery {
+      // block secure dns
+      if in_dnsquery.domain == "dns.google" {
+          return {block: true}
+      }
+      // if GUI bypass domain has no this domain, then this code is not required
+      if in_dnsquery.domain == "http3.ooo" {
+          return {forcefakedns: true}
+      }
+  }
+  if in_address {
+      m := in_address
+      if m.ipaddress {
+          // block secure dns
+          if m.ipaddress == "8.8.8.8:853" || m.ipaddress == "8.8.8.8:443" || m.ipaddress == "8.8.4.4:853" || m.ipaddress == "8.8.4.4:443" || m.ipaddress == "[2001:4860:4860::8888]:853" || m.ipaddress == "[2001:4860:4860::8888]:443" || m.ipaddress == "[2001:4860:4860::8844]:853" || m.ipaddress == "[2001:4860:4860::8844]:443" {
+              return { "block": true }
+          }
+      }
+      if m.domainaddress {
+          // block secure dns
+          if text.has_prefix(m.domainaddress, "dns.google:") {
+              return { "block": true }
+          }
+          if text.has_prefix(m.domainaddress, "http3.ooo:") {
+              return { ipaddressfrombypassdns: "A", bypass: true }
+          }
+      }
+  }
+}
+out := f()

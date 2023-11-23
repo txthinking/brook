@@ -1,0 +1,49 @@
+// 掘金忽略下载app，跳转外部链接继续访问
+modules = append(modules, {
+    dnsquery: func(m) {
+        brook := import("brook")
+        if m.domain == "link.juejin.cn" || (m.domain == "juejin.cn" && (brook.os=="ios" || brook.os=="android")) {
+            return {forcefakedns: true}
+        }
+    },
+    address: func(m) {
+        if m.domainaddress {
+            if m.domainaddress == "link.juejin.cn:443" {
+                if m.network == "tcp" {
+                    return {"mitm": true, "mitmprotocol": "https"}
+                }
+                if m.network == "udp" {
+                    return { "block": true }
+                }
+            }
+            if m.domainaddress == "juejin.cn:443" {
+                if m.network == "tcp" {
+                    return {ipaddressfrombypassdns: "A", bypass: true, "mitm": true, "mitmprotocol": "https", "mitmwithbody": true, "mitmautohandlecompress": true}
+                }
+                if m.network == "udp" {
+                    return { "block": true }
+                }
+            }
+        }
+    },
+    httprequest: func(request) {
+        text := import("text")
+        if text.has_prefix(request["URL"], "https://link.juejin.cn/") {
+            brook := import("brook")
+            s := brook.parsequery(brook.parseurl(request["URL"]).rawquery)["target"]
+            if s {
+                return {
+                    "StatusCode": 301,
+                    "Location": s
+                }
+            }
+        }
+    },
+    httpresponse: func(request, response) {
+        text := import("text")
+        if text.has_prefix(request["URL"], "https://juejin.cn/post/") && (text.contains(request["User-Agent"], "iPhone") || text.contains(request["User-Agent"], "Android")) {
+            response["Body"] = bytes(text.replace(string(response["Body"]), "</body>", `<script>function fuck(){var a = document.querySelector('.byte-drawer__wrapper .cancel-btn'); if(a) {a.click()} else {setTimeout(fuck, 1000)} } setTimeout(fuck, 1000)</script></body>`, 1))
+            return response
+        }
+    }
+})

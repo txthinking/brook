@@ -1,0 +1,44 @@
+// Brook and mitmproxy for mobile phone deep Packet Capture
+// https://www.txthinking.com/talks/articles/brook-mitmproxy-en.article
+// 
+// Brook 和 mitmproxy 进行深度手机抓包
+// https://www.txthinking.com/talks/articles/brook-mitmproxy.article
+
+text := import("text")
+
+f := func(){
+    if in_dnsquery {
+        // block secure dns
+        if in_dnsquery.domain == "dns.google" {
+            return {block: true}
+        }
+        // block ipv6, if your server or local does not support ipv6
+        if in_dnsquery.type == "AAAA" {
+            return {block: true}
+        }
+    }
+    if in_address {
+        m := in_address
+        if m.ipaddress {
+            // block secure dns
+            if m.ipaddress == "8.8.8.8:853" || m.ipaddress == "8.8.8.8:443" || m.ipaddress == "8.8.4.4:853" || m.ipaddress == "8.8.4.4:443" || m.ipaddress == "[2001:4860:4860::8888]:853" || m.ipaddress == "[2001:4860:4860::8888]:443" || m.ipaddress == "[2001:4860:4860::8844]:853" || m.ipaddress == "[2001:4860:4860::8844]:443" {
+                return { "block": true }
+            }
+            // block or bypass udp
+            if m.network == "udp" {
+                return { bypass: true } // or { block : true }
+            }
+        }
+        if m.domainaddress {
+            // block secure dns
+            if text.has_prefix(m.domainaddress, "dns.google:") {
+                return { "block": true }
+            }
+            // block udp
+            if m.network == "udp" {
+                return { block: true }
+            }
+        }
+    }
+}
+out := f()

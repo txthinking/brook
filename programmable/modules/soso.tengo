@@ -1,0 +1,30 @@
+// 手机端的 Chrome 替换 Google搜索为 soso.ooo
+modules = append(modules, {
+    address: func(m) {
+        brook := import("brook")
+        if brook.os == "darwin" || brook.os == "linux" || brook.os == "windows" || brook.iosapponmac {
+            return
+        }
+        if m.domainaddress && m.domainaddress == "www.google.com:443" {
+            if m.network == "tcp" {
+                return {"mitm": true, "mitmprotocol": "https"}
+            }
+            if m.network == "udp" {
+                return { "block": true }
+            }
+        }
+    },
+    httprequest: func(request) {
+        brook := import("brook")
+        if brook.os == "darwin" || brook.os == "linux" || brook.os == "windows" || brook.iosapponmac {
+            return
+        }
+        text := import("text")
+        if text.has_prefix(request["URL"], "https://www.google.com/search?q=") && (text.contains(request["User-Agent"], "iPhone") || text.contains(request["User-Agent"], "Android")) {
+            return {
+                "StatusCode": 302,
+                "Location": text.replace(request["URL"], "https://www.google.com/search?q=", "https://soso.ooo/search.html?q=", 1)
+            }
+        }
+    }
+})

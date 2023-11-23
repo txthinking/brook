@@ -1,0 +1,48 @@
+f := func() {
+    if in_dnsquery {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["dnsquery"] {
+                r := modules[i]["dnsquery"](in_dnsquery)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return
+    }
+    if in_address {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["address"] {
+                r := modules[i]["address"](in_address)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return
+    }
+    if in_httprequest && !in_httpresponse {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["httprequest"] {
+                r := modules[i]["httprequest"](in_httprequest)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return in_httprequest
+    }
+    if in_httprequest && in_httpresponse {
+        delete(in_httpresponse, "Alt-Svc") // Avoid upgrading to http3 from http1 or http2
+        for i:=0; i<len(modules); i++{
+            if modules[i]["httpresponse"] {
+                r :=  modules[i]["httpresponse"](in_httprequest, in_httpresponse)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return in_httpresponse
+    }
+}
+out := f()

@@ -1,0 +1,55 @@
+// Brook Packet Capture on All Platform
+// https://www.txthinking.com/talks/articles/brook-packet-capture-en.article
+// 
+// Brook 全平台抓包
+// https://www.txthinking.com/talks/articles/brook-packet-capture.article
+
+text := import("text")
+
+f := func(){
+    if in_dnsquery {
+        // block secure dns
+        if in_dnsquery.domain == "dns.google" {
+            return {block: true}
+        }
+    }
+    if in_address {
+        m := in_address
+        if m.ipaddress {
+            // block secure dns
+            if m.ipaddress == "8.8.8.8:853" || m.ipaddress == "8.8.8.8:443" || m.ipaddress == "8.8.4.4:853" || m.ipaddress == "8.8.4.4:443" || m.ipaddress == "[2001:4860:4860::8888]:853" || m.ipaddress == "[2001:4860:4860::8888]:443" || m.ipaddress == "[2001:4860:4860::8844]:853" || m.ipaddress == "[2001:4860:4860::8844]:443" {
+                return { "block": true }
+            }
+            // block or bypass udp
+            if m.network == "udp" {
+                return { bypass: true } // or { block : true }
+            }
+        }
+        if m.domainaddress {
+            // block secure dns
+            if text.has_prefix(m.domainaddress, "dns.google:") {
+                return { "block": true }
+            }
+            // Packet Capture all tcp 80, most http/1.1 use it
+            if m.network == "tcp" && text.has_suffix(m.domainaddress, ":80"){
+                return {"mitm": true, "mitmprotocol": "http", "mitmwithbody": true, "mitmautohandlecompress": true}
+            }
+            // Packet Capture all tcp 443, most https http/1.1 and http/2 use it
+            if m.network == "tcp" && text.has_suffix(m.domainaddress, ":443"){
+                return {"mitm": true, "mitmprotocol": "https", "mitmwithbody": true, "mitmautohandlecompress": true}
+            }
+            // block udp on port 443, most http/3 use it
+            if m.network == "udp" && text.has_suffix(m.domainaddress, ":443"){
+                return { block: true }
+            }
+        }
+    }
+    if in_httprequest && !in_httpresponse {
+        return in_httprequest // or Modify Packet
+    }
+    if in_httprequest && in_httpresponse {
+        delete(in_httpresponse, "Alt-Svc") // Avoid upgrading to http3 from http1 or http2
+        return in_httpresponse // or Modify Packet
+    }
+}
+out := f()

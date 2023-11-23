@@ -1,0 +1,18 @@
+// Brook macOS 如何禁止某个 App 联网
+// https://www.txthinking.com/talks/articles/brook-block-app.article
+// How Brook macOS block an app from connecting to the Internet
+// https://www.txthinking.com/talks/articles/brook-block-app-en.article
+
+f := func() {
+    if in_dnsquery {
+        if in_dnsquery.appid && in_dnsquery.appid == "ru.keepcoder.Telegram" {
+            return {block: true}
+        }
+    }
+    if in_address {
+        if in_address.appid && in_address.appid == "ru.keepcoder.Telegram" {
+            return {block: true}
+        }
+    }
+}
+out := f()

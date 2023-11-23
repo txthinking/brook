@@ -1,0 +1,199 @@
+text := import("text")
+brook := import("brook")
+json := import("json")
+
+dnsquery_handler := func(m){
+    // local dev example
+    if m.domain == "myapi.local" {
+        if m.type == "A" {
+            return {ip: "10.211.1.76"}
+        }
+        if m.type == "AAAA" {
+            return {"block": true}
+        }
+    }
+    // block secure dns
+    if m.domain == "dns.google" {
+        return {"block": true}
+    }
+    // block ipv6
+    if m.type == "AAAA" {
+        return {"block": true}
+    }
+    // do not use fake dns, instagram 90% ?
+    l := [
+        "facebook.com",
+        "fbcdn.net",
+        "facebook.net",
+        "akamaihd.net",
+        "thefacebook.com",
+        "tfbnw.net",
+        "messenger.com",
+        "fb.me",
+        "fbsbx.com",
+        "fb.com",
+        "whatsapp.net",
+        "whatsapp.com",
+        "instagram.com",
+        "akamai.net",
+        "aaplimg.com",
+        "alibabadns.com",
+        "akamaiedge.net",
+        "apple-dns.net",
+        "akadns.net",
+        "cdninstagram.com"
+    ]
+    for v in l {
+        if text.has_suffix(m.domain, v) {
+            return {"system": true}
+        }
+    }
+    // use bypass dns to resolve ip, apple push
+    l = [
+        "apple.com",
+        "icloud.com",
+        "cdn-apple.com",
+        "mzstatic.com",
+        "entrust.net",
+        "digicert.com",
+        "verisign.net",
+        "apple",
+        "itunes-apple.com.akadns.net",
+        "cdn-apple.com.akadns.net",
+        "ks-cdn.com",
+        "ksyuncdn.com",
+        "cdn-apple.com.edgekey.net",
+        "e2885.e9.akamaiedge.net",
+        "apple.com.edgekey.net",
+        "e2490.dscb.akamaiedge.net",
+        "idms-apple.com.akadns.net",
+        "apple.com.edgekey.net.globalredir.akadns.net",
+        "e6858.dscx.akamaiedge.net",
+        "ioshost.qtlcdn.com"
+    ]
+    for v in l {
+        if text.has_suffix(m.domain, v) {
+            return {"bypass": true}
+        }
+    }
+}
+
+address_handler := func(m) {
+    if m.ipaddress {
+        // block secure dns
+        if m.ipaddress == "8.8.8.8:853" || m.ipaddress == "8.8.8.8:443" || m.ipaddress == "8.8.4.4:853" || m.ipaddress == "8.8.4.4:443" || m.ipaddress == "[2001:4860:4860::8888]:853" || m.ipaddress == "[2001:4860:4860::8888]:443" || m.ipaddress == "[2001:4860:4860::8844]:853" || m.ipaddress == "[2001:4860:4860::8844]:443" {
+            return { "block": true }
+        }
+        // extract ip
+        r := brook.splithostport(m.ipaddress)
+        if is_error(r) {
+            return r
+        }
+        // block an ip
+        if r.host == "1.2.4.8" {
+            return { "block": true }
+        }
+        // bypass zz and cn ip
+        s := brook.country(r.host)
+        if s == "ZZ" || s == "CN" {
+            return { "bypass": true }
+        }
+        // bypass apple push
+        l := [
+            "17.0.0.0/8",
+            "103.81.148.0/22",
+            "103.81.148.0/24",
+            "103.81.149.0/24",
+            "2620:149:a44::/48",
+            "2403:300:a42::/48",
+            "2403:300:a51::/48",
+            "2a01:b740:a42::/48"
+        ]
+        for v in l {
+            if brook.cidrcontainsip(v, r.host) {
+                return {"bypass": true}
+            }
+        }
+    }
+    if m.domainaddress {
+        // block secure dns
+        if text.has_prefix(m.domainaddress, "dns.google:") {
+            return { "block": true }
+        }
+        if m.network == "tcp" {
+            // Packet Capture and Modify
+            if m.domainaddress == "httpbin.org:80" {
+                return {"mitm": true, "mitmprotocol": "http"}
+            }
+            if m.domainaddress == "httpbin.org:443" {
+                return {"mitm": true, "mitmprotocol": "https", "mitmwithbody": true, "mitmautohandlecompress": true}
+            }
+            // connect this ip and bypass it
+            if m.domainaddress == "myapi2.local:80" {
+                return {"ipaddress": "10.211.1.76:8080", "bypass": true, "mitm": true, "mitmprotocol": "http", "mitmwithbody": true, "mitmautohandlecompress": true}
+            }
+            // get A via bypass dns, then connect it and bypass it
+            if m.domainaddress == "myip.ipip.net:443" {
+                return {"ipaddressfrombypassdns": "A", "bypass": true, "mitm": true, "mitmprotocol": "https", "mitmwithbody": true, "mitmautohandlecompress": true}
+            }
+        }
+        if m.network == "udp" {
+            // block http3
+            if m.domainaddress == "httpbin.org:443" {
+                return { "block": true }
+            }
+        }
+    }
+}
+
+httprequest_handler := func(request){
+    // redirect
+    if text.has_prefix(request["URL"], "http://httpbin.org") {
+        response := {
+            "StatusCode": 301,
+            "Location": text.replace(request["URL"], "http://", "https://", 1)
+        }
+        return response
+    }
+    // Packet Modify request header and body
+    if request["URL"] == "https://httpbin.org/post" && request["Method"] == "POST" && request["Content-Type"] == "application/x-www-form-urlencoded" {
+        request["User-Agent"] = "curl/7.79.1"
+        request["Body"] = bytes("hello=world")
+        return request
+    }
+    return request
+}
+
+httpresponse_handler := func(request, response){
+    delete(response, "Alt-Svc") // Avoid upgrading to http3 from http1 or http2
+    // Packet Modify response body
+    if text.has_prefix(request["URL"], "https://httpbin.org") && !text.has_prefix(request["URL"], "https://httpbin.org/stream/") && response["Content-Type"] == "application/json" {
+        j := json.decode(response["Body"])
+        j.origin = "M.A.R.S"
+        response["Body"] = json.encode(j)
+        return response
+    }
+    // Packet Modify response body
+    if text.has_prefix(request["URL"], "https://myip.ipip.net") {
+        response["Body"] = bytes(text.split(string(response["Body"]), "IP")[0] + "来自: 火星")
+        return response
+    }
+    return response
+}
+
+handler := func(){
+    if in_dnsquery {
+        return dnsquery_handler(in_dnsquery)
+    }
+    if in_address {
+        return address_handler(in_address)
+    }
+    if in_httprequest && !in_httpresponse {
+        return httprequest_handler(in_httprequest)
+    }
+    if in_httprequest && in_httpresponse {
+        return httpresponse_handler(in_httprequest, in_httpresponse)
+    }
+}
+
+out := handler()

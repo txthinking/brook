@@ -1,0 +1,40 @@
+// www.google.cn 重定向到 www.google.com
+modules = append(modules, {
+    dnsquery: func(m) {
+        if m.domain == "www.google.cn" {
+            return {forcefakedns: true}
+        }
+    },
+    address: func(m) {
+        if m.domainaddress {
+            if m.domainaddress == "www.google.cn:80" {
+                if m.network == "tcp" {
+                    return {"mitm": true, "mitmprotocol": "http"}
+                }
+            }
+            if m.domainaddress == "www.google.cn:443" {
+                if m.network == "tcp" {
+                    return {"mitm": true, "mitmprotocol": "https"}
+                }
+                if m.network == "udp" {
+                    return { "block": true }
+                }
+            }
+        }
+    },
+    httprequest: func(request) {
+        text := import("text")
+        if text.has_prefix(request["URL"], "http://www.google.cn/") {
+            return {
+                "StatusCode": 302,
+                "Location": text.replace(request["URL"], "http://www.google.cn", "https://www.google.com", 1)
+            }
+        }
+        if text.has_prefix(request["URL"], "https://www.google.cn/") {
+            return {
+                "StatusCode": 302,
+                "Location": text.replace(request["URL"], "https://www.google.cn", "https://www.google.com", 1)
+            }
+        }
+    }
+})

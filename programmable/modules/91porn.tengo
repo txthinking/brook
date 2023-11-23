@@ -1,0 +1,27 @@
+// 移除 91porn 广告
+modules = append(modules, {
+    address: func(m) {
+        if m.network == "tcp" && m.domainaddress {
+            if m.domainaddress == "91porn.com:443" {
+                return {"mitm": true, "mitmprotocol": "https", "mitmwithbody": true, "mitmautohandlecompress": true}
+            }
+            if m.domainaddress == "91porn.com:80" {
+                return {"mitm": true, "mitmprotocol": "http", "mitmwithbody": true, "mitmautohandlecompress": true}
+            }
+            return
+        }
+        if m.network == "udp" && m.domainaddress {
+            if m.domainaddress == "91porn.com:443" {
+                return { "block": true }
+            }
+            return
+        }
+    },
+    httpresponse: func(request, response) {
+        text := import("text")
+        if (text.has_prefix(request["URL"], "http://91porn.com/") || text.has_prefix(request["URL"], "https://91porn.com/")) && response["Content-Type"] == "text/html; charset=UTF-8" {
+            response["Body"] = bytes(text.replace(string(response["Body"]), "</head>", `<style>img[class*="ad_img"] {display: none!important;}iframe[src*="ads"] {display: none!important;}img[href*='.gif'] {display: none!important;}</style></head>`, 1))
+            return response
+        }
+    }
+})

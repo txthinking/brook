@@ -1,0 +1,42 @@
+// Brook 黑名单模式
+// https://www.txthinking.com/talks/articles/brook-blacklist.article
+// Brook How to proxy only part of addresses
+// https://www.txthinking.com/talks/articles/brook-blacklist-en.article
+
+text := import("text")
+f := func() {
+    if in_dnsquery {
+        // block secure dns
+        if in_dnsquery.domain == "dns.google" {
+            return {block: true}
+        }
+        l := [
+            "google.com",
+            "twitter.com"
+        ]
+        for v in l {
+            if text.has_suffix(in_dnsquery.domain, v) {
+                return
+            }
+        }
+        return {"bypass": true}
+    }
+    if in_address {
+        m := in_address
+        if m.ipaddress {
+            // block secure dns
+            if m.ipaddress == "8.8.8.8:853" || m.ipaddress == "8.8.8.8:443" || m.ipaddress == "8.8.4.4:853" || m.ipaddress == "8.8.4.4:443" || m.ipaddress == "[2001:4860:4860::8888]:853" || m.ipaddress == "[2001:4860:4860::8888]:443" || m.ipaddress == "[2001:4860:4860::8844]:853" || m.ipaddress == "[2001:4860:4860::8844]:443" {
+                return { "block": true }
+            }
+            return {"bypass": true}
+        }
+        if m.domainaddress {
+            // block secure dns
+            if text.has_prefix(m.domainaddress, "dns.google:") {
+                return { "block": true }
+            }
+            return
+        }
+    }
+}
+out := f()

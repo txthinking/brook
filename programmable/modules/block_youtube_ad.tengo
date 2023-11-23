@@ -1,0 +1,58 @@
+// iOS YouTube APP AD Block
+modules = append(modules, {
+    address: func(m) {
+        brook := import("brook")
+        if brook.os != "ios" || brook.iosapponmac {
+            return
+        }
+        if m.domainaddress {
+            text := import("text")
+            if (text.has_suffix(m.domainaddress, "googlevideo.com:443") && !text.has_prefix(m.domainaddress, "redirector")) || m.domainaddress == "www.youtube.com:443" || m.domainaddress == "s.youtube.com:443" || m.domainaddress == "youtubei.googleapis.com:443" {
+                if m.network == "tcp" {
+                    return {"mitm": true, "mitmprotocol": "https"}
+                }
+                if m.network == "udp" {
+                    return { "block": true }
+                }
+            }
+        }
+    },
+    httprequest: func(request) {
+        brook := import("brook")
+        if brook.os != "ios" || brook.iosapponmac {
+            return
+        }
+        text := import("text")
+        if(text.contains(request["URL"], "googlevideo.com") && !text.contains(request["URL"], "googlevideo.com/dclk_video_ads") && !text.contains(request["URL"], "redirector") && text.contains(request["URL"], "&ctier=L") && text.contains(request["URL"], ",ctier,")){
+            return {
+                "StatusCode": 302,
+                "Location": text.replace(text.replace(request["URL"], "&ctier=L", "", 1), ",ctier,", "", 1)
+            }
+        }
+        if(text.contains(request["URL"], "googlevideo.com") && !text.contains(request["URL"], "googlevideo.com/dclk_video_ads") && !text.contains(request["URL"], "googlevideo.com/videoplayback?") && !text.contains(request["URL"], "redirector") && text.contains(request["URL"], "&oad")){
+            return {
+                "StatusCode": 503
+            }
+        }
+        if(text.re_match(`^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v\d\/player\/ad_break`, request["URL"])){
+            return {
+                "StatusCode": 503
+            }
+        }
+        if(text.re_match(`^https?:\/\/(www|s)\.youtube\.com\/api\/stats\/ads`, request["URL"])){
+            return {
+                "StatusCode": 503
+            }
+        }
+        if(text.re_match(`^https?:\/\/(www|s)\.youtube\.com\/(pagead|ptracking)`, request["URL"])){
+            return {
+                "StatusCode": 503
+            }
+        }
+        if(text.re_match(`^https?:\/\/s\.youtube\.com\/api\/stats\/qoe\?adcontext`, request["URL"])){
+            return {
+                "StatusCode": 503
+            }
+        }
+    }
+})

@@ -1,0 +1,57 @@
+// Download older version app from iTunes server
+// 使用 Brook 下载任意 iOS App 的旧版本
+//
+// Replace the values of appid and versionid to yours.
+//
+// https://www.txthinking.com/talks/articles/ios-old-version-app.article
+// https://www.txthinking.com/talks/articles/ios-old-version-app-en.article
+
+appid := "544007664" // YouTube
+versionid := "848374799" // v17.15.1
+
+text := import("text")
+f := func(){
+    if in_dnsquery {
+        // block secure dns
+        if in_dnsquery.domain == "dns.google" {
+            return {block: true}
+        }
+    }
+    if in_address {
+        m := in_address
+        if m.ipaddress {
+            // block secure dns
+            if m.ipaddress == "8.8.8.8:853" || m.ipaddress == "8.8.8.8:443" || m.ipaddress == "8.8.4.4:853" || m.ipaddress == "8.8.4.4:443" || m.ipaddress == "[2001:4860:4860::8888]:853" || m.ipaddress == "[2001:4860:4860::8888]:443" || m.ipaddress == "[2001:4860:4860::8844]:853" || m.ipaddress == "[2001:4860:4860::8844]:443" {
+                return { "block": true }
+            }
+        }
+        if m.domainaddress {
+            // block secure dns
+            if text.has_prefix(m.domainaddress, "dns.google:") {
+                return { "block": true }
+            }
+            if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
+                return {
+                     mitm:true,
+                     mitmprotocol: "https",
+                     mitmwithbody: true,
+                     mitmautohandlecompress: true
+                }
+            }
+        }
+        return
+    }
+    if in_httprequest && !in_httpresponse {
+        if in_httprequest["Method"] == "POST" && text.contains(in_httprequest["URL"], "/WebObjects/MZBuy.woa/wa/buyProduct") {
+            s := string(in_httprequest["Body"])
+            if text.contains(s, "<string>"+appid+"</string>") {
+                in_httprequest["Body"] = bytes(text.re_replace(`<key>appExtVrsId</key>\s*<string>\d+</string>`, s, "<key>appExtVrsId</key>\n<string>"+versionid+"</string>"))
+            }
+        }
+        return in_httprequest
+    }
+    if in_httprequest && in_httpresponse {
+        return in_httpresponse
+    }
+}
+out := f()

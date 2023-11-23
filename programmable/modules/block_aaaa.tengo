@@ -1,0 +1,8 @@
+// Block AAAA
+modules = append(modules, {
+    dnsquery: func(m) {
+        if m.type == "AAAA" {
+            return {"block": true}
+        }
+    }
+})
