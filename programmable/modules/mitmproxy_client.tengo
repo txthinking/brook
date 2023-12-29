@@ -1,0 +1,20 @@
+// Brook and mitmproxy for mobile phone deep Packet Capture
+// https://www.txthinking.com/talks/articles/brook-mitmproxy-en.article
+// Brook 和 mitmproxy 进行深度手机抓包
+// https://www.txthinking.com/talks/articles/brook-mitmproxy.article
+modules = append(modules, {
+    address: func(m) {
+        if m.ipaddress {
+            // block or bypass udp
+            if m.network == "udp" {
+                return { bypass: true } // or { block : true }
+            }
+        }
+        if m.domainaddress {
+            // block udp
+            if m.network == "udp" {
+                return { block: true }
+            }
+        }
+    }
+})

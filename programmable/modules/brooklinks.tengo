@@ -1,0 +1,11 @@
+// Define more Servers before runtime, and choose it via brooklinkkey in runtime
+// 在运行时之前定义多个 Server，并在运行时通过 brooklinkkey 选择使用哪一个
+modules = append(modules, {
+    brooklinks: func(m) {
+        return
+        return {
+            "key_a": "brook://...",
+            "key_b": "brook://..."
+        }
+    }
+})

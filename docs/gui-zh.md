@@ -209,14 +209,6 @@ Library
 
 建议使用 [tun2brook](https://github.com/txthinking/tun2brook) 在电脑上`fmt.println`调试
 
-## 独立脚本例子
-
-https://github.com/txthinking/bypass
-
-## 脚本生成器
-
-https://modules.brook.app
-
 ## 抓包
 
 -   [Brook 搭配 mitmproxy 进行手机 App 深度抓包](https://www.txthinking.com/talks/articles/brook-mitmproxy.article)

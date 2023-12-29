@@ -36,6 +36,7 @@ import (
 	"net/url"
 
 	"github.com/miekg/dns"
+	"github.com/phuslu/iploc"
 	utls "github.com/refraction-networking/utls"
 	"github.com/txthinking/brook"
 	"github.com/txthinking/brook/plugins/block"
@@ -58,7 +59,7 @@ func main() {
 	df := func() {}
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20230606"
+	app.Version = "20240101"
 	app.Usage = "A cross-platform programmable network tool"
 	app.Authors = []*cli.Author{
 		{
@@ -133,12 +134,12 @@ func main() {
 		},
 		&cli.StringFlag{
 			Name:  "clientHKDFInfo",
-			Usage: "client HKDF info, most time you don't need to change this, read brook protocol if you don't know what this is",
+			Usage: "client HKDF info, most time you don't need to change this, if changed, all and each brook links in client side must be same, I mean each",
 			Value: "brook",
 		},
 		&cli.StringFlag{
 			Name:  "serverHKDFInfo",
-			Usage: "server HKDF info, most time you don't need to change this, read brook protocol if you don't know what this is",
+			Usage: "server HKDF info, most time you don't need to change this, if changed, all and each brook links in client side must be same, I mean each",
 			Value: "brook",
 		},
 	}
@@ -430,13 +431,7 @@ func main() {
 						},
 					})
 				}
-				go func() {
-					sigs := make(chan os.Signal, 1)
-					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-					<-sigs
-					g.Done()
-				}()
-				return g.Wait()
+				return nil
 			},
 		},
 		&cli.Command{
@@ -2901,6 +2896,34 @@ func main() {
 			},
 		},
 		&cli.Command{
+			Name:  "ipcountry",
+			Usage: "Get country of IP",
+			BashComplete: func(c *cli.Context) {
+				l := c.Command.VisibleFlags()
+				for _, v := range l {
+					fmt.Println("--" + v.Names()[0])
+				}
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "ip",
+					Usage: "1.1.1.1",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				ip := net.ParseIP(c.String("ip"))
+				if ip == nil {
+					return errors.New(c.String("ip") + " is not IP")
+				}
+				b := iploc.Country(ip)
+				if b == nil {
+					return errors.New(c.String("ip") + " unknown")
+				}
+				fmt.Println(string(b))
+				return nil
+			},
+		},
+		&cli.Command{
 			Name:  "completion",
 			Usage: "Generate shell completions",
 			Flags: []cli.Flag{
@@ -3053,6 +3076,8 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Println(err)
+		df()
+		os.Exit(1)
 		return
 	}
 	if len(g.Runners) == 0 {
@@ -3064,5 +3089,10 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 		<-sigs
 		g.Done()
 	}()
-	log.Println(g.Wait())
+	if err := g.Wait(); err != nil {
+		log.Println(err)
+		df()
+		os.Exit(1)
+		return
+	}
 }

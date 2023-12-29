@@ -209,14 +209,6 @@ Library
 
 It is recommended to use [tun2brook](https://github.com/txthinking/tun2brook) on desktop to debug with `fmt.println`
 
-## Standalone Script Example
-
-https://github.com/txthinking/bypass
-
-## Brook Script Builder
-
-https://modules.brook.app
-
 ## Packet Capture
 
 -   [Brook and mitmproxy for mobile app deep packet capture](https://www.txthinking.com/talks/articles/brook-mitmproxy-en.article)

@@ -1,0 +1,9 @@
+// Block A if your local or server does not support IPv4. Note that all servers of Shiliew support both IPv4 and IPv6
+// Block A, 如果你本地或服务器不支持 IPv4. 备注: 所有的 Shiliew server 都支持 IPv4 和 IPv6
+modules = append(modules, {
+    dnsquery: func(m) {
+        if m.type == "A" {
+            return {block: true}
+        }
+    }
+})

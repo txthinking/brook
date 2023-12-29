@@ -1,0 +1,37 @@
+// Brook Packet Capture on All Platform
+// https://www.txthinking.com/talks/articles/brook-packet-capture-en.article
+// Brook 全平台抓包
+// https://www.txthinking.com/talks/articles/brook-packet-capture.article
+// [CA]
+modules = append(modules, {
+    address: func(m) {
+        if m.ipaddress {
+            // block or bypass udp
+            if m.network == "udp" {
+                return { bypass: true } // or { block : true }
+            }
+        }
+        if m.domainaddress {
+            text := import("text")
+
+            // Note: You may need to add more conditions to narrow the scope
+
+            // Packet Capture all tcp 80, most http/1.1 use it
+            if m.network == "tcp" && text.has_suffix(m.domainaddress, ":80"){
+                return { mitm: true, mitmprotocol: "http" }
+            }
+            // Packet Capture all tcp 443, most https http/1.1 and http/2 use it
+            if m.network == "tcp" && text.has_suffix(m.domainaddress, ":443"){
+                // Note: mitmwithbody and mitmautohandlecompress will read body into memory, add more conditions to narrow the scope, such as:
+                if m.domainaddress == "httpbin.org:443" {
+                    return { mitm: true, mitmprotocol: "https", mitmwithbody: true, mitmautohandlecompress: true }
+                }
+                return { mitm: true, mitmprotocol: "https" }
+            }
+            // block udp on port 443, most http/3 use it
+            if m.network == "udp" && text.has_suffix(m.domainaddress, ":443"){
+                return { block: true }
+            }
+        }
+    }
+})

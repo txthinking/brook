@@ -1,0 +1,13 @@
+// hosts
+modules = append(modules, {
+    dnsquery: func(m) {
+        if m.domain == "localdev.com" {
+            if m.type == "A" {
+                return {ip: "127.0.0.1"}
+            }
+            if m.type == "AAAA" {
+                return {ip: "::1"}
+            }
+        }
+    }
+})

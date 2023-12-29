@@ -1,18 +1,19 @@
-// Block google secure DNS on system or browser
+// Block google secure DNS to avoid Fake DNS does not work
+// 防止 Fake DNS 不生效
 modules = append(modules, {
     dnsquery: func(m) {
         if m.domain == "dns.google" {
-            return { "block": true }
+            return { block: true }
         }
     },
     address: func(m) {
         if m.ipaddress && (m.ipaddress == "8.8.8.8:853" || m.ipaddress == "8.8.8.8:443" || m.ipaddress == "8.8.4.4:853" || m.ipaddress == "8.8.4.4:443" || m.ipaddress == "[2001:4860:4860::8888]:853" || m.ipaddress == "[2001:4860:4860::8888]:443" || m.ipaddress == "[2001:4860:4860::8844]:853" || m.ipaddress == "[2001:4860:4860::8844]:443") {
-            return { "block": true }
+            return { block: true }
         }
         if m.domainaddress {
             text := import("text")
             if text.has_prefix(m.domainaddress, "dns.google:") {
-                return { "block": true }
+                return { block: true }
             }
         }
     }

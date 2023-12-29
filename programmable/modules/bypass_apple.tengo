@@ -1,0 +1,59 @@
+// Bypass Apple, because Apple's push service does not allow proxying.
+// Bypass Apple, 因为苹果推送服务不允许使用代理.
+modules = append(modules, {
+    dnsquery: func(m) {
+        text := import("text")
+        l := [
+            "apple.com",
+            "icloud.com",
+            "cdn-apple.com",
+            "mzstatic.com",
+            "entrust.net",
+            "digicert.com",
+            "verisign.net",
+            "apple",
+            "push-apple.com.akadns.net",
+            "itunes-apple.com.akadns.net",
+            "cdn-apple.com.akadns.net",
+            "ks-cdn.com",
+            "ksyuncdn.com",
+            "cdn-apple.com.edgekey.net",
+            "e2885.e9.akamaiedge.net",
+            "apple.com.edgekey.net",
+            "e2490.dscb.akamaiedge.net",
+            "idms-apple.com.akadns.net",
+            "apple.com.edgekey.net.globalredir.akadns.net",
+            "e6858.dscx.akamaiedge.net",
+            "ioshost.qtlcdn.com"
+        ]
+        for v in l {
+            if m.domain == v || text.has_suffix(m.domain, "."+v) {
+                return { bypass: true }
+            }
+        }
+    },
+    address: func(m) {
+        if m.ipaddress {
+            brook := import("brook")
+            r := brook.splithostport(m.ipaddress)
+            if is_error(r) {
+                return r
+            }
+            l := [
+                "17.0.0.0/8",
+                "103.81.148.0/22",
+                "103.81.148.0/24",
+                "103.81.149.0/24",
+                "2620:149:a44::/48",
+                "2403:300:a42::/48",
+                "2403:300:a51::/48",
+                "2a01:b740:a42::/48"
+            ]
+            for v in l {
+                if brook.cidrcontainsip(v, r.host) {
+                    return { bypass: true }
+                }
+            }
+        }
+    }
+})

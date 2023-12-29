@@ -1,4 +1,5 @@
-// Instagram itself has a non-standard dns cache, so we don't use fakedns for it.
+// Instagram has a non-standard DNS cache, so we force it don't use Fake DNS, but the list may not be enough. Or disable Fake DNS, but you will not see domain in activity.
+// Instagram 使用了非标准的 DNS 机制，所以我们强制其不使用 Fake DNS, 列表不一定全. 或者关闭 Fake DNS，但日志就看不到域名了。
 modules = append(modules, {
     dnsquery: func(m) {
         text := import("text")
@@ -25,8 +26,8 @@ modules = append(modules, {
             "cdninstagram.com"
         ]
         for v in l {
-            if text.has_suffix(m.domain, v) {
-                return {"system": true}
+            if m.domain == v || text.has_suffix(m.domain, "."+v) {
+                return { system: true }
             }
         }
     }

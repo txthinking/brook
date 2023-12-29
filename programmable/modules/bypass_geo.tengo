@@ -1,0 +1,16 @@
+// Bypass Geo IP
+modules = append(modules, {
+    address: func(m) {
+        if m.ipaddress {
+            brook := import("brook")
+            r := brook.splithostport(m.ipaddress)
+            if is_error(r) {
+                return r
+            }
+            s := brook.country(r.host)
+            if s == "ZZ" || s == "CN" {
+                return { bypass: true }
+            }
+        }
+    }
+})

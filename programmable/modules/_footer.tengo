@@ -1,4 +1,15 @@
 f := func() {
+    if in_brooklinks {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["brooklinks"] {
+                r := modules[i]["brooklinks"](in_brooklinks)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return
+    }
     if in_dnsquery {
         for i:=0; i<len(modules); i++{
             if modules[i]["dnsquery"] {
@@ -33,7 +44,6 @@ f := func() {
         return in_httprequest
     }
     if in_httprequest && in_httpresponse {
-        delete(in_httpresponse, "Alt-Svc") // Avoid upgrading to http3 from http1 or http2
         for i:=0; i<len(modules); i++{
             if modules[i]["httpresponse"] {
                 r :=  modules[i]["httpresponse"](in_httprequest, in_httpresponse)

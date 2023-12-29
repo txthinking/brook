@@ -1,0 +1,15 @@
+// Allow some apps to connect to internet, block others.
+// 仅允许某些 app 联网
+modules = append(modules, {
+    dnsquery: func(m) {
+        // app's dns query may sent by another app or system service
+        // if m.appid && m.appid != "bundle id on macos sandbox mode or full application path on others" {
+        //    return {block: true}
+        // }
+    },
+    address: func(m) {
+        if m.appid && m.appid != "bundle id on macos sandbox mode or full application path on others" {
+            return {block: true}
+        }
+    }
+})

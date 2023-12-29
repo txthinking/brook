@@ -1,0 +1,22 @@
+// Blacklist mode, only proxy some domains.
+// 黑名单模式，仅代理指定的域名.
+modules = append(modules, {
+    dnsquery: func(m) {
+        text := import("text")
+        l := [
+            "google.com",
+            "twitter.com"
+        ]
+        for v in l {
+            if m.domain == v || text.has_suffix(m.domain, "."+v) {
+                return {}
+            }
+        }
+        return { bypass: true }
+    },
+    address: func(m) {
+        if m.ipaddress {
+            return { bypass: true }
+        }
+    }
+})

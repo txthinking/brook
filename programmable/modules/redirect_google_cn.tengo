@@ -1,20 +1,21 @@
 // www.google.cn 重定向到 www.google.com
+// [CA]
 modules = append(modules, {
     dnsquery: func(m) {
         if m.domain == "www.google.cn" {
-            return {forcefakedns: true}
+            return {} // Interrupt next modules, default to fake dns
         }
     },
     address: func(m) {
         if m.domainaddress {
             if m.domainaddress == "www.google.cn:80" {
                 if m.network == "tcp" {
-                    return {"mitm": true, "mitmprotocol": "http"}
+                    return { mitm: true, mitmprotocol: "http"}
                 }
             }
             if m.domainaddress == "www.google.cn:443" {
                 if m.network == "tcp" {
-                    return {"mitm": true, "mitmprotocol": "https"}
+                    return { mitm: true, mitmprotocol: "https"}
                 }
                 if m.network == "udp" {
                     return { "block": true }

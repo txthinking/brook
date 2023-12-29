@@ -1,0 +1,39 @@
+// Download older version iOS app
+// https://www.txthinking.com/talks/articles/ios-old-version-app-en.article
+// 使用 Brook 下载任意 iOS App 的旧版本
+// https://www.txthinking.com/talks/articles/ios-old-version-app.article
+// [CA]
+modules = append(modules, {
+    address: func(m) {
+        text := import("text")
+        if m.network == "tcp" && m.domainaddress {
+            if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
+                return {
+                     bypass:true,
+                     ipaddressfrombypassdns:"A",
+                     mitm:true,
+                     mitmprotocol: "https",
+                     mitmwithbody: true,
+                     mitmautohandlecompress: true
+                }
+            }
+        }
+        if m.network == "udp" && m.domainaddress {
+            if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
+                return { block:true }
+            }
+        }
+    },
+    httprequest: func(request) {
+        text := import("text")
+        if request["Method"] == "POST" && text.contains(request["URL"], "/WebObjects/MZBuy.woa/wa/buyProduct") {
+            appid := "544007664" // YouTube
+            versionid := "848374799" // v17.15.1
+            s := string(request["Body"])
+            if text.contains(s, "<string>"+appid+"</string>") {
+                request["Body"] = bytes(text.re_replace(`<key>appExtVrsId</key>\s*<string>\d+</string>`, s, "<key>appExtVrsId</key>\n<string>"+versionid+"</string>"))
+            }
+            return request
+        }
+    }
+})

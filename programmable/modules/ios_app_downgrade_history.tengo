@@ -1,0 +1,28 @@
+// Download older version iOS app
+// https://www.txthinking.com/talks/articles/ios-old-version-app-en.article
+// 使用 Brook 下载任意 iOS App 的旧版本
+// https://www.txthinking.com/talks/articles/ios-old-version-app.article
+// [CA]
+modules = append(modules, {
+    address: func(m) {
+        if m.network == "tcp" && m.domainaddress {
+            text := import("text")
+            if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
+                return {
+                     bypass:true,
+                     ipaddressfrombypassdns:"A",
+                     mitm:true,
+                     mitmprotocol: "https",
+                     mitmwithbody: true,
+                     mitmautohandlecompress: true
+                }
+            }
+        }
+        if m.network == "udp" && m.domainaddress {
+            text := import("text")
+            if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
+                return { block:true }
+            }
+        }
+    }
+})

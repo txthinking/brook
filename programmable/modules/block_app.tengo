@@ -1,0 +1,14 @@
+// Block some apps to connect to internet
+// 禁止某些 app 联网
+modules = append(modules, {
+    dnsquery: func(m) {
+        if m.appid && m.appid == "bundle id on macos sandbox mode or full application path on others" {
+            return {block: true}
+        }
+    },
+    address: func(m) {
+        if m.appid && m.appid == "bundle id on macos sandbox mode or full application path on others" {
+            return {block: true}
+        }
+    }
+})

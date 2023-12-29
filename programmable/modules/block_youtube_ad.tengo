@@ -1,8 +1,13 @@
 // iOS YouTube APP AD Block
+// YouTube App v17.15.1
+// https://www.txthinking.com/talks/articles/block-youtube-app-ad.article
+// https://www.txthinking.com/talks/articles/block-youtube-app-ad-en.article
+// [CA]
+
 modules = append(modules, {
     address: func(m) {
         brook := import("brook")
-        if brook.os != "ios" || brook.iosapponmac {
+        if brook.os != "ios" {
             return
         }
         if m.domainaddress {
@@ -19,7 +24,7 @@ modules = append(modules, {
     },
     httprequest: func(request) {
         brook := import("brook")
-        if brook.os != "ios" || brook.iosapponmac {
+        if brook.os != "ios" {
             return
         }
         text := import("text")

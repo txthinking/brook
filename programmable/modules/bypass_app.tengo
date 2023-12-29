@@ -1,0 +1,47 @@
+// Bypass some app
+modules = append(modules, {
+    dnsquery: func(m) {
+        if m.appid {
+            brook := import("brook")
+            text := import("text")
+            if brook.os == "darwin" {
+                if text.has_prefix(m.appid, "com.tencent.") || text.has_prefix(m.appid, "tencent.") { // 微信
+                    return {bypass: true}
+                }
+            }
+            if brook.os == "windows" {
+                if text.contains(m.appid, "Tencent") || text.contains(m.appid, "WeChat") { // 微信
+                    return {bypass: true}
+                }
+            }
+        }
+    },
+    address: func(m) {
+        if m.appid {
+            brook := import("brook")
+            text := import("text")
+            if brook.os == "darwin" {
+                if text.has_prefix(m.appid, "com.tencent.") || text.has_prefix(m.appid, "tencent.") { // 微信
+                    if m.ipaddress {
+                        return {bypass: true}
+                    }
+                    // app's dns query may sent by another app or system service, so we catch domainaddress and give it A
+                    if m.domainaddress {
+                        return {bypass: true, ipaddressfrombypassdns: "A"}
+                    }
+                }
+            }
+            if brook.os == "windows" {
+                if text.contains(m.appid, "Tencent") || text.contains(m.appid, "WeChat") { // 微信
+                    if m.ipaddress {
+                        return {bypass: true}
+                    }
+                    // app's dns query may sent by another app or system service, so we catch domainaddress and give it A
+                    if m.domainaddress {
+                        return {bypass: true, ipaddressfrombypassdns: "A"}
+                    }
+                }
+            }
+        }
+    }
+})
