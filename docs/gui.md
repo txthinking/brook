@@ -1,62 +1,10 @@
 # GUI Documentation
 
-<!--SIDEBAR-->
-<!--G-R3M673HK5V-->
-
 ## Software for which this article applies
 
 -   [Brook](https://github.com/txthinking/brook)
--   [Brook Plus](https://www.txthinking.com/brook.html)
 -   [Shiliew](https://www.txthinking.com/shiliew.html)
 -   [tun2brook](https://github.com/txthinking/tun2brook)
-
-## Windows Proxy mode, Linux Proxy mode
-
-This mode is very simple, will create:
-
--   Socks5 proxy: `socks5://[::1]:1080` or `socks5://127.0.0.1:1080`
--   HTTP proxy: `http://[::1]:8010` or `http://127.0.0.1:8010`
--   PAC: `http://127.0.0.1:1093/proxy.pac` or `http://[::1]:1093/proxy.pac` based on Bypass Domain list
--   Intel Mac GUI, Windows GUI set PAC to system proxy。Linux GUI can work with [Socks5 Configurator](https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb)
--   What is socks5 and http proxy? [Article](https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article) and [Video](https://www.youtube.com/watch?v=sBCB-X7BoP8)
-
-## iOS, Mac, Android, Windows TUN mode, Linux TUN mode
-
-```
-The so-called Internet connection is IP to IP connection, not domain name connection. Therefore, the domain name will be resolved into IP before deciding how to connect.
-```
-
-## Configuration Introduction
-
-| Configuration  | Support Systems                   | Conditions                                                                          | Description  |
-| -------------- | --------------------------------- | ----------------------------------------------------------------------------------- | --- |
-| Import Servers | iOS,Android,Mac,Windows,Linux     | /                                                                                   | brook link list                                                                                                                                                                                                                                                                       |
-| System DNS     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | System DNS. **Do not bypass this IP**                                                                                                                                                                                                                                                 |
-| Fake DNS       | iOS,Android,Mac,Windows,Linux | [How to prevent Brook's Fake DNS from not working](https://www.txthinking.com/talks/articles/brook-fakedns-en.article) | The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution                                                |
-| Block          | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Block switch                                                                                                                                                                                                                                                                          |
-| Block Domain   | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | Domain name list, matching domain names will be blocked. **Domain name is suffix matching mode**                                                                                                                                                                                      |
-| Bypass         | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Bypass switch                                                                                                                                                                                                                                                                         |
-| Bypass IP      | iOS,Android,Mac,Windows,Linux     | /                                                                                   | CIDR list, matched IP will be bypassed                                                                                                                                                                                                                                                |
-| Bypass Geo IP  | iOS,Android,Mac,Windows,Linux                       | /                                                                                   | The matched IP will be bypassed. Note: Global IP changes frequently, so the Geo library is time-sensitive                                                                                                                                                                             |
-| Bypass Apps    | Android,Mac            | /                                                                                   | These apps will be bypassed                                                                                                                                                                                                                                                           |
-| Bypass DNS     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Support normal DNS, such as `223.5.5.5:53`, support DoH, but need to specify the address of DoH through the parameter address, such as `https://dns. alidns.com/dns-query?address=223.5.5.5%3A443` is used to resolve Bypass Domain. **The IP of this DNS will automatically Bypass** |
-| Bypass Domain  | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | List of domain names, matching domain names will use Bypass DNS resolution to get IP, **whether the final connection will be bypassed depends on the Bypass IP** . **The domain name is a suffix matching pattern**. Of course, you can also use the script to bypass the domain regardless of its IP |
-| Hosts          | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Hosts switch                                                                                                                                                                                                                                                                          |
-| Hosts List     | iOS,Android,Mac,Windows,Linux     | Fake DNS: On                                                                        | Specify IP, v4, v6 for the domain name, if the value is empty, the effect is the same as Block                                                                                                                                                                                        |
-| Programmable   | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Programmable switch                                                                                                                                                                                                                                                                   |
-| Script         | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Script. All functions above can be controlled. And more and more, **The whole process can be controled, see below for details**.                                                                                                                                                      |
-| Log            | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log switch                                                                                                                                                                                                                                                                            |
-| Activity  | iOS,Android,Mac,Windows,Linux     | /  | Networking activity |
-| MITM  | iOS,Android,Mac,Windows,Linux     | / | Packet capture and modify, such as https request response, hexadecimal, JSON, image, etc.                                                                                                                                                                                                         |
-| TUN            | iOS,Android,Mac,Windows,Linux                 | / | Choose Proxy/TUN/App mode. [macOS bug](https://www.txthinking.com/talks/articles/macos-bug.article). iOS,Android,Mac default TUN mode mode                                                                                                                                                                                                                                                         |
-| Capture Me     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Test your packet capture or proxy software is working as a system proxy or TUN                                                                                                                                                                                                        |
-| DNS Client    | iOS,Android,Mac,Windows,Linux | /                                           | DNS client                                                                                   |
-| DOH Client    | iOS,Android,Mac,Windows,Linux | /                                           | DOH client                                                                                                           |
-| Echo Client    | iOS,Android,Mac,Windows,Linux | /                                           | Echo client                                                                   |
-| Test Socks5    | iOS,Android,Mac,Linux | /                                           | Test socks5 server                                                                    |
-| Dark Mode      | iOS,Android,Mac,Windows,Linux     | /                                                                                   | System / Light / Dark                                                                                                                                                                                                                                                                 |     |
-| Shortcut       | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Quickly control the functions in the menu on the home page                                                                                                                                                                                                                            |
-| System Tray    | Windows                           | /                                                                                   | Open as systray, then open dashboard from the systray                                                                                                                                                                                                                                 |
 
 ## Programmable
 
@@ -177,8 +125,7 @@ Library
     ```
     Constants
 
-    * os: string, linux/darwin/windows/ios/android. If ios app run on mac, it is ios
-    * iosapponmac: bool, ios app run on mac
+    * os: string, linux/darwin/windows/ios/android
 
     Functions
 
@@ -209,47 +156,16 @@ Library
 
 It is recommended to use [tun2brook](https://github.com/txthinking/tun2brook) on desktop to debug with `fmt.println`
 
-## Packet Capture
-
--   [Brook and mitmproxy for mobile app deep packet capture](https://www.txthinking.com/talks/articles/brook-mitmproxy-en.article)
--   [Brook Packet Capture on All Platform](https://www.txthinking.com/talks/articles/brook-packet-capture-en.article)
--   [mitmproxy helper](https://www.txthinking.com/mitmproxy.html)
-
 ## Install CA
 
 https://txthinking.github.io/ca/ca.pem
 
-### iOS
+| OS | How |
+| --- | --- |
+| iOS | https://www.youtube.com/watch?v=HSGPC2vpDGk |
+| Android | Android has user CA and system CA, must be installed in the system CA after ROOT |
+| macOS | `nami install mad ca.txthinking`, `sudo mad install --ca ~/.nami/bin/ca.pem` |
+| Windows | `nami install mad ca.txthinking`, Admin: `mad install --ca ~/.nami/bin/ca.pem` |
 
-https://www.youtube.com/watch?v=HSGPC2vpDGk
+> Some software may not read the system CA，you can use `curl --cacert ~/.nami/bin/ca.pem` to debug
 
-### Android
-
-Android has user CA and system CA, must be installed in the system CA after ROOT
-
-### macOS
-
-```
-nami install mad ca.txthinking
-sudo mad install --ca ~/.nami/bin/ca.pem
-```
-
-### Windows
-
-Open GitBash
-
-```
-nami install mad ca.txthinking
-```
-
-Then open GitBash with admin
-
-```
-mad install --ca ~/.nami/bin/ca.pem
-```
-
-Note that software such as GitBash or Firefox may not read the system CA, you can use the system Edge browser to test after installation
-
-## Apple Push Problem
-
-To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connections. So you need to Bypass the relevant domain name and IP. [Reference link](https://github.com/txthinking/bypass/tree/master/apple)

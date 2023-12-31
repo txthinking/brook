@@ -3,44 +3,24 @@
 echo '# Brook' > ../readme.md
 echo '<!--SIDEBAR-->' >> ../readme.md
 echo '<!--G-R3M673HK5V-->' >> ../readme.md
-echo 'A cross-platform programmable network tool. 一个跨平台可编程网络工具' >> ../readme.md
+echo 'A cross-platform programmable network tool.' >> ../readme.md
 echo '' >> ../readme.md
 echo '# Sponsor' >> ../readme.md
-echo '**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**' >> ../readme.md
+echo '**❤️  [Shiliew - China Optimized Network App](https://www.txthinking.com/shiliew.html)**' >> ../readme.md
 
 cat getting-started.md >> ../readme.md
+cat gui.md >> ../readme.md
+cat gui-zh.md >> ../readme.md
+cat resources.md >> ../readme.md
 
-cat install-cli.md >> ../readme.md
-cat daemon.md >> ../readme.md
-cat auto-start.md >> ../readme.md
-cat one-click-script.md >> ../readme.md
-
-echo '# CLI Documentation 命令行文档' >> ../readme.md
+echo '# CLI Documentation' >> ../readme.md
 cd ../cli/brook
 go build
 mv brook ~/.nami/bin/
 cd ../../docs
-brook mdpage >> ../readme.md
-cat gui.md >> ../readme.md
-cat gui-zh.md >> ../readme.md
-cat diagram.md >> ../readme.md
+jb '$1`brook mdpage`.split("\n").filter(v=>!v.startsWith("[")).join("\n").replace("```\n```", "```\nbrook [全局参数] 子命令 [子命令参数]\n```").split("\n").forEach(v=> echo(v.startsWith("**") && !v.startsWith("**Usage") ? "- "+v : v))' >> ../readme.md
 
-echo '# Protocol' >> ../readme.md
-echo 'https://github.com/txthinking/brook/tree/master/protocol' >> ../readme.md
-echo '# Blog' >> ../readme.md
-echo 'https://www.txthinking.com/talks/' >> ../readme.md
-echo '# YouTube' >> ../readme.md
-echo 'https://www.youtube.com/txthinking' >> ../readme.md
-echo '# Telegram' >> ../readme.md
-echo 'https://t.me/s/txthinking_news' >> ../readme.md
-echo '# brook-mamanger' >> ../readme.md
-echo 'https://github.com/txthinking/brook-manager' >> ../readme.md
-echo '# nico' >> ../readme.md
-echo 'https://github.com/txthinking/nico' >> ../readme.md
-echo '# Brook Deploy' >> ../readme.md
-echo 'https://www.txthinking.com/deploy.html' >> ../readme.md
-echo '# Pastebin' >> ../readme.md
-echo 'https://paste.brook.app' >> ../readme.md
+cat diagram.md >> ../readme.md
 
 markdown ../readme.md ./index.html
 

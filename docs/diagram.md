@@ -1,7 +1,6 @@
-# Diagram 图解
+# Diagram
 
-<!--SIDEBAR-->
-<!--G-R3M673HK5V-->
+> Maybe outdated
 
 ## overview
 

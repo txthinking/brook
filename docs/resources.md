@@ -1,0 +1,35 @@
+# Resources
+
+| CLI | Link |
+| --- | --- |
+| [nami](https://github.com/txthinking/nami) | A clean and tidy decentralized package manager |
+| [joker](https://github.com/txthinking/joker) | Joker can turn process into daemon. Zero-Configuration |
+| [nico](https://github.com/txthinking/nico) | Nico can work with brook wsserver together |
+| [zhen](https://github.com/txthinking/zhen) | zhen - process and cron manager |
+| [tun2brook](https://github.com/txthinking/tun2brook) | Proxy all traffic just one line command |
+| [mad](https://github.com/txthinking/mad) | Generate root CA and derivative certificate for any domains and any IPs |
+| [hancock](https://github.com/txthinking/hancock) | Manage multiple remote servers and execute commands remotely |
+| [sshexec](https://github.com/txthinking/sshexec) | A command-line tool to execute remote command through ssh |
+| [jb](https://github.com/txthinking/jb) | write script in an easier way than bash |
+| [bash](https://github.com/txthinking/bash) | One-click script 一键脚本 |
+| [pacman](https://archlinux.org/packages/extra/x86_64/brook/) | `pacman -S brook` |
+| [brew](https://formulae.brew.sh/formula/brook) | `brew install brook` |
+| [docker](https://hub.docker.com/r/txthinking/brook) | `docker run txthinking/brook` | 
+
+| Example | 举例 |
+| --- | --- |
+| [Example](https://github.com/txthinking/brook/blob/master/docs/example.md) | [例子](https://github.com/txthinking/brook/blob/master/docs/example-zh.md) |
+
+| Resources | Link |
+| --- | --- |
+| [Protocol](https://github.com/txthinking/brook/tree/master/protocol) | Brook Protocol |
+| [Blog](https://www.txthinking.com/talks/) | Some articles you should read |
+| [YouTube](https://www.youtube.com/txthinking) | Some videos you should watch |
+| [Telegram](https://t.me/txthinking) | Ask questions here |
+| [Announce](https://t.me/s/txthinking_news) | All news you should care |
+| [GitHub](https://github.com/txthinking) | Other useful repos |
+| [Socks5 Configurator](https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb) | If you prefer CLI brook client | 
+| [Pastebin](https://paste.brook.app) | Create importable many brook links |
+| [Brook Deploy](https://www.txthinking.com/deploy.html) | Deploy brook with GUI |
+| [TxThinking](https://www.txthinking.com) | Everything |
+

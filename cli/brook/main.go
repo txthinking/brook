@@ -1855,6 +1855,13 @@ func main() {
 					},
 				})
 				if c.String("dnsListen") != "" {
+					h, p, err := net.SplitHostPort(c.String("dnsListen"))
+					if err != nil {
+						return err
+					}
+					if p == "53" && h == "" {
+						log.Println("Recommend to add IP on --dnsListen when it listen on 53 port, checkout --help")
+					}
 					s, err := brook.NewRelayOverBrook(c.String("dnsListen"), link, c.String("dnsForDefault"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 					if err != nil {
 						return err

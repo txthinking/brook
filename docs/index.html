@@ -1115,35 +1115,51 @@ div.content {
       color: #58a6ff;
     }
 }
-</style>
+</style></head>
 <body style="margin:0">
     
     <div class="sidebar">
         <ul>
 <li><a href="#sponsor" rel="nofollow">Sponsor</a></li>
-<li><a href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow">Getting Started 快速上手</a>
+<li><a href="#getting-started" rel="nofollow">Getting Started</a>
 
 <ul>
 <li><a href="#server" rel="nofollow">Server</a></li>
 <li><a href="#gui-client" rel="nofollow">GUI Client</a></li>
 <li><a href="#cli-client" rel="nofollow">CLI Client</a></li>
 </ul></li>
-<li><a href="#install-cli-%E5%AE%89%E8%A3%85%E5%91%BD%E4%BB%A4%E8%A1%8C" rel="nofollow">Install CLI 安装命令行</a>
+<li><a href="#gui-documentation" rel="nofollow">GUI Documentation</a>
 
 <ul>
-<li><a href="#nami" rel="nofollow">nami</a></li>
-<li><a href="#brook" rel="nofollow">brook</a></li>
-<li><a href="#joker" rel="nofollow">joker</a></li>
-<li><a href="#jinbe" rel="nofollow">jinbe</a></li>
-<li><a href="#tun2brook" rel="nofollow">tun2brook</a></li>
-<li><a href="#via-pacman" rel="nofollow">via pacman</a></li>
-<li><a href="#via-brew" rel="nofollow">via brew</a></li>
-<li><a href="#via-docker" rel="nofollow">via docker</a></li>
+<li><a href="#software-for-which-this-article-applies" rel="nofollow">Software for which this article applies</a></li>
+<li><a href="#programmable" rel="nofollow">Programmable</a></li>
+<li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
+<li><a href="#in-brooklinks" rel="nofollow">in_brooklinks</a></li>
+<li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#write-script" rel="nofollow">Write script</a></li>
+<li><a href="#debug-script" rel="nofollow">Debug script</a></li>
+<li><a href="#install-ca" rel="nofollow">Install CA</a></li>
 </ul></li>
-<li><a href="#daemon-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow">Daemon 守护进程</a></li>
-<li><a href="#auto-start-at-boot-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF" rel="nofollow">Auto Start at Boot 开机自启</a></li>
-<li><a href="#one-click-script-%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC" rel="nofollow">One Click Script 一键脚本</a></li>
-<li><a href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow">CLI Documentation 命令行文档</a></li>
+<li><a href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow">图形客户端文档</a>
+
+<ul>
+<li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
+<li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
+<li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
+<li><a href="#in-brooklinks-1" rel="nofollow">in_brooklinks</a></li>
+<li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address-1" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse-1" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#%E5%86%99%E8%84%9A%E6%9C%AC" rel="nofollow">写脚本</a></li>
+<li><a href="#%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">调试脚本</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a></li>
+</ul></li>
+<li><a href="#resources" rel="nofollow">Resources</a></li>
+<li><a href="#cli-documentation" rel="nofollow">CLI Documentation</a></li>
 <li><a href="#name" rel="nofollow">NAME</a></li>
 <li><a href="#synopsis" rel="nofollow">SYNOPSIS</a></li>
 <li><a href="#global-options" rel="nofollow">GLOBAL OPTIONS</a></li>
@@ -1176,65 +1192,14 @@ div.content {
 <li><a href="#testbrook" rel="nofollow">testbrook</a></li>
 <li><a href="#echoserver" rel="nofollow">echoserver</a></li>
 <li><a href="#echoclient" rel="nofollow">echoclient</a></li>
+<li><a href="#ipcountry" rel="nofollow">ipcountry</a></li>
 <li><a href="#completion" rel="nofollow">completion</a></li>
 <li><a href="#mdpage" rel="nofollow">mdpage</a></li>
 <li><a href="#help-h" rel="nofollow">help, h</a></li>
 <li><a href="#manpage" rel="nofollow">manpage</a></li>
 <li><a href="#help-h-1" rel="nofollow">help, h</a></li>
 </ul></li>
-<li><a href="#gui-documentation" rel="nofollow">GUI Documentation</a>
-
-<ul>
-<li><a href="#software-for-which-this-article-applies" rel="nofollow">Software for which this article applies</a></li>
-<li><a href="#windows-proxy-mode-linux-proxy-mode" rel="nofollow">Windows Proxy mode, Linux Proxy mode</a></li>
-<li><a href="#ios-mac-android-windows-tun-mode-linux-tun-mode" rel="nofollow">iOS, Mac, Android, Windows TUN mode, Linux TUN mode</a></li>
-<li><a href="#configuration-introduction" rel="nofollow">Configuration Introduction</a></li>
-<li><a href="#programmable" rel="nofollow">Programmable</a></li>
-<li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
-<li><a href="#in-brooklinks" rel="nofollow">in_brooklinks</a></li>
-<li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
-<li><a href="#in-address" rel="nofollow">in_address</a></li>
-<li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
-<li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
-<li><a href="#write-script" rel="nofollow">Write script</a></li>
-<li><a href="#debug-script" rel="nofollow">Debug script</a></li>
-<li><a href="#standalone-script-example" rel="nofollow">Standalone Script Example</a></li>
-<li><a href="#brook-script-builder" rel="nofollow">Brook Script Builder</a></li>
-<li><a href="#packet-capture" rel="nofollow">Packet Capture</a></li>
-<li><a href="#install-ca" rel="nofollow">Install CA</a></li>
-<li><a href="#ios" rel="nofollow">iOS</a></li>
-<li><a href="#android" rel="nofollow">Android</a></li>
-<li><a href="#macos" rel="nofollow">macOS</a></li>
-<li><a href="#windows" rel="nofollow">Windows</a></li>
-<li><a href="#apple-push-problem" rel="nofollow">Apple Push Problem</a></li>
-</ul></li>
-<li><a href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow">图形客户端文档</a>
-
-<ul>
-<li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
-<li><a href="#windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
-<li><a href="#ios-mac-android-windows-tun-%E6%A8%A1%E5%BC%8F-linux-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, Mac, Android, Windows TUN 模式, Linux TUN 模式</a></li>
-<li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
-<li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
-<li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
-<li><a href="#in-brooklinks-1" rel="nofollow">in_brooklinks</a></li>
-<li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
-<li><a href="#in-address-1" rel="nofollow">in_address</a></li>
-<li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
-<li><a href="#in-httpresponse-1" rel="nofollow">in_httpresponse</a></li>
-<li><a href="#%E5%86%99%E8%84%9A%E6%9C%AC" rel="nofollow">写脚本</a></li>
-<li><a href="#%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">调试脚本</a></li>
-<li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90" rel="nofollow">独立脚本例子</a></li>
-<li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8" rel="nofollow">脚本生成器</a></li>
-<li><a href="#%E6%8A%93%E5%8C%85" rel="nofollow">抓包</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a></li>
-<li><a href="#ios-1" rel="nofollow">iOS</a></li>
-<li><a href="#android-1" rel="nofollow">Android</a></li>
-<li><a href="#macos-1" rel="nofollow">macOS</a></li>
-<li><a href="#windows-1" rel="nofollow">Windows</a></li>
-<li><a href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow">Apple 推送问题</a></li>
-</ul></li>
-<li><a href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow">Diagram 图解</a>
+<li><a href="#diagram" rel="nofollow">Diagram</a>
 
 <ul>
 <li><a href="#overview" rel="nofollow">overview</a></li>
@@ -1247,16 +1212,6 @@ div.content {
 <li><a href="#gui" rel="nofollow">gui</a></li>
 <li><a href="#script" rel="nofollow">script</a></li>
 </ul></li>
-<li><a href="#protocol" rel="nofollow">Protocol</a></li>
-<li><a href="#blog" rel="nofollow">Blog</a></li>
-<li><a href="#youtube" rel="nofollow">YouTube</a></li>
-<li><a href="#telegram" rel="nofollow">Telegram</a></li>
-<li><a href="#brook-mamanger" rel="nofollow">brook-mamanger</a></li>
-<li><a href="#nico" rel="nofollow">nico</a></li>
-<li><a href="#brook-deploy" rel="nofollow">Brook Deploy</a></li>
-<li><a href="#pastebin" rel="nofollow">Pastebin</a></li>
-<li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90--standalone-script-example" rel="nofollow">独立脚本例子 | Standalone Script Example</a></li>
-<li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8--brook-script-builder" rel="nofollow">脚本生成器 | Brook Script Builder</a></li>
 </ul>
 
     </div>
@@ -1267,29 +1222,45 @@ div.content {
             <div class="sidebarmob">
             <ul>
 <li><a href="#sponsor" rel="nofollow">Sponsor</a></li>
-<li><a href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow">Getting Started 快速上手</a>
+<li><a href="#getting-started" rel="nofollow">Getting Started</a>
 
 <ul>
 <li><a href="#server" rel="nofollow">Server</a></li>
 <li><a href="#gui-client" rel="nofollow">GUI Client</a></li>
 <li><a href="#cli-client" rel="nofollow">CLI Client</a></li>
 </ul></li>
-<li><a href="#install-cli-%E5%AE%89%E8%A3%85%E5%91%BD%E4%BB%A4%E8%A1%8C" rel="nofollow">Install CLI 安装命令行</a>
+<li><a href="#gui-documentation" rel="nofollow">GUI Documentation</a>
 
 <ul>
-<li><a href="#nami" rel="nofollow">nami</a></li>
-<li><a href="#brook" rel="nofollow">brook</a></li>
-<li><a href="#joker" rel="nofollow">joker</a></li>
-<li><a href="#jinbe" rel="nofollow">jinbe</a></li>
-<li><a href="#tun2brook" rel="nofollow">tun2brook</a></li>
-<li><a href="#via-pacman" rel="nofollow">via pacman</a></li>
-<li><a href="#via-brew" rel="nofollow">via brew</a></li>
-<li><a href="#via-docker" rel="nofollow">via docker</a></li>
+<li><a href="#software-for-which-this-article-applies" rel="nofollow">Software for which this article applies</a></li>
+<li><a href="#programmable" rel="nofollow">Programmable</a></li>
+<li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
+<li><a href="#in-brooklinks" rel="nofollow">in_brooklinks</a></li>
+<li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#write-script" rel="nofollow">Write script</a></li>
+<li><a href="#debug-script" rel="nofollow">Debug script</a></li>
+<li><a href="#install-ca" rel="nofollow">Install CA</a></li>
 </ul></li>
-<li><a href="#daemon-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow">Daemon 守护进程</a></li>
-<li><a href="#auto-start-at-boot-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF" rel="nofollow">Auto Start at Boot 开机自启</a></li>
-<li><a href="#one-click-script-%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC" rel="nofollow">One Click Script 一键脚本</a></li>
-<li><a href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow">CLI Documentation 命令行文档</a></li>
+<li><a href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow">图形客户端文档</a>
+
+<ul>
+<li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
+<li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
+<li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
+<li><a href="#in-brooklinks-1" rel="nofollow">in_brooklinks</a></li>
+<li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
+<li><a href="#in-address-1" rel="nofollow">in_address</a></li>
+<li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
+<li><a href="#in-httpresponse-1" rel="nofollow">in_httpresponse</a></li>
+<li><a href="#%E5%86%99%E8%84%9A%E6%9C%AC" rel="nofollow">写脚本</a></li>
+<li><a href="#%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">调试脚本</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a></li>
+</ul></li>
+<li><a href="#resources" rel="nofollow">Resources</a></li>
+<li><a href="#cli-documentation" rel="nofollow">CLI Documentation</a></li>
 <li><a href="#name" rel="nofollow">NAME</a></li>
 <li><a href="#synopsis" rel="nofollow">SYNOPSIS</a></li>
 <li><a href="#global-options" rel="nofollow">GLOBAL OPTIONS</a></li>
@@ -1322,65 +1293,14 @@ div.content {
 <li><a href="#testbrook" rel="nofollow">testbrook</a></li>
 <li><a href="#echoserver" rel="nofollow">echoserver</a></li>
 <li><a href="#echoclient" rel="nofollow">echoclient</a></li>
+<li><a href="#ipcountry" rel="nofollow">ipcountry</a></li>
 <li><a href="#completion" rel="nofollow">completion</a></li>
 <li><a href="#mdpage" rel="nofollow">mdpage</a></li>
 <li><a href="#help-h" rel="nofollow">help, h</a></li>
 <li><a href="#manpage" rel="nofollow">manpage</a></li>
 <li><a href="#help-h-1" rel="nofollow">help, h</a></li>
 </ul></li>
-<li><a href="#gui-documentation" rel="nofollow">GUI Documentation</a>
-
-<ul>
-<li><a href="#software-for-which-this-article-applies" rel="nofollow">Software for which this article applies</a></li>
-<li><a href="#windows-proxy-mode-linux-proxy-mode" rel="nofollow">Windows Proxy mode, Linux Proxy mode</a></li>
-<li><a href="#ios-mac-android-windows-tun-mode-linux-tun-mode" rel="nofollow">iOS, Mac, Android, Windows TUN mode, Linux TUN mode</a></li>
-<li><a href="#configuration-introduction" rel="nofollow">Configuration Introduction</a></li>
-<li><a href="#programmable" rel="nofollow">Programmable</a></li>
-<li><a href="#introduction-to-incoming-variables" rel="nofollow">Introduction to incoming variables</a></li>
-<li><a href="#in-brooklinks" rel="nofollow">in_brooklinks</a></li>
-<li><a href="#in-dnsquery" rel="nofollow">in_dnsquery</a></li>
-<li><a href="#in-address" rel="nofollow">in_address</a></li>
-<li><a href="#in-httprequest" rel="nofollow">in_httprequest</a></li>
-<li><a href="#in-httpresponse" rel="nofollow">in_httpresponse</a></li>
-<li><a href="#write-script" rel="nofollow">Write script</a></li>
-<li><a href="#debug-script" rel="nofollow">Debug script</a></li>
-<li><a href="#standalone-script-example" rel="nofollow">Standalone Script Example</a></li>
-<li><a href="#brook-script-builder" rel="nofollow">Brook Script Builder</a></li>
-<li><a href="#packet-capture" rel="nofollow">Packet Capture</a></li>
-<li><a href="#install-ca" rel="nofollow">Install CA</a></li>
-<li><a href="#ios" rel="nofollow">iOS</a></li>
-<li><a href="#android" rel="nofollow">Android</a></li>
-<li><a href="#macos" rel="nofollow">macOS</a></li>
-<li><a href="#windows" rel="nofollow">Windows</a></li>
-<li><a href="#apple-push-problem" rel="nofollow">Apple Push Problem</a></li>
-</ul></li>
-<li><a href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow">图形客户端文档</a>
-
-<ul>
-<li><a href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow">本文适用的软件</a></li>
-<li><a href="#windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow">Windows GUI proxy 模式, Linux GUI proxy 模式</a></li>
-<li><a href="#ios-mac-android-windows-tun-%E6%A8%A1%E5%BC%8F-linux-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow">iOS, Mac, Android, Windows TUN 模式, Linux TUN 模式</a></li>
-<li><a href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow">配置介绍</a></li>
-<li><a href="#programmable-1" rel="nofollow">Programmable</a></li>
-<li><a href="#%E4%BC%A0%E5%85%A5%E5%8F%98%E9%87%8F%E4%BB%8B%E7%BB%8D" rel="nofollow">传入变量介绍</a></li>
-<li><a href="#in-brooklinks-1" rel="nofollow">in_brooklinks</a></li>
-<li><a href="#in-dnsquery-1" rel="nofollow">in_dnsquery</a></li>
-<li><a href="#in-address-1" rel="nofollow">in_address</a></li>
-<li><a href="#in-httprequest-1" rel="nofollow">in_httprequest</a></li>
-<li><a href="#in-httpresponse-1" rel="nofollow">in_httpresponse</a></li>
-<li><a href="#%E5%86%99%E8%84%9A%E6%9C%AC" rel="nofollow">写脚本</a></li>
-<li><a href="#%E8%B0%83%E8%AF%95%E8%84%9A%E6%9C%AC" rel="nofollow">调试脚本</a></li>
-<li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90" rel="nofollow">独立脚本例子</a></li>
-<li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8" rel="nofollow">脚本生成器</a></li>
-<li><a href="#%E6%8A%93%E5%8C%85" rel="nofollow">抓包</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow">安装 CA</a></li>
-<li><a href="#ios-1" rel="nofollow">iOS</a></li>
-<li><a href="#android-1" rel="nofollow">Android</a></li>
-<li><a href="#macos-1" rel="nofollow">macOS</a></li>
-<li><a href="#windows-1" rel="nofollow">Windows</a></li>
-<li><a href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow">Apple 推送问题</a></li>
-</ul></li>
-<li><a href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow">Diagram 图解</a>
+<li><a href="#diagram" rel="nofollow">Diagram</a>
 
 <ul>
 <li><a href="#overview" rel="nofollow">overview</a></li>
@@ -1393,16 +1313,6 @@ div.content {
 <li><a href="#gui" rel="nofollow">gui</a></li>
 <li><a href="#script" rel="nofollow">script</a></li>
 </ul></li>
-<li><a href="#protocol" rel="nofollow">Protocol</a></li>
-<li><a href="#blog" rel="nofollow">Blog</a></li>
-<li><a href="#youtube" rel="nofollow">YouTube</a></li>
-<li><a href="#telegram" rel="nofollow">Telegram</a></li>
-<li><a href="#brook-mamanger" rel="nofollow">brook-mamanger</a></li>
-<li><a href="#nico" rel="nofollow">nico</a></li>
-<li><a href="#brook-deploy" rel="nofollow">Brook Deploy</a></li>
-<li><a href="#pastebin" rel="nofollow">Pastebin</a></li>
-<li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90--standalone-script-example" rel="nofollow">独立脚本例子 | Standalone Script Example</a></li>
-<li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8--brook-script-builder" rel="nofollow">脚本生成器 | Brook Script Builder</a></li>
 </ul>
 
             </div>
@@ -1410,13 +1320,13 @@ div.content {
 
 
 
-<p>A cross-platform programmable network tool. 一个跨平台可编程网络工具</p>
+<p>A cross-platform programmable network tool.</p>
 <h1><a name="sponsor" class="anchor" href="#sponsor" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Sponsor</h1>
 
-<p><strong>❤️  <a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew - China Optimized VPN</a></strong></p>
-<h1><a name="getting-started-快速上手" class="anchor" href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Getting Started 快速上手</h1>
+<p><strong>❤️  <a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew - China Optimized Network App</a></strong></p>
+<h1><a name="getting-started" class="anchor" href="#getting-started" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Getting Started</h1>
 <h2><a name="server" class="anchor" href="#server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Server</h2>
 
@@ -1456,1011 +1366,23 @@ GUI Client</h2>
 </table>
 
 <blockquote>
-<p>Linux: <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a><br/>
-OpenWrt: After installation, you need to refresh the page to see the menu</p>
+<p>OpenWrt: After installation, you need to refresh the page to see the menu</p>
 </blockquote>
-
-<ul>
-<li>brook server: <code>1.2.3.4:9999</code> replace 1.2.3.4 with your server IP</li>
-<li>password: <code>hello</code></li>
-</ul>
 <h2><a name="cli-client" class="anchor" href="#cli-client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 CLI Client</h2>
 
 <pre><code>brook client -s 1.2.3.4:9999 -p hello --socks5 127.0.0.1:1080
 </code></pre>
-<h1><a name="install-cli-安装命令行" class="anchor" href="#install-cli-%E5%AE%89%E8%A3%85%E5%91%BD%E4%BB%A4%E8%A1%8C" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Install CLI 安装命令行</h1>
-<h2><a name="nami" class="anchor" href="#nami" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-nami</h2>
-
-<p>The easy way to download anything from anywhere</p>
-
-<pre><code>bash &lt;(curl https://bash.ooo/nami.sh)
-</code></pre>
-<h2><a name="brook" class="anchor" href="#brook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-brook</h2>
-
-<p>A cross-platform network tool</p>
-
-<pre><code>nami install brook
-</code></pre>
-<h2><a name="joker" class="anchor" href="#joker" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-joker</h2>
-
-<p>Joker can turn process into daemon</p>
-
-<pre><code>nami install joker
-</code></pre>
-<h2><a name="jinbe" class="anchor" href="#jinbe" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-jinbe</h2>
-
-<p>Auto start at boot. thanks to the cute cat</p>
-
-<pre><code>nami install jinbe
-</code></pre>
-<h2><a name="tun2brook" class="anchor" href="#tun2brook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-tun2brook</h2>
-
-<p>Proxy all traffic just one line command</p>
-
-<pre><code>nami install tun2brook
-</code></pre>
-<h2><a name="via-pacman" class="anchor" href="#via-pacman" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-via pacman</h2>
-
-<p>maintained by felixonmars</p>
-
-<pre><code>pacman -S brook
-</code></pre>
-<h2><a name="via-brew" class="anchor" href="#via-brew" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-via brew</h2>
-
-<pre><code>brew install brook
-</code></pre>
-<h2><a name="via-docker" class="anchor" href="#via-docker" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-via docker</h2>
-
-<p>maintained by teddysun</p>
-
-<pre><code>docker pull teddysun/brook
-</code></pre>
-<h1><a name="daemon-守护进程" class="anchor" href="#daemon-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Daemon 守护进程</h1>
-
-<p>Run the brook daemon with joker</p>
-
-<pre><code>joker brook server -l :9999 -p hello
-</code></pre>
-
-<p>Get the last command ID</p>
-
-<pre><code>joker last
-</code></pre>
-
-<p>View output and error of a command</p>
-
-<pre><code>joker log ID
-</code></pre>
-
-<p>View running commmands</p>
-
-<pre><code>joker list
-</code></pre>
-
-<p>Stop a running command</p>
-
-<pre><code>joker stop ID
-</code></pre>
-<h1><a name="auto-start-at-boot-开机自启" class="anchor" href="#auto-start-at-boot-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Auto Start at Boot 开机自启</h1>
-
-<p>Add one auto-start command at boot</p>
-
-<pre><code>jinbe joker brook server -l :9999 -p hello
-</code></pre>
-
-<p>View added commmands</p>
-
-<pre><code>jinbe list
-</code></pre>
-
-<p>Remove one added command</p>
-
-<pre><code>jinbe remove ID
-</code></pre>
-<h1><a name="one-click-script-一键脚本" class="anchor" href="#one-click-script-%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-One Click Script 一键脚本</h1>
-
-<pre><code>bash &lt;(curl https://bash.ooo/brook.sh)
-</code></pre>
-<h1><a name="cli-documentation-命令行文档" class="anchor" href="#cli-documentation-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%87%E6%A1%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-CLI Documentation 命令行文档</h1>
-<h1><a name="name" class="anchor" href="#name" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-NAME</h1>
-
-<p>Brook - A cross-platform programmable network tool</p>
-<h1><a name="synopsis" class="anchor" href="#synopsis" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-SYNOPSIS</h1>
-
-<p>Brook</p>
-
-<pre><code>[--dialWithDNSPrefer]=[value]
-[--dialWithDNS]=[value]
-[--dialWithIP4]=[value]
-[--dialWithIP6]=[value]
-[--dialWithNIC]=[value]
-[--dialWithSocks5Password]=[value]
-[--dialWithSocks5TCPTimeout]=[value]
-[--dialWithSocks5UDPTimeout]=[value]
-[--dialWithSocks5Username]=[value]
-[--dialWithSocks5]=[value]
-[--help|-h]
-[--log]=[value]
-[--pprof]=[value]
-[--prometheusPath]=[value]
-[--prometheus]=[value]
-[--tag]=[value]
-[--version|-v]
-</code></pre>
-
-<p><strong>Usage</strong>:</p>
-
-<pre><code>Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
-</code></pre>
-<h1><a name="global-options" class="anchor" href="#global-options" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-GLOBAL OPTIONS</h1>
-
-<p><strong>--dialWithDNS</strong>=&#34;&#34;: When a domain name needs to be resolved, use the specified DNS. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required. Note that for client-side commands, this does not affect the client passing the domain address to the server</p>
-
-<p><strong>--dialWithDNSPrefer</strong>=&#34;&#34;: This is used with the dialWithDNS parameter. Prefer A record or AAAA record. Value is A or AAAA</p>
-
-<p><strong>--dialWithIP4</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used</p>
-
-<p><strong>--dialWithIP6</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used</p>
-
-<p><strong>--dialWithNIC</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside, both TCP and UDP, it is used to specify the NIC used</p>
-
-<p><strong>--dialWithSocks5</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081</p>
-
-<p><strong>--dialWithSocks5Password</strong>=&#34;&#34;: If there is</p>
-
-<p><strong>--dialWithSocks5TCPTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--dialWithSocks5UDPTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--dialWithSocks5Username</strong>=&#34;&#34;: If there is</p>
-
-<p><strong>--help, -h</strong>: show help</p>
-
-<p><strong>--log</strong>=&#34;&#34;: Enable log. A valid value is file path or &#39;console&#39;. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true</p>
-
-<p><strong>--pprof</strong>=&#34;&#34;: go http pprof listen addr, such as :6060</p>
-
-<p><strong>--prometheus</strong>=&#34;&#34;: prometheus http listen addr, such as :7070. If it is transmitted on the public network, it is recommended to use it with nico</p>
-
-<p><strong>--prometheusPath</strong>=&#34;&#34;: prometheus http path, such as /xxx. If it is transmitted on the public network, a hard-to-guess value is recommended</p>
-
-<p><strong>--tag</strong>=&#34;&#34;: Tag can be used to the process, will be append into log, such as: &#39;key1:value1&#39;</p>
-
-<p><strong>--version, -v</strong>: print the version</p>
-<h1><a name="commands" class="anchor" href="#commands" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-COMMANDS</h1>
-<h2><a name="server" class="anchor" href="#server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-server</h2>
-
-<p>Run as brook server, both TCP and UDP</p>
-
-<p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
-
-<p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
-
-<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:9999&#39;</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Server password</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
-<h2><a name="client" class="anchor" href="#client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-client</h2>
-
-<p>Run as brook client, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook client &lt;-&gt; $ brook server &lt;-&gt; dst]</p>
-
-<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Brook server password</p>
-
-<p><strong>--server, -s</strong>=&#34;&#34;: Brook server address, like: 1.2.3.4:9999</p>
-
-<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
-
-<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--udpovertcp</strong>: UDP over TCP</p>
-<h2><a name="wsserver" class="anchor" href="#wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-wsserver</h2>
-
-<p>Run as brook wsserver, both TCP and UDP, it will start a standard http server and websocket server</p>
-
-<p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
-
-<p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
-
-<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:80&#39;</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Server password</p>
-
-<p><strong>--path</strong>=&#34;&#34;: URL path (default: /ws)</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
-
-<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
-
-<h2><a name="wsclient" class="anchor" href="#wsclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-wsclient</h2>
-
-<p>Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook wsclient &lt;-&gt; $ brook wsserver &lt;-&gt; dst]</p>
-
-<p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
-
-<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Brook wsserver password</p>
-
-<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
-
-<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
-
-<p><strong>--wsserver, -s</strong>=&#34;&#34;: Brook wsserver address, like: ws://1.2.3.4:80, if no path then /ws will be used. Do not omit the port under any circumstances</p>
-<h2><a name="wssserver" class="anchor" href="#wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-wssserver</h2>
-
-<p>Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server</p>
-
-<p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
-
-<p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
-
-<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p>
-
-<p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
-
-<p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
-
-<p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Server password</p>
-
-<p><strong>--path</strong>=&#34;&#34;: URL path (default: /ws)</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
-
-<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
-<h2><a name="wssclient" class="anchor" href="#wssclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-wssclient</h2>
-
-<p>Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook wssclient &lt;-&gt; $ brook wssserver &lt;-&gt; dst]</p>
-
-<p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
-
-<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem</p>
-
-<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
-
-<p><strong>--insecure</strong>: Client do not verify the server&#39;s certificate chain and host name</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Brook wssserver password</p>
-
-<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
-
-<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
-
-<p><strong>--wssserver, -s</strong>=&#34;&#34;: Brook wssserver address, like: wss://google.com:443, if no path then /ws will be used. Do not omit the port under any circumstances</p>
-<h2><a name="quicserver" class="anchor" href="#quicserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-quicserver</h2>
-
-<p>Run as brook quicserver, both TCP and UDP</p>
-
-<p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
-
-<p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
-
-<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p>
-
-<p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
-
-<p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
-
-<p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Server password</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
-
-<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
-<h2><a name="quicclient" class="anchor" href="#quicclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-quicclient</h2>
-
-<p>Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook quicclient &lt;-&gt; $ brook quicserver &lt;-&gt; dst]. (Note that the global dial parameter is ignored now)</p>
-
-<p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
-
-<p><strong>--ca</strong>=&#34;&#34;: Specify ca instead of insecure, such as /path/to/ca.pem</p>
-
-<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
-
-<p><strong>--insecure</strong>: Client do not verify the server&#39;s certificate chain and host name</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Brook quicserver password</p>
-
-<p><strong>--quicserver, -s</strong>=&#34;&#34;: Brook quicserver address, like: quic://google.com:443. Do not omit the port under any circumstances</p>
-
-<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
-
-<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
-<h2><a name="relayoverbrook" class="anchor" href="#relayoverbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-relayoverbrook</h2>
-
-<p>Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src &lt;-&gt; from address &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; to address]</p>
-
-<p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
-
-<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p>
-
-<p><strong>--from, -f, -l</strong>=&#34;&#34;: Listen address: like &#39;:9999&#39;</p>
-
-<p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
-
-<p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
-
-<p><strong>--to, -t</strong>=&#34;&#34;: Address which relay to, like: 1.2.3.4:9999</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
-
-<p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
-<h2><a name="dnsserveroverbrook" class="anchor" href="#dnsserveroverbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-dnsserveroverbrook</h2>
-
-<p>Run as dns server over brook, both TCP and UDP, [src &lt;-&gt; $ brook dnserversoverbrook &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dns] or [src &lt;-&gt; $ brook dnsserveroverbrook &lt;-&gt; dnsForBypass]</p>
-
-<p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
-
-<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--bypassDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p>
-
-<p><strong>--disableA</strong>: Disable A query</p>
-
-<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
-
-<p><strong>--dns</strong>=&#34;&#34;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p>
-
-<p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443" rel="nofollow">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p>
-
-<p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:53</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
-
-<p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
-
-<p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
-<h2><a name="tproxy" class="anchor" href="#tproxy" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-tproxy</h2>
-
-<p>Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src &lt;-&gt; $ brook tproxy &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dst]</p>
-
-<p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
-
-<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--bypassCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p>
-
-<p><strong>--bypassCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p>
-
-<p><strong>--bypassDomainList</strong>=&#34;&#34;: One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--bypassGeoIP</strong>=&#34;&#34;: Bypass IP by Geo country code, such as US</p>
-
-<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p>
-
-<p><strong>--disableA</strong>: Disable A query</p>
-
-<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
-
-<p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443" rel="nofollow">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p>
-
-<p><strong>--dnsForDefault</strong>=&#34;&#34;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p>
-
-<p><strong>--dnsListen</strong>=&#34;&#34;: Start a DNS server, like: &#39;:53&#39;. MUST contain IP, like &#39;192.168.1.1:53&#39;, if you expect your gateway to accept requests from clients to other public DNS servers at the same time</p>
-
-<p><strong>--doNotRunScripts</strong>: This will not change iptables and others if you want to do by yourself</p>
-
-<p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
-
-<p><strong>--link</strong>=&#34;&#34;: brook link. This will ignore server, password, udpovertcp, address, insecure, withoutBrookProtocol, ca</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, DO NOT contain IP, just like: &#39;:8888&#39;. No need to operate iptables by default! (default: :8888)</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
-
-<p><strong>--redirectDNS</strong>=&#34;&#34;: It is usually the value of dnsListen. If the client has set custom DNS instead of dnsListen, this parameter can be intercepted and forwarded to dnsListen. Usually you don&#39;t need to set this, only if you want to control it instead of being proxied directly as normal UDP data.</p>
-
-<p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-
-<p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
-
-<p><strong>--webListen</strong>=&#34;&#34;: Ignore all other parameters, run web UI, like: &#39;:9999&#39;</p>
-
-<p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
-<h2><a name="link" class="anchor" href="#link" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-link</h2>
-
-<p>Generate brook link</p>
-
-<p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p>
-
-<p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca for untrusted cert, such as /path/to/ca.pem</p>
-
-<p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p>
-
-<p><strong>--name</strong>=&#34;&#34;: Give this server a name</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Password</p>
-
-<p><strong>--server, -s</strong>=&#34;&#34;: Support brook server, brook wsserver, brook wssserver, socks5 server, brook quicserver. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080, quic://google.com:443</p>
-
-<p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
-
-<p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
-
-<p><strong>--username, -u</strong>=&#34;&#34;: Username, when server is socks5 server</p>
-
-<p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
-<h2><a name="connect" class="anchor" href="#connect" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-connect</h2>
-
-<p>Run as client and connect to brook link, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook connect &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dst]</p>
-
-<p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p>
-
-<p><strong>--link, -l</strong>=&#34;&#34;: brook link, you can get it via $ brook link</p>
-
-<p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
-
-<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-<h2><a name="relay" class="anchor" href="#relay" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-relay</h2>
-
-<p>Run as standalone relay, both TCP and UDP, this means access [from address] is equal to access [to address], [src &lt;-&gt; from address &lt;-&gt; to address]</p>
-
-<p><strong>--from, -f, -l</strong>=&#34;&#34;: Listen address: like &#39;:9999&#39;</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--to, -t</strong>=&#34;&#34;: Address which relay to, like: 1.2.3.4:9999</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-<h2><a name="dnsserver" class="anchor" href="#dnsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-dnsserver</h2>
-
-<p>Run as standalone dns server</p>
-
-<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--disableA</strong>: Disable A query</p>
-
-<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
-
-<p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:53</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-<h2><a name="dnsclient" class="anchor" href="#dnsclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-dnsclient</h2>
-
-<p>Send a dns query</p>
-
-<p><strong>--dns, -s</strong>=&#34;&#34;: DNS server, such as 8.8.8.8:53 (default: 8.8.8.8:53)</p>
-
-<p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p>
-
-<p><strong>--short</strong>: Short for A/AAAA</p>
-
-<p><strong>--type, -t</strong>=&#34;&#34;: Type, such as A (default: A)</p>
-<h2><a name="dohserver" class="anchor" href="#dohserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-dohserver</h2>
-
-<p>Run as standalone doh server</p>
-
-<p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
-
-<p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
-
-<p><strong>--disableA</strong>: Disable A query</p>
-
-<p><strong>--disableAAAA</strong>: Disable AAAA query</p>
-
-<p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p>
-
-<p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443, if you want to create a https server. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p>
-
-<p><strong>--listen</strong>=&#34;&#34;: listen address, if you want to create a http server behind nico</p>
-
-<p><strong>--path</strong>=&#34;&#34;: URL path (default: /dns-query)</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p>
-<h2><a name="dohclient" class="anchor" href="#dohclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-dohclient</h2>
-
-<p>Send a dns query</p>
-
-<p><strong>--doh, -s</strong>=&#34;&#34;: DOH server, the address is required (default: <a href="https://dns.quad9.net/dns-query?address=9.9.9.9%3A443" rel="nofollow">https://dns.quad9.net/dns-query?address=9.9.9.9%3A443</a>)</p>
-
-<p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p>
-
-<p><strong>--short</strong>: Short for A/AAAA</p>
-
-<p><strong>--type, -t</strong>=&#34;&#34;: Type, such as A (default: A)</p>
-<h2><a name="dhcpserver" class="anchor" href="#dhcpserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-dhcpserver</h2>
-
-<p>Run as standalone dhcp server. Note that you need to stop other dhcp servers, if there are.</p>
-
-<p><strong>--cache</strong>=&#34;&#34;: Cache file, local absolute file path, default is $HOME/.brook.dhcpserver</p>
-
-<p><strong>--count</strong>=&#34;&#34;: IP range from the start, which you want to assign to clients (default: 100)</p>
-
-<p><strong>--dnsserver</strong>=&#34;&#34;: The dns server which you want to assign to clients, such as: 192.168.1.1 or 8.8.8.8</p>
-
-<p><strong>--gateway</strong>=&#34;&#34;: The router gateway which you want to assign to clients, such as: 192.168.1.1</p>
-
-<p><strong>--interface</strong>=&#34;&#34;: Select interface on multi interface device. Linux only</p>
-
-<p><strong>--netmask</strong>=&#34;&#34;: Subnet netmask which you want to assign to clients (default: 255.255.255.0)</p>
-
-<p><strong>--serverip</strong>=&#34;&#34;: DHCP server IP, the IP of the this machine, you shoud set a static IP to this machine before doing this, such as: 192.168.1.10</p>
-
-<p><strong>--start</strong>=&#34;&#34;: Start IP which you want to assign to clients, such as: 192.168.1.100</p>
-<h2><a name="socks5" class="anchor" href="#socks5" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-socks5</h2>
-
-<p>Run as standalone standard socks5 server, both TCP and UDP</p>
-
-<p><strong>--limitUDP</strong>: The server MAY use this information to limit access to the UDP association. This usually causes connection failures in a NAT environment, where most clients are.</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: Socks5 server listen address, like: :1080 or 1.2.3.4:1080</p>
-
-<p><strong>--password</strong>=&#34;&#34;: Password, optional</p>
-
-<p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: Connection deadline time (s) (default: 0)</p>
-
-<p><strong>--udpTimeout</strong>=&#34;&#34;: Connection deadline time (s) (default: 60)</p>
-
-<p><strong>--username</strong>=&#34;&#34;: User name, optional</p>
-<h2><a name="socks5tohttp" class="anchor" href="#socks5tohttp" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-socks5tohttp</h2>
-
-<p>Convert socks5 to http proxy, [src &lt;-&gt; listen address(http proxy) &lt;-&gt; socks5 address &lt;-&gt; dst]</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: HTTP proxy which will be create: like: 127.0.0.1:8010</p>
-
-<p><strong>--socks5, -s</strong>=&#34;&#34;: Socks5 server address, like: 127.0.0.1:1080</p>
-
-<p><strong>--socks5password</strong>=&#34;&#34;: Socks5 password, optional</p>
-
-<p><strong>--socks5username</strong>=&#34;&#34;: Socks5 username, optional</p>
-
-<p><strong>--tcpTimeout</strong>=&#34;&#34;: Connection tcp timeout (s) (default: 0)</p>
-<h2><a name="pac" class="anchor" href="#pac" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-pac</h2>
-
-<p>Run as PAC server or save PAC to file</p>
-
-<p><strong>--bypassDomainList, -b</strong>=&#34;&#34;: One domain per line, suffix match mode. http(s):// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p>
-
-<p><strong>--file, -f</strong>=&#34;&#34;: Save PAC to file, this will ignore listen address</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:1980</p>
-
-<p><strong>--proxy, -p</strong>=&#34;&#34;: Proxy, like: &#39;SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT&#39; (default: SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT)</p>
-<h2><a name="testsocks5" class="anchor" href="#testsocks5" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-testsocks5</h2>
-
-<p>Test UDP and TCP of socks5 server</p>
-
-<p><strong>--dns</strong>=&#34;&#34;: DNS server for connecting (default: 8.8.8.8:53)</p>
-
-<p><strong>--domain</strong>=&#34;&#34;: Domain for query (default: http3.ooo)</p>
-
-<p><strong>--password, -p</strong>=&#34;&#34;: Socks5 password</p>
-
-<p><strong>--socks5, -s</strong>=&#34;&#34;: Like: 127.0.0.1:1080</p>
-
-<p><strong>--username, -u</strong>=&#34;&#34;: Socks5 username</p>
-
-<p><strong>-a</strong>=&#34;&#34;: The A record of domain (default: 137.184.237.95)</p>
-<h2><a name="testbrook" class="anchor" href="#testbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-testbrook</h2>
-
-<p>Test UDP and TCP of brook server/wsserver/wssserver/quicserver. (Note that the global dial parameter is ignored now)</p>
-
-<p><strong>--dns</strong>=&#34;&#34;: DNS server for connecting (default: 8.8.8.8:53)</p>
-
-<p><strong>--domain</strong>=&#34;&#34;: Domain for query (default: http3.ooo)</p>
-
-<p><strong>--link, -l</strong>=&#34;&#34;: brook link. Get it via $ brook link</p>
-
-<p><strong>--socks5</strong>=&#34;&#34;: Temporarily listening socks5 (default: 127.0.0.1:11080)</p>
-
-<p><strong>-a</strong>=&#34;&#34;: The A record of domain (default: 137.184.237.95)</p>
-<h2><a name="echoserver" class="anchor" href="#echoserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-echoserver</h2>
-
-<p>Echo server, echo UDP and TCP address of routes</p>
-
-<p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:7777&#39;</p>
-<h2><a name="echoclient" class="anchor" href="#echoclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-echoclient</h2>
-
-<p>Connect to echoserver, echo UDP and TCP address of routes</p>
-
-<p><strong>--server, -s</strong>=&#34;&#34;: Echo server address, such as 1.2.3.4:7777</p>
-
-<p><strong>--times</strong>=&#34;&#34;: Times of interactions (default: 1)</p>
-<h2><a name="completion" class="anchor" href="#completion" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-completion</h2>
-
-<p>Generate shell completions</p>
-
-<p><strong>--file, -f</strong>=&#34;&#34;: Write to file (default: brook_autocomplete)</p>
-<h2><a name="mdpage" class="anchor" href="#mdpage" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-mdpage</h2>
-
-<p>Generate markdown page</p>
-
-<p><strong>--file, -f</strong>=&#34;&#34;: Write to file, default print to stdout</p>
-
-<p><strong>--help, -h</strong>: show help</p>
-<h3><a name="help-h" class="anchor" href="#help-h" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-help, h</h3>
-
-<p>Shows a list of commands or help for one command</p>
-<h2><a name="manpage" class="anchor" href="#manpage" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-manpage</h2>
-
-<p>Generate man.1 page</p>
-
-<p><strong>--file, -f</strong>=&#34;&#34;: Write to file, default print to stdout. You should put to /path/to/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos</p>
-<h2><a name="help-h" class="anchor" href="#help-h" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-help, h</h2>
-
-<p>Shows a list of commands or help for one command</p>
 <h1><a name="gui-documentation" class="anchor" href="#gui-documentation" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 GUI Documentation</h1>
-
-
-
-
 <h2><a name="software-for-which-this-article-applies" class="anchor" href="#software-for-which-this-article-applies" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Software for which this article applies</h2>
 
 <ul>
 <li><a href="https://github.com/txthinking/brook" rel="nofollow">Brook</a></li>
-<li><a href="https://www.txthinking.com/brook.html" rel="nofollow">Brook Plus</a></li>
 <li><a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew</a></li>
 <li><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></li>
 </ul>
-<h2><a name="windows-proxy-mode-linux-proxy-mode" class="anchor" href="#windows-proxy-mode-linux-proxy-mode" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Windows Proxy mode, Linux Proxy mode</h2>
-
-<p>This mode is very simple, will create:</p>
-
-<ul>
-<li>Socks5 proxy: <code>socks5://[::1]:1080</code> or <code>socks5://127.0.0.1:1080</code></li>
-<li>HTTP proxy: <code>http://[::1]:8010</code> or <code>http://127.0.0.1:8010</code></li>
-<li>PAC: <code>http://127.0.0.1:1093/proxy.pac</code> or <code>http://[::1]:1093/proxy.pac</code> based on Bypass Domain list</li>
-<li>Intel Mac GUI, Windows GUI set PAC to system proxy。Linux GUI can work with <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
-<li>What is socks5 and http proxy? <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article" rel="nofollow">Article</a> and <a href="https://www.youtube.com/watch?v=sBCB-X7BoP8" rel="nofollow">Video</a></li>
-</ul>
-<h2><a name="ios-mac-android-windows-tun-mode-linux-tun-mode" class="anchor" href="#ios-mac-android-windows-tun-mode-linux-tun-mode" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-iOS, Mac, Android, Windows TUN mode, Linux TUN mode</h2>
-
-<pre><code>The so-called Internet connection is IP to IP connection, not domain name connection. Therefore, the domain name will be resolved into IP before deciding how to connect.
-</code></pre>
-<h2><a name="configuration-introduction" class="anchor" href="#configuration-introduction" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Configuration Introduction</h2>
-
-<table>
-<thead>
-<tr>
-<th>Configuration</th>
-<th>Support Systems</th>
-<th>Conditions</th>
-<th>Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>Import Servers</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>brook link list</td>
-</tr>
-
-<tr>
-<td>System DNS</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>System DNS. <strong>Do not bypass this IP</strong></td>
-</tr>
-
-<tr>
-<td>Fake DNS</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td><a href="https://www.txthinking.com/talks/articles/brook-fakedns-en.article" rel="nofollow">How to prevent Brook&#39;s Fake DNS from not working</a></td>
-<td>The domain name is resolved to Fake IP, which will be converted to a domain name when a connection is initiated, and then the domain name address will be sent to the server, and the server is responsible for domain name resolution</td>
-</tr>
-
-<tr>
-<td>Block</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Block switch</td>
-</tr>
-
-<tr>
-<td>Block Domain</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>Fake DNS: On</td>
-<td>Domain name list, matching domain names will be blocked. <strong>Domain name is suffix matching mode</strong></td>
-</tr>
-
-<tr>
-<td>Bypass</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Bypass switch</td>
-</tr>
-
-<tr>
-<td>Bypass IP</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>CIDR list, matched IP will be bypassed</td>
-</tr>
-
-<tr>
-<td>Bypass Geo IP</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>The matched IP will be bypassed. Note: Global IP changes frequently, so the Geo library is time-sensitive</td>
-</tr>
-
-<tr>
-<td>Bypass Apps</td>
-<td>Android,Mac</td>
-<td>/</td>
-<td>These apps will be bypassed</td>
-</tr>
-
-<tr>
-<td>Bypass DNS</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Support normal DNS, such as <code>223.5.5.5:53</code>, support DoH, but need to specify the address of DoH through the parameter address, such as <code>https://dns. alidns.com/dns-query?address=223.5.5.5%3A443</code> is used to resolve Bypass Domain. <strong>The IP of this DNS will automatically Bypass</strong></td>
-</tr>
-
-<tr>
-<td>Bypass Domain</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>Fake DNS: On</td>
-<td>List of domain names, matching domain names will use Bypass DNS resolution to get IP, <strong>whether the final connection will be bypassed depends on the Bypass IP</strong> . <strong>The domain name is a suffix matching pattern</strong>. Of course, you can also use the script to bypass the domain regardless of its IP</td>
-</tr>
-
-<tr>
-<td>Hosts</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Hosts switch</td>
-</tr>
-
-<tr>
-<td>Hosts List</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>Fake DNS: On</td>
-<td>Specify IP, v4, v6 for the domain name, if the value is empty, the effect is the same as Block</td>
-</tr>
-
-<tr>
-<td>Programmable</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Programmable switch</td>
-</tr>
-
-<tr>
-<td>Script</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Script. All functions above can be controlled. And more and more, <strong>The whole process can be controled, see below for details</strong>.</td>
-</tr>
-
-<tr>
-<td>Log</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Log switch</td>
-</tr>
-
-<tr>
-<td>Activity</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Networking activity</td>
-</tr>
-
-<tr>
-<td>MITM</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Packet capture and modify, such as https request response, hexadecimal, JSON, image, etc.</td>
-</tr>
-
-<tr>
-<td>TUN</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Choose Proxy/TUN/App mode. <a href="https://www.txthinking.com/talks/articles/macos-bug.article" rel="nofollow">macOS bug</a>. iOS,Android,Mac default TUN mode mode</td>
-</tr>
-
-<tr>
-<td>Capture Me</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Test your packet capture or proxy software is working as a system proxy or TUN</td>
-</tr>
-
-<tr>
-<td>DNS Client</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>DNS client</td>
-</tr>
-
-<tr>
-<td>DOH Client</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>DOH client</td>
-</tr>
-
-<tr>
-<td>Echo Client</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Echo client</td>
-</tr>
-
-<tr>
-<td>Test Socks5</td>
-<td>iOS,Android,Mac,Linux</td>
-<td>/</td>
-<td>Test socks5 server</td>
-</tr>
-
-<tr>
-<td>Dark Mode</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>System / Light / Dark</td>
-</tr>
-
-<tr>
-<td>Shortcut</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Quickly control the functions in the menu on the home page</td>
-</tr>
-
-<tr>
-<td>System Tray</td>
-<td>Windows</td>
-<td>/</td>
-<td>Open as systray, then open dashboard from the systray</td>
-</tr>
-</tbody>
-</table>
 <h2><a name="programmable" class="anchor" href="#programmable" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Programmable</h2>
 
@@ -2947,8 +1869,7 @@ Write script</h2>
 
 <pre><code>Constants
 
-* os: string, linux/darwin/windows/ios/android. If ios app run on mac, it is ios
-* iosapponmac: bool, ios app run on mac
+* os: string, linux/darwin/windows/ios/android
 
 Functions
 
@@ -2979,294 +1900,55 @@ Functions
 Debug script</h2>
 
 <p>It is recommended to use <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> on desktop to debug with <code>fmt.println</code></p>
-<h2><a name="standalone-script-example" class="anchor" href="#standalone-script-example" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Standalone Script Example</h2>
-
-<p><a href="https://github.com/txthinking/bypass" rel="nofollow">https://github.com/txthinking/bypass</a></p>
-<h2><a name="brook-script-builder" class="anchor" href="#brook-script-builder" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Brook Script Builder</h2>
-
-<p><a href="https://modules.brook.app" rel="nofollow">https://modules.brook.app</a></p>
-<h2><a name="packet-capture" class="anchor" href="#packet-capture" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Packet Capture</h2>
-
-<ul>
-<li><a href="https://www.txthinking.com/talks/articles/brook-mitmproxy-en.article" rel="nofollow">Brook and mitmproxy for mobile app deep packet capture</a></li>
-<li><a href="https://www.txthinking.com/talks/articles/brook-packet-capture-en.article" rel="nofollow">Brook Packet Capture on All Platform</a></li>
-<li><a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">mitmproxy helper</a></li>
-</ul>
 <h2><a name="install-ca" class="anchor" href="#install-ca" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Install CA</h2>
 
 <p><a href="https://txthinking.github.io/ca/ca.pem" rel="nofollow">https://txthinking.github.io/ca/ca.pem</a></p>
-<h3><a name="ios" class="anchor" href="#ios" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-iOS</h3>
-
-<p><a href="https://www.youtube.com/watch?v=HSGPC2vpDGk" rel="nofollow">https://www.youtube.com/watch?v=HSGPC2vpDGk</a></p>
-<h3><a name="android" class="anchor" href="#android" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Android</h3>
-
-<p>Android has user CA and system CA, must be installed in the system CA after ROOT</p>
-<h3><a name="macos" class="anchor" href="#macos" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-macOS</h3>
-
-<pre><code>nami install mad ca.txthinking
-sudo mad install --ca ~/.nami/bin/ca.pem
-</code></pre>
-<h3><a name="windows" class="anchor" href="#windows" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Windows</h3>
-
-<p>Open GitBash</p>
-
-<pre><code>nami install mad ca.txthinking
-</code></pre>
-
-<p>Then open GitBash with admin</p>
-
-<pre><code>mad install --ca ~/.nami/bin/ca.pem
-</code></pre>
-
-<p>Note that software such as GitBash or Firefox may not read the system CA, you can use the system Edge browser to test after installation</p>
-<h2><a name="apple-push-problem" class="anchor" href="#apple-push-problem" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Apple Push Problem</h2>
-
-<p>To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connections. So you need to Bypass the relevant domain name and IP. <a href="https://github.com/txthinking/bypass/tree/master/apple" rel="nofollow">Reference link</a></p>
-<h1><a name="图形客户端文档" class="anchor" href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-图形客户端文档</h1>
-
-
-
-
-<h2><a name="本文适用的软件" class="anchor" href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-本文适用的软件</h2>
-
-<ul>
-<li><a href="https://github.com/txthinking/brook" rel="nofollow">Brook</a></li>
-<li><a href="https://www.txthinking.com/brook.html" rel="nofollow">Brook Plus</a></li>
-<li><a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew</a></li>
-<li><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></li>
-</ul>
-<h2><a name="windows-gui-proxy-模式-linux-gui-proxy-模式" class="anchor" href="#windows-gui-proxy-%E6%A8%A1%E5%BC%8F-linux-gui-proxy-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Windows GUI proxy 模式, Linux GUI proxy 模式</h2>
-
-<p>这个模式比较简单，会创建:</p>
-
-<ul>
-<li>Socks5 代理: <code>socks5://[::1]:1080</code> 或 <code>socks5://127.0.0.1:1080</code></li>
-<li>HTTP 代理: <code>http://[::1]:8010</code> 或 <code>http://127.0.0.1:8010</code></li>
-<li>PAC: <code>http://127.0.0.1:1093/proxy.pac</code> 或 <code>http://[::1]:1093/proxy.pac</code> 基于 Bypass Domain 列表</li>
-<li>Windows GUI 同时会配置 PAC 到系统代理。Linux GUI 可以配合 <a href="https://chrome.google.com/webstore/detail/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></li>
-<li>什么是 socks5 和 http proxy? <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy.article" rel="nofollow">文章</a> 和 <a href="https://www.youtube.com/watch?v=Tb0_8odTxEI" rel="nofollow">视频</a></li>
-</ul>
-<h2><a name="ios-mac-android-windows-tun-模式-linux-tun-模式" class="anchor" href="#ios-mac-android-windows-tun-%E6%A8%A1%E5%BC%8F-linux-tun-%E6%A8%A1%E5%BC%8F" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-iOS, Mac, Android, Windows TUN 模式, Linux TUN 模式</h2>
-
-<pre><code>所谓的互联网连接，是 IP 连接 IP，不是连接域名。所以域名会被先解析成IP再决定怎么去连接。
-</code></pre>
-<h2><a name="配置介绍" class="anchor" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-配置介绍</h2>
 
 <table>
 <thead>
 <tr>
-<th>配置</th>
-<th>支持系统</th>
-<th>条件</th>
-<th>描述</th>
+<th>OS</th>
+<th>How</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td>导入服务器</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>brook link 列表</td>
+<td>iOS</td>
+<td><a href="https://www.youtube.com/watch?v=HSGPC2vpDGk" rel="nofollow">https://www.youtube.com/watch?v=HSGPC2vpDGk</a></td>
 </tr>
 
 <tr>
-<td>系统 DNS</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>系统 DNS. <strong>不要 bypass 此 IP</strong></td>
+<td>Android</td>
+<td>Android has user CA and system CA, must be installed in the system CA after ROOT</td>
 </tr>
 
 <tr>
-<td>虚拟 DNS</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td><a href="https://www.txthinking.com/talks/articles/brook-fakedns.article" rel="nofollow">如何避免 Brook 的 虚拟 DNS 不生效</a></td>
-<td>解析域名为 Fake IP，发起连接时会再转换为域名，然后把域名地址送到服务端进行代理，同时由服务端来负责域名解析</td>
+<td>macOS</td>
+<td><code>nami install mad ca.txthinking</code>, <code>sudo mad install --ca ~/.nami/bin/ca.pem</code></td>
 </tr>
 
 <tr>
-<td>屏蔽</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Block 开关</td>
-</tr>
-
-<tr>
-<td>屏蔽域名</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>Fake DNS: 开启</td>
-<td>域名列表，匹配的域名会被阻断解析. <strong>域名是后缀匹配模式</strong></td>
-</tr>
-
-<tr>
-<td>跳过</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Bypass 开关</td>
-</tr>
-
-<tr>
-<td>跳过 IP</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>CIDR 列表，匹配到的 IP 会被 bypass</td>
-</tr>
-
-<tr>
-<td>跳过 Geo IP</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>匹配到的 IP 会被 bypass. 提示: 全球 IP 变动频繁, 所以 Geo 库有时效性</td>
-</tr>
-
-<tr>
-<td>跳过 Apps</td>
-<td>Android, Mac</td>
-<td>/</td>
-<td>这些 App 会被 bypass</td>
-</tr>
-
-<tr>
-<td>跳过 DNS</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>支持普通 DNS, 比如 <code>223.5.5.5:53</code>, 支持 DoH, 但需要通过参数 address 指定 DoH 的地址, 比如 <code>https://dns.alidns.com/dns-query?address=223.5.5.5%3A443</code> 用来解析 Bypass Domain. <strong>此 DNS 的 IP 会自动 Bypass</strong></td>
-</tr>
-
-<tr>
-<td>跳过域名</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>Fake DNS: 开启</td>
-<td>域名列表，匹配的域名会使用 Bypass DNS 解析来得到 IP, <strong>最终连接是否会被 Bypass，还取决于 Bypass IP</strong>. <strong>域名是后缀匹配模式.</strong> 当然也可以用脚本直接跳过域名而无关其IP</td>
-</tr>
-
-<tr>
-<td>Hosts</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Hosts 开关</td>
-</tr>
-
-<tr>
-<td>Host 列表</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>Fake DNS: 开启</td>
-<td>给域名指定 IP, v4, v6，如果值为空效果同 Block</td>
-</tr>
-
-<tr>
-<td>可编程</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>可编程开关</td>
-</tr>
-
-<tr>
-<td>脚本</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>脚本。可以控制上面所有的功能。以及上面没有的功能，<strong>全流程控制一切，具体看下文</strong>。</td>
-</tr>
-
-<tr>
-<td>日志</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>日志开关</td>
-</tr>
-
-<tr>
-<td>活动</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>网络活动</td>
-</tr>
-
-<tr>
-<td>MITM</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>抓包，修改包，比如 https 的请求响应，十六进制，JSON，图片等</td>
-</tr>
-
-<tr>
-<td>TUN</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>选择 Proxy/TUN/App 模式. <a href="https://www.txthinking.com/talks/articles/macos-bug.article" rel="nofollow">macOS bug</a>. iOS,Android,Mac 默认 TUN 模式</td>
-</tr>
-
-<tr>
-<td>抓我</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>测试你的抓包或代理软件工作在系统代理还是 TUN</td>
-</tr>
-
-<tr>
-<td>DNS 客户端</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>DNS 客户端</td>
-</tr>
-
-<tr>
-<td>DOH 客户端</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>DOH 客户端</td>
-</tr>
-
-<tr>
-<td>Echo 客户端</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>Echo 客户端</td>
-</tr>
-
-<tr>
-<td>测试 Socks5</td>
-<td>iOS,Android,Mac,Linux</td>
-<td>/</td>
-<td>Test socks5 server</td>
-</tr>
-
-<tr>
-<td>深色主题</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>暗黑模式</td>
-</tr>
-
-<tr>
-<td>快捷方式</td>
-<td>iOS,Android,Mac,Windows,Linux</td>
-<td>/</td>
-<td>在首页快捷控制打开菜单里的功能</td>
-</tr>
-
-<tr>
-<td>系统托盘</td>
 <td>Windows</td>
-<td>/</td>
-<td>以系统托盘形式打开，然后从系统托盘处打开控制面板</td>
+<td><code>nami install mad ca.txthinking</code>, Admin: <code>mad install --ca ~/.nami/bin/ca.pem</code></td>
 </tr>
 </tbody>
 </table>
+
+<blockquote>
+<p>Some software may not read the system CA，you can use <code>curl --cacert ~/.nami/bin/ca.pem</code> to debug</p>
+</blockquote>
+<h1><a name="图形客户端文档" class="anchor" href="#%E5%9B%BE%E5%BD%A2%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E6%A1%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+图形客户端文档</h1>
+<h2><a name="本文适用的软件" class="anchor" href="#%E6%9C%AC%E6%96%87%E9%80%82%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+本文适用的软件</h2>
+
+<ul>
+<li><a href="https://github.com/txthinking/brook" rel="nofollow">Brook</a></li>
+<li><a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew</a></li>
+<li><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></li>
+</ul>
 <h2><a name="programmable" class="anchor" href="#programmable" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 Programmable</h2>
 
@@ -3753,8 +2435,7 @@ in_httpresponse</h3>
 
 <pre><code>Constants
 
-* os: string, linux/darwin/windows/ios/android. If ios app run on mac, it is ios
-* iosapponmac: bool, ios app run on mac
+* os: string, linux/darwin/windows/ios/android
 
 Functions
 
@@ -3785,64 +2466,918 @@ Functions
 调试脚本</h2>
 
 <p>建议使用 <a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a> 在电脑上<code>fmt.println</code>调试</p>
-<h2><a name="独立脚本例子" class="anchor" href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-独立脚本例子</h2>
-
-<p><a href="https://github.com/txthinking/bypass" rel="nofollow">https://github.com/txthinking/bypass</a></p>
-<h2><a name="脚本生成器" class="anchor" href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-脚本生成器</h2>
-
-<p><a href="https://modules.brook.app" rel="nofollow">https://modules.brook.app</a></p>
-<h2><a name="抓包" class="anchor" href="#%E6%8A%93%E5%8C%85" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-抓包</h2>
-
-<ul>
-<li><a href="https://www.txthinking.com/talks/articles/brook-mitmproxy.article" rel="nofollow">Brook 搭配 mitmproxy 进行手机 App 深度抓包</a></li>
-<li><a href="https://www.txthinking.com/talks/articles/brook-packet-capture.article" rel="nofollow">Brook 全平台抓包</a></li>
-<li><a href="https://www.txthinking.com/mitmproxy.html" rel="nofollow">用 mitmproxy helper 抓包</a></li>
-</ul>
 <h2><a name="安装-ca" class="anchor" href="#%E5%AE%89%E8%A3%85-ca" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 安装 CA</h2>
 
 <p><a href="https://txthinking.github.io/ca/ca.pem" rel="nofollow">https://txthinking.github.io/ca/ca.pem</a></p>
-<h3><a name="ios" class="anchor" href="#ios" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-iOS</h3>
 
-<p><a href="https://www.youtube.com/watch?v=HSGPC2vpDGk" rel="nofollow">https://www.youtube.com/watch?v=HSGPC2vpDGk</a></p>
-<h3><a name="android" class="anchor" href="#android" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Android</h3>
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>如何</th>
+</tr>
+</thead>
 
-<p>Android 分系统 CA 和用户 CA，必须要 ROOT 后安装到系统 CA 里</p>
-<h3><a name="macos" class="anchor" href="#macos" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-macOS</h3>
+<tbody>
+<tr>
+<td>iOS</td>
+<td><a href="https://www.youtube.com/watch?v=HSGPC2vpDGk" rel="nofollow">https://www.youtube.com/watch?v=HSGPC2vpDGk</a></td>
+</tr>
 
-<pre><code>nami install mad ca.txthinking
-sudo mad install --ca ~/.nami/bin/ca.pem
+<tr>
+<td>Android</td>
+<td>Android 分系统 CA 和用户 CA，必须要 ROOT 后安装到系统 CA 里</td>
+</tr>
+
+<tr>
+<td>macOS</td>
+<td><code>nami install mad ca.txthinking</code>, <code>sudo mad install --ca ~/.nami/bin/ca.pem</code></td>
+</tr>
+
+<tr>
+<td>Windows</td>
+<td><code>nami install mad ca.txthinking</code>, 管理员: <code>mad install --ca ~/.nami/bin/ca.pem</code></td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>注意有些软件可能不读取系统 CA，可以使用 <code>curl --cacert ~/.nami/bin/ca.pem</code> 调试</p>
+</blockquote>
+<h1><a name="resources" class="anchor" href="#resources" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Resources</h1>
+
+<table>
+<thead>
+<tr>
+<th>CLI</th>
+<th>Link</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><a href="https://github.com/txthinking/nami" rel="nofollow">nami</a></td>
+<td>A clean and tidy decentralized package manager</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/joker" rel="nofollow">joker</a></td>
+<td>Joker can turn process into daemon. Zero-Configuration</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/nico" rel="nofollow">nico</a></td>
+<td>Nico can work with brook wsserver together</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/zhen" rel="nofollow">zhen</a></td>
+<td>zhen - process and cron manager</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/tun2brook" rel="nofollow">tun2brook</a></td>
+<td>Proxy all traffic just one line command</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/mad" rel="nofollow">mad</a></td>
+<td>Generate root CA and derivative certificate for any domains and any IPs</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/hancock" rel="nofollow">hancock</a></td>
+<td>Manage multiple remote servers and execute commands remotely</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/sshexec" rel="nofollow">sshexec</a></td>
+<td>A command-line tool to execute remote command through ssh</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/jb" rel="nofollow">jb</a></td>
+<td>write script in an easier way than bash</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking/bash" rel="nofollow">bash</a></td>
+<td>One-click script 一键脚本</td>
+</tr>
+
+<tr>
+<td><a href="https://archlinux.org/packages/extra/x86_64/brook/" rel="nofollow">pacman</a></td>
+<td><code>pacman -S brook</code></td>
+</tr>
+
+<tr>
+<td><a href="https://formulae.brew.sh/formula/brook" rel="nofollow">brew</a></td>
+<td><code>brew install brook</code></td>
+</tr>
+
+<tr>
+<td><a href="https://hub.docker.com/r/txthinking/brook" rel="nofollow">docker</a></td>
+<td><code>docker run txthinking/brook</code></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>举例</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><a href="https://github.com/txthinking/brook/blob/master/docs/example.md" rel="nofollow">Example</a></td>
+<td><a href="https://github.com/txthinking/brook/blob/master/docs/example-zh.md" rel="nofollow">例子</a></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th>Resources</th>
+<th>Link</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><a href="https://github.com/txthinking/brook/tree/master/protocol" rel="nofollow">Protocol</a></td>
+<td>Brook Protocol</td>
+</tr>
+
+<tr>
+<td><a href="https://www.txthinking.com/talks/" rel="nofollow">Blog</a></td>
+<td>Some articles you should read</td>
+</tr>
+
+<tr>
+<td><a href="https://www.youtube.com/txthinking" rel="nofollow">YouTube</a></td>
+<td>Some videos you should watch</td>
+</tr>
+
+<tr>
+<td><a href="https://t.me/txthinking" rel="nofollow">Telegram</a></td>
+<td>Ask questions here</td>
+</tr>
+
+<tr>
+<td><a href="https://t.me/s/txthinking_news" rel="nofollow">Announce</a></td>
+<td>All news you should care</td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/txthinking" rel="nofollow">GitHub</a></td>
+<td>Other useful repos</td>
+</tr>
+
+<tr>
+<td><a href="https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb" rel="nofollow">Socks5 Configurator</a></td>
+<td>If you prefer CLI brook client</td>
+</tr>
+
+<tr>
+<td><a href="https://paste.brook.app" rel="nofollow">Pastebin</a></td>
+<td>Create importable many brook links</td>
+</tr>
+
+<tr>
+<td><a href="https://www.txthinking.com/deploy.html" rel="nofollow">Brook Deploy</a></td>
+<td>Deploy brook with GUI</td>
+</tr>
+
+<tr>
+<td><a href="https://www.txthinking.com" rel="nofollow">TxThinking</a></td>
+<td>Everything</td>
+</tr>
+</tbody>
+</table>
+<h1><a name="cli-documentation" class="anchor" href="#cli-documentation" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+CLI Documentation</h1>
+<h1><a name="name" class="anchor" href="#name" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+NAME</h1>
+
+<p>Brook - A cross-platform programmable network tool</p>
+<h1><a name="synopsis" class="anchor" href="#synopsis" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+SYNOPSIS</h1>
+
+<p>Brook</p>
+
+<pre><code>brook [全局参数] 子命令 [子命令参数]
 </code></pre>
-<h3><a name="windows" class="anchor" href="#windows" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Windows</h3>
 
-<p>打开 GitBash</p>
+<p><strong>Usage</strong>:</p>
 
-<pre><code>nami install mad ca.txthinking
+<pre><code>Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 </code></pre>
+<h1><a name="global-options" class="anchor" href="#global-options" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+GLOBAL OPTIONS</h1>
 
-<p>然后用管理员打开 GitBash</p>
+<ul>
+<li><p><strong>--clientHKDFInfo</strong>=&#34;&#34;: client HKDF info, most time you don&#39;t need to change this, if changed, all and each brook links in client side must be same, I mean each (default: &#34;brook&#34;)</p></li>
 
-<pre><code>mad install --ca ~/.nami/bin/ca.pem
-</code></pre>
+<li><p><strong>--dialWithDNS</strong>=&#34;&#34;: When a domain name needs to be resolved, use the specified DNS. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required. Note that for client-side commands, this does not affect the client passing the domain address to the server</p></li>
 
-<p>注意 GitBash 或 Firefox 等软件可能不读取系统 CA，安装后可以用系统 Edge 浏览器测试</p>
-<h2><a name="apple-推送问题" class="anchor" href="#apple-%E6%8E%A8%E9%80%81%E9%97%AE%E9%A2%98" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Apple 推送问题</h2>
+<li><p><strong>--dialWithDNSPrefer</strong>=&#34;&#34;: This is used with the dialWithDNS parameter. Prefer A record or AAAA record. Value is A or AAAA</p></li>
 
-<p>要接收推送，Apple Server 只允许 Ethernet, cellular data, Wi-Fi 连接. 所以你需要 Bypass 掉相关域名和 IP. <a href="https://github.com/txthinking/bypass/tree/master/apple" rel="nofollow">参考链接</a></p>
-<h1><a name="diagram-图解" class="anchor" href="#diagram-%E5%9B%BE%E8%A7%A3" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Diagram 图解</h1>
+<li><p><strong>--dialWithIP4</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used</p></li>
 
+<li><p><strong>--dialWithIP6</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used</p></li>
 
+<li><p><strong>--dialWithNIC</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside, both TCP and UDP, it is used to specify the NIC used</p></li>
 
+<li><p><strong>--dialWithSocks5</strong>=&#34;&#34;: When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081</p></li>
 
+<li><p><strong>--dialWithSocks5Password</strong>=&#34;&#34;: If there is</p></li>
+
+<li><p><strong>--dialWithSocks5TCPTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--dialWithSocks5UDPTimeout</strong>=&#34;&#34;: time (s) (default: 60)</p></li>
+
+<li><p><strong>--dialWithSocks5Username</strong>=&#34;&#34;: If there is</p></li>
+
+<li><p><strong>--help, -h</strong>: show help</p></li>
+
+<li><p><strong>--log</strong>=&#34;&#34;: Enable log. A valid value is file path or &#39;console&#39;. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true</p></li>
+
+<li><p><strong>--pprof</strong>=&#34;&#34;: go http pprof listen addr, such as :6060</p></li>
+
+<li><p><strong>--prometheus</strong>=&#34;&#34;: prometheus http listen addr, such as :7070. If it is transmitted on the public network, it is recommended to use it with nico</p></li>
+
+<li><p><strong>--prometheusPath</strong>=&#34;&#34;: prometheus http path, such as /xxx. If it is transmitted on the public network, a hard-to-guess value is recommended</p></li>
+
+<li><p><strong>--serverHKDFInfo</strong>=&#34;&#34;: server HKDF info, most time you don&#39;t need to change this, if changed, all and each brook links in client side must be same, I mean each (default: &#34;brook&#34;)</p></li>
+
+<li><p><strong>--tag</strong>=&#34;&#34;: Tag can be used to the process, will be append into log, such as: &#39;key1:value1&#39;</p></li>
+
+<li><p><strong>--version, -v</strong>: print the version</p></li>
+</ul>
+<h1><a name="commands" class="anchor" href="#commands" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+COMMANDS</h1>
+<h2><a name="server" class="anchor" href="#server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+server</h2>
+
+<p>Run as brook server, both TCP and UDP</p>
+
+<ul>
+<li><p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p></li>
+
+<li><p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p></li>
+
+<li><p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p></li>
+
+<li><p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:9999&#39;</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Server password</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p></li>
+</ul>
+<h2><a name="client" class="anchor" href="#client" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+client</h2>
+
+<p>Run as brook client, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook client &lt;-&gt; $ brook server &lt;-&gt; dst]</p>
+
+<ul>
+<li><p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Brook server password</p></li>
+
+<li><p><strong>--server, -s</strong>=&#34;&#34;: Brook server address, like: 1.2.3.4:9999</p></li>
+
+<li><p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p></li>
+
+<li><p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpovertcp</strong>: UDP over TCP</p></li>
+</ul>
+<h2><a name="wsserver" class="anchor" href="#wsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+wsserver</h2>
+
+<p>Run as brook wsserver, both TCP and UDP, it will start a standard http server and websocket server</p>
+
+<ul>
+<li><p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p></li>
+
+<li><p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p></li>
+
+<li><p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p></li>
+
+<li><p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:80&#39;</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Server password</p></li>
+
+<li><p><strong>--path</strong>=&#34;&#34;: URL path (default: /ws)</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p></li>
+
+<li><p><strong>--xForwardedFor</strong>: Replace the from field in --log, note that this may be forged</p></li>
+</ul>
+<h2><a name="wsclient" class="anchor" href="#wsclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+wsclient</h2>
+
+<p>Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook wsclient &lt;-&gt; $ brook wsserver &lt;-&gt; dst]</p>
+
+<ul>
+<li><p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p></li>
+
+<li><p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Brook wsserver password</p></li>
+
+<li><p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p></li>
+
+<li><p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p></li>
+
+<li><p><strong>--wsserver, -s</strong>=&#34;&#34;: Brook wsserver address, like: ws://1.2.3.4:80, if no path then /ws will be used. Do not omit the port under any circumstances</p></li>
+</ul>
+<h2><a name="wssserver" class="anchor" href="#wssserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+wssserver</h2>
+
+<p>Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server</p>
+
+<ul>
+<li><p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p></li>
+
+<li><p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p></li>
+
+<li><p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p></li>
+
+<li><p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p></li>
+
+<li><p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p></li>
+
+<li><p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Server password</p></li>
+
+<li><p><strong>--path</strong>=&#34;&#34;: URL path (default: /ws)</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p></li>
+</ul>
+<h2><a name="wssclient" class="anchor" href="#wssclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+wssclient</h2>
+
+<p>Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook wssclient &lt;-&gt; $ brook wssserver &lt;-&gt; dst]</p>
+
+<ul>
+<li><p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p></li>
+
+<li><p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem</p></li>
+
+<li><p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p></li>
+
+<li><p><strong>--insecure</strong>: Client do not verify the server&#39;s certificate chain and host name</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Brook wssserver password</p></li>
+
+<li><p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p></li>
+
+<li><p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p></li>
+
+<li><p><strong>--wssserver, -s</strong>=&#34;&#34;: Brook wssserver address, like: wss://google.com:443, if no path then /ws will be used. Do not omit the port under any circumstances</p></li>
+</ul>
+<h2><a name="quicserver" class="anchor" href="#quicserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+quicserver</h2>
+
+<p>Run as brook quicserver, both TCP and UDP</p>
+
+<ul>
+<li><p><strong>--blockCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p></li>
+
+<li><p><strong>--blockCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p></li>
+
+<li><p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--blockGeoIP</strong>=&#34;&#34;: Block IP by Geo country code, such as US</p></li>
+
+<li><p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p></li>
+
+<li><p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p></li>
+
+<li><p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Server password</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p></li>
+</ul>
+<h2><a name="quicclient" class="anchor" href="#quicclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+quicclient</h2>
+
+<p>Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook quicclient &lt;-&gt; $ brook quicserver &lt;-&gt; dst]. (Note that the global dial parameter is ignored now)</p>
+
+<ul>
+<li><p><strong>--address</strong>=&#34;&#34;: Specify address instead of resolving addresses from host, such as 1.2.3.4:443</p></li>
+
+<li><p><strong>--ca</strong>=&#34;&#34;: Specify ca instead of insecure, such as /path/to/ca.pem</p></li>
+
+<li><p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p></li>
+
+<li><p><strong>--insecure</strong>: Client do not verify the server&#39;s certificate chain and host name</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Brook quicserver password</p></li>
+
+<li><p><strong>--quicserver, -s</strong>=&#34;&#34;: Brook quicserver address, like: quic://google.com:443. Do not omit the port under any circumstances</p></li>
+
+<li><p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p></li>
+
+<li><p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p></li>
+</ul>
+<h2><a name="relayoverbrook" class="anchor" href="#relayoverbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+relayoverbrook</h2>
+
+<p>Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src &lt;-&gt; from address &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; to address]</p>
+
+<ul>
+<li><p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p></li>
+
+<li><p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p></li>
+
+<li><p><strong>--from, -f, -l</strong>=&#34;&#34;: Listen address: like &#39;:9999&#39;</p></li>
+
+<li><p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Password</p></li>
+
+<li><p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p></li>
+
+<li><p><strong>--to, -t</strong>=&#34;&#34;: Address which relay to, like: 1.2.3.4:9999</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p></li>
+</ul>
+<h2><a name="dnsserveroverbrook" class="anchor" href="#dnsserveroverbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsserveroverbrook</h2>
+
+<p>Run as dns server over brook, both TCP and UDP, [src &lt;-&gt; $ brook dnserversoverbrook &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dns] or [src &lt;-&gt; $ brook dnsserveroverbrook &lt;-&gt; dnsForBypass]</p>
+
+<ul>
+<li><p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p></li>
+
+<li><p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--bypassDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p></li>
+
+<li><p><strong>--disableA</strong>: Disable A query</p></li>
+
+<li><p><strong>--disableAAAA</strong>: Disable AAAA query</p></li>
+
+<li><p><strong>--dns</strong>=&#34;&#34;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p></li>
+
+<li><p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443" rel="nofollow">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p></li>
+
+<li><p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p></li>
+
+<li><p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:53</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Password</p></li>
+
+<li><p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p></li>
+</ul>
+<h2><a name="tproxy" class="anchor" href="#tproxy" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+tproxy</h2>
+
+<p>Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src &lt;-&gt; $ brook tproxy &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dst]</p>
+
+<ul>
+<li><p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p></li>
+
+<li><p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--bypassCIDR4List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr4.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr4.txt</a></p></li>
+
+<li><p><strong>--bypassCIDR6List</strong>=&#34;&#34;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://txthinking.github.io/bypass/example_cidr6.txt" rel="nofollow">https://txthinking.github.io/bypass/example_cidr6.txt</a></p></li>
+
+<li><p><strong>--bypassDomainList</strong>=&#34;&#34;: One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--bypassGeoIP</strong>=&#34;&#34;: Bypass IP by Geo country code, such as US</p></li>
+
+<li><p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem</p></li>
+
+<li><p><strong>--disableA</strong>: Disable A query</p></li>
+
+<li><p><strong>--disableAAAA</strong>: Disable AAAA query</p></li>
+
+<li><p><strong>--dnsForBypass</strong>=&#34;&#34;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443" rel="nofollow">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p></li>
+
+<li><p><strong>--dnsForDefault</strong>=&#34;&#34;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p></li>
+
+<li><p><strong>--dnsListen</strong>=&#34;&#34;: Start a DNS server, like: &#39;:53&#39;. MUST contain IP, like &#39;192.168.1.1:53&#39;, if you expect your gateway to accept requests from clients to other public DNS servers at the same time</p></li>
+
+<li><p><strong>--doNotRunScripts</strong>: This will not change iptables and others if you want to do by yourself</p></li>
+
+<li><p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p></li>
+
+<li><p><strong>--link</strong>=&#34;&#34;: brook link. This will ignore server, password, udpovertcp, address, insecure, withoutBrookProtocol, ca, tlsfingerprint</p></li>
+
+<li><p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, DO NOT contain IP, just like: &#39;:8888&#39;. No need to operate iptables by default! (default: :8888)</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Password</p></li>
+
+<li><p><strong>--redirectDNS</strong>=&#34;&#34;: It is usually the value of dnsListen. If the client has set custom DNS instead of dnsListen, this parameter can be intercepted and forwarded to dnsListen. Usually you don&#39;t need to set this, only if you want to control it instead of being proxied directly as normal UDP data.</p></li>
+
+<li><p><strong>--server, -s</strong>=&#34;&#34;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p></li>
+
+<li><p><strong>--webListen</strong>=&#34;&#34;: Ignore all other parameters, run web UI, like: &#39;:9999&#39;</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p></li>
+</ul>
+<h2><a name="link" class="anchor" href="#link" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+link</h2>
+
+<p>Generate brook link</p>
+
+<ul>
+<li><p><strong>--address</strong>=&#34;&#34;: When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443</p></li>
+
+<li><p><strong>--ca</strong>=&#34;&#34;: When server is brook wssserver or brook quicserver, specify ca for untrusted cert, such as /path/to/ca.pem</p></li>
+
+<li><p><strong>--clientHKDFInfo</strong>=&#34;&#34;: client HKDF info, most time you don&#39;t need to change this, read brook protocol if you don&#39;t know what this is</p></li>
+
+<li><p><strong>--insecure</strong>: When server is brook wssserver or brook quicserver, client do not verify the server&#39;s certificate chain and host name</p></li>
+
+<li><p><strong>--name</strong>=&#34;&#34;: Give this server a name</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Password</p></li>
+
+<li><p><strong>--server, -s</strong>=&#34;&#34;: Support brook server, brook wsserver, brook wssserver, socks5 server, brook quicserver. Like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://google.com:443/ws, socks5://1.2.3.4:1080, quic://google.com:443</p></li>
+
+<li><p><strong>--serverHKDFInfo</strong>=&#34;&#34;: server HKDF info, most time you don&#39;t need to change this, read brook protocol if you don&#39;t know what this is</p></li>
+
+<li><p><strong>--tlsfingerprint</strong>=&#34;&#34;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p></li>
+
+<li><p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p></li>
+
+<li><p><strong>--username, -u</strong>=&#34;&#34;: Username, when server is socks5 server</p></li>
+
+<li><p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p></li>
+</ul>
+<h2><a name="connect" class="anchor" href="#connect" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+connect</h2>
+
+<p>Run as client and connect to brook link, both TCP and UDP, to start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook connect &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dst]</p>
+
+<ul>
+<li><p><strong>--http</strong>=&#34;&#34;: Where to listen for HTTP proxy connections</p></li>
+
+<li><p><strong>--link, -l</strong>=&#34;&#34;: brook link, you can get it via $ brook link</p></li>
+
+<li><p><strong>--socks5</strong>=&#34;&#34;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p></li>
+
+<li><p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+</ul>
+<h2><a name="relay" class="anchor" href="#relay" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+relay</h2>
+
+<p>Run as standalone relay, both TCP and UDP, this means access [from address] is equal to access [to address], [src &lt;-&gt; from address &lt;-&gt; to address]</p>
+
+<ul>
+<li><p><strong>--from, -f, -l</strong>=&#34;&#34;: Listen address: like &#39;:9999&#39;</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--to, -t</strong>=&#34;&#34;: Address which relay to, like: 1.2.3.4:9999</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+</ul>
+<h2><a name="dnsserver" class="anchor" href="#dnsserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsserver</h2>
+
+<p>Run as standalone dns server</p>
+
+<ul>
+<li><p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--disableA</strong>: Disable A query</p></li>
+
+<li><p><strong>--disableAAAA</strong>: Disable AAAA query</p></li>
+
+<li><p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p></li>
+
+<li><p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:53</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+</ul>
+<h2><a name="dnsclient" class="anchor" href="#dnsclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dnsclient</h2>
+
+<p>Send a dns query</p>
+
+<ul>
+<li><p><strong>--dns, -s</strong>=&#34;&#34;: DNS server, such as 8.8.8.8:53 (default: 8.8.8.8:53)</p></li>
+
+<li><p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p></li>
+
+<li><p><strong>--short</strong>: Short for A/AAAA</p></li>
+
+<li><p><strong>--type, -t</strong>=&#34;&#34;: Type, such as A (default: A)</p></li>
+</ul>
+<h2><a name="dohserver" class="anchor" href="#dohserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dohserver</h2>
+
+<p>Run as standalone doh server</p>
+
+<ul>
+<li><p><strong>--blockDomainList</strong>=&#34;&#34;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--cert</strong>=&#34;&#34;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p></li>
+
+<li><p><strong>--certkey</strong>=&#34;&#34;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p></li>
+
+<li><p><strong>--disableA</strong>: Disable A query</p></li>
+
+<li><p><strong>--disableAAAA</strong>: Disable AAAA query</p></li>
+
+<li><p><strong>--dns</strong>=&#34;&#34;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443" rel="nofollow">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p></li>
+
+<li><p><strong>--domainaddress</strong>=&#34;&#34;: Such as: domain.com:443, if you want to create a https server. If you choose to automatically issue certificates, the domain must have been resolved to the server IP and 80 port also will be used</p></li>
+
+<li><p><strong>--listen</strong>=&#34;&#34;: listen address, if you want to create a http server behind nico</p></li>
+
+<li><p><strong>--path</strong>=&#34;&#34;: URL path (default: /dns-query)</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: time (s) (default: 0)</p></li>
+</ul>
+<h2><a name="dohclient" class="anchor" href="#dohclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dohclient</h2>
+
+<p>Send a dns query</p>
+
+<ul>
+<li><p><strong>--doh, -s</strong>=&#34;&#34;: DOH server, the address is required (default: <a href="https://dns.quad9.net/dns-query?address=9.9.9.9%3A443" rel="nofollow">https://dns.quad9.net/dns-query?address=9.9.9.9%3A443</a>)</p></li>
+
+<li><p><strong>--domain, -d</strong>=&#34;&#34;: Domain</p></li>
+
+<li><p><strong>--short</strong>: Short for A/AAAA</p></li>
+
+<li><p><strong>--type, -t</strong>=&#34;&#34;: Type, such as A (default: A)</p></li>
+</ul>
+<h2><a name="dhcpserver" class="anchor" href="#dhcpserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+dhcpserver</h2>
+
+<p>Run as standalone dhcp server. Note that you need to stop other dhcp servers, if there are.</p>
+
+<ul>
+<li><p><strong>--cache</strong>=&#34;&#34;: Cache file, local absolute file path, default is $HOME/.brook.dhcpserver</p></li>
+
+<li><p><strong>--count</strong>=&#34;&#34;: IP range from the start, which you want to assign to clients (default: 0)</p></li>
+
+<li><p><strong>--dnsserver</strong>=&#34;&#34;: The dns server which you want to assign to clients, such as: 192.168.1.1 or 8.8.8.8</p></li>
+
+<li><p><strong>--gateway</strong>=&#34;&#34;: The router gateway which you want to assign to clients, such as: 192.168.1.1</p></li>
+
+<li><p><strong>--interface</strong>=&#34;&#34;: Select interface on multi interface device. Linux only</p></li>
+
+<li><p><strong>--netmask</strong>=&#34;&#34;: Subnet netmask which you want to assign to clients (default: 255.255.255.0)</p></li>
+
+<li><p><strong>--serverip</strong>=&#34;&#34;: DHCP server IP, the IP of the this machine, you shoud set a static IP to this machine before doing this, such as: 192.168.1.10</p></li>
+
+<li><p><strong>--start</strong>=&#34;&#34;: Start IP which you want to assign to clients, such as: 192.168.1.100</p></li>
+</ul>
+<h2><a name="socks5" class="anchor" href="#socks5" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+socks5</h2>
+
+<p>Run as standalone standard socks5 server, both TCP and UDP</p>
+
+<ul>
+<li><p><strong>--limitUDP</strong>: The server MAY use this information to limit access to the UDP association. This usually causes connection failures in a NAT environment, where most clients are.</p></li>
+
+<li><p><strong>--listen, -l</strong>=&#34;&#34;: Socks5 server listen address, like: :1080 or 1.2.3.4:1080</p></li>
+
+<li><p><strong>--password</strong>=&#34;&#34;: Password, optional</p></li>
+
+<li><p><strong>--socks5ServerIP</strong>=&#34;&#34;: Only if your socks5 server IP is different from listen IP</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: Connection deadline time (s) (default: 0)</p></li>
+
+<li><p><strong>--udpTimeout</strong>=&#34;&#34;: Connection deadline time (s) (default: 0)</p></li>
+
+<li><p><strong>--username</strong>=&#34;&#34;: User name, optional</p></li>
+</ul>
+<h2><a name="socks5tohttp" class="anchor" href="#socks5tohttp" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+socks5tohttp</h2>
+
+<p>Convert socks5 to http proxy, [src &lt;-&gt; listen address(http proxy) &lt;-&gt; socks5 address &lt;-&gt; dst]</p>
+
+<ul>
+<li><p><strong>--listen, -l</strong>=&#34;&#34;: HTTP proxy which will be create: like: 127.0.0.1:8010</p></li>
+
+<li><p><strong>--socks5, -s</strong>=&#34;&#34;: Socks5 server address, like: 127.0.0.1:1080</p></li>
+
+<li><p><strong>--socks5password</strong>=&#34;&#34;: Socks5 password, optional</p></li>
+
+<li><p><strong>--socks5username</strong>=&#34;&#34;: Socks5 username, optional</p></li>
+
+<li><p><strong>--tcpTimeout</strong>=&#34;&#34;: Connection tcp timeout (s) (default: 0)</p></li>
+</ul>
+<h2><a name="pac" class="anchor" href="#pac" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+pac</h2>
+
+<p>Run as PAC server or save PAC to file</p>
+
+<ul>
+<li><p><strong>--bypassDomainList, -b</strong>=&#34;&#34;: One domain per line, suffix match mode. http(s):// or local absolute file path. Like: <a href="https://txthinking.github.io/bypass/example_domain.txt" rel="nofollow">https://txthinking.github.io/bypass/example_domain.txt</a></p></li>
+
+<li><p><strong>--file, -f</strong>=&#34;&#34;: Save PAC to file, this will ignore listen address</p></li>
+
+<li><p><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: 127.0.0.1:1980</p></li>
+
+<li><p><strong>--proxy, -p</strong>=&#34;&#34;: Proxy, like: &#39;SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT&#39; (default: SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT)</p></li>
+</ul>
+<h2><a name="testsocks5" class="anchor" href="#testsocks5" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+testsocks5</h2>
+
+<p>Test UDP and TCP of socks5 server</p>
+
+<ul>
+<li><p><strong>--dns</strong>=&#34;&#34;: DNS server for connecting (default: 8.8.8.8:53)</p></li>
+
+<li><p><strong>--domain</strong>=&#34;&#34;: Domain for query (default: http3.ooo)</p></li>
+
+<li><p><strong>--password, -p</strong>=&#34;&#34;: Socks5 password</p></li>
+
+<li><p><strong>--socks5, -s</strong>=&#34;&#34;: Like: 127.0.0.1:1080</p></li>
+
+<li><p><strong>--username, -u</strong>=&#34;&#34;: Socks5 username</p></li>
+
+<li><p><strong>-a</strong>=&#34;&#34;: The A record of domain (default: 137.184.237.95)</p></li>
+</ul>
+<h2><a name="testbrook" class="anchor" href="#testbrook" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+testbrook</h2>
+
+<p>Test UDP and TCP of brook server/wsserver/wssserver/quicserver. (Note that the global dial parameter is ignored now)</p>
+
+<ul>
+<li><p><strong>--dns</strong>=&#34;&#34;: DNS server for connecting (default: 8.8.8.8:53)</p></li>
+
+<li><p><strong>--domain</strong>=&#34;&#34;: Domain for query (default: http3.ooo)</p></li>
+
+<li><p><strong>--link, -l</strong>=&#34;&#34;: brook link. Get it via $ brook link</p></li>
+
+<li><p><strong>--socks5</strong>=&#34;&#34;: Temporarily listening socks5 (default: 127.0.0.1:11080)</p></li>
+
+<li><p><strong>-a</strong>=&#34;&#34;: The A record of domain (default: 137.184.237.95)</p></li>
+</ul>
+<h2><a name="echoserver" class="anchor" href="#echoserver" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+echoserver</h2>
+
+<p>Echo server, echo UDP and TCP address of routes</p>
+
+<ul>
+<li><strong>--listen, -l</strong>=&#34;&#34;: Listen address, like: &#39;:7777&#39;</li>
+</ul>
+<h2><a name="echoclient" class="anchor" href="#echoclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+echoclient</h2>
+
+<p>Connect to echoserver, echo UDP and TCP address of routes</p>
+
+<ul>
+<li><p><strong>--server, -s</strong>=&#34;&#34;: Echo server address, such as 1.2.3.4:7777</p></li>
+
+<li><p><strong>--times</strong>=&#34;&#34;: Times of interactions (default: 0)</p></li>
+</ul>
+<h2><a name="ipcountry" class="anchor" href="#ipcountry" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+ipcountry</h2>
+
+<p>Get country of IP</p>
+
+<ul>
+<li><strong>--ip</strong>=&#34;&#34;: 1.1.1.1</li>
+</ul>
+<h2><a name="completion" class="anchor" href="#completion" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+completion</h2>
+
+<p>Generate shell completions</p>
+
+<ul>
+<li><strong>--file, -f</strong>=&#34;&#34;: Write to file (default: brook_autocomplete)</li>
+</ul>
+<h2><a name="mdpage" class="anchor" href="#mdpage" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+mdpage</h2>
+
+<p>Generate markdown page</p>
+
+<ul>
+<li><p><strong>--file, -f</strong>=&#34;&#34;: Write to file, default print to stdout</p></li>
+
+<li><p><strong>--help, -h</strong>: show help</p></li>
+</ul>
+<h3><a name="help-h" class="anchor" href="#help-h" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+help, h</h3>
+
+<p>Shows a list of commands or help for one command</p>
+<h2><a name="manpage" class="anchor" href="#manpage" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+manpage</h2>
+
+<p>Generate man.1 page</p>
+
+<ul>
+<li><strong>--file, -f</strong>=&#34;&#34;: Write to file, default print to stdout. You should put to /path/to/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos</li>
+</ul>
+<h2><a name="help-h" class="anchor" href="#help-h" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+help, h</h2>
+
+<p>Shows a list of commands or help for one command</p>
+<h1><a name="diagram" class="anchor" href="#diagram" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+Diagram</h1>
+
+<blockquote>
+<p>Maybe outdated</p>
+</blockquote>
 <h2><a name="overview" class="anchor" href="#overview" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
 overview</h2>
 
@@ -3879,46 +3414,6 @@ gui</h2>
 script</h2>
 
 <p><img src="https://txthinking.github.io/brook/svg/script.svg" alt="script"></p>
-<h1><a name="protocol" class="anchor" href="#protocol" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Protocol</h1>
-
-<p><a href="https://github.com/txthinking/brook/tree/master/protocol" rel="nofollow">https://github.com/txthinking/brook/tree/master/protocol</a></p>
-<h1><a name="blog" class="anchor" href="#blog" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Blog</h1>
-
-<p><a href="https://www.txthinking.com/talks/" rel="nofollow">https://www.txthinking.com/talks/</a></p>
-<h1><a name="youtube" class="anchor" href="#youtube" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-YouTube</h1>
-
-<p><a href="https://www.youtube.com/txthinking" rel="nofollow">https://www.youtube.com/txthinking</a></p>
-<h1><a name="telegram" class="anchor" href="#telegram" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Telegram</h1>
-
-<p><a href="https://t.me/s/txthinking_news" rel="nofollow">https://t.me/s/txthinking_news</a></p>
-<h1><a name="brook-mamanger" class="anchor" href="#brook-mamanger" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-brook-mamanger</h1>
-
-<p><a href="https://github.com/txthinking/brook-manager" rel="nofollow">https://github.com/txthinking/brook-manager</a></p>
-<h1><a name="nico" class="anchor" href="#nico" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-nico</h1>
-
-<p><a href="https://github.com/txthinking/nico" rel="nofollow">https://github.com/txthinking/nico</a></p>
-<h1><a name="brook-deploy" class="anchor" href="#brook-deploy" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Brook Deploy</h1>
-
-<p><a href="https://www.txthinking.com/deploy.html" rel="nofollow">https://www.txthinking.com/deploy.html</a></p>
-<h1><a name="pastebin" class="anchor" href="#pastebin" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-Pastebin</h1>
-
-<p><a href="https://paste.brook.app" rel="nofollow">https://paste.brook.app</a></p>
-<h1><a name="独立脚本例子-standalone-script-example" class="anchor" href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90-standalone-script-example" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-独立脚本例子 | Standalone Script Example</h1>
-
-<p><a href="https://github.com/txthinking/bypass" rel="nofollow">https://github.com/txthinking/bypass</a></p>
-<h1><a name="脚本生成器-brook-script-builder" class="anchor" href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8-brook-script-builder" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
-脚本生成器 | Brook Script Builder</h1>
-
-<p><a href="https://modules.brook.app" rel="nofollow">https://modules.brook.app</a></p>
 
         </div>
     </div>
