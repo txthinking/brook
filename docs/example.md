@@ -2,7 +2,7 @@
 
 List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself
 
-### Run brook server
+## Run brook server
 
 ```
 brook server --listen :9999 --password hello
@@ -25,7 +25,7 @@ or get brook link with `--udpovertcp`
 brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook server'
 ```
 
-### Run brook wsserver
+## Run brook wsserver
 
 ```
 brook wsserver --listen :9999 --password hello
@@ -48,7 +48,7 @@ or get brook link with domain, even if that's not your domain
 brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name 'my brook wsserver'
 ```
 
-### Run brook wssserver: automatically certificate
+## Run brook wssserver: automatically certificate
 
 > Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80
 
@@ -67,7 +67,7 @@ or get brook link
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
 ```
 
-### Run brook wssserver Use a certificate issued by an existing trust authority
+## Run brook wssserver Use a certificate issued by an existing trust authority
 
 > Make sure your domain has been resolved to your server IP successfully
 
@@ -86,7 +86,7 @@ or get brook link
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
 ```
 
-### Run brook wssserver issue untrusted certificates yourself, any domain
+## Run brook wssserver issue untrusted certificates yourself, any domain
 
 Install [mad](https://github.com/txthinking/mad)
 
@@ -124,11 +124,11 @@ or get brook link with `--ca`
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --ca /root/ca.pem
 ```
 
-### withoutBrookProtocol
+## withoutBrookProtocol
 
 Better performance, but data is not strongly encrypted using Brook protocol. So please use certificate encryption, and it is not recommended to use --withoutBrookProtocol and --insecure together
 
-### withoutBrookProtocol automatically certificate
+## withoutBrookProtocol automatically certificate
 
 > Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80
 
@@ -142,7 +142,7 @@ get brook link
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
 ```
 
-### withoutBrookProtocol Use a certificate issued by an existing trust authority
+## withoutBrookProtocol Use a certificate issued by an existing trust authority
 
 > Make sure your domain has been resolved to your server IP successfully
 
@@ -156,7 +156,7 @@ get brook link
 brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --withoutBrookProtocol
 ```
 
-### withoutBrookProtocol issue untrusted certificates yourself, any domain
+## withoutBrookProtocol issue untrusted certificates yourself, any domain
 
 Install [mad](https://github.com/txthinking/mad)
 
@@ -188,7 +188,7 @@ Get brook link
 brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
 ```
 
-### Run brook socks5, A stand-alone standard socks5 server
+## Run brook socks5, A stand-alone standard socks5 server
 
 ```
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
@@ -204,7 +204,7 @@ or get brook link
 brook link --server socks5://1.2.3.4:1080
 ```
 
-### Run brook socks5 with username and password. A stand-alone standard socks5 server
+## Run brook socks5 with username and password. A stand-alone standard socks5 server
 
 ```
 brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
@@ -222,19 +222,19 @@ or get brook link
 brook link --server socks5://1.2.3.4:1080 --username hello --password world
 ```
 
-### brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.
+## brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.
 
 ```
 brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 ```
 
-### brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.
+## brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.
 
 ```
 brook dnsserveroverbrook ... --listen 127.0.0.1:53
 ```
 
-### brook tproxy Transparent Proxy Gateway on official OpenWrt
+## brook tproxy Transparent Proxy Gateway on official OpenWrt
 
 **No need to manipulate iptables!**
 
@@ -251,7 +251,7 @@ brook tproxy --link 'brook://...' --dnsListen :5353
 2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 3. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
 
-### brook tproxy Transparent Proxy Gateway on any Linux (wired)
+## brook tproxy Transparent Proxy Gateway on any Linux (wired)
 
 **No need to manipulate iptables!**
 
@@ -267,7 +267,7 @@ brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
 
 Replace 192.168.1.2 with your Linux IP. You may need to manually configure the computer or mobile gateway and DNS.
 
-### GUI for official OpenWrt
+## GUI for official OpenWrt
 
 **No need to manipulate iptables!**
 
@@ -281,28 +281,28 @@ port 9999, 8888, 5353 will be used. It work with brook server, brook wsserver, b
 6. And OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
 7. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
 
-### brook relay can relay a address to a remote address. It can relay any tcp and udp server
+## brook relay can relay a address to a remote address. It can relay any tcp and udp server
 
 ```
 brook relay --from :9999 --to 1.2.3.4:9999
 ```
 
-### brook socks5tohttp can convert a socks5 to a http proxy
+## brook socks5tohttp can convert a socks5 to a http proxy
 
 ```
 brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
 ```
 
-### brook pac creates pac server
+## brook pac creates pac server
 
 ```
 brook pac --listen 127.0.0.1:8080 --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
 ```
 
-### brook pac creates pac file
+## brook pac creates pac file
 
 ```
 brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
 ```
 
-### There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...
+## There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...
