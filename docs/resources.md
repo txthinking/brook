@@ -1,6 +1,6 @@
 # Resources
 
-| CLI | Link |
+| CLI | Description |
 | --- | --- |
 | [nami](https://github.com/txthinking/nami) | A clean and tidy decentralized package manager |
 | [joker](https://github.com/txthinking/joker) | Joker can turn process into daemon. Zero-Configuration |
@@ -20,7 +20,7 @@
 | --- | --- |
 | [Example](https://github.com/txthinking/brook/blob/master/docs/example.md) | [例子](https://github.com/txthinking/brook/blob/master/docs/example-zh.md) |
 
-| Resources | Link |
+| Resources | Description |
 | --- | --- |
 | [Protocol](https://github.com/txthinking/brook/tree/master/protocol) | Brook Protocol |
 | [Blog](https://www.txthinking.com/talks/) | Some articles you should read |

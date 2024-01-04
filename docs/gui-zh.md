@@ -6,7 +6,7 @@
 -   [Shiliew](https://www.txthinking.com/shiliew.html)
 -   [tun2brook](https://github.com/txthinking/tun2brook)
 
-## Programmable
+## 编程
 
 ```
 Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需要将处理结果赋值到全局变量 out 即可
@@ -42,19 +42,18 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | ------ | ------ | -------- | ---------- |
 | domain | string | 域名     | google.com |
 | type   | string | 查询类型 | A          |
-| appid   | string | App ID. 仅 Mac | com.google.Chrome.helper          |
+| appid   | string | App ID 或路径 | com.google.Chrome.helper          |
 | interface   | string | 网络接口. 仅 Mac | en0          |
 
 `out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略
 
 | Key          | 类型   | 描述                                                                                               | 示例    |
 | ------------ | ------ | -------------------------------------------------------------------------------------------------- | ------- |
-| block        | bool   | 是否 Block, 默认 `false`. 与 GUI Block Domain 是或的关系                                           | false   |
+| block        | bool   | 是否 Block, 默认 `false`                                           | false   |
 | ip           | string | 直接指定 IP，仅当 `type` 为 `A`/`AAAA`有效                                                         | 1.2.3.4 |
-| forcefakedns | bool   | 忽略 GUI Bypass Domain，使用 Fake DNS 来处理，仅当 `type` 为 `A`/`AAAA`有效，默认 `false`          | false   |
 | system       | bool   | 使用 System DNS 来解析，默认 `false`                                                               | false   |
-| bypass       | bool   | 是否 Bypass, 默认 `false`, 如果为 `true` 则使用 Bypass DNS 来解析. 与 GUI Bypass Domain 是或的关系 | false   |
-| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的 brook link | 自定义名字   |
+| bypass       | bool   | 使用 Bypass DNS 来解析，默认 `false` | false   |
+| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的代理服务器 | 自定义名字   |
 
 ### in_address
 
@@ -63,7 +62,7 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | network       | string | 即将发起连接网络，取值 `tcp`/`udp`                                       | tcp            |
 | ipaddress     | string | IP 类型的地址，与 domainaddress 只会存在一个。注意这两个之间没有任何关系 | 1.2.3.4:443    |
 | domainaddress | string | 域名类型的地址，因为 FakeDNS 我们这里才能拿到域名地址                    | google.com:443 |
-| appid   | string | App ID. 仅 Mac | com.google.Chrome.helper          |
+| appid   | string | App ID 或路径 | com.google.Chrome.helper          |
 | interface   | string | 网络接口. 仅 Mac | en0          |
 
 `out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略
@@ -73,7 +72,7 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | block                  | bool   | 是否 Block, 默认 `false`                                                                                                                                                       | false       |
 | ipaddress              | string | IP 类型地址，重写目的地                                                                                                                                                        | 1.2.3.4:443 |
 | ipaddressfrombypassdns | string | 使用 Bypass DNS 获取`A`或`AAAA` IP 并重写目的地, 仅当 `domainaddress` 存在时有效，取值 `A`/`AAAA`                                                                              | A           |
-| bypass                 | bool   | 是否 Bypass, 默认 `false`. 如果为 `true` 并且是 `domainaddress`, 那么必须指定 `ipaddress` 或 `ipaddressfrombypassdns`. 与 GUI Bypass IP 是或的关系 | false       |
+| bypass                 | bool   | 是否 Bypass, 默认 `false`. 如果为 `true` 并且是 `domainaddress`, 那么必须指定 `ipaddress` 或 `ipaddressfrombypassdns` | false       |
 | mitm                   | bool   | 是否进行 MITM, 默认 `false`. 仅当 `network` 为 `tcp` 时有效. 需要安装 CA，看下文介绍                                                                                           | false       |
 | mitmprotocol           | string | 需要明确指定 MITM 协议, 取值 `http`/`https`                                                                                                                                    | https       |
 | mitmcertdomain         | string | MITM 证书域名，默认从`domainaddress`里取。如果是 `ipaddress` 且 `mitm` 为 `true` 且 `mitmprotocol` 为 `https` 那么必须明确指定                                                 | example.com |
@@ -82,7 +81,7 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | mitmclienttimeout      | int    | Timeout for MITM talk to server, second, default 0                                                                                                                             | 0           |
 | mitmserverreadtimeout  | int    | Timeout for MITM read from client, second, default 0                                                                                                                           | 0           |
 | mitmserverwritetimeout | int    | Timeout for MITM write to client, second, default 0                                                                                                                            | 0           |
-| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的 brook link | 自定义名字   |
+| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的代理服务器 | 自定义名字   |
 
 ### in_httprequest
 

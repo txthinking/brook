@@ -42,19 +42,18 @@ Brook GUI will pass different global variables to the script at different times,
 | ------ | ------ | ----------- | ---------- |
 | domain | string | domain name | google.com |
 | type   | string | query type  | A          |
-| appid   | string | App ID. Mac only | com.google.Chrome.helper          |
+| appid   | string | App ID or path | com.google.Chrome.helper          |
 | interface   | string | network interface. Mac only | en0          |
 
 `out`, if it is `error` type will be recorded in the log. Ignored if not of type `map`
 
 | Key          | Type   | Description                                                                                                                   | Example |
 | ------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------- | ------- |
-| block        | bool   | Whether Block, default `false`. It is an OR relationship with GUI Block Domain                                                | false   |
+| block        | bool   | Whether Block, default `false`                                                | false   |
 | ip           | string | Specify IP directly, only valid when `type` is `A`/`AAAA`                                                                     | 1.2.3.4 |
-| forcefakedns | bool   | Ignore GUI Bypass Domain, handle with Fake DNS, only valid when `type` is `A`/`AAAA`, default `false`                         | false   |
-| system       | bool   | Get IP from system DNS, default `false`                                                                                       | false   |
-| bypass       | bool   | whether to Bypass, default `false`, if `true` then use bypass DNS to resolve. It is an OR relationship with GUI Bypass Domain | false   |
-| brooklinkkey | string   | When need to connect the Server，instead, connect to the brook link specified by the key in_brooklinks | custom name   |
+| system       | bool   | Resolve by System DNS, default `false`                                                                                       | false   |
+| bypass       | bool   | Resolve by Bypass DNS, default `false` | false   |
+| brooklinkkey | string   | When need to connect the Server，instead, connect to the Server specified by the key in_brooklinks | custom name   |
 
 ### in_address
 
@@ -63,7 +62,7 @@ Brook GUI will pass different global variables to the script at different times,
 | network       | string | Network type, the value `tcp`/`udp`                                                                                 | tcp            |
 | ipaddress     | string | IP type address. There is only of ipaddress and domainaddress. Note that there is no relationship between these two | 1.2.3.4:443    |
 | domainaddress | string | Domain type address, because of FakeDNS we can get the domain name address here                                     | google.com:443 |
-| appid   | string | App ID. Mac only | com.google.Chrome.helper          |
+| appid   | string | App ID or path | com.google.Chrome.helper          |
 | interface   | string | network interface. Mac only | en0          |
 
 `out`, if it is `error` type will be recorded in the log. Ignored if not of type `map`
@@ -73,7 +72,7 @@ Brook GUI will pass different global variables to the script at different times,
 | block                  | bool   | Whether Block, default `false`                                                                                                                                                                          | false       |
 | ipaddress              | string | IP type address, rewrite destination                                                                                                                                                                    | 1.2.3.4:443 |
 | ipaddressfrombypassdns | string | Use Bypass DNS to obtain `A` or `AAAA` IP and rewrite the destination, only valid when `domainaddress` exists, the value `A`/`AAAA`                                                                     | A           |
-| bypass                 | bool   | Bypass, default `false`. If `true` and `domainaddress`, then `ipaddress` or `ipaddressfrombypassdns` must be specified. It is an OR relationship with GUI Bypass IP | false       |
+| bypass                 | bool   | Bypass, default `false`. If `true` and `domainaddress`, then `ipaddress` or `ipaddressfrombypassdns` must be specified | false       |
 | mitm                   | bool   | Whether to perform MITM, default `false`. Only valid when `network` is `tcp`. Need to install CA, see below                                                                                             | false       |
 | mitmprotocol           | string | MITM protocol needs to be specified explicitly, the value is `http`/`https`                                                                                                                             | https       |
 | mitmcertdomain         | string | The MITM certificate domain name, which is taken from `domainaddress` by default. If `ipaddress` and `mitm` is `true` and `mitmprotocol` is `https` then must be must be specified explicitly           | example.com |
@@ -82,7 +81,7 @@ Brook GUI will pass different global variables to the script at different times,
 | mitmclienttimeout      | int    | Timeout for MITM talk to server, second, default 0                                                                                                                                                      | 0           |
 | mitmserverreadtimeout  | int    | Timeout for MITM read from client, second, default 0                                                                                                                                                    | 0           |
 | mitmserverwritetimeout | int    | Timeout for MITM write to client, second, default 0                                                                                                                                                     | 0           |
-| brooklinkkey | string   | When need to connect the Server，instead, connect to the brook link specified by the key in_brooklinks | custom name   |
+| brooklinkkey | string   | When need to connect the Server，instead, connect to the Server specified by the key in_brooklinks | custom name   |
 
 ### in_httprequest
 

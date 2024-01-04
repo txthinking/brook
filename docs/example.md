@@ -1,8 +1,5 @@
 # Examples
 
-<!--SIDEBAR-->
-<!--G-R3M673HK5V-->
-
 List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself
 
 ### Run brook server
@@ -265,10 +262,10 @@ echo nameserver 8.8.8.8 > /etc/resolv.conf
 ```
 
 ```
-brook tproxy --link 'brook://...' --dnsListen :53
+brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
 ```
 
-You may need to manually configure the computer or mobile gateway and DNS.
+Replace 192.168.1.2 with your Linux IP. You may need to manually configure the computer or mobile gateway and DNS.
 
 ### GUI for official OpenWrt
 
@@ -307,3 +304,5 @@ brook pac --listen 127.0.0.1:8080 --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.
 ```
 brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
 ```
+
+### There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...

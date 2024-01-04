@@ -1,8 +1,8 @@
 # Brook
-A cross-platform programmable network tool. 一个跨平台可编程网络工具
+A cross-platform programmable network tool
 
 # Sponsor
-**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**
+**❤️  [Shiliew - China Optimized Network App](https://www.txthinking.com/shiliew.html)**
 
 Table of Contents
 =================
@@ -27,7 +27,7 @@ Table of Contents
    * [Install CA](#install-ca)
 * [图形客户端文档](#图形客户端文档)
    * [本文适用的软件](#本文适用的软件)
-   * [Programmable](#programmable-1)
+   * [编程](#编程)
       * [传入变量介绍](#传入变量介绍)
       * [in_brooklinks](#in_brooklinks-1)
       * [in_dnsquery](#in_dnsquery-1)
@@ -85,6 +85,50 @@ Table of Contents
    * [tproxy](#tproxy-1)
    * [gui](#gui)
    * [script](#script)
+* [Examples](#examples)
+      * [Run brook server](#run-brook-server)
+      * [Run brook wsserver](#run-brook-wsserver)
+      * [Run brook wssserver: automatically certificate](#run-brook-wssserver-automatically-certificate)
+      * [Run brook wssserver Use a certificate issued by an existing trust authority](#run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority)
+      * [Run brook wssserver issue untrusted certificates yourself, any domain](#run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain)
+      * [withoutBrookProtocol](#withoutbrookprotocol-1)
+      * [withoutBrookProtocol automatically certificate](#withoutbrookprotocol-automatically-certificate)
+      * [withoutBrookProtocol Use a certificate issued by an existing trust authority](#withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority)
+      * [withoutBrookProtocol issue untrusted certificates yourself, any domain](#withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain)
+      * [Run brook socks5, A stand-alone standard socks5 server](#run-brook-socks5-a-stand-alone-standard-socks5-server)
+      * [Run brook socks5 with username and password. A stand-alone standard socks5 server](#run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server)
+      * [brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.](#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver)
+      * [brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.](#brook-dnsserveroverbrook-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver)
+      * [brook tproxy Transparent Proxy Gateway on official OpenWrt](#brook-tproxy-transparent-proxy-gateway-on-official-openwrt)
+      * [brook tproxy Transparent Proxy Gateway on any Linux (wired)](#brook-tproxy-transparent-proxy-gateway-on-any-linux-wired)
+      * [GUI for official OpenWrt](#gui-for-official-openwrt)
+      * [brook relay can relay a address to a remote address. It can relay any tcp and udp server](#brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server)
+      * [brook socks5tohttp can convert a socks5 to a http proxy](#brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy)
+      * [brook pac creates pac server](#brook-pac-creates-pac-server)
+      * [brook pac creates pac file](#brook-pac-creates-pac-file)
+      * [There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...](#there-are-countless-examples-for-more-feature-suggestions-its-best-to-look-at-the-commands-and-parameters-in-the-cli-documentation-one-by-one-and-blog-youtube)
+* [例子](#例子)
+      * [运行 brook server](#运行-brook-server)
+      * [运行 brook wsserver](#运行-brook-wsserver)
+      * [运行 brook wssserver: 自动签发信任证书](#运行-brook-wssserver-自动签发信任证书)
+      * [运行 brook wssserver 使用已有的信任机构签发的证书](#运行-brook-wssserver-使用已有的信任机构签发的证书)
+      * [运行 brook wssserver 自己签发非信任证书, 甚至不是你自己的域名也可以](#运行-brook-wssserver-自己签发非信任证书-甚至不是你自己的域名也可以)
+      * [withoutBrookProtocol](#withoutbrookprotocol-2)
+      * [withoutBrookProtocol 自动签发信任证书](#withoutbrookprotocol-自动签发信任证书)
+      * [withoutBrookProtocol 使用已有的信任机构签发的证书](#withoutbrookprotocol-使用已有的信任机构签发的证书)
+      * [withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以](#withoutbrookprotocol-自己签发非信任证书-甚至不是你自己的域名也可以)
+      * [运行 brook socks5, 一个独立的标准 socks5 server](#运行-brook-socks5-一个独立的标准-socks5-server)
+      * [运行 brook socks5, 一个独立的标准 socks5 server, 指定用户名和密码](#运行-brook-socks5-一个独立的标准-socks5-server-指定用户名和密码)
+      * [brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作](#brook-relayoverbrook-中继任何-tcp-和-udp-server-让其走-brook-协议-它与-brook-server-wsserver-wssserver-一起工作)
+      * [brook dnsserveroverbrook 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作](#brook-dnsserveroverbrook-用来创建一个加密-dns-server-tcp-and-udp-它与-brook-server-wsserver-wssserver-一起工作)
+      * [brook tproxy 透明代理网关在官网原版 OpenWrt](#brook-tproxy-透明代理网关在官网原版-openwrt)
+      * [brook tproxy 透明代理网关在任意 Linux(有线)](#brook-tproxy-透明代理网关在任意-linux有线)
+      * [官网原版 OpenWrt 图形客户端](#官网原版-openwrt-图形客户端)
+      * [brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver](#brook-relay-可以中继任何-tcp-和-udp-server-这是一个独立的功能-它不依赖-brook-server-wsserver-wssserver)
+      * [brook socks5tohttp 将 socks5 proxy 转换为 http proxy](#brook-socks5tohttp-将-socks5-proxy-转换为-http-proxy)
+      * [brook pac 创建一个 pac server](#brook-pac-创建一个-pac-server)
+      * [brook pac 创建一个 pac 文件](#brook-pac-创建一个-pac-文件)
+      * [例子不胜枚举，更多功能建议挨个看 CLI 文档的命令和参数吧，还有博客，YouTube 等...](#例子不胜枚举更多功能建议挨个看-cli-文档的命令和参数吧还有博客youtube-等)
 
 # Brook
 <!--SIDEBAR-->
@@ -166,19 +210,18 @@ Brook GUI will pass different global variables to the script at different times,
 | ------ | ------ | ----------- | ---------- |
 | domain | string | domain name | google.com |
 | type   | string | query type  | A          |
-| appid   | string | App ID. Mac only | com.google.Chrome.helper          |
+| appid   | string | App ID or path | com.google.Chrome.helper          |
 | interface   | string | network interface. Mac only | en0          |
 
 `out`, if it is `error` type will be recorded in the log. Ignored if not of type `map`
 
 | Key          | Type   | Description                                                                                                                   | Example |
 | ------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------- | ------- |
-| block        | bool   | Whether Block, default `false`. It is an OR relationship with GUI Block Domain                                                | false   |
+| block        | bool   | Whether Block, default `false`                                                | false   |
 | ip           | string | Specify IP directly, only valid when `type` is `A`/`AAAA`                                                                     | 1.2.3.4 |
-| forcefakedns | bool   | Ignore GUI Bypass Domain, handle with Fake DNS, only valid when `type` is `A`/`AAAA`, default `false`                         | false   |
-| system       | bool   | Get IP from system DNS, default `false`                                                                                       | false   |
-| bypass       | bool   | whether to Bypass, default `false`, if `true` then use bypass DNS to resolve. It is an OR relationship with GUI Bypass Domain | false   |
-| brooklinkkey | string   | When need to connect the Server，instead, connect to the brook link specified by the key in_brooklinks | custom name   |
+| system       | bool   | Resolve by System DNS, default `false`                                                                                       | false   |
+| bypass       | bool   | Resolve by Bypass DNS, default `false` | false   |
+| brooklinkkey | string   | When need to connect the Server，instead, connect to the Server specified by the key in_brooklinks | custom name   |
 
 ### in_address
 
@@ -187,7 +230,7 @@ Brook GUI will pass different global variables to the script at different times,
 | network       | string | Network type, the value `tcp`/`udp`                                                                                 | tcp            |
 | ipaddress     | string | IP type address. There is only of ipaddress and domainaddress. Note that there is no relationship between these two | 1.2.3.4:443    |
 | domainaddress | string | Domain type address, because of FakeDNS we can get the domain name address here                                     | google.com:443 |
-| appid   | string | App ID. Mac only | com.google.Chrome.helper          |
+| appid   | string | App ID or path | com.google.Chrome.helper          |
 | interface   | string | network interface. Mac only | en0          |
 
 `out`, if it is `error` type will be recorded in the log. Ignored if not of type `map`
@@ -197,7 +240,7 @@ Brook GUI will pass different global variables to the script at different times,
 | block                  | bool   | Whether Block, default `false`                                                                                                                                                                          | false       |
 | ipaddress              | string | IP type address, rewrite destination                                                                                                                                                                    | 1.2.3.4:443 |
 | ipaddressfrombypassdns | string | Use Bypass DNS to obtain `A` or `AAAA` IP and rewrite the destination, only valid when `domainaddress` exists, the value `A`/`AAAA`                                                                     | A           |
-| bypass                 | bool   | Bypass, default `false`. If `true` and `domainaddress`, then `ipaddress` or `ipaddressfrombypassdns` must be specified. It is an OR relationship with GUI Bypass IP | false       |
+| bypass                 | bool   | Bypass, default `false`. If `true` and `domainaddress`, then `ipaddress` or `ipaddressfrombypassdns` must be specified | false       |
 | mitm                   | bool   | Whether to perform MITM, default `false`. Only valid when `network` is `tcp`. Need to install CA, see below                                                                                             | false       |
 | mitmprotocol           | string | MITM protocol needs to be specified explicitly, the value is `http`/`https`                                                                                                                             | https       |
 | mitmcertdomain         | string | The MITM certificate domain name, which is taken from `domainaddress` by default. If `ipaddress` and `mitm` is `true` and `mitmprotocol` is `https` then must be must be specified explicitly           | example.com |
@@ -206,7 +249,7 @@ Brook GUI will pass different global variables to the script at different times,
 | mitmclienttimeout      | int    | Timeout for MITM talk to server, second, default 0                                                                                                                                                      | 0           |
 | mitmserverreadtimeout  | int    | Timeout for MITM read from client, second, default 0                                                                                                                                                    | 0           |
 | mitmserverwritetimeout | int    | Timeout for MITM write to client, second, default 0                                                                                                                                                     | 0           |
-| brooklinkkey | string   | When need to connect the Server，instead, connect to the brook link specified by the key in_brooklinks | custom name   |
+| brooklinkkey | string   | When need to connect the Server，instead, connect to the Server specified by the key in_brooklinks | custom name   |
 
 ### in_httprequest
 
@@ -301,7 +344,7 @@ https://txthinking.github.io/ca/ca.pem
 -   [Shiliew](https://www.txthinking.com/shiliew.html)
 -   [tun2brook](https://github.com/txthinking/tun2brook)
 
-## Programmable
+## 编程
 
 ```
 Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需要将处理结果赋值到全局变量 out 即可
@@ -337,19 +380,18 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | ------ | ------ | -------- | ---------- |
 | domain | string | 域名     | google.com |
 | type   | string | 查询类型 | A          |
-| appid   | string | App ID. 仅 Mac | com.google.Chrome.helper          |
+| appid   | string | App ID 或路径 | com.google.Chrome.helper          |
 | interface   | string | 网络接口. 仅 Mac | en0          |
 
 `out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略
 
 | Key          | 类型   | 描述                                                                                               | 示例    |
 | ------------ | ------ | -------------------------------------------------------------------------------------------------- | ------- |
-| block        | bool   | 是否 Block, 默认 `false`. 与 GUI Block Domain 是或的关系                                           | false   |
+| block        | bool   | 是否 Block, 默认 `false`                                           | false   |
 | ip           | string | 直接指定 IP，仅当 `type` 为 `A`/`AAAA`有效                                                         | 1.2.3.4 |
-| forcefakedns | bool   | 忽略 GUI Bypass Domain，使用 Fake DNS 来处理，仅当 `type` 为 `A`/`AAAA`有效，默认 `false`          | false   |
 | system       | bool   | 使用 System DNS 来解析，默认 `false`                                                               | false   |
-| bypass       | bool   | 是否 Bypass, 默认 `false`, 如果为 `true` 则使用 Bypass DNS 来解析. 与 GUI Bypass Domain 是或的关系 | false   |
-| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的 brook link | 自定义名字   |
+| bypass       | bool   | 使用 Bypass DNS 来解析，默认 `false` | false   |
+| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的代理服务器 | 自定义名字   |
 
 ### in_address
 
@@ -358,7 +400,7 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | network       | string | 即将发起连接网络，取值 `tcp`/`udp`                                       | tcp            |
 | ipaddress     | string | IP 类型的地址，与 domainaddress 只会存在一个。注意这两个之间没有任何关系 | 1.2.3.4:443    |
 | domainaddress | string | 域名类型的地址，因为 FakeDNS 我们这里才能拿到域名地址                    | google.com:443 |
-| appid   | string | App ID. 仅 Mac | com.google.Chrome.helper          |
+| appid   | string | App ID 或路径 | com.google.Chrome.helper          |
 | interface   | string | 网络接口. 仅 Mac | en0          |
 
 `out`, 如果是 `error` 类型会被记录在日志。如果不是 `map` 类型则会被忽略
@@ -368,7 +410,7 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | block                  | bool   | 是否 Block, 默认 `false`                                                                                                                                                       | false       |
 | ipaddress              | string | IP 类型地址，重写目的地                                                                                                                                                        | 1.2.3.4:443 |
 | ipaddressfrombypassdns | string | 使用 Bypass DNS 获取`A`或`AAAA` IP 并重写目的地, 仅当 `domainaddress` 存在时有效，取值 `A`/`AAAA`                                                                              | A           |
-| bypass                 | bool   | 是否 Bypass, 默认 `false`. 如果为 `true` 并且是 `domainaddress`, 那么必须指定 `ipaddress` 或 `ipaddressfrombypassdns`. 与 GUI Bypass IP 是或的关系 | false       |
+| bypass                 | bool   | 是否 Bypass, 默认 `false`. 如果为 `true` 并且是 `domainaddress`, 那么必须指定 `ipaddress` 或 `ipaddressfrombypassdns` | false       |
 | mitm                   | bool   | 是否进行 MITM, 默认 `false`. 仅当 `network` 为 `tcp` 时有效. 需要安装 CA，看下文介绍                                                                                           | false       |
 | mitmprotocol           | string | 需要明确指定 MITM 协议, 取值 `http`/`https`                                                                                                                                    | https       |
 | mitmcertdomain         | string | MITM 证书域名，默认从`domainaddress`里取。如果是 `ipaddress` 且 `mitm` 为 `true` 且 `mitmprotocol` 为 `https` 那么必须明确指定                                                 | example.com |
@@ -377,7 +419,7 @@ Brook GUI 会在不同时机向脚本传入不同的全局变量，脚本只需�
 | mitmclienttimeout      | int    | Timeout for MITM talk to server, second, default 0                                                                                                                             | 0           |
 | mitmserverreadtimeout  | int    | Timeout for MITM read from client, second, default 0                                                                                                                           | 0           |
 | mitmserverwritetimeout | int    | Timeout for MITM write to client, second, default 0                                                                                                                            | 0           |
-| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的 brook link | 自定义名字   |
+| brooklinkkey | string   | 当需要连接代理服务器时，转而连接 通过 in_brooklinks 的 key 指定的代理服务器 | 自定义名字   |
 
 ### in_httprequest
 
@@ -466,7 +508,7 @@ https://txthinking.github.io/ca/ca.pem
 
 # Resources
 
-| CLI | Link |
+| CLI | Description |
 | --- | --- |
 | [nami](https://github.com/txthinking/nami) | A clean and tidy decentralized package manager |
 | [joker](https://github.com/txthinking/joker) | Joker can turn process into daemon. Zero-Configuration |
@@ -486,7 +528,7 @@ https://txthinking.github.io/ca/ca.pem
 | --- | --- |
 | [Example](https://github.com/txthinking/brook/blob/master/docs/example.md) | [例子](https://github.com/txthinking/brook/blob/master/docs/example-zh.md) |
 
-| Resources | Link |
+| Resources | Description |
 | --- | --- |
 | [Protocol](https://github.com/txthinking/brook/tree/master/protocol) | Brook Protocol |
 | [Blog](https://www.txthinking.com/talks/) | Some articles you should read |
@@ -1190,3 +1232,619 @@ Shows a list of commands or help for one command
 
 ![script](https://txthinking.github.io/brook/svg/script.svg)
 
+# Examples
+
+List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself
+
+### Run brook server
+
+```
+brook server --listen :9999 --password hello
+```
+
+then
+
+-   server: `1.2.3.4:9999`
+-   password: `hello`
+
+or get brook link
+
+```
+brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
+```
+
+or get brook link with `--udpovertcp`
+
+```
+brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook server'
+```
+
+### Run brook wsserver
+
+```
+brook wsserver --listen :9999 --password hello
+```
+
+then
+
+-   server: `ws://1.2.3.4:9999`
+-   password: `hello`
+
+or get brook link
+
+```
+brook link --server ws://1.2.3.4:9999 --password hello --name 'my brook wsserver'
+```
+
+or get brook link with domain, even if that's not your domain
+
+```
+brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name 'my brook wsserver'
+```
+
+### Run brook wssserver: automatically certificate
+
+> Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello
+```
+
+then
+
+-   server: `wss://domain.com:443`
+-   password: `hello`
+
+or get brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
+```
+
+### Run brook wssserver Use a certificate issued by an existing trust authority
+
+> Make sure your domain has been resolved to your server IP successfully
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+```
+
+then
+
+-   server: `wss://domain.com:443`
+-   password: `hello`
+
+or get brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
+```
+
+### Run brook wssserver issue untrusted certificates yourself, any domain
+
+Install [mad](https://github.com/txthinking/mad)
+
+```
+nami install mad
+```
+
+Generate root ca
+
+```
+mad ca --ca /root/ca.pem --key /root/cakey.pem
+```
+
+Generate domain cert by root ca
+
+```
+mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
+```
+
+Run brook
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+```
+
+get brook link with `--insecure`
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --insecure
+```
+
+or get brook link with `--ca`
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --ca /root/ca.pem
+```
+
+### withoutBrookProtocol
+
+Better performance, but data is not strongly encrypted using Brook protocol. So please use certificate encryption, and it is not recommended to use --withoutBrookProtocol and --insecure together
+
+### withoutBrookProtocol automatically certificate
+
+> Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookProtocol
+```
+
+get brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
+```
+
+### withoutBrookProtocol Use a certificate issued by an existing trust authority
+
+> Make sure your domain has been resolved to your server IP successfully
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
+```
+
+get brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --withoutBrookProtocol
+```
+
+### withoutBrookProtocol issue untrusted certificates yourself, any domain
+
+Install [mad](https://github.com/txthinking/mad)
+
+```
+nami install mad
+```
+
+Generate root ca
+
+```
+mad ca --ca /root/ca.pem --key /root/cakey.pem
+```
+
+Generate domain cert by root ca
+
+```
+mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
+```
+
+Run brook wssserver
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
+```
+
+Get brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
+```
+
+### Run brook socks5, A stand-alone standard socks5 server
+
+```
+brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
+```
+
+then
+
+-   server: `1.2.3.4:1080`
+
+or get brook link
+
+```
+brook link --server socks5://1.2.3.4:1080
+```
+
+### Run brook socks5 with username and password. A stand-alone standard socks5 server
+
+```
+brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
+```
+
+then
+
+-   server: `1.2.3.4:1080`
+-   username: `hello`
+-   password: `world`
+
+or get brook link
+
+```
+brook link --server socks5://1.2.3.4:1080 --username hello --password world
+```
+
+### brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.
+
+```
+brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
+```
+
+### brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.
+
+```
+brook dnsserveroverbrook ... --listen 127.0.0.1:53
+```
+
+### brook tproxy Transparent Proxy Gateway on official OpenWrt
+
+**No need to manipulate iptables!**
+
+```
+opkg update
+opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables iptables-mod-tproxy iptables-mod-socket ip6tables
+```
+
+```
+brook tproxy --link 'brook://...' --dnsListen :5353
+```
+
+1. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
+2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
+3. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
+
+### brook tproxy Transparent Proxy Gateway on any Linux (wired)
+
+**No need to manipulate iptables!**
+
+```
+systemctl stop systemd-resolved
+systemctl disable systemd-resolved
+echo nameserver 8.8.8.8 > /etc/resolv.conf
+```
+
+```
+brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
+```
+
+Replace 192.168.1.2 with your Linux IP. You may need to manually configure the computer or mobile gateway and DNS.
+
+### GUI for official OpenWrt
+
+**No need to manipulate iptables!**
+
+port 9999, 8888, 5353 will be used. It work with brook server, brook wsserver, brook wssserver and brook quicserver.
+
+1. Download the [ipk](https://github.com/txthinking/brook/releases) file for your router
+2. Upload and install: OpenWrt Web -> System -> Software -> Upload Package...
+3. Refresh page, the Brook menu will appear at the top
+4. OpenWrt Web -> Brook -> type and Connect
+5. And OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
+6. And OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
+7. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
+
+### brook relay can relay a address to a remote address. It can relay any tcp and udp server
+
+```
+brook relay --from :9999 --to 1.2.3.4:9999
+```
+
+### brook socks5tohttp can convert a socks5 to a http proxy
+
+```
+brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
+```
+
+### brook pac creates pac server
+
+```
+brook pac --listen 127.0.0.1:8080 --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
+```
+
+### brook pac creates pac file
+
+```
+brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
+```
+
+### There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...
+# 例子
+
+下面列举一些常用场景命令的例子, 注意自己替换示例中的 IP，端口，密码，域名，证书路径等参数
+
+### 运行 brook server
+
+```
+brook server --listen :9999 --password hello
+```
+
+然后
+
+-   server: `1.2.3.4:9999`
+-   password: `hello`
+
+或 获取 brook link
+
+```
+brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
+```
+
+或 获取 brook link 让 udp 走 tcp `--udpovertcp`
+
+```
+brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook server'
+```
+
+### 运行 brook wsserver
+
+```
+brook wsserver --listen :9999 --password hello
+```
+
+然后
+
+-   server: `ws://1.2.3.4:9999`
+-   password: `hello`
+
+或 获取 brook link
+
+```
+brook link --server ws://1.2.3.4:9999 --password hello --name 'my brook wsserver'
+```
+
+或 获取 brook link 指定个域名, 甚至不是你自己的域名也可以
+
+```
+brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name 'my brook wsserver'
+```
+
+### 运行 brook wssserver: 自动签发信任证书
+
+> 注意：确保你的域名已成功解析到你服务器的 IP, 自动签发证书需要额外监听 80 端口
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello
+```
+
+然后
+
+-   server: `wss://domain.com:443`
+-   password: `hello`
+
+或 获取 brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
+```
+
+### 运行 brook wssserver 使用已有的信任机构签发的证书
+
+> 注意：确保你的域名已成功解析到你服务器的 IP
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+```
+
+然后
+
+-   server: `wss://domain.com:443`
+-   password: `hello`
+
+或 获取 brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
+```
+
+### 运行 brook wssserver 自己签发非信任证书, 甚至不是你自己的域名也可以
+
+安装 [mad](https://github.com/txthinking/mad)
+
+```
+nami install mad
+```
+
+使用 mad 生成根证书
+
+```
+mad ca --ca /root/ca.pem --key /root/cakey.pem
+```
+
+使用 mad 由根证书派发 domain.com 证书
+
+```
+mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
+```
+
+运行 brook
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
+```
+
+获取 brook link 使用 `--insecure`
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --insecure
+```
+
+或 获取 brook link 使用 `--ca`
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --ca /root/ca.pem
+```
+
+### withoutBrookProtocol
+
+性能更好，但数据不使用 Brook 协议进行强加密。所以请使用证书加密，并且不建议--withoutBrookProtocol 和--insecure 一起使用
+
+### withoutBrookProtocol 自动签发信任证书
+
+> 注意：确保你的域名已成功解析到你服务器的 IP, 自动签发证书需要额外监听 80 端口
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookProtocol
+```
+
+获取 brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
+```
+
+### withoutBrookProtocol 使用已有的信任机构签发的证书
+
+> 注意：确保你的域名已成功解析到你服务器的 IP
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
+```
+
+获取 brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --withoutBrookProtocol
+```
+
+### withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以
+
+安装 [mad](https://github.com/txthinking/mad)
+
+```
+nami install mad
+```
+
+使用 mad 生成根证书
+
+```
+mad ca --ca /root/ca.pem --key /root/cakey.pem
+```
+
+使用 mad 由根证书派发 domain.com 证书
+
+```
+mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
+```
+
+运行 brook wssserver
+
+```
+brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
+```
+
+获取 brook link
+
+```
+brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
+```
+
+### 运行 brook socks5, 一个独立的标准 socks5 server
+
+```
+brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
+```
+
+然后
+
+-   server: `1.2.3.4:1080`
+
+或 获取 brook link
+
+```
+brook link --server socks5://1.2.3.4:1080
+```
+
+### 运行 brook socks5, 一个独立的标准 socks5 server, 指定用户名和密码
+
+```
+brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
+```
+
+然后
+
+-   server: `1.2.3.4:1080`
+-   username: `hello`
+-   password: `world`
+
+或 获取 brook link
+
+```
+brook link --server socks5://1.2.3.4:1080 --username hello --password world
+```
+
+### brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作
+
+```
+brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
+```
+
+### brook dnsserveroverbrook 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作
+
+```
+brook dnsserveroverbrook ... --listen 127.0.0.1:53
+```
+
+### brook tproxy 透明代理网关在官网原版 OpenWrt
+
+**无需操作 iptables！**
+
+```
+opkg update
+opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables iptables
+```
+
+```
+brook tproxy --link 'brook://...' --dnsListen :5353
+```
+
+1. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
+2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
+3. 默認, OpenWrt 將會下發 router 的 IP 的為電腦或手機的網關和 DNS
+
+### brook tproxy 透明代理网关在任意 Linux(有线)
+
+**无需操作 iptables！**
+
+```
+systemctl stop systemd-resolved
+systemctl disable systemd-resolved
+echo nameserver 8.8.8.8 > /etc/resolv.conf
+```
+
+```
+brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
+```
+
+替换 192.168.1.2 为你的 Linux 的IP. 配置其他机器的网关和 DNS 为这台机器的 IP 即可
+
+### 官网原版 OpenWrt 图形客户端
+
+**无需操作 iptables！**
+
+**端口 9999, 8888, 5353 将会被使用**. 它与 brook server, brook wsserver, brook wssserver, brook quicserver 一起工作.
+
+1. 下載適合你系統的[ipk](https://github.com/txthinking/brook/releases)文件
+2. 上傳並安裝: OpenWrt Web -> System -> Software -> Upload Package...
+3. 刷新頁面, 頂部菜單會出現 Brook 按鈕
+4. OpenWrt Web -> Brook -> 輸入後點擊 Connect
+5. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
+6. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
+7. 默認, OpenWrt 將會下發 router 的 IP 為電腦或手機的網關和 DNS
+
+### brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver
+
+```
+brook relay --from :9999 --to 1.2.3.4:9999
+```
+
+### brook socks5tohttp 将 socks5 proxy 转换为 http proxy
+
+```
+brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
+```
+
+### brook pac 创建一个 pac server
+
+```
+brook pac --listen 127.0.0.1:8080 --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
+```
+
+### brook pac 创建一个 pac 文件
+
+```
+brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
+```
+
+### 例子不胜枚举，更多功能建议挨个看 CLI 文档的命令和参数吧，还有博客，YouTube 等...

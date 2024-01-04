@@ -25,7 +25,7 @@
     - `KEY`: HKDF_SHA256(Password, Nonce, Info)
         - `Password`: User-defined password
         - `Nonce`: 12 bytes
-        - `Info`: [0x62, 0x72, 0x6f, 0x6f, 0x6b]
+        - `Info`: [0x62, 0x72, 0x6f, 0x6f, 0x6b]. Note that this can be overwrite by `brook link --clientHKDFInfo` and `brook link --serverHKDFInfo`
 - **`HKDF`**: Defined in RFC 5869
 - **`SHA256`**: Defined in FIPS 180-4
 - **`AES`**: Defined in U.S. Federal Information Processing Standards Publication 197

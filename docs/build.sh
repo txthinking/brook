@@ -21,14 +21,16 @@ cd ../../docs
 jb '$1`brook mdpage`.split("\n").filter(v=>!v.startsWith("[")).join("\n").replace("```\n```", "```\nbrook [全局参数] 子命令 [子命令参数]\n```").split("\n").forEach(v=> echo(v.startsWith("**") && !v.startsWith("**Usage") ? "- "+v : v))' >> ../readme.md
 
 cat diagram.md >> ../readme.md
+cat example.md >> ../readme.md
+cat example-zh.md >> ../readme.md
 
 markdown ../readme.md ./index.html
 
 echo '# Brook' > _.md
-echo 'A cross-platform programmable network tool. 一个跨平台可编程网络工具' >> _.md
+echo 'A cross-platform programmable network tool' >> _.md
 echo '' >> _.md
 echo '# Sponsor' >> _.md
-echo '**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**' >> _.md
+echo '**❤️  [Shiliew - China Optimized Network App](https://www.txthinking.com/shiliew.html)**' >> _.md
 mdtoc ../readme.md >> _.md
 cat ../readme.md >> _.md
 mv _.md ../readme.md

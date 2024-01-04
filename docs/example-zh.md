@@ -1,8 +1,5 @@
 # 例子
 
-<!--SIDEBAR-->
-<!--G-R3M673HK5V-->
-
 下面列举一些常用场景命令的例子, 注意自己替换示例中的 IP，端口，密码，域名，证书路径等参数
 
 ### 运行 brook server
@@ -265,10 +262,10 @@ echo nameserver 8.8.8.8 > /etc/resolv.conf
 ```
 
 ```
-brook tproxy --link 'brook://...' --dnsListen :53
+brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
 ```
 
-> 配置其他机器的网关和 DNS 为这台机器的 IP 即可
+替换 192.168.1.2 为你的 Linux 的IP. 配置其他机器的网关和 DNS 为这台机器的 IP 即可
 
 ### 官网原版 OpenWrt 图形客户端
 
@@ -307,3 +304,5 @@ brook pac --listen 127.0.0.1:8080 --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.
 ```
 brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
 ```
+
+### 例子不胜枚举，更多功能建议挨个看 CLI 文档的命令和参数吧，还有博客，YouTube 等...

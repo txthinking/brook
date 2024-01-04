@@ -18,6 +18,8 @@ brook://KIND?QUERY
     -   `password`: password
     -   `udpovertcp`: `true` [Optional]
     -   `name`: such as `my server` [Optional]
+    -   `clientHKDFInfo`: Do not set this parameter unless you understand the protocol and know what you are doing [Optional]
+    -   `serverHKDFInfo`: Do not set this parameter unless you understand the protocol and know what you are doing [Optional]
 
 Example
 
@@ -34,7 +36,8 @@ brook://server?password=hello&server=1.2.3.4%3A9999
     -   `name`: such as `my wsserver` [Optional]
     -   `address`: such as `1.2.3.4:9999` [Optional]
     -   `withoutBrookProtocol`: `true` [Optional]
-    -   Any other custom key
+    -   `clientHKDFInfo`: Do not set this parameter unless you understand the protocol and know what you are doing [Optional]
+    -   `serverHKDFInfo`: Do not set this parameter unless you understand the protocol and know what you are doing [Optional]
 
 Example
 
@@ -55,6 +58,8 @@ brook://wsserver?password=hello&wsserver=ws%3A%2F%2F1.2.3.4%3A9999%2Fws
     -   `withoutBrookProtocol`: `true` [Optional]
     -   `ca`: CA content [Optional]
     -   `tlsfingerprint`: `chrome` [Optional]
+    -   `clientHKDFInfo`: Do not set this parameter unless you understand the protocol and know what you are doing [Optional]
+    -   `serverHKDFInfo`: Do not set this parameter unless you understand the protocol and know what you are doing [Optional]
 
 Example
 
@@ -90,6 +95,8 @@ brook://socks5?password=world&socks5=socks5%3A%2F%2F1.2.3.4%3A9999&username=hell
     -   `insecure`: `true` [Optional]
     -   `withoutBrookProtocol`: `true` [Optional]
     -   `ca`: CA content [Optional]
+    -   `clientHKDFInfo`: Do not set this parameter unless you understand the protocol and know what you are doing [Optional]
+    -   `serverHKDFInfo`: Do not set this parameter unless you understand the protocol and know what you are doing [Optional]
 
 Example
 
