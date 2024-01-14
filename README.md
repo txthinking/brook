@@ -99,9 +99,10 @@ Table of Contents
    * [Run brook socks5 with username and password. A stand-alone standard socks5 server](#run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server)
    * [brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.](#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver)
    * [brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.](#brook-dnsserveroverbrook-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver)
-   * [brook tproxy Transparent Proxy Gateway on official OpenWrt](#brook-tproxy-transparent-proxy-gateway-on-official-openwrt)
-   * [brook tproxy Transparent Proxy Gateway on any Linux (wired)](#brook-tproxy-transparent-proxy-gateway-on-any-linux-wired)
-   * [GUI for official OpenWrt](#gui-for-official-openwrt)
+   * [Brook OpenWRT Router: Perfectly supports IPv4/IPv6/TCP/UDP. Native IPv6](#brook-openwrt-router-perfectly-supports-ipv4ipv6tcpudp-native-ipv6)
+   * [Turn macOS into a Gateway with Brook](#turn-macos-into-a-gateway-with-brook)
+   * [Turn Windows into a Gateway with Brook](#turn-windows-into-a-gateway-with-brook)
+   * [Turn Linux into a Gateway with Brook](#turn-linux-into-a-gateway-with-brook)
    * [brook relay can relay a address to a remote address. It can relay any tcp and udp server](#brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server)
    * [brook socks5tohttp can convert a socks5 to a http proxy](#brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy)
    * [brook pac creates pac server](#brook-pac-creates-pac-server)
@@ -121,9 +122,10 @@ Table of Contents
    * [运行 brook socks5, 一个独立的标准 socks5 server, 指定用户名和密码](#运行-brook-socks5-一个独立的标准-socks5-server-指定用户名和密码)
    * [brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作](#brook-relayoverbrook-中继任何-tcp-和-udp-server-让其走-brook-协议-它与-brook-server-wsserver-wssserver-一起工作)
    * [brook dnsserveroverbrook 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作](#brook-dnsserveroverbrook-用来创建一个加密-dns-server-tcp-and-udp-它与-brook-server-wsserver-wssserver-一起工作)
-   * [brook tproxy 透明代理网关在官网原版 OpenWrt](#brook-tproxy-透明代理网关在官网原版-openwrt)
-   * [brook tproxy 透明代理网关在任意 Linux(有线)](#brook-tproxy-透明代理网关在任意-linux有线)
-   * [官网原版 OpenWrt 图形客户端](#官网原版-openwrt-图形客户端)
+   * [Brook OpenWRT 路由器，完美支持 IPv4/IPv6/TCP/UDP，Native IPv6](#brook-openwrt-路由器完美支持-ipv4ipv6tcpudpnative-ipv6)
+   * [使用 Brook 把 macOS 变成网关](#使用-brook-把-macos-变成网关)
+   * [使用 Brook 把 Windows 变成网关](#使用-brook-把-windows-变成网关)
+   * [使用 Brook 把 Linux 变成网关](#使用-brook-把-linux-变成网关)
    * [brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver](#brook-relay-可以中继任何-tcp-和-udp-server-这是一个独立的功能-它不依赖-brook-server-wsserver-wssserver)
    * [brook socks5tohttp 将 socks5 proxy 转换为 http proxy](#brook-socks5tohttp-将-socks5-proxy-转换为-http-proxy)
    * [brook pac 创建一个 pac server](#brook-pac-创建一个-pac-server)
@@ -157,9 +159,9 @@ brook server -l :9999 -p hello
 
 | iOS | Android      | Mac    |Windows      |Linux        |OpenWrt      |
 | --- | --- | --- | --- | --- | --- |
-| [![](https://brook.app/images/appstore.png)](https://apps.apple.com/us/app/brook-network-tool/id1216002642) | [![](https://brook.app/images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk) | [![](https://brook.app/images/mac.png)](https://apps.apple.com/us/app/brook-network-tool/id1216002642) | [![Windows](https://brook.app/images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.exe) | [![](https://brook.app/images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin) | [![OpenWrt](https://brook.app/images/openwrt.png)](https://github.com/txthinking/brook/releases) |
-
-> OpenWrt: After installation, you need to refresh the page to see the menu
+| [![](https://brook.app/images/appstore.png)](https://apps.apple.com/us/app/brook-network-tool/id1216002642) | [![](https://brook.app/images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk) | [![](https://brook.app/images/mac.png)](https://apps.apple.com/us/app/brook-network-tool/id1216002642) | [![Windows](https://brook.app/images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.msix) | [![](https://brook.app/images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.app) | [![OpenWrt](https://brook.app/images/openwrt.png)](https://github.com/txthinking/brook/releases) |
+| / | / | [App Mode](https://www.txthinking.com/talks/articles/macos-app-mode-en.article) | [How](https://www.txthinking.com/talks/articles/msix-brook-en.article) | [How](https://www.txthinking.com/talks/articles/linux-app-brook-en.article) | [How](https://www.txthinking.com/talks/articles/brook-openwrt-en.article) |
+| / | / | [App 模式](https://www.txthinking.com/talks/articles/macos-app-mode.article) | [如何](https://www.txthinking.com/talks/articles/msix-brook.article) | [如何](https://www.txthinking.com/talks/articles/linux-app-brook.article) | [如何](https://www.txthinking.com/talks/articles/brook-openwrt.article) |
 
 ## CLI Client
 
@@ -519,7 +521,7 @@ https://txthinking.github.io/ca/ca.pem
 | [hancock](https://github.com/txthinking/hancock) | Manage multiple remote servers and execute commands remotely |
 | [sshexec](https://github.com/txthinking/sshexec) | A command-line tool to execute remote command through ssh |
 | [jb](https://github.com/txthinking/jb) | write script in an easier way than bash |
-| [bash](https://github.com/txthinking/bash) | One-click script 一键脚本 |
+| [bash](https://github.com/txthinking/bash) | Many one-click scripts |
 | [pacman](https://archlinux.org/packages/extra/x86_64/brook/) | `pacman -S brook` |
 | [brew](https://formulae.brew.sh/formula/brook) | `brew install brook` |
 | [docker](https://hub.docker.com/r/txthinking/brook) | `docker run txthinking/brook` | 
@@ -537,7 +539,6 @@ https://txthinking.github.io/ca/ca.pem
 | [Announce](https://t.me/s/txthinking_news) | All news you should care |
 | [GitHub](https://github.com/txthinking) | Other useful repos |
 | [Socks5 Configurator](https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb) | If you prefer CLI brook client | 
-| [Pastebin](https://paste.brook.app) | Create importable many brook links |
 | [Brook Deploy](https://www.txthinking.com/deploy.html) | Deploy brook with GUI |
 | [TxThinking](https://www.txthinking.com) | Everything |
 
@@ -875,7 +876,7 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 ## tproxy
 
-Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]
+Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]. OpenWRT: https://www.txthinking.com/talks/articles/brook-openwrt-en.article
 
 - **--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
 
@@ -922,8 +923,6 @@ Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linu
 - **--udpTimeout**="": time (s) (default: 0)
 
 - **--udpovertcp**: When server is brook server, UDP over TCP
-
-- **--webListen**="": Ignore all other parameters, run web UI, like: ':9999'
 
 - **--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
 
@@ -1468,52 +1467,21 @@ brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 brook dnsserveroverbrook ... --listen 127.0.0.1:53
 ```
 
-## brook tproxy Transparent Proxy Gateway on official OpenWrt
+## Brook OpenWRT Router: Perfectly supports IPv4/IPv6/TCP/UDP. Native IPv6
 
-**No need to manipulate iptables!**
+https://www.txthinking.com/talks/articles/brook-openwrt-en.article
 
-```
-opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables iptables-mod-tproxy iptables-mod-socket ip6tables
-```
+## Turn macOS into a Gateway with Brook
 
-```
-brook tproxy --link 'brook://...' --dnsListen :5353
-```
+https://www.txthinking.com/talks/articles/brook-macos-gateway-en.article
 
-1. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
-2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-3. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
+## Turn Windows into a Gateway with Brook
 
-## brook tproxy Transparent Proxy Gateway on any Linux (wired)
+https://www.txthinking.com/talks/articles/brook-windows-gateway-en.article
 
-**No need to manipulate iptables!**
+## Turn Linux into a Gateway with Brook
 
-```
-systemctl stop systemd-resolved
-systemctl disable systemd-resolved
-echo nameserver 8.8.8.8 > /etc/resolv.conf
-```
-
-```
-brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
-```
-
-Replace 192.168.1.2 with your Linux IP. You may need to manually configure the computer or mobile gateway and DNS.
-
-## GUI for official OpenWrt
-
-**No need to manipulate iptables!**
-
-port 9999, 8888, 5353 will be used. It work with brook server, brook wsserver, brook wssserver and brook quicserver.
-
-1. Download the [ipk](https://github.com/txthinking/brook/releases) file for your router
-2. Upload and install: OpenWrt Web -> System -> Software -> Upload Package...
-3. Refresh page, the Brook menu will appear at the top
-4. OpenWrt Web -> Brook -> type and Connect
-5. And OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
-6. And OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-7. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
+https://www.txthinking.com/talks/articles/brook-linux-gateway-en.article
 
 ## brook relay can relay a address to a remote address. It can relay any tcp and udp server
 
@@ -1776,52 +1744,21 @@ brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 brook dnsserveroverbrook ... --listen 127.0.0.1:53
 ```
 
-## brook tproxy 透明代理网关在官网原版 OpenWrt
+## Brook OpenWRT 路由器，完美支持 IPv4/IPv6/TCP/UDP，Native IPv6
 
-**无需操作 iptables！**
+https://www.txthinking.com/talks/articles/brook-openwrt.article
 
-```
-opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables iptables
-```
+## 使用 Brook 把 macOS 变成网关
 
-```
-brook tproxy --link 'brook://...' --dnsListen :5353
-```
+https://www.txthinking.com/talks/articles/brook-macos-gateway.article
 
-1. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
-2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-3. 默認, OpenWrt 將會下發 router 的 IP 的為電腦或手機的網關和 DNS
+## 使用 Brook 把 Windows 变成网关
 
-## brook tproxy 透明代理网关在任意 Linux(有线)
+https://www.txthinking.com/talks/articles/brook-windows-gateway.article
 
-**无需操作 iptables！**
+## 使用 Brook 把 Linux 变成网关
 
-```
-systemctl stop systemd-resolved
-systemctl disable systemd-resolved
-echo nameserver 8.8.8.8 > /etc/resolv.conf
-```
-
-```
-brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
-```
-
-替换 192.168.1.2 为你的 Linux 的IP. 配置其他机器的网关和 DNS 为这台机器的 IP 即可
-
-## 官网原版 OpenWrt 图形客户端
-
-**无需操作 iptables！**
-
-**端口 9999, 8888, 5353 将会被使用**. 它与 brook server, brook wsserver, brook wssserver, brook quicserver 一起工作.
-
-1. 下載適合你系統的[ipk](https://github.com/txthinking/brook/releases)文件
-2. 上傳並安裝: OpenWrt Web -> System -> Software -> Upload Package...
-3. 刷新頁面, 頂部菜單會出現 Brook 按鈕
-4. OpenWrt Web -> Brook -> 輸入後點擊 Connect
-5. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
-6. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-7. 默認, OpenWrt 將會下發 router 的 IP 為電腦或手機的網關和 DNS
+https://www.txthinking.com/talks/articles/brook-linux-gateway.article
 
 ## brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver
 

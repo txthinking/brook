@@ -234,52 +234,21 @@ brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 brook dnsserveroverbrook ... --listen 127.0.0.1:53
 ```
 
-## brook tproxy Transparent Proxy Gateway on official OpenWrt
+## Brook OpenWRT Router: Perfectly supports IPv4/IPv6/TCP/UDP. Native IPv6
 
-**No need to manipulate iptables!**
+https://www.txthinking.com/talks/articles/brook-openwrt-en.article
 
-```
-opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables iptables-mod-tproxy iptables-mod-socket ip6tables
-```
+## Turn macOS into a Gateway with Brook
 
-```
-brook tproxy --link 'brook://...' --dnsListen :5353
-```
+https://www.txthinking.com/talks/articles/brook-macos-gateway-en.article
 
-1. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
-2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-3. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
+## Turn Windows into a Gateway with Brook
 
-## brook tproxy Transparent Proxy Gateway on any Linux (wired)
+https://www.txthinking.com/talks/articles/brook-windows-gateway-en.article
 
-**No need to manipulate iptables!**
+## Turn Linux into a Gateway with Brook
 
-```
-systemctl stop systemd-resolved
-systemctl disable systemd-resolved
-echo nameserver 8.8.8.8 > /etc/resolv.conf
-```
-
-```
-brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
-```
-
-Replace 192.168.1.2 with your Linux IP. You may need to manually configure the computer or mobile gateway and DNS.
-
-## GUI for official OpenWrt
-
-**No need to manipulate iptables!**
-
-port 9999, 8888, 5353 will be used. It work with brook server, brook wsserver, brook wssserver and brook quicserver.
-
-1. Download the [ipk](https://github.com/txthinking/brook/releases) file for your router
-2. Upload and install: OpenWrt Web -> System -> Software -> Upload Package...
-3. Refresh page, the Brook menu will appear at the top
-4. OpenWrt Web -> Brook -> type and Connect
-5. And OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
-6. And OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-7. By default, OpenWrt will automatically issue the IP of the router as gateway and DNS for your computers and mobiles
+https://www.txthinking.com/talks/articles/brook-linux-gateway-en.article
 
 ## brook relay can relay a address to a remote address. It can relay any tcp and udp server
 

@@ -15,11 +15,9 @@
 package main
 
 import (
-	"context"
 	"crypto/x509"
 	"errors"
 	"fmt"
-	"io/fs"
 	"log"
 	"net"
 	"os"
@@ -28,11 +26,9 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"sync"
 	"syscall"
 	"time"
 
-	"net/http"
 	"net/url"
 
 	"github.com/miekg/dns"
@@ -1445,7 +1441,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "tproxy",
-			Usage: "Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]",
+			Usage: "Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]. OpenWRT: https://www.txthinking.com/talks/articles/brook-openwrt-en.article",
 			BashComplete: func(c *cli.Context) {
 				l := c.Command.VisibleFlags()
 				for _, v := range l {
@@ -1459,9 +1455,13 @@ func main() {
 					Usage:   "Listen address, DO NOT contain IP, just like: ':8888'. No need to operate iptables by default!",
 					Value:   ":8888",
 				},
-				&cli.StringFlag{
+				&cli.StringSliceFlag{
 					Name:  "dnsListen",
 					Usage: "Start a DNS server, like: ':53'. MUST contain IP, like '192.168.1.1:53', if you expect your gateway to accept requests from clients to other public DNS servers at the same time",
+				},
+				&cli.StringFlag{
+					Name:  "redirectDNS",
+					Usage: "It is usually the value of dnsListen. If the client has set custom DNS instead of dnsListen, this parameter can be intercepted and forwarded to dnsListen. Usually you don't need to set this, only if you want to control it instead of being proxied directly as normal UDP data.",
 				},
 				&cli.StringFlag{
 					Name:  "dnsForDefault",
@@ -1501,17 +1501,9 @@ func main() {
 					Name:  "bypassGeoIP",
 					Usage: "Bypass IP by Geo country code, such as US",
 				},
-				&cli.StringFlag{
-					Name:  "redirectDNS",
-					Usage: "It is usually the value of dnsListen. If the client has set custom DNS instead of dnsListen, this parameter can be intercepted and forwarded to dnsListen. Usually you don't need to set this, only if you want to control it instead of being proxied directly as normal UDP data.",
-				},
 				&cli.BoolFlag{
 					Name:  "doNotRunScripts",
 					Usage: "This will not change iptables and others if you want to do by yourself",
-				},
-				&cli.StringFlag{
-					Name:  "webListen",
-					Usage: "Ignore all other parameters, run web UI, like: ':9999'",
 				},
 				&cli.StringFlag{
 					Name:    "server",
@@ -1563,198 +1555,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("webListen") != "" {
-					go func() {
-						time.Sleep(3 * time.Second)
-						_ = os.WriteFile("/etc/resolv.conf", []byte("nameserver 8.8.8.8\nnameserver 2001:4860:4860::8888\n"), 0744)
-					}()
-					web, err := fs.Sub(static, "static")
-					if err != nil {
-						return err
-					}
-					var cmd *exec.Cmd
-					lock := &sync.Mutex{}
-					m := http.NewServeMux()
-					m.Handle("/", http.FileServer(http.FS(web)))
-					m.HandleFunc("/hasp", func(w http.ResponseWriter, r *http.Request) {
-						lock.Lock()
-						defer lock.Unlock()
-						_, err := os.Stat("/root/.brook.web.password")
-						if os.IsNotExist(err) {
-							w.Write([]byte("no"))
-							return
-						}
-						w.Write([]byte("yes"))
-					})
-					m.HandleFunc("/setp", func(w http.ResponseWriter, r *http.Request) {
-						lock.Lock()
-						defer lock.Unlock()
-						_, err := os.Stat("/root/.brook.web.password")
-						if !os.IsNotExist(err) {
-							http.Error(w, "file exsits", 500)
-							return
-						}
-						err = os.WriteFile("/root/.brook.web.password", []byte(r.FormValue("p")), 0600)
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						w.WriteHeader(200)
-					})
-					m.HandleFunc("/authp", func(w http.ResponseWriter, r *http.Request) {
-						lock.Lock()
-						defer lock.Unlock()
-						b, err := os.ReadFile("/root/.brook.web.password")
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
-							http.Error(w, "web ui password wrong", 500)
-							return
-						}
-						w.WriteHeader(200)
-					})
-					m.HandleFunc("/httpread", func(w http.ResponseWriter, r *http.Request) {
-						lock.Lock()
-						defer lock.Unlock()
-						b, err := os.ReadFile("/root/.brook.web.password")
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
-							http.Error(w, "web ui password wrong", 500)
-							return
-						}
-						b, err = brook.ReadData(r.FormValue("url"))
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						w.Write(b)
-					})
-					m.HandleFunc("/logread", func(w http.ResponseWriter, r *http.Request) {
-						lock.Lock()
-						defer lock.Unlock()
-						b, err := os.ReadFile("/root/.brook.web.password")
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
-							http.Error(w, "web ui password wrong", 500)
-							return
-						}
-						b, err = os.ReadFile("/root/.brook.log")
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						w.Write(b)
-					})
-					m.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
-						b, err := os.ReadFile("/root/.brook.web.password")
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
-							http.Error(w, "web ui password wrong", 500)
-							return
-						}
-						s, err := os.Executable()
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						lock.Lock()
-						defer lock.Unlock()
-						cmd = exec.Command("/bin/sh", "-c", s+r.FormValue("args"))
-						done := make(chan byte)
-						defer close(done)
-						errch := make(chan error)
-						go func() {
-							out, _ := cmd.CombinedOutput()
-							select {
-							case <-done:
-								log.Println(string(out))
-							default:
-								select {
-								case <-done:
-									log.Println(string(out))
-								case errch <- errors.New(string(out)):
-								}
-							}
-							lock.Lock()
-							cmd = nil
-							lock.Unlock()
-						}()
-						select {
-						case err := <-errch:
-							http.Error(w, err.Error(), 500)
-							return
-						case <-time.After(6 * time.Second):
-							w.Write([]byte("connected"))
-						}
-					})
-					m.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
-						b, err := os.ReadFile("/root/.brook.web.password")
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
-							http.Error(w, "web ui password wrong", 500)
-							return
-						}
-						lock.Lock()
-						defer lock.Unlock()
-						if cmd == nil {
-							w.Write([]byte("disconnected"))
-							return
-						}
-						if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						w.Write([]byte("disconnected"))
-					})
-					m.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-						b, err := os.ReadFile("/root/.brook.web.password")
-						if err != nil {
-							http.Error(w, err.Error(), 500)
-							return
-						}
-						if strings.TrimSpace(string(b)) != strings.TrimSpace(r.FormValue("p")) {
-							http.Error(w, "web ui password wrong", 500)
-							return
-						}
-						lock.Lock()
-						defer lock.Unlock()
-						if cmd == nil {
-							w.Write([]byte("disconnected"))
-							return
-						}
-						w.Write([]byte("connected"))
-					})
-					s := &http.Server{
-						Addr:    c.String("webListen"),
-						Handler: m,
-					}
-					g.Add(&runnergroup.Runner{
-						Start: func() error {
-							return s.ListenAndServe()
-						},
-						Stop: func() error {
-							if cmd != nil {
-								cmd.Process.Signal(syscall.SIGTERM)
-							}
-							return s.Shutdown(context.Background())
-						},
-					})
-					return nil
-				}
 				if c.String("listen") == "" || (c.String("link") == "" && (c.String("server") == "" || c.String("password") == "")) {
 					_ = cli.ShowSubcommandHelp(c)
 					return errors.New("")
@@ -1854,27 +1654,29 @@ func main() {
 						return s.Shutdown()
 					},
 				})
-				if c.String("dnsListen") != "" {
-					h, p, err := net.SplitHostPort(c.String("dnsListen"))
-					if err != nil {
-						return err
+				if len(c.StringSlice("dnsListen")) != 0 {
+					for _, v := range c.StringSlice("dnsListen") {
+						h, p, err := net.SplitHostPort(v)
+						if err != nil {
+							return err
+						}
+						if p == "53" && h == "" {
+							log.Println("Recommend to add IP on --dnsListen when it listen on 53 port, checkout --help")
+						}
+						s, err := brook.NewRelayOverBrook(v, link, c.String("dnsForDefault"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+						if err != nil {
+							return err
+						}
+						s.IsDNS = true
+						g.Add(&runnergroup.Runner{
+							Start: func() error {
+								return s.ListenAndServe()
+							},
+							Stop: func() error {
+								return s.Shutdown()
+							},
+						})
 					}
-					if p == "53" && h == "" {
-						log.Println("Recommend to add IP on --dnsListen when it listen on 53 port, checkout --help")
-					}
-					s, err := brook.NewRelayOverBrook(c.String("dnsListen"), link, c.String("dnsForDefault"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
-					if err != nil {
-						return err
-					}
-					s.IsDNS = true
-					g.Add(&runnergroup.Runner{
-						Start: func() error {
-							return s.ListenAndServe()
-						},
-						Stop: func() error {
-							return s.Shutdown()
-						},
-					})
 				}
 				return nil
 			},

@@ -1,7 +1,0 @@
-Package: brook
-Version: 20230606
-Architecture: all
-Maintainer: cloud <cloud@txthinking.com>
-Homepage: https://github.com/txthinking/brook
-Description: A cross-platform programmable network tool
-Depends: coreutils-nohup, ca-certificates, openssl-util, ca-bundle, iptables, ip6tables, iptables-mod-tproxy, iptables-mod-socket

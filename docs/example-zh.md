@@ -234,52 +234,21 @@ brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
 brook dnsserveroverbrook ... --listen 127.0.0.1:53
 ```
 
-## brook tproxy 透明代理网关在官网原版 OpenWrt
+## Brook OpenWRT 路由器，完美支持 IPv4/IPv6/TCP/UDP，Native IPv6
 
-**无需操作 iptables！**
+https://www.txthinking.com/talks/articles/brook-openwrt.article
 
-```
-opkg update
-opkg install ca-certificates openssl-util ca-bundle coreutils-nohup iptables-mod-tproxy iptables-mod-socket ip6tables iptables
-```
+## 使用 Brook 把 macOS 变成网关
 
-```
-brook tproxy --link 'brook://...' --dnsListen :5353
-```
+https://www.txthinking.com/talks/articles/brook-macos-gateway.article
 
-1. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
-2. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-3. 默認, OpenWrt 將會下發 router 的 IP 的為電腦或手機的網關和 DNS
+## 使用 Brook 把 Windows 变成网关
 
-## brook tproxy 透明代理网关在任意 Linux(有线)
+https://www.txthinking.com/talks/articles/brook-windows-gateway.article
 
-**无需操作 iptables！**
+## 使用 Brook 把 Linux 变成网关
 
-```
-systemctl stop systemd-resolved
-systemctl disable systemd-resolved
-echo nameserver 8.8.8.8 > /etc/resolv.conf
-```
-
-```
-brook tproxy --link 'brook://...' --dnsListen 192.168.1.2:53 --disableAAAA
-```
-
-替换 192.168.1.2 为你的 Linux 的IP. 配置其他机器的网关和 DNS 为这台机器的 IP 即可
-
-## 官网原版 OpenWrt 图形客户端
-
-**无需操作 iptables！**
-
-**端口 9999, 8888, 5353 将会被使用**. 它与 brook server, brook wsserver, brook wssserver, brook quicserver 一起工作.
-
-1. 下載適合你系統的[ipk](https://github.com/txthinking/brook/releases)文件
-2. 上傳並安裝: OpenWrt Web -> System -> Software -> Upload Package...
-3. 刷新頁面, 頂部菜單會出現 Brook 按鈕
-4. OpenWrt Web -> Brook -> 輸入後點擊 Connect
-5. OpenWrt DNS forwardings: OpenWrt Web -> Network -> DHCP and DNS -> General Settings -> DNS forwardings -> 127.0.0.1#5353
-6. OpenWrt Ignore resolve file: OpenWrt Web -> Network -> DHCP and DNS -> Resolv and Hosts Files -> Ignore resolve file
-7. 默認, OpenWrt 將會下發 router 的 IP 為電腦或手機的網關和 DNS
+https://www.txthinking.com/talks/articles/brook-linux-gateway.article
 
 ## brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver
 

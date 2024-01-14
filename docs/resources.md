@@ -11,7 +11,7 @@
 | [hancock](https://github.com/txthinking/hancock) | Manage multiple remote servers and execute commands remotely |
 | [sshexec](https://github.com/txthinking/sshexec) | A command-line tool to execute remote command through ssh |
 | [jb](https://github.com/txthinking/jb) | write script in an easier way than bash |
-| [bash](https://github.com/txthinking/bash) | One-click script 一键脚本 |
+| [bash](https://github.com/txthinking/bash) | Many one-click scripts |
 | [pacman](https://archlinux.org/packages/extra/x86_64/brook/) | `pacman -S brook` |
 | [brew](https://formulae.brew.sh/formula/brook) | `brew install brook` |
 | [docker](https://hub.docker.com/r/txthinking/brook) | `docker run txthinking/brook` | 
@@ -29,7 +29,6 @@
 | [Announce](https://t.me/s/txthinking_news) | All news you should care |
 | [GitHub](https://github.com/txthinking) | Other useful repos |
 | [Socks5 Configurator](https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb) | If you prefer CLI brook client | 
-| [Pastebin](https://paste.brook.app) | Create importable many brook links |
 | [Brook Deploy](https://www.txthinking.com/deploy.html) | Deploy brook with GUI |
 | [TxThinking](https://www.txthinking.com) | Everything |
 

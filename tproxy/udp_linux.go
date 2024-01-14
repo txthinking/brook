@@ -125,25 +125,11 @@ func DialUDP(network string, laddr *net.UDPAddr, raddr *net.UDPAddr) (*net.UDPCo
 	if laddr.IP.To4() == nil {
 		lip := [16]byte{}
 		copy(lip[:], laddr.IP.To16())
-		zoneID, err := strconv.ParseUint(laddr.Zone, 10, 32)
-		if err != nil {
-			i, err := net.InterfaceByName(laddr.Zone)
-			if err != nil {
-				return nil, err
-			}
-			zoneID = uint64(i.Index)
-		}
+		zoneID := 0
 		laddrs = &syscall.SockaddrInet6{Addr: lip, Port: laddr.Port, ZoneId: uint32(zoneID)}
 		rip := [16]byte{}
 		copy(rip[:], raddr.IP.To16())
-		zoneID, err = strconv.ParseUint(raddr.Zone, 10, 32)
-		if err != nil {
-			i, err := net.InterfaceByName(raddr.Zone)
-			if err != nil {
-				return nil, err
-			}
-			zoneID = uint64(i.Index)
-		}
+		zoneID = 0
 		raddrs = &syscall.SockaddrInet6{Addr: rip, Port: raddr.Port, ZoneId: uint32(zoneID)}
 		ai = syscall.AF_INET6
 	}
