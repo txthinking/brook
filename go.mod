@@ -11,7 +11,7 @@ require (
 	github.com/phuslu/iploc v1.0.20231031
 	github.com/prometheus/client_golang v1.17.0
 	github.com/quic-go/quic-go v0.40.1
-	github.com/refraction-networking/utls v1.5.4
+	github.com/refraction-networking/utls v1.6.1
 	github.com/tdewolff/minify v2.3.6+incompatible
 	github.com/txthinking/runnergroup v0.0.0-20230325130830-408dc5853f86
 	github.com/txthinking/socks5 v0.0.0-20230325130024-4230056ae301
@@ -29,7 +29,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
-	github.com/gaukas/godicttls v0.0.4 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/pprof v0.0.0-20210407192527-94a9f03dee38 // indirect
