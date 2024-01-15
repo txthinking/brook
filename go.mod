@@ -18,9 +18,9 @@ require (
 	github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133
 	github.com/urfave/cli/v2 v2.25.7
 	github.com/urfave/negroni v1.0.0
-	golang.org/x/crypto v0.17.0
-	golang.org/x/net v0.18.0
-	golang.org/x/sys v0.15.0
+	golang.org/x/crypto v0.18.0
+	golang.org/x/net v0.20.0
+	golang.org/x/sys v0.16.0
 )
 
 require (
