@@ -20,7 +20,7 @@ require (
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/crypto v0.17.0
 	golang.org/x/net v0.18.0
-	golang.org/x/sys v0.15.0
+	golang.org/x/sys v0.16.0
 )
 
 require (
