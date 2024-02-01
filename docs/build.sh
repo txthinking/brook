@@ -10,7 +10,6 @@ echo '**❤️  [Shiliew - China Optimized Network App](https://www.txthinking.c
 
 cat getting-started.md >> ../readme.md
 cat gui.md >> ../readme.md
-cat gui-zh.md >> ../readme.md
 cat resources.md >> ../readme.md
 
 echo '# CLI Documentation' >> ../readme.md

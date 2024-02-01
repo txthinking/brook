@@ -1637,20 +1637,9 @@ func main() {
 				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
-						if !c.Bool("doNotRunScripts") {
-							s.ClearAutoScripts()
-							if err := s.RunAutoScripts(); err != nil {
-								return err
-							}
-						}
 						return s.ListenAndServe()
 					},
 					Stop: func() error {
-						if !c.Bool("doNotRunScripts") {
-							if err := s.ClearAutoScripts(); err != nil {
-								log.Println(err)
-							}
-						}
 						return s.Shutdown()
 					},
 				})
@@ -2879,7 +2868,6 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 			},
 		},
 	}
-	defer df()
 	if os.Getenv("SOCKS5_DEBUG") != "" {
 		socks5.Debug = true
 	}
@@ -2890,6 +2878,7 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 		return
 	}
 	if len(g.Runners) == 0 {
+		df()
 		return
 	}
 	go func() {

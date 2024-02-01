@@ -18,6 +18,7 @@ import (
 	"errors"
 	"log"
 	"net"
+	"strings"
 	"sync"
 	"time"
 
@@ -155,7 +156,7 @@ func (bk *Block) TouchBrook() {
 		var a net.Addr
 		ip := net.ParseIP(h)
 		if ip == nil {
-			if brook.ListHasDomain(ds, h, bk.Cache) {
+			if brook.ListHasDomain(ds, strings.ToLower(h), bk.Cache) {
 				return nil, errors.New("block " + addr)
 			}
 			a, err = f(network, addr)

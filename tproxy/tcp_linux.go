@@ -17,8 +17,6 @@ package tproxy
 import (
 	"net"
 	"syscall"
-
-	"golang.org/x/sys/unix"
 )
 
 func ListenTCP(network string, laddr *net.TCPAddr) (*net.TCPListener, error) {
@@ -34,14 +32,8 @@ func ListenTCP(network string, laddr *net.TCPAddr) (*net.TCPListener, error) {
 	}
 	defer f.Close()
 	fd := int(f.Fd())
-	if laddr.IP.To4() != nil {
-		if err := syscall.SetsockoptInt(fd, syscall.SOL_IP, syscall.IP_TRANSPARENT, 1); err != nil {
-			return nil, err
-		}
-	} else {
-		if err := syscall.SetsockoptInt(fd, syscall.SOL_IPV6, unix.IPV6_TRANSPARENT, 1); err != nil {
-			return nil, err
-		}
+	if err := syscall.SetsockoptInt(fd, syscall.SOL_IP, syscall.IP_TRANSPARENT, 1); err != nil {
+		return nil, err
 	}
 	tmp, err := net.FileListener(f)
 	if err != nil {

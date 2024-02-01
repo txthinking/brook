@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+//go:build !linux
 // +build !linux
 
 package brook
@@ -30,14 +31,6 @@ var TproxyGate func(conn net.Conn) (net.Conn, error) = func(conn net.Conn) (net.
 
 func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 	return nil, errors.New("Only support Linux")
-}
-
-func (s *Tproxy) RunAutoScripts() error {
-	return nil
-}
-
-func (s *Tproxy) ClearAutoScripts() error {
-	return nil
 }
 
 func (s *Tproxy) ListenAndServe() error {

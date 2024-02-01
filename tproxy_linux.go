@@ -15,15 +15,10 @@
 package brook
 
 import (
-	"bytes"
 	"errors"
-	"log"
 	"net"
 	"os/exec"
-	"runtime"
-	"strings"
 	"sync"
-	"time"
 	"unsafe"
 
 	"github.com/txthinking/brook/limits"
@@ -51,19 +46,10 @@ func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 	if err := limits.Raise(); err != nil {
 		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
-	if runtime.GOOS == "linux" {
-		c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
-		b, err := c.CombinedOutput()
-		if err != nil {
-			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
-		}
-	}
-	if runtime.GOOS == "darwin" {
-		c := exec.Command("sysctl", "-w", "kern.ipc.maxsockbuf=3014656")
-		b, err := c.CombinedOutput()
-		if err != nil {
-			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
-		}
+	c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
+	b, err := c.CombinedOutput()
+	if err != nil {
+		Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
 	}
 	r, err := NewBrookLink(link)
 	if err != nil {
@@ -92,183 +78,6 @@ func NewTproxy(addr, link string, tcpTimeout, udpTimeout int) (*Tproxy, error) {
 		Lock:        &sync.Mutex{},
 	}
 	return t, nil
-}
-
-func (s *Tproxy) RunAutoScripts() error {
-	c := exec.Command("/bin/sh", "-c", "echo 1 > /proc/sys/net/ipv4/ip_forward")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-
-	c = exec.Command("/bin/sh", "-c", "ip route add local 0.0.0.0/0 dev lo table 100")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "ip rule add fwmark 1 lookup 100")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 0.0.0.0/8 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 10.0.0.0/8 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 127.0.0.0/8 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 169.254.0.0/16 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 172.16.0.0/12 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 192.168.0.0/16 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 224.0.0.0/4 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -d 240.0.0.0/4 -j RETURN")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-ip 127.0.0.1 --on-port "+s.Addr[1:])
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1")
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-ip 127.0.0.1 --on-port "+s.Addr[1:])
-	if out, err := c.CombinedOutput(); err != nil {
-		return errors.New(string(out) + err.Error())
-	}
-
-	// 6
-	f := func(b6 []byte) error {
-		c := exec.Command("/bin/sh", "-c", "echo 1 > /proc/sys/net/ipv6/conf/all/forwarding")
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-
-		c = exec.Command("/bin/sh", "-c", "ip -6 route add local ::/0 dev lo table 106")
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-		c = exec.Command("/bin/sh", "-c", "ip -6 rule add fwmark 1 table 106")
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-
-		l := strings.Split(strings.TrimSpace(string(b6)), "\n")
-		for _, v := range l {
-			c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -d "+v+" -j RETURN")
-			if out, err := c.CombinedOutput(); err != nil {
-				return errors.New(string(out) + err.Error())
-			}
-		}
-
-		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1")
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -p tcp -j TPROXY --tproxy-mark 0x1/0x1 --on-ip ::1 --on-port "+s.Addr[1:])
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -p udp -m socket -j MARK --set-mark 1")
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -A PREROUTING -p udp -j TPROXY --tproxy-mark 0x1/0x1 --on-ip ::1 --on-port "+s.Addr[1:])
-		if out, err := c.CombinedOutput(); err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-		return nil
-	}
-	c = exec.Command("/bin/sh", "-c", "ip address | grep -w inet6 | awk '{print $2}'")
-	b6, err := c.CombinedOutput()
-	if err != nil {
-		return errors.New(string(b6) + err.Error())
-	}
-	if err := f(b6); err != nil {
-		return err
-	}
-	check := func() error {
-		s.Lock.Lock()
-		defer s.Lock.Unlock()
-		if s.Exited {
-			return nil
-		}
-		c := exec.Command("/bin/sh", "-c", "ip address | grep -w inet6 | awk '{print $2}'")
-		out, err := c.CombinedOutput()
-		if err != nil {
-			return errors.New(string(out) + err.Error())
-		}
-		if bytes.Compare(out, b6) == 0 {
-			return nil
-		}
-		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -F")
-		c.Run()
-		c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -X")
-		c.Run()
-		c = exec.Command("/bin/sh", "-c", "ip -6 rule del fwmark 1 table 106")
-		c.Run()
-		c = exec.Command("/bin/sh", "-c", "ip -6 route del local ::/0 dev lo table 106")
-		c.Run()
-		if err := f(out); err != nil {
-			return err
-		}
-		b6 = out
-		return nil
-	}
-	go func() {
-		for {
-			time.Sleep(1 * time.Minute)
-			if err := check(); err != nil {
-				log.Println(err)
-			}
-		}
-	}()
-	return nil
-}
-
-func (s *Tproxy) ClearAutoScripts() error {
-	s.Lock.Lock()
-	defer s.Lock.Unlock()
-	s.Exited = true
-	c := exec.Command("/bin/sh", "-c", "iptables -t mangle -F")
-	c.Run()
-	c = exec.Command("/bin/sh", "-c", "iptables -t mangle -X")
-	c.Run()
-	c = exec.Command("/bin/sh", "-c", "ip rule del fwmark 1 lookup 100")
-	c.Run()
-	c = exec.Command("/bin/sh", "-c", "ip route del local 0.0.0.0/0 dev lo table 100")
-	c.Run()
-	c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -F")
-	c.Run()
-	c = exec.Command("/bin/sh", "-c", "ip6tables -t mangle -X")
-	c.Run()
-	c = exec.Command("/bin/sh", "-c", "ip -6 rule del fwmark 1 table 106")
-	c.Run()
-	c = exec.Command("/bin/sh", "-c", "ip -6 route del local ::/0 dev lo table 106")
-	c.Run()
-	return nil
 }
 
 func (s *Tproxy) ListenAndServe() error {

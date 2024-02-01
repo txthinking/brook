@@ -16,10 +16,6 @@
 | [brew](https://formulae.brew.sh/formula/brook) | `brew install brook` |
 | [docker](https://hub.docker.com/r/txthinking/brook) | `docker run txthinking/brook` | 
 
-| Example | 举例 |
-| --- | --- |
-| [Example](https://github.com/txthinking/brook/blob/master/docs/example.md) | [例子](https://github.com/txthinking/brook/blob/master/docs/example-zh.md) |
-
 | Resources | Description |
 | --- | --- |
 | [Protocol](https://github.com/txthinking/brook/tree/master/protocol) | Brook Protocol |
@@ -29,6 +25,9 @@
 | [Announce](https://t.me/s/txthinking_news) | All news you should care |
 | [GitHub](https://github.com/txthinking) | Other useful repos |
 | [Socks5 Configurator](https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb) | If you prefer CLI brook client | 
+| [IPvBar](https://chromewebstore.google.com/detail/ipvbar/nepjlegfiihpkcdhlmaebfdfppckonlj) | See domain, IP and country in browser | 
+| [TxThinking SSH](https://www.txthinking.com/ssh.html) | A SSH Terminal |
 | [Brook Deploy](https://www.txthinking.com/deploy.html) | Deploy brook with GUI |
+| [brook-manager](https://github.com/txthinking/brook-manager) | Brook Manager is a Brook management system for medium to large merchants |
 | [TxThinking](https://www.txthinking.com) | Everything |
 

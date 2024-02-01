@@ -144,11 +144,11 @@ func (p *TheDNS) TouchBrook() {
 			err := soa(addr, m, l1)
 			return err == nil, err
 		}
-		if brook.ListHasDomain(p.BlockDomain, m.Question[0].Name[0:len(m.Question[0].Name)-1], p.Cache) {
+		if brook.ListHasDomain(p.BlockDomain, strings.ToLower(m.Question[0].Name[0:len(m.Question[0].Name)-1]), p.Cache) {
 			err := soa(addr, m, l1)
 			return err == nil, err
 		}
-		if brook.ListHasDomain(p.BypassDomain, m.Question[0].Name[0:len(m.Question[0].Name)-1], p.Cache) {
+		if brook.ListHasDomain(p.BypassDomain, strings.ToLower(m.Question[0].Name[0:len(m.Question[0].Name)-1]), p.Cache) {
 			var m1 *dns.Msg
 			if p.BypassDNSClient != nil {
 				m1, err = p.BypassDNSClient.Exchange(m)
@@ -198,7 +198,7 @@ func (p *TheDNS) TouchBrook() {
 			err := soah(m, w)
 			return err == nil, err
 		}
-		if brook.ListHasDomain(p.BlockDomain, m.Question[0].Name[0:len(m.Question[0].Name)-1], p.Cache) {
+		if brook.ListHasDomain(p.BlockDomain, strings.ToLower(m.Question[0].Name[0:len(m.Question[0].Name)-1]), p.Cache) {
 			err := soah(m, w)
 			return err == nil, err
 		}

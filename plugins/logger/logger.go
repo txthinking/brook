@@ -20,6 +20,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -76,17 +77,17 @@ func (p *Logger) TouchBrook() {
 	}
 	f := brook.ServerGate
 	brook.ServerGate = func(ex brook.Exchanger) (brook.Exchanger, error) {
-		brook.Log(brook.Error{"network": ex.Network(), "from": ex.Src(), "dst": ex.Dst()})
+		brook.Log(brook.Error{"network": ex.Network(), "from": ex.Src(), "dst": strings.ToLower(ex.Dst())})
 		return f(ex)
 	}
 	f1 := brook.ClientGate
 	brook.ClientGate = func(ex brook.Exchanger) (brook.Exchanger, error) {
-		brook.Log(brook.Error{"network": ex.Network(), "from": ex.Src(), "dst": ex.Dst()})
+		brook.Log(brook.Error{"network": ex.Network(), "from": ex.Src(), "dst": strings.ToLower(ex.Dst())})
 		return f1(ex)
 	}
 	f2 := brook.DNSGate
 	brook.DNSGate = func(addr *net.UDPAddr, m *dns.Msg, l1 *net.UDPConn) (bool, error) {
-		brook.Log(brook.Error{"from": addr.String(), "dns": dns.Type(m.Question[0].Qtype).String(), "domain": m.Question[0].Name[0 : len(m.Question[0].Name)-1]})
+		brook.Log(brook.Error{"from": addr.String(), "dns": dns.Type(m.Question[0].Qtype).String(), "domain": strings.ToLower(m.Question[0].Name[0 : len(m.Question[0].Name)-1])})
 		return f2(addr, m, l1)
 	}
 	f4 := brook.DOHGate
@@ -95,7 +96,7 @@ func (p *Logger) TouchBrook() {
 		if r.Header.Get("X-Forwarded-For") != "" {
 			s = r.Header.Get("X-Forwarded-For")
 		}
-		brook.Log(brook.Error{"from": s, "dns": dns.Type(m.Question[0].Qtype).String(), "domain": m.Question[0].Name[0 : len(m.Question[0].Name)-1]})
+		brook.Log(brook.Error{"from": s, "dns": dns.Type(m.Question[0].Qtype).String(), "domain": strings.ToLower(m.Question[0].Name[0 : len(m.Question[0].Name)-1])})
 		return f4(m, w, r)
 	}
 	f3 := brook.DHCPServerGate
