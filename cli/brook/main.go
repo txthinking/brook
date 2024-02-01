@@ -2893,4 +2893,5 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 		os.Exit(1)
 		return
 	}
+	df()
 }
