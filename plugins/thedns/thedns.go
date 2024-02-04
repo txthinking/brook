@@ -33,6 +33,7 @@ type TheDNS struct {
 	DisableA        bool
 	DisableAAAA     bool
 	Cache           *cache.Cache
+	Cache1          *cache.Cache
 	DOHClient       *brook.DOHClient
 }
 
@@ -77,6 +78,7 @@ func NewTheDNS(blockDomainList, bypassDomainList, bypassDNS string, disableA, di
 		DisableA:        disableA,
 		DisableAAAA:     disableAAAA,
 		Cache:           cache.New(cache.NoExpiration, cache.NoExpiration),
+		Cache1:          cache.New(cache.NoExpiration, cache.NoExpiration),
 		DOHClient:       dc,
 	}
 	return b, nil
@@ -148,7 +150,7 @@ func (p *TheDNS) TouchBrook() {
 			err := soa(addr, m, l1)
 			return err == nil, err
 		}
-		if brook.ListHasDomain(p.BypassDomain, strings.ToLower(m.Question[0].Name[0:len(m.Question[0].Name)-1]), p.Cache) {
+		if brook.ListHasDomain(p.BypassDomain, strings.ToLower(m.Question[0].Name[0:len(m.Question[0].Name)-1]), p.Cache1) {
 			var m1 *dns.Msg
 			if p.BypassDNSClient != nil {
 				m1, err = p.BypassDNSClient.Exchange(m)
