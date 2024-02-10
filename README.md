@@ -41,7 +41,6 @@ Table of Contents
    * [quicclient](#quicclient)
    * [relayoverbrook](#relayoverbrook)
    * [dnsserveroverbrook](#dnsserveroverbrook)
-   * [tproxy](#tproxy)
    * [link](#link)
    * [connect](#connect)
    * [relay](#relay)
@@ -63,23 +62,13 @@ Table of Contents
       * [help, h](#help-h)
    * [manpage](#manpage)
    * [help, h](#help-h-1)
-* [Diagram](#diagram)
-   * [overview](#overview)
-   * [withoutBrookProtocol](#withoutbrookprotocol)
-   * [relayoverbrook](#relayoverbrook-1)
-   * [dnsserveroverbrook](#dnsserveroverbrook-1)
-   * [relay](#relay-1)
-   * [dnsserver](#dnsserver-1)
-   * [tproxy](#tproxy-1)
-   * [gui](#gui)
-   * [script](#script)
 * [Examples](#examples)
    * [Run brook server](#run-brook-server)
    * [Run brook wsserver](#run-brook-wsserver)
    * [Run brook wssserver: automatically certificate](#run-brook-wssserver-automatically-certificate)
    * [Run brook wssserver Use a certificate issued by an existing trust authority](#run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority)
    * [Run brook wssserver issue untrusted certificates yourself, any domain](#run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain)
-   * [withoutBrookProtocol](#withoutbrookprotocol-1)
+   * [withoutBrookProtocol](#withoutbrookprotocol)
    * [withoutBrookProtocol automatically certificate](#withoutbrookprotocol-automatically-certificate)
    * [withoutBrookProtocol Use a certificate issued by an existing trust authority](#withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority)
    * [withoutBrookProtocol issue untrusted certificates yourself, any domain](#withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain)
@@ -96,29 +85,16 @@ Table of Contents
    * [brook pac creates pac server](#brook-pac-creates-pac-server)
    * [brook pac creates pac file](#brook-pac-creates-pac-file)
    * [There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...](#there-are-countless-examples-for-more-feature-suggestions-its-best-to-look-at-the-commands-and-parameters-in-the-cli-documentation-one-by-one-and-blog-youtube)
-* [例子](#例子)
-   * [运行 brook server](#运行-brook-server)
-   * [运行 brook wsserver](#运行-brook-wsserver)
-   * [运行 brook wssserver: 自动签发信任证书](#运行-brook-wssserver-自动签发信任证书)
-   * [运行 brook wssserver 使用已有的信任机构签发的证书](#运行-brook-wssserver-使用已有的信任机构签发的证书)
-   * [运行 brook wssserver 自己签发非信任证书, 甚至不是你自己的域名也可以](#运行-brook-wssserver-自己签发非信任证书-甚至不是你自己的域名也可以)
-   * [withoutBrookProtocol](#withoutbrookprotocol-2)
-   * [withoutBrookProtocol 自动签发信任证书](#withoutbrookprotocol-自动签发信任证书)
-   * [withoutBrookProtocol 使用已有的信任机构签发的证书](#withoutbrookprotocol-使用已有的信任机构签发的证书)
-   * [withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以](#withoutbrookprotocol-自己签发非信任证书-甚至不是你自己的域名也可以)
-   * [运行 brook socks5, 一个独立的标准 socks5 server](#运行-brook-socks5-一个独立的标准-socks5-server)
-   * [运行 brook socks5, 一个独立的标准 socks5 server, 指定用户名和密码](#运行-brook-socks5-一个独立的标准-socks5-server-指定用户名和密码)
-   * [brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作](#brook-relayoverbrook-中继任何-tcp-和-udp-server-让其走-brook-协议-它与-brook-server-wsserver-wssserver-一起工作)
-   * [brook dnsserveroverbrook 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作](#brook-dnsserveroverbrook-用来创建一个加密-dns-server-tcp-and-udp-它与-brook-server-wsserver-wssserver-一起工作)
-   * [Brook OpenWRT 路由器，完美支持 IPv4/IPv6/TCP/UDP，Native IPv6](#brook-openwrt-路由器完美支持-ipv4ipv6tcpudpnative-ipv6)
-   * [使用 Brook 把 macOS 变成网关](#使用-brook-把-macos-变成网关)
-   * [使用 Brook 把 Windows 变成网关](#使用-brook-把-windows-变成网关)
-   * [使用 Brook 把 Linux 变成网关](#使用-brook-把-linux-变成网关)
-   * [brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver](#brook-relay-可以中继任何-tcp-和-udp-server-这是一个独立的功能-它不依赖-brook-server-wsserver-wssserver)
-   * [brook socks5tohttp 将 socks5 proxy 转换为 http proxy](#brook-socks5tohttp-将-socks5-proxy-转换为-http-proxy)
-   * [brook pac 创建一个 pac server](#brook-pac-创建一个-pac-server)
-   * [brook pac 创建一个 pac 文件](#brook-pac-创建一个-pac-文件)
-   * [例子不胜枚举，更多功能建议挨个看 CLI 文档的命令和参数吧，还有博客，YouTube 等...](#例子不胜枚举更多功能建议挨个看-cli-文档的命令和参数吧还有博客youtube-等)
+* [Diagram](#diagram)
+   * [overview](#overview)
+   * [withoutBrookProtocol](#withoutbrookprotocol-1)
+   * [relayoverbrook](#relayoverbrook-1)
+   * [dnsserveroverbrook](#dnsserveroverbrook-1)
+   * [relay](#relay-1)
+   * [dnsserver](#dnsserver-1)
+   * [tproxy](#tproxy)
+   * [gui](#gui)
+   * [script](#script)
 
 # Brook
 <!--SIDEBAR-->
@@ -149,7 +125,6 @@ brook server -l :9999 -p hello
 | --- | --- | --- | --- | --- | --- |
 | [![](https://brook.app/images/appstore.png)](https://apps.apple.com/us/app/brook-network-tool/id1216002642) | [![](https://brook.app/images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk) | [![](https://brook.app/images/mac.png)](https://apps.apple.com/us/app/brook-network-tool/id1216002642) | [![Windows](https://brook.app/images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.msix) | [![](https://brook.app/images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin) | [![OpenWrt](https://brook.app/images/openwrt.png)](https://github.com/txthinking/brook/releases) |
 | / | / | [App Mode](https://www.txthinking.com/talks/articles/macos-app-mode-en.article) | [How](https://www.txthinking.com/talks/articles/msix-brook-en.article) | [How](https://www.txthinking.com/talks/articles/linux-app-brook-en.article) | [How](https://www.txthinking.com/talks/articles/brook-openwrt-en.article) |
-| / | / | [App 模式](https://www.txthinking.com/talks/articles/macos-app-mode.article) | [如何](https://www.txthinking.com/talks/articles/msix-brook.article) | [如何](https://www.txthinking.com/talks/articles/linux-app-brook.article) | [如何](https://www.txthinking.com/talks/articles/brook-openwrt.article) |
 
 ## CLI Client
 
@@ -691,58 +666,6 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 - **--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
 
-## tproxy
-
-Run as transparent proxy, a router gateway, both TCP and UDP, only works on Linux, [src <-> $ brook tproxy <-> $ brook server/wsserver/wssserver/quicserver <-> dst]. OpenWRT: https://www.txthinking.com/talks/articles/brook-openwrt-en.article
-
-- **--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
-
-- **--blockDomainList**="": One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
-
-- **--bypassCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
-
-- **--bypassCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
-
-- **--bypassDomainList**="": One domain per line, Suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
-
-- **--bypassGeoIP**="": Bypass IP by Geo country code, such as US
-
-- **--ca**="": When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem
-
-- **--disableA**: Disable A query
-
-- **--disableAAAA**: Disable AAAA query
-
-- **--dnsForBypass**="": DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or https://dns.alidns.com/dns-query?address=223.5.5.5:443, the address is required (default: 223.5.5.5:53)
-
-- **--dnsForDefault**="": DNS server for resolving domains NOT in list (default: 8.8.8.8:53)
-
-- **--dnsListen**="": Start a DNS server, like: ':53'. MUST contain IP, like '192.168.1.1:53', if you expect your gateway to accept requests from clients to other public DNS servers at the same time
-
-- **--doNotRunScripts**: This will not change iptables and others if you want to do by yourself
-
-- **--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
-
-- **--link**="": brook link. This will ignore server, password, udpovertcp, address, insecure, withoutBrookProtocol, ca, tlsfingerprint
-
-- **--listen, -l**="": Listen address, DO NOT contain IP, just like: ':8888'. No need to operate iptables by default! (default: :8888)
-
-- **--password, -p**="": Password
-
-- **--redirectDNS**="": It is usually the value of dnsListen. If the client has set custom DNS instead of dnsListen, this parameter can be intercepted and forwarded to dnsListen. Usually you don't need to set this, only if you want to control it instead of being proxied directly as normal UDP data.
-
-- **--server, -s**="": brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443
-
-- **--tcpTimeout**="": time (s) (default: 0)
-
-- **--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
-
-- **--udpTimeout**="": time (s) (default: 0)
-
-- **--udpovertcp**: When server is brook server, UDP over TCP
-
-- **--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
-
 ## link
 
 Generate brook link
@@ -1008,46 +931,6 @@ Generate man.1 page
 ## help, h
 
 Shows a list of commands or help for one command
-# Diagram
-
-> Maybe outdated
-
-## overview
-
-![overview](https://txthinking.github.io/brook/svg/overview.svg)
-
-## withoutBrookProtocol
-
-![wbp](https://txthinking.github.io/brook/svg/wbp.svg)
-
-## relayoverbrook
-
-![relayoverbrook](https://txthinking.github.io/brook/svg/relayoverbrook.svg)
-
-## dnsserveroverbrook
-
-![dnsserveroverbrook](https://txthinking.github.io/brook/svg/dnsserveroverbrook.svg)
-
-## relay
-
-![relay](https://txthinking.github.io/brook/svg/relay.svg)
-
-## dnsserver
-
-![dnsserver](https://txthinking.github.io/brook/svg/dnsserver.svg)
-
-## tproxy
-
-![tproxy](https://txthinking.github.io/brook/svg/tproxy.svg)
-
-## gui
-
-![gui](https://txthinking.github.io/brook/svg/gui.svg)
-
-## script
-
-![script](https://txthinking.github.io/brook/svg/script.svg)
-
 # Examples
 
 List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself
@@ -1325,280 +1208,43 @@ brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080;
 ```
 
 ## There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...
-# 例子
+# Diagram
 
-下面列举一些常用场景命令的例子, 注意自己替换示例中的 IP，端口，密码，域名，证书路径等参数
+> Maybe outdated
 
-## 运行 brook server
+## overview
 
-```
-brook server --listen :9999 --password hello
-```
-
-然后
-
--   server: `1.2.3.4:9999`
--   password: `hello`
-
-或 获取 brook link
-
-```
-brook link --server 1.2.3.4:9999 --password hello --name 'my brook server'
-```
-
-或 获取 brook link 让 udp 走 tcp `--udpovertcp`
-
-```
-brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name 'my brook server'
-```
-
-## 运行 brook wsserver
-
-```
-brook wsserver --listen :9999 --password hello
-```
-
-然后
-
--   server: `ws://1.2.3.4:9999`
--   password: `hello`
-
-或 获取 brook link
-
-```
-brook link --server ws://1.2.3.4:9999 --password hello --name 'my brook wsserver'
-```
-
-或 获取 brook link 指定个域名, 甚至不是你自己的域名也可以
-
-```
-brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name 'my brook wsserver'
-```
-
-## 运行 brook wssserver: 自动签发信任证书
-
-> 注意：确保你的域名已成功解析到你服务器的 IP, 自动签发证书需要额外监听 80 端口
-
-```
-brook wssserver --domainaddress domain.com:443 --password hello
-```
-
-然后
-
--   server: `wss://domain.com:443`
--   password: `hello`
-
-或 获取 brook link
-
-```
-brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
-```
-
-## 运行 brook wssserver 使用已有的信任机构签发的证书
-
-> 注意：确保你的域名已成功解析到你服务器的 IP
-
-```
-brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
-```
-
-然后
-
--   server: `wss://domain.com:443`
--   password: `hello`
-
-或 获取 brook link
-
-```
-brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver'
-```
-
-## 运行 brook wssserver 自己签发非信任证书, 甚至不是你自己的域名也可以
-
-安装 [mad](https://github.com/txthinking/mad)
-
-```
-nami install mad
-```
-
-使用 mad 生成根证书
-
-```
-mad ca --ca /root/ca.pem --key /root/cakey.pem
-```
-
-使用 mad 由根证书派发 domain.com 证书
-
-```
-mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
-```
-
-运行 brook
-
-```
-brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
-```
-
-获取 brook link 使用 `--insecure`
-
-```
-brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --insecure
-```
-
-或 获取 brook link 使用 `--ca`
-
-```
-brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --address 1.2.3.4:443 --ca /root/ca.pem
-```
+![overview](https://txthinking.github.io/brook/svg/overview.svg)
 
 ## withoutBrookProtocol
 
-性能更好，但数据不使用 Brook 协议进行强加密。所以请使用证书加密，并且不建议--withoutBrookProtocol 和--insecure 一起使用
+![wbp](https://txthinking.github.io/brook/svg/wbp.svg)
 
-## withoutBrookProtocol 自动签发信任证书
+## relayoverbrook
 
-> 注意：确保你的域名已成功解析到你服务器的 IP, 自动签发证书需要额外监听 80 端口
+![relayoverbrook](https://txthinking.github.io/brook/svg/relayoverbrook.svg)
 
-```
-brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookProtocol
-```
+## dnsserveroverbrook
 
-获取 brook link
+![dnsserveroverbrook](https://txthinking.github.io/brook/svg/dnsserveroverbrook.svg)
 
-```
-brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
-```
+## relay
 
-## withoutBrookProtocol 使用已有的信任机构签发的证书
+![relay](https://txthinking.github.io/brook/svg/relay.svg)
 
-> 注意：确保你的域名已成功解析到你服务器的 IP
+## dnsserver
 
-```
-brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
-```
+![dnsserver](https://txthinking.github.io/brook/svg/dnsserver.svg)
 
-获取 brook link
+## tproxy
 
-```
-brook link --server wss://domain.com:443 --password hello --name 'my brook wssserver' --withoutBrookProtocol
-```
+![tproxy](https://txthinking.github.io/brook/svg/tproxy.svg)
 
-## withoutBrookProtocol 自己签发非信任证书, 甚至不是你自己的域名也可以
+## gui
 
-安装 [mad](https://github.com/txthinking/mad)
+![gui](https://txthinking.github.io/brook/svg/gui.svg)
 
-```
-nami install mad
-```
+## script
 
-使用 mad 生成根证书
+![script](https://txthinking.github.io/brook/svg/script.svg)
 
-```
-mad ca --ca /root/ca.pem --key /root/cakey.pem
-```
-
-使用 mad 由根证书派发 domain.com 证书
-
-```
-mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
-```
-
-运行 brook wssserver
-
-```
-brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
-```
-
-获取 brook link
-
-```
-brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
-```
-
-## 运行 brook socks5, 一个独立的标准 socks5 server
-
-```
-brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
-```
-
-然后
-
--   server: `1.2.3.4:1080`
-
-或 获取 brook link
-
-```
-brook link --server socks5://1.2.3.4:1080
-```
-
-## 运行 brook socks5, 一个独立的标准 socks5 server, 指定用户名和密码
-
-```
-brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
-```
-
-然后
-
--   server: `1.2.3.4:1080`
--   username: `hello`
--   password: `world`
-
-或 获取 brook link
-
-```
-brook link --server socks5://1.2.3.4:1080 --username hello --password world
-```
-
-## brook relayoverbrook 中继任何 TCP 和 UDP server, 让其走 brook 协议. 它与 brook server wsserver wssserver 一起工作
-
-```
-brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
-```
-
-## brook dnsserveroverbrook 用来创建一个加密 DNS Server, TCP and UDP, 它与 brook server wsserver wssserver 一起工作
-
-```
-brook dnsserveroverbrook ... --listen 127.0.0.1:53
-```
-
-## Brook OpenWRT 路由器，完美支持 IPv4/IPv6/TCP/UDP，Native IPv6
-
-https://www.txthinking.com/talks/articles/brook-openwrt.article
-
-## 使用 Brook 把 macOS 变成网关
-
-https://www.txthinking.com/talks/articles/brook-macos-gateway.article
-
-## 使用 Brook 把 Windows 变成网关
-
-https://www.txthinking.com/talks/articles/brook-windows-gateway.article
-
-## 使用 Brook 把 Linux 变成网关
-
-https://www.txthinking.com/talks/articles/brook-linux-gateway.article
-
-## brook relay 可以中继任何 TCP 和 UDP server, 这是一个独立的功能, 它不依赖 brook server wsserver wssserver
-
-```
-brook relay --from :9999 --to 1.2.3.4:9999
-```
-
-## brook socks5tohttp 将 socks5 proxy 转换为 http proxy
-
-```
-brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
-```
-
-## brook pac 创建一个 pac server
-
-```
-brook pac --listen 127.0.0.1:8080 --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
-```
-
-## brook pac 创建一个 pac 文件
-
-```
-brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
-```
-
-## 例子不胜枚举，更多功能建议挨个看 CLI 文档的命令和参数吧，还有博客，YouTube 等...

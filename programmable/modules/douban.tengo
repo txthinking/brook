@@ -1,0 +1,25 @@
+// 移除豆瓣 v7.66.0 开屏广告
+// [CA]
+modules = append(modules, {
+    address: func(m) {
+        brook := import("brook")
+        if brook.os != "ios" {
+            return
+        }
+        if m.network == "tcp" && m.domainaddress && m.domainaddress == "api.douban.com:443" {
+            return { ipaddressfrombypassdns: "A", bypass: true, mitm:true, mitmprotocol: "https" }
+        }
+        if m.network == "udp" && m.domainaddress && m.domainaddress == "api.douban.com:443" {
+            return { block:true }
+        }
+    },
+    httprequest: func(request) {
+        text := import("text")
+        if text.has_prefix(request["URL"], "https://api.douban.com/") {
+            if text.contains(request["URL"], "/app_ads") || text.contains(request["URL"], "/common_ads") {
+                return { "StatusCode": 503 }
+            }
+        }
+    }
+})
+

@@ -19,9 +19,8 @@ mv brook ~/.nami/bin/
 cd ../../docs
 jb '$1`brook mdpage`.split("\n").filter(v=>!v.startsWith("[")).join("\n").replace("```\n```", "```\nbrook [全局参数] 子命令 [子命令参数]\n```").split("\n").forEach(v=> echo(v.startsWith("**") && !v.startsWith("**Usage") ? "- "+v : v))' >> ../readme.md
 
-cat diagram.md >> ../readme.md
 cat example.md >> ../readme.md
-cat example-zh.md >> ../readme.md
+cat diagram.md >> ../readme.md
 
 markdown ../readme.md ./index.html
 
