@@ -43,6 +43,12 @@ func (n *NATTable) Get(src, dst string) string {
 	return s
 }
 
+func (n *NATTable) Reset() {
+	n.Lock.Lock()
+	defer n.Lock.Unlock()
+	n.Table = map[string]string{}
+}
+
 var NATDial func(network string, src, dst, addr string) (net.Conn, error) = func(network string, src, dst, addr string) (net.Conn, error) {
 	s := NAT.Get(src, dst)
 	var c net.Conn

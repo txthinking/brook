@@ -1,5 +1,7 @@
 // Block google secure DNS to avoid Fake DNS does not work
+// https://www.txthinking.com/talks/articles/brook-fakedns-en.article
 // 防止 Fake DNS 不生效
+// https://www.txthinking.com/talks/articles/brook-fakedns.article
 modules = append(modules, {
     dnsquery: func(m) {
         if m.domain == "dns.google" {

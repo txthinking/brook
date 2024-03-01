@@ -21,6 +21,7 @@ import (
 	"crypto/sha1"
 	"crypto/tls"
 	"encoding/base64"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"io"
@@ -29,10 +30,11 @@ import (
 
 	utls "github.com/refraction-networking/utls"
 
+	"github.com/txthinking/x"
 	x1 "github.com/txthinking/x"
 )
 
-func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout int, tlsfingerprint utls.ClientHelloID) (net.Conn, error) {
+func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout int, tlsfingerprint utls.ClientHelloID, fragmentMinLength, fragmentMaxLength, fragmentMinDelay, fragmentMaxDelay int64) (net.Conn, error) {
 	var c net.Conn
 	var err error
 	if src == "" || dst == "" {
@@ -51,18 +53,26 @@ func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout in
 		}
 	}
 	if tc != nil {
+		if fragmentMinLength != 0 && fragmentMaxLength != 0 && fragmentMinDelay != 0 && fragmentMaxDelay != 0 {
+			c = &TLSFragmentConn{Conn: c,
+				MinLength: fragmentMinLength,
+				MaxLength: fragmentMaxLength,
+				MinDelay:  fragmentMinDelay,
+				MaxDelay:  fragmentMaxDelay,
+			}
+		}
 		if tlsfingerprint.Client == "" {
 			c1 := tls.Client(c, tc)
+			if err := c1.Handshake(); err != nil {
+				c1.Close()
+				return nil, err
+			}
+			s := host
+			h, _, err := net.SplitHostPort(host)
+			if err == nil {
+				s = h
+			}
 			if !tc.InsecureSkipVerify {
-				if err := c1.Handshake(); err != nil {
-					c1.Close()
-					return nil, err
-				}
-				s := host
-				h, _, err := net.SplitHostPort(host)
-				if err == nil {
-					s = h
-				}
 				if err := c1.VerifyHostname(s); err != nil {
 					c1.Close()
 					return nil, err
@@ -157,4 +167,64 @@ func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout in
 		}
 	}
 	return c, nil
+}
+
+type TLSFragmentConn struct {
+	net.Conn
+	MinLength int64
+	MaxLength int64
+	MinDelay  int64
+	MaxDelay  int64
+	Buf       []byte
+	L         int
+	Finished  bool
+}
+
+func (c *TLSFragmentConn) Write(b []byte) (int, error) {
+	if c.Finished {
+		return c.Conn.Write(b)
+	}
+	b1 := make([]byte, len(c.Buf)+len(b))
+	copy(b1, c.Buf)
+	copy(b1[len(c.Buf):], b)
+	c.Buf = b1
+	if len(c.Buf) < 5 {
+		return len(b), nil
+	}
+	if c.L == 0 {
+		c.L = int(binary.BigEndian.Uint16(c.Buf[3:5]))
+	}
+	if len(c.Buf) < 5+c.L {
+		return len(b), nil
+	}
+	i := 0
+	for {
+		r, err := x.CryptoRandom(c.MinLength, c.MaxLength)
+		if err != nil {
+			return 0, err
+		}
+		l := int(r)
+		if i+l > 5+c.L {
+			l = 5 + c.L - i
+		}
+		if _, err := c.Conn.Write(c.Buf[i : i+l]); err != nil {
+			return 0, err
+		}
+		i += l
+		if i == 5+c.L {
+			break
+		}
+		t, err := x.CryptoRandom(c.MinDelay, c.MaxDelay)
+		if err != nil {
+			return 0, err
+		}
+		time.Sleep(time.Duration(t) * time.Microsecond)
+	}
+	if len(c.Buf) > i {
+		if _, err := c.Conn.Write(c.Buf[i:]); err != nil {
+			return 0, err
+		}
+	}
+	c.Finished = true
+	return len(b), nil
 }

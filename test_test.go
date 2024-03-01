@@ -17,11 +17,9 @@ package brook
 import (
 	"log"
 	"testing"
-
-	utls "github.com/refraction-networking/utls"
 )
 
 func TestTest(t *testing.T) {
-	var ci utls.ClientHelloID
-	log.Println(ci.Client)
+	l, err := CAC("/tmp/a")
+	log.Printf("%#v %v\n", l, err)
 }

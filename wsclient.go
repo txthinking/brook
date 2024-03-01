@@ -91,7 +91,7 @@ func (x *WSClient) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Request
 		if sa == "" {
 			sa = x.ServerHost
 		}
-		rc, err := WebSocketDial("", "", sa, x.ServerHost, x.Path, x.TLSConfig, x.TCPTimeout, x.TLSFingerprint)
+		rc, err := WebSocketDial("", "", sa, x.ServerHost, x.Path, x.TLSConfig, x.TCPTimeout, x.TLSFingerprint, 0, 0, 0, 0)
 		if err != nil {
 			return ErrorReply(r, c, err)
 		}
@@ -151,7 +151,7 @@ func (x *WSClient) UDPHandle(s *socks5.Server, addr *net.UDPAddr, d *socks5.Data
 	if sa == "" {
 		sa = x.ServerHost
 	}
-	rc, err := WebSocketDial(addr.String(), d.Address(), sa, x.ServerHost, x.Path, x.TLSConfig, x.TCPTimeout, x.TLSFingerprint)
+	rc, err := WebSocketDial(addr.String(), d.Address(), sa, x.ServerHost, x.Path, x.TLSConfig, x.TCPTimeout, x.TLSFingerprint, 0, 0, 0, 0)
 	if err != nil {
 		return err
 	}

@@ -85,6 +85,8 @@ github.com/txthinking/socks5 v0.0.0-20230325130024-4230056ae301 h1:d/Wr/Vl/wiJHc
 github.com/txthinking/socks5 v0.0.0-20230325130024-4230056ae301/go.mod h1:ntmMHL/xPq1WLeKiw8p/eRATaae6PiVRNipHFJxI8PM=
 github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133 h1:fUw8+3ruX0uv2gAko4D0v6IpLmSI2soOkGl6YYmiBrM=
 github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133/go.mod h1:WgqbSEmUYSjEV3B1qmee/PpP2NYEz4bL9/+mF1ma+s4=
+github.com/txthinking/x v0.0.0-20231124080419-f3d4547df8ea h1:pD9ben9+HFrcRTaCApFXrn0YzVndrWHw4zSdb+ljeLg=
+github.com/txthinking/x v0.0.0-20231124080419-f3d4547df8ea/go.mod h1:WgqbSEmUYSjEV3B1qmee/PpP2NYEz4bL9/+mF1ma+s4=
 github.com/urfave/cli/v2 v2.25.7 h1:VAzn5oq403l5pHjc4OhD54+XGO9cdKVL/7lDjF+iKUs=
 github.com/urfave/cli/v2 v2.25.7/go.mod h1:8qnjx1vcq5s2/wpsqoZFndg2CE5tNFyrTvS6SinrnYQ=
 github.com/urfave/negroni v1.0.0 h1:kIimOitoypq34K7TG7DUaJ9kq/N4Ofuwi1sjz0KipXc=

@@ -1,5 +1,7 @@
 // Block AAAA if your local or server does not support IPv6. Note that all servers of Shiliew support both IPv4 and IPv6
+// https://www.txthinking.com/talks/articles/brook-ipv6-en.article
 // Block AAAA, 如果你本地或服务器不支持 IPv6. 备注: 所有的 Shiliew server 都支持 IPv4 和 IPv6
+// https://www.txthinking.com/talks/articles/brook-ipv6.article
 modules = append(modules, {
     dnsquery: func(m) {
         if m.type == "AAAA" {

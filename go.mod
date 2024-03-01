@@ -15,7 +15,7 @@ require (
 	github.com/tdewolff/minify v2.3.6+incompatible
 	github.com/txthinking/runnergroup v0.0.0-20230325130830-408dc5853f86
 	github.com/txthinking/socks5 v0.0.0-20230325130024-4230056ae301
-	github.com/txthinking/x v0.0.0-20220929041811-1b4d914e9133
+	github.com/txthinking/x v0.0.0-20231124080419-f3d4547df8ea
 	github.com/urfave/cli/v2 v2.25.7
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/crypto v0.17.0

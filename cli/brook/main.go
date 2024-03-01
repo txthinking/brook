@@ -33,7 +33,6 @@ import (
 
 	"github.com/miekg/dns"
 	"github.com/phuslu/iploc"
-	utls "github.com/refraction-networking/utls"
 	"github.com/txthinking/brook"
 	"github.com/txthinking/brook/plugins/block"
 	"github.com/txthinking/brook/plugins/dialwithdns"
@@ -75,7 +74,7 @@ func main() {
 		},
 		&cli.StringSliceFlag{
 			Name:  "tag",
-			Usage: "Tag can be used to the process, will be append into log, such as: 'key1:value1'",
+			Usage: "Tag can be used to the process, will be append into log or serverLog, such as: 'key1:value1'",
 		},
 		&cli.StringFlag{
 			Name:  "dialWithDNS",
@@ -802,24 +801,8 @@ func main() {
 					Usage:   "Brook wssserver password",
 				},
 				&cli.StringFlag{
-					Name:  "address",
-					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
-				},
-				&cli.BoolFlag{
-					Name:  "insecure",
-					Usage: "Client do not verify the server's certificate chain and host name",
-				},
-				&cli.StringFlag{
-					Name:  "ca",
-					Usage: "When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem",
-				},
-				&cli.StringFlag{
-					Name:  "tlsfingerprint",
-					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
-				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
+					Name:  "link",
+					Usage: "brook link, you can get it via $ brook link. The wssserver and password parameters will be ignored",
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
@@ -846,47 +829,48 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
+				if c.String("wssserver") == "" && c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
+				}
+				var link = ""
+				if c.String("wssserver") != "" {
+					v := url.Values{}
+					v.Set("password", c.String("password"))
+					link = brook.Link("wssserver", c.String("wssserver"), v)
+				}
+				if c.String("link") != "" {
+					link = c.String("link")
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
 					return err
 				}
-				if h == "" && c.String("socks5ServerIP") == "" {
+				if c.String("socks5ServerIP") != "" {
+					h = c.String("socks5ServerIP")
+				}
+				if h == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				var ip string
-				if h != "" {
-					ip = h
-				}
-				if c.String("socks5ServerIP") != "" {
-					ip = c.String("socks5ServerIP")
-				}
-				s, err := brook.NewWSClient(c.String("socks5"), ip, c.String("wssserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
+				kind, _, v, err := brook.ParseLink(link)
 				if err != nil {
 					return err
 				}
-				if c.String("address") != "" {
-					s.ServerAddress = c.String("address")
+				if s := v.Get("clientHKDFInfo"); s != "" {
+					brook.ClientHKDFInfo = []byte(s)
 				}
-				if c.Bool("insecure") {
-					s.TLSConfig.InsecureSkipVerify = true
+				if s := v.Get("serverHKDFInfo"); s != "" {
+					brook.ServerHKDFInfo = []byte(s)
 				}
-				if c.String("ca") != "" {
-					b, err := os.ReadFile(c.String("ca"))
-					if err != nil {
-						return err
-					}
-					roots := x509.NewCertPool()
-					ok := roots.AppendCertsFromPEM(b)
-					if !ok {
-						return errors.New("failed to parse root certificate")
-					}
-					s.TLSConfig.RootCAs = roots
+				if kind == "socks5" {
+					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
 				}
-				if c.String("tlsfingerprint") == "chrome" {
-					s.TLSFingerprint = utls.HelloChrome_Auto
+				s, err := brook.NewBrookLink(link)
+				if err != nil {
+					return err
+				}
+				err = s.PrepareSocks5Server(c.String("socks5"), h, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
 				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -897,7 +881,7 @@ func main() {
 					},
 				})
 				if c.String("http") != "" {
-					h, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(ip, p), "", "", c.Int("tcpTimeout"))
+					h, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(h, p), "", "", c.Int("tcpTimeout"))
 					if err != nil {
 						return err
 					}
@@ -1182,16 +1166,6 @@ func main() {
 			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:    "from",
-					Aliases: []string{"f", "l"},
-					Usage:   "Listen address: like ':9999'",
-				},
-				&cli.StringFlag{
-					Name:    "to",
-					Aliases: []string{"t"},
-					Usage:   "Address which relay to, like: 1.2.3.4:9999",
-				},
-				&cli.StringFlag{
 					Name:    "server",
 					Aliases: []string{"s"},
 					Usage:   "brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain:443/ws, quic://domain.com:443",
@@ -1201,29 +1175,19 @@ func main() {
 					Aliases: []string{"p"},
 					Usage:   "Password",
 				},
-				&cli.BoolFlag{
-					Name:  "udpovertcp",
-					Usage: "When server is brook server, UDP over TCP",
+				&cli.StringFlag{
+					Name:  "link",
+					Usage: "brook link, you can get it via $ brook link. The server and password parameters will be ignored",
 				},
 				&cli.StringFlag{
-					Name:  "address",
-					Usage: "When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
-				},
-				&cli.BoolFlag{
-					Name:  "insecure",
-					Usage: "When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name",
-				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol",
+					Name:    "from",
+					Aliases: []string{"f", "l"},
+					Usage:   "Listen address: like ':9999'",
 				},
 				&cli.StringFlag{
-					Name:  "ca",
-					Usage: "When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem",
-				},
-				&cli.StringFlag{
-					Name:  "tlsfingerprint",
-					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
+					Name:    "to",
+					Aliases: []string{"t"},
+					Usage:   "Address which relay to, like: 1.2.3.4:9999",
 				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
@@ -1237,42 +1201,42 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("from") == "" || c.String("to") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("from") == "" || c.String("to") == "" || (c.String("server") == "" && c.String("link") == "") {
 					return cli.ShowSubcommandHelp(c)
 				}
-				kind := "server"
-				if strings.HasPrefix(c.String("server"), "ws://") {
-					kind = "wsserver"
-				}
-				if strings.HasPrefix(c.String("server"), "wss://") {
-					kind = "wssserver"
-				}
-				if strings.HasPrefix(c.String("server"), "quic://") {
-					kind = "quicserver"
-				}
-				v := url.Values{}
-				if c.Bool("udpovertcp") {
-					v.Set("udpovertcp", "true")
-				}
-				if c.String("address") != "" {
-					v.Set("address", c.String("address"))
-				}
-				if c.Bool("insecure") {
-					v.Set("insecure", "true")
-				}
-				if c.Bool("withoutBrookProtocol") {
-					v.Set("withoutBrookProtocol", "true")
-				}
-				if c.String("ca") != "" {
-					b, err := os.ReadFile(c.String("ca"))
-					if err != nil {
-						return err
+				var link = ""
+				if c.String("server") != "" {
+					kind := "server"
+					if strings.HasPrefix(c.String("server"), "ws://") {
+						kind = "wsserver"
 					}
-					v.Set("ca", string(b))
+					if strings.HasPrefix(c.String("server"), "wss://") {
+						kind = "wssserver"
+					}
+					if strings.HasPrefix(c.String("server"), "quic://") {
+						kind = "quicserver"
+					}
+					v := url.Values{}
+					v.Set("password", c.String("password"))
+					link = brook.Link(kind, c.String("server"), v)
 				}
-				v.Set("tlsfingerprint", c.String("tlsfingerprint"))
-				v.Set("password", c.String("password"))
-				s, err := brook.NewRelayOverBrook(c.String("from"), brook.Link(kind, c.String("server"), v), c.String("to"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if c.String("link") != "" {
+					link = c.String("link")
+				}
+				kind, _, v, err := brook.ParseLink(link)
+				if err != nil {
+					return err
+				}
+				if s := v.Get("clientHKDFInfo"); s != "" {
+					brook.ClientHKDFInfo = []byte(s)
+				}
+				if s := v.Get("serverHKDFInfo"); s != "" {
+					brook.ServerHKDFInfo = []byte(s)
+				}
+				if kind == "socks5" {
+					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
+				}
+				s, err := brook.NewRelayOverBrook(c.String("from"), link, c.String("to"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -1297,6 +1261,20 @@ func main() {
 				}
 			},
 			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "server",
+					Aliases: []string{"s"},
+					Usage:   "brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443",
+				},
+				&cli.StringFlag{
+					Name:    "password",
+					Aliases: []string{"p"},
+					Usage:   "Password",
+				},
+				&cli.StringFlag{
+					Name:  "link",
+					Usage: "brook link, you can get it via $ brook link. The server and password parameters will be ignored",
+				},
 				&cli.StringFlag{
 					Name:    "listen",
 					Aliases: []string{"l"},
@@ -1328,40 +1306,6 @@ func main() {
 					Name:  "disableAAAA",
 					Usage: "Disable AAAA query",
 				},
-				&cli.StringFlag{
-					Name:    "server",
-					Aliases: []string{"s"},
-					Usage:   "brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443",
-				},
-				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "Password",
-				},
-				&cli.BoolFlag{
-					Name:  "udpovertcp",
-					Usage: "When server is brook server, UDP over TCP",
-				},
-				&cli.StringFlag{
-					Name:  "address",
-					Usage: "When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
-				},
-				&cli.BoolFlag{
-					Name:  "insecure",
-					Usage: "When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name",
-				},
-				&cli.StringFlag{
-					Name:  "ca",
-					Usage: "When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem",
-				},
-				&cli.StringFlag{
-					Name:  "tlsfingerprint",
-					Usage: "When server is brook wssserver, select tls fingerprint, value can be: chrome",
-				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol",
-				},
 				&cli.IntFlag{
 					Name:  "tcpTimeout",
 					Value: 0,
@@ -1374,7 +1318,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("listen") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.String("listen") == "" || (c.String("server") == "" && c.String("link") == "") {
 					return cli.ShowSubcommandHelp(c)
 				}
 				if c.String("bypassDomainList") != "" && !strings.HasPrefix(c.String("bypassDomainList"), "http://") && !strings.HasPrefix(c.String("bypassDomainList"), "https://") && !filepath.IsAbs(c.String("bypassDomainList")) {
@@ -1390,39 +1334,39 @@ func main() {
 					}
 					p.TouchBrook()
 				}
-				kind := "server"
-				if strings.HasPrefix(c.String("server"), "ws://") {
-					kind = "wsserver"
-				}
-				if strings.HasPrefix(c.String("server"), "wss://") {
-					kind = "wssserver"
-				}
-				if strings.HasPrefix(c.String("server"), "quic://") {
-					kind = "quicserver"
-				}
-				v := url.Values{}
-				if c.Bool("udpovertcp") {
-					v.Set("udpovertcp", "true")
-				}
-				if c.String("address") != "" {
-					v.Set("address", c.String("address"))
-				}
-				if c.Bool("insecure") {
-					v.Set("insecure", "true")
-				}
-				if c.Bool("withoutBrookProtocol") {
-					v.Set("withoutBrookProtocol", "true")
-				}
-				if c.String("ca") != "" {
-					b, err := os.ReadFile(c.String("ca"))
-					if err != nil {
-						return err
+				var link = ""
+				if c.String("server") != "" {
+					kind := "server"
+					if strings.HasPrefix(c.String("server"), "ws://") {
+						kind = "wsserver"
 					}
-					v.Set("ca", string(b))
+					if strings.HasPrefix(c.String("server"), "wss://") {
+						kind = "wssserver"
+					}
+					if strings.HasPrefix(c.String("server"), "quic://") {
+						kind = "quicserver"
+					}
+					v := url.Values{}
+					v.Set("password", c.String("password"))
+					link = brook.Link(kind, c.String("server"), v)
 				}
-				v.Set("tlsfingerprint", c.String("tlsfingerprint"))
-				v.Set("password", c.String("password"))
-				s, err := brook.NewRelayOverBrook(c.String("listen"), brook.Link(kind, c.String("server"), v), c.String("dns"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if c.String("link") != "" {
+					link = c.String("link")
+				}
+				kind, _, v, err := brook.ParseLink(link)
+				if err != nil {
+					return err
+				}
+				if s := v.Get("clientHKDFInfo"); s != "" {
+					brook.ClientHKDFInfo = []byte(s)
+				}
+				if s := v.Get("serverHKDFInfo"); s != "" {
+					brook.ServerHKDFInfo = []byte(s)
+				}
+				if kind == "socks5" {
+					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
+				}
+				s, err := brook.NewRelayOverBrook(c.String("listen"), link, c.String("dns"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
 				if err != nil {
 					return err
 				}
@@ -1499,6 +1443,10 @@ func main() {
 					Name:  "serverHKDFInfo",
 					Usage: "server HKDF info, most time you don't need to change this, read brook protocol if you don't know what this is",
 				},
+				&cli.StringFlag{
+					Name:  "fragment",
+					Usage: "When server is brook wssserver, split the ClientHello into multiple fragments and then send them one by one with delays (millisecond). The format is min_length:max_length:min_delay:max_delay, cannot be zero, such as 50:100:10:50, Note that: This is an experimental feature, currently only supported by the brook CLI and tun2brook.",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				if c.String("server") == "" {
@@ -1552,6 +1500,9 @@ func main() {
 				}
 				if c.String("serverHKDFInfo") != "" {
 					v.Set("serverHKDFInfo", c.String("serverHKDFInfo"))
+				}
+				if c.String("fragment") != "" {
+					v.Set("fragment", c.String("fragment"))
 				}
 				fmt.Println(brook.Link(s, c.String("server"), v))
 				return nil
@@ -2639,7 +2590,30 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 	if os.Getenv("SOCKS5_DEBUG") != "" {
 		socks5.Debug = true
 	}
-	if err := app.Run(os.Args); err != nil {
+	l := os.Args
+	if len(os.Args) == 2 {
+		if _, err := os.Stat(os.Args[1]); err == nil {
+			if !filepath.IsAbs(os.Args[1]) {
+				log.Println("It looks like you passed config file? It must be absolute path")
+				os.Exit(1)
+				return
+			}
+			l, err = brook.CAC(os.Args[1])
+			if err != nil {
+				log.Println(err)
+				os.Exit(1)
+				return
+			}
+			bin, err := os.Executable()
+			if err != nil {
+				log.Println(err)
+				os.Exit(1)
+				return
+			}
+			l = append([]string{bin}, l...)
+		}
+	}
+	if err := app.Run(l); err != nil {
 		log.Println(err)
 		df()
 		os.Exit(1)
