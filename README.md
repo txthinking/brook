@@ -1,102 +1,4 @@
 # Brook
-A cross-platform programmable network tool
-
-# Sponsor
-**❤️  [Shiliew - China Optimized Network App](https://www.txthinking.com/shiliew.html)**
-
-Table of Contents
-=================
-
-* [Brook](#brook)
-* [Sponsor](#sponsor)
-* [Getting Started](#getting-started)
-   * [Server](#server)
-   * [GUI Client](#gui-client)
-   * [CLI Client](#cli-client)
-* [GUI Documentation](#gui-documentation)
-   * [Software for which this article applies](#software-for-which-this-article-applies)
-   * [Programmable](#programmable)
-      * [Introduction to incoming variables](#introduction-to-incoming-variables)
-      * [in_brooklinks](#in_brooklinks)
-      * [in_dnsquery](#in_dnsquery)
-      * [in_address](#in_address)
-      * [in_httprequest](#in_httprequest)
-      * [in_httpresponse](#in_httpresponse)
-   * [Write script](#write-script)
-   * [Debug script](#debug-script)
-   * [Install CA](#install-ca)
-* [Resources](#resources)
-* [CLI Documentation](#cli-documentation)
-* [NAME](#name)
-* [SYNOPSIS](#synopsis)
-* [GLOBAL OPTIONS](#global-options)
-* [COMMANDS](#commands)
-   * [server](#server-1)
-   * [client](#client)
-   * [wsserver](#wsserver)
-   * [wsclient](#wsclient)
-   * [wssserver](#wssserver)
-   * [wssclient](#wssclient)
-   * [quicserver](#quicserver)
-   * [quicclient](#quicclient)
-   * [relayoverbrook](#relayoverbrook)
-   * [dnsserveroverbrook](#dnsserveroverbrook)
-   * [link](#link)
-   * [connect](#connect)
-   * [relay](#relay)
-   * [dnsserver](#dnsserver)
-   * [dnsclient](#dnsclient)
-   * [dohserver](#dohserver)
-   * [dohclient](#dohclient)
-   * [dhcpserver](#dhcpserver)
-   * [socks5](#socks5)
-   * [socks5tohttp](#socks5tohttp)
-   * [pac](#pac)
-   * [testsocks5](#testsocks5)
-   * [testbrook](#testbrook)
-   * [echoserver](#echoserver)
-   * [echoclient](#echoclient)
-   * [ipcountry](#ipcountry)
-   * [completion](#completion)
-   * [mdpage](#mdpage)
-      * [help, h](#help-h)
-   * [manpage](#manpage)
-   * [help, h](#help-h-1)
-* [Examples](#examples)
-   * [Run brook server](#run-brook-server)
-   * [Run brook wsserver](#run-brook-wsserver)
-   * [Run brook wssserver: automatically certificate](#run-brook-wssserver-automatically-certificate)
-   * [Run brook wssserver Use a certificate issued by an existing trust authority](#run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority)
-   * [Run brook wssserver issue untrusted certificates yourself, any domain](#run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain)
-   * [withoutBrookProtocol](#withoutbrookprotocol)
-   * [withoutBrookProtocol automatically certificate](#withoutbrookprotocol-automatically-certificate)
-   * [withoutBrookProtocol Use a certificate issued by an existing trust authority](#withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority)
-   * [withoutBrookProtocol issue untrusted certificates yourself, any domain](#withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain)
-   * [Run brook socks5, A stand-alone standard socks5 server](#run-brook-socks5-a-stand-alone-standard-socks5-server)
-   * [Run brook socks5 with username and password. A stand-alone standard socks5 server](#run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server)
-   * [brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.](#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver)
-   * [brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.](#brook-dnsserveroverbrook-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver)
-   * [Brook OpenWRT Router: Perfectly supports IPv4/IPv6/TCP/UDP. Native IPv6](#brook-openwrt-router-perfectly-supports-ipv4ipv6tcpudp-native-ipv6)
-   * [Turn macOS into a Gateway with Brook](#turn-macos-into-a-gateway-with-brook)
-   * [Turn Windows into a Gateway with Brook](#turn-windows-into-a-gateway-with-brook)
-   * [Turn Linux into a Gateway with Brook](#turn-linux-into-a-gateway-with-brook)
-   * [brook relay can relay a address to a remote address. It can relay any tcp and udp server](#brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server)
-   * [brook socks5tohttp can convert a socks5 to a http proxy](#brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy)
-   * [brook pac creates pac server](#brook-pac-creates-pac-server)
-   * [brook pac creates pac file](#brook-pac-creates-pac-file)
-   * [There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...](#there-are-countless-examples-for-more-feature-suggestions-its-best-to-look-at-the-commands-and-parameters-in-the-cli-documentation-one-by-one-and-blog-youtube)
-* [Diagram](#diagram)
-   * [overview](#overview)
-   * [withoutBrookProtocol](#withoutbrookprotocol-1)
-   * [relayoverbrook](#relayoverbrook-1)
-   * [dnsserveroverbrook](#dnsserveroverbrook-1)
-   * [relay](#relay-1)
-   * [dnsserver](#dnsserver-1)
-   * [tproxy](#tproxy)
-   * [gui](#gui)
-   * [script](#script)
-
-# Brook
 <!--SIDEBAR-->
 <!--G-R3M673HK5V-->
 A cross-platform programmable network tool.
@@ -344,7 +246,7 @@ Brook - A cross-platform programmable network tool
 Brook
 
 ```
-brook [全局参数] 子命令 [子命令参数]
+brook --help
 ```
 
 **Usage**:
@@ -379,6 +281,12 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 - **--help, -h**: show help
 
+- **--ipLimitInterval**="": Interval (s) for ipLimitMax (default: 0)
+
+- **--ipLimitMax**="": Limit the number of client IP addresses, be careful when using this parameter, as the client may have dynamic IP. Works with server/wsserver/wssserver/quicserver (default: 0)
+
+- **--ipLimitWait**="": How long (s) to wait for recovery after exceeding ipLimitMax (default: 0)
+
 - **--log**="": Enable log. A valid value is file path or 'console'. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true
 
 - **--pprof**="": go http pprof listen addr, such as :6060
@@ -389,7 +297,11 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 - **--serverHKDFInfo**="": server HKDF info, most time you don't need to change this, if changed, all and each brook links in client side must be same, I mean each (default: "brook")
 
-- **--tag**="": Tag can be used to the process, will be append into log, such as: 'key1:value1'
+- **--serverLog**="": Enable server log, traffic and more. A valid value is file path or 'console'. Mutually exclusive with the --log parameter. Works with server/wsserver/wssserver/quicserver
+
+- **--speedLimit**="": Limit speed (b), such as 500kb/s: 500000, works with server/wsserver/wssserver/quicserver (default: 0)
+
+- **--tag**="": Tag can be used to the process, will be append into log or serverLog, such as: 'key1:value1'
 
 - **--version, -v**: print the version
 
@@ -400,11 +312,11 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 Run as brook server, both TCP and UDP
 
-- **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
+- **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt
 
-- **--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
+- **--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt
 
-- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
+- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
 - **--blockGeoIP**="": Block IP by Geo country code, such as US
 
@@ -442,11 +354,11 @@ Run as brook client, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 
 
 Run as brook wsserver, both TCP and UDP, it will start a standard http server and websocket server
 
-- **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
+- **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt
 
-- **--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
+- **--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt
 
-- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
+- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
 - **--blockGeoIP**="": Block IP by Geo country code, such as US
 
@@ -492,11 +404,11 @@ Run as brook wsclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks
 
 Run as brook wssserver, both TCP and UDP, it will start a standard https server and websocket server
 
-- **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
+- **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt
 
-- **--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
+- **--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt
 
-- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
+- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
 - **--blockGeoIP**="": Block IP by Geo country code, such as US
 
@@ -522,13 +434,9 @@ Run as brook wssserver, both TCP and UDP, it will start a standard https server 
 
 Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> socks5 <-> $ brook wssclient <-> $ brook wssserver <-> dst]
 
-- **--address**="": Specify address instead of resolving addresses from host, such as 1.2.3.4:443
-
-- **--ca**="": When server is brook wssserver, specify ca instead of insecure, such as /path/to/ca.pem
-
 - **--http**="": Where to listen for HTTP proxy connections
 
-- **--insecure**: Client do not verify the server's certificate chain and host name
+- **--link**="": brook link, you can get it via $ brook link. The wssserver and password parameters will be ignored
 
 - **--password, -p**="": Brook wssserver password
 
@@ -538,11 +446,7 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 
 - **--tcpTimeout**="": time (s) (default: 0)
 
-- **--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
-
 - **--udpTimeout**="": time (s) (default: 0)
-
-- **--withoutBrookProtocol**: The data will not be encrypted with brook protocol
 
 - **--wssserver, -s**="": Brook wssserver address, like: wss://google.com:443, if no path then /ws will be used. Do not omit the port under any circumstances
 
@@ -550,11 +454,11 @@ Run as brook wssclient, both TCP and UDP, to start a socks5 proxy, [src <-> sock
 
 Run as brook quicserver, both TCP and UDP
 
-- **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr4.txt
+- **--blockCIDR4List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt
 
-- **--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://txthinking.github.io/bypass/example_cidr6.txt
+- **--blockCIDR6List**="": One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt
 
-- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://txthinking.github.io/bypass/example_domain.txt
+- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
 - **--blockGeoIP**="": Block IP by Geo country code, such as US
 
@@ -604,13 +508,9 @@ Run as brook quicclient, both TCP and UDP, to start a socks5 proxy, [src <-> soc
 
 Run as relay over brook, both TCP and UDP, this means access [from address] is equal to [to address], [src <-> from address <-> $ brook server/wsserver/wssserver/quicserver <-> to address]
 
-- **--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
-
-- **--ca**="": When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem
-
 - **--from, -f, -l**="": Listen address: like ':9999'
 
-- **--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
+- **--link**="": brook link, you can get it via $ brook link. The server and password parameters will be ignored
 
 - **--password, -p**="": Password
 
@@ -618,27 +518,17 @@ Run as relay over brook, both TCP and UDP, this means access [from address] is e
 
 - **--tcpTimeout**="": time (s) (default: 0)
 
-- **--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
-
 - **--to, -t**="": Address which relay to, like: 1.2.3.4:9999
 
 - **--udpTimeout**="": time (s) (default: 0)
-
-- **--udpovertcp**: When server is brook server, UDP over TCP
-
-- **--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
 
 ## dnsserveroverbrook
 
 Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbrook <-> $ brook server/wsserver/wssserver/quicserver <-> dns] or [src <-> $ brook dnsserveroverbrook <-> dnsForBypass]
 
-- **--address**="": When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443
+- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
-- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
-
-- **--bypassDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
-
-- **--ca**="": When server is brook wssserver or brook quicserver, specify ca instead of insecure, such as /path/to/ca.pem
+- **--bypassDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
 - **--disableA**: Disable A query
 
@@ -648,7 +538,7 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 - **--dnsForBypass**="": DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or https://dns.alidns.com/dns-query?address=223.5.5.5:443, the address is required (default: 223.5.5.5:53)
 
-- **--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
+- **--link**="": brook link, you can get it via $ brook link. The server and password parameters will be ignored
 
 - **--listen, -l**="": Listen address, like: 127.0.0.1:53
 
@@ -658,13 +548,7 @@ Run as dns server over brook, both TCP and UDP, [src <-> $ brook dnserversoverbr
 
 - **--tcpTimeout**="": time (s) (default: 0)
 
-- **--tlsfingerprint**="": When server is brook wssserver, select tls fingerprint, value can be: chrome
-
 - **--udpTimeout**="": time (s) (default: 0)
-
-- **--udpovertcp**: When server is brook server, UDP over TCP
-
-- **--withoutBrookProtocol**: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol
 
 ## link
 
@@ -675,6 +559,8 @@ Generate brook link
 - **--ca**="": When server is brook wssserver or brook quicserver, specify ca for untrusted cert, such as /path/to/ca.pem
 
 - **--clientHKDFInfo**="": client HKDF info, most time you don't need to change this, read brook protocol if you don't know what this is
+
+- **--fragment**="": When server is brook wssserver, split the ClientHello into multiple fragments and then send them one by one with delays (millisecond). The format is min_length:max_length:min_delay:max_delay, cannot be zero, such as 50:100:10:50, Note that: This is an experimental feature, currently only supported by the brook CLI and tun2brook.
 
 - **--insecure**: When server is brook wssserver or brook quicserver, client do not verify the server's certificate chain and host name
 
@@ -726,7 +612,7 @@ Run as standalone relay, both TCP and UDP, this means access [from address] is e
 
 Run as standalone dns server
 
-- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
 - **--disableA**: Disable A query
 
@@ -756,7 +642,7 @@ Send a dns query
 
 Run as standalone doh server
 
-- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+- **--blockDomainList**="": One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
 - **--cert**="": The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically
 
@@ -846,7 +732,7 @@ Convert socks5 to http proxy, [src <-> listen address(http proxy) <-> socks5 add
 
 Run as PAC server or save PAC to file
 
-- **--bypassDomainList, -b**="": One domain per line, suffix match mode. http(s):// or local absolute file path. Like: https://txthinking.github.io/bypass/example_domain.txt
+- **--bypassDomainList, -b**="": One domain per line, suffix match mode. http(s):// or local absolute file path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt
 
 - **--file, -f**="": Save PAC to file, this will ignore listen address
 

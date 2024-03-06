@@ -54,7 +54,8 @@ func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout in
 	}
 	if tc != nil {
 		if fragmentMinLength != 0 && fragmentMaxLength != 0 && fragmentMinDelay != 0 && fragmentMaxDelay != 0 {
-			c = &TLSFragmentConn{Conn: c,
+			c = &TLSFragmentConn{
+				Conn:      c,
 				MinLength: fragmentMinLength,
 				MaxLength: fragmentMaxLength,
 				MinDelay:  fragmentMinDelay,
