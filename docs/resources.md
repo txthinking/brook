@@ -27,7 +27,6 @@
 | [Socks5 Configurator](https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb) | If you prefer CLI brook client | 
 | [IPvBar](https://chromewebstore.google.com/detail/ipvbar/nepjlegfiihpkcdhlmaebfdfppckonlj) | See domain, IP and country in browser | 
 | [TxThinking SSH](https://www.txthinking.com/ssh.html) | A SSH Terminal |
-| [Brook Deploy](https://www.txthinking.com/deploy.html) | Deploy brook with GUI |
 | [brook-manager](https://github.com/txthinking/brook-manager) | Brook Manager is a Brook management system for medium to large merchants |
 | [TxThinking](https://www.txthinking.com) | Everything |
 

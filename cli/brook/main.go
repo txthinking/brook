@@ -15,7 +15,6 @@
 package main
 
 import (
-	"crypto/x509"
 	"errors"
 	"fmt"
 	"log"
@@ -136,6 +135,26 @@ func main() {
 			Usage: "server HKDF info, most time you don't need to change this, if changed, all and each brook links in client side must be same, I mean each",
 			Value: "brook",
 		},
+		&cli.StringFlag{
+			Name:  "blockDomainList",
+			Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt. Works with server/wsserver/wssserver/quicserver",
+		},
+		&cli.StringFlag{
+			Name:  "blockCIDR4List",
+			Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt. Works with server/wsserver/wssserver/quicserver",
+		},
+		&cli.StringFlag{
+			Name:  "blockCIDR6List",
+			Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt. Works with server/wsserver/wssserver/quicserver",
+		},
+		&cli.StringSliceFlag{
+			Name:  "blockGeoIP",
+			Usage: "Block IP by Geo country code, such as US. Works with server/wsserver/wssserver/quicserver",
+		},
+		&cli.Int64Flag{
+			Name:  "blockListUpdateInterval",
+			Usage: "Update list --blockDomainList,--blockCIDR4List,--blockCIDR6List interval, second. default 0, only read one time on start",
+		},
 	}
 	app.Before = func(c *cli.Context) error {
 		brook.ClientHKDFInfo = []byte(c.String("clientHKDFInfo"))
@@ -231,6 +250,34 @@ func main() {
 				},
 			})
 		}
+		if c.String("blockDomainList") != "" && !strings.HasPrefix(c.String("blockDomainList"), "http://") && !strings.HasPrefix(c.String("blockDomainList"), "https://") && !filepath.IsAbs(c.String("blockDomainList")) {
+			return errors.New("--blockDomainList must be with absolute path")
+		}
+		if c.String("blockCIDR4List") != "" && !strings.HasPrefix(c.String("blockCIDR4List"), "http://") && !strings.HasPrefix(c.String("blockCIDR4List"), "https://") && !filepath.IsAbs(c.String("blockCIDR4List")) {
+			return errors.New("--blockCIDR4List must be with absolute path")
+		}
+		if c.String("blockCIDR6List") != "" && !strings.HasPrefix(c.String("blockCIDR6List"), "http://") && !strings.HasPrefix(c.String("blockCIDR6List"), "https://") && !filepath.IsAbs(c.String("blockCIDR6List")) {
+			return errors.New("--blockCIDR6List must be with absolute path")
+		}
+		if c.String("blockDomainList") != "" || c.String("blockCIDR4List") != "" || c.String("blockCIDR6List") != "" || len(c.StringSlice("blockGeoIP")) != 0 {
+			p, err := block.NewBlock(c.String("blockDomainList"), c.String("blockCIDR4List"), c.String("blockCIDR6List"), c.StringSlice("blockGeoIP"), c.Int("blockListUpdateInterval"))
+			if err != nil {
+				return err
+			}
+			p.TouchBrook()
+			if c.Int("blockListUpdateInterval") != 0 {
+				g.Add(&runnergroup.Runner{
+					Start: func() error {
+						p.Update()
+						return nil
+					},
+					Stop: func() error {
+						p.Stop()
+						return nil
+					},
+				})
+			}
+		}
 		return nil
 	}
 	app.Commands = []*cli.Command{
@@ -266,26 +313,34 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringSliceFlag{
 					Name:  "blockGeoIP",
-					Usage: "Block IP by Geo country code, such as US",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
-					Usage: "Update list interval, second. default 0, only read one time on start",
+					Usage: "This option will be removed in a future version, please use the global option instead",
+				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook server --listen :9999 --password hello")
+					return nil
+				}
 				if c.String("listen") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -352,9 +407,9 @@ func main() {
 					Aliases: []string{"p"},
 					Usage:   "Brook server password",
 				},
-				&cli.BoolFlag{
-					Name:  "udpovertcp",
-					Usage: "UDP over TCP",
+				&cli.StringFlag{
+					Name:  "link",
+					Usage: "brook link, you can get it via $ brook link. The wssserver and password parameters will be ignored",
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
@@ -379,30 +434,59 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("socks5") == "" || c.String("server") == "" || c.String("password") == "" {
+				if c.Bool("example") {
+					fmt.Println("brook client --server 1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080")
+					return nil
+				}
+				if c.String("server") == "" && c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
+				}
+				var link = ""
+				if c.String("server") != "" {
+					v := url.Values{}
+					v.Set("password", c.String("password"))
+					link = brook.Link("server", c.String("server"), v)
+				}
+				if c.String("link") != "" {
+					link = c.String("link")
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
 					return err
 				}
-				if h == "" && c.String("socks5ServerIP") == "" {
+				if c.String("socks5ServerIP") != "" {
+					h = c.String("socks5ServerIP")
+				}
+				if h == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				var ip string
-				if h != "" {
-					ip = h
-				}
-				if c.String("socks5ServerIP") != "" {
-					ip = c.String("socks5ServerIP")
-				}
-				s, err := brook.NewClient(c.String("socks5"), ip, c.String("server"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				kind, _, v, err := brook.ParseLink(link)
 				if err != nil {
 					return err
 				}
-				s.UDPOverTCP = c.Bool("udpovertcp")
+				if s := v.Get("clientHKDFInfo"); s != "" {
+					brook.ClientHKDFInfo = []byte(s)
+				}
+				if s := v.Get("serverHKDFInfo"); s != "" {
+					brook.ServerHKDFInfo = []byte(s)
+				}
+				if kind == "socks5" {
+					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
+				}
+				s, err := brook.NewBrookLink(link)
+				if err != nil {
+					return err
+				}
+				err = s.PrepareSocks5Server(c.String("socks5"), h, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
+				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
 						return s.ListenAndServe()
@@ -412,16 +496,16 @@ func main() {
 					},
 				})
 				if c.String("http") != "" {
-					h, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(ip, p), "", "", c.Int("tcpTimeout"))
+					s, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(h, p), "", "", c.Int("tcpTimeout"))
 					if err != nil {
 						return err
 					}
 					g.Add(&runnergroup.Runner{
 						Start: func() error {
-							return h.ListenAndServe()
+							return s.ListenAndServe()
 						},
 						Stop: func() error {
-							return h.Shutdown()
+							return s.Shutdown()
 						},
 					})
 				}
@@ -469,30 +553,38 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringSliceFlag{
 					Name:  "blockGeoIP",
-					Usage: "Block IP by Geo country code, such as US",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
-					Usage: "Update list interval, second. default 0, only read one time on start",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.BoolFlag{
 					Name:  "xForwardedFor",
 					Usage: "Replace the from field in --log, note that this may be forged",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook wsserver --listen :9999 --password hello")
+					return nil
+				}
 				if c.String("listen") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -561,12 +653,8 @@ func main() {
 					Usage:   "Brook wsserver password",
 				},
 				&cli.StringFlag{
-					Name:  "address",
-					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
-				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
+					Name:  "link",
+					Usage: "brook link, you can get it via $ brook link. The wssserver and password parameters will be ignored",
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
@@ -591,31 +679,58 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("socks5") == "" || c.String("wsserver") == "" || c.String("password") == "" {
+				if c.Bool("example") {
+					fmt.Println("brook wsclient --wsserver ws://1.2.3.4:9999 --password hello --socks5 127.0.0.1:1080")
+					return nil
+				}
+				if c.String("wsserver") == "" && c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
+				}
+				var link = ""
+				if c.String("wsserver") != "" {
+					v := url.Values{}
+					v.Set("password", c.String("password"))
+					link = brook.Link("wsserver", c.String("wsserver"), v)
+				}
+				if c.String("link") != "" {
+					link = c.String("link")
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
 					return err
 				}
-				if h == "" && c.String("socks5ServerIP") == "" {
+				if c.String("socks5ServerIP") != "" {
+					h = c.String("socks5ServerIP")
+				}
+				if h == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				var ip string
-				if h != "" {
-					ip = h
-				}
-				if c.String("socks5ServerIP") != "" {
-					ip = c.String("socks5ServerIP")
-				}
-				s, err := brook.NewWSClient(c.String("socks5"), ip, c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
+				kind, _, v, err := brook.ParseLink(link)
 				if err != nil {
 					return err
 				}
-				if c.String("address") != "" {
-					s.ServerAddress = c.String("address")
+				if s := v.Get("clientHKDFInfo"); s != "" {
+					brook.ClientHKDFInfo = []byte(s)
+				}
+				if s := v.Get("serverHKDFInfo"); s != "" {
+					brook.ServerHKDFInfo = []byte(s)
+				}
+				if kind == "socks5" {
+					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
+				}
+				s, err := brook.NewBrookLink(link)
+				if err != nil {
+					return err
+				}
+				err = s.PrepareSocks5Server(c.String("socks5"), h, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
 				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -626,16 +741,16 @@ func main() {
 					},
 				})
 				if c.String("http") != "" {
-					h, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(ip, p), "", "", c.Int("tcpTimeout"))
+					s, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(h, p), "", "", c.Int("tcpTimeout"))
 					if err != nil {
 						return err
 					}
 					g.Add(&runnergroup.Runner{
 						Start: func() error {
-							return h.ListenAndServe()
+							return s.ListenAndServe()
 						},
 						Stop: func() error {
-							return h.Shutdown()
+							return s.Shutdown()
 						},
 					})
 				}
@@ -690,26 +805,34 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringSliceFlag{
 					Name:  "blockGeoIP",
-					Usage: "Block IP by Geo country code, such as US",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
-					Usage: "Update list interval, second. default 0, only read one time on start",
+					Usage: "This option will be removed in a future version, please use the global option instead",
+				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook wssserver --domainaddress domain.com:9999 --password hello")
+					return nil
+				}
 				if c.String("domainaddress") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -827,8 +950,16 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook wssclient --wssserver wss://domain.com:9999 --password hello --socks5 127.0.0.1:1080")
+					return nil
+				}
 				if c.String("wssserver") == "" && c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -881,16 +1012,16 @@ func main() {
 					},
 				})
 				if c.String("http") != "" {
-					h, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(h, p), "", "", c.Int("tcpTimeout"))
+					s, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(h, p), "", "", c.Int("tcpTimeout"))
 					if err != nil {
 						return err
 					}
 					g.Add(&runnergroup.Runner{
 						Start: func() error {
-							return h.ListenAndServe()
+							return s.ListenAndServe()
 						},
 						Stop: func() error {
-							return h.Shutdown()
+							return s.Shutdown()
 						},
 					})
 				}
@@ -940,26 +1071,34 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "blockDomainList",
-					Usage: "One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR4List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringFlag{
 					Name:  "blockCIDR6List",
-					Usage: "One CIDR per line, https://, http:// or local file absolute path, like: https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.StringSliceFlag{
 					Name:  "blockGeoIP",
-					Usage: "Block IP by Geo country code, such as US",
+					Usage: "This option will be removed in a future version, please use the global option instead",
 				},
 				&cli.Int64Flag{
 					Name:  "updateListInterval",
-					Usage: "Update list interval, second. default 0, only read one time on start",
+					Usage: "This option will be removed in a future version, please use the global option instead",
+				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook quicserver --domainaddress domain.com:9999 --password hello")
+					return nil
+				}
 				if c.String("domainaddress") == "" || c.String("password") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1051,20 +1190,8 @@ func main() {
 					Usage:   "Brook quicserver password",
 				},
 				&cli.StringFlag{
-					Name:  "address",
-					Usage: "Specify address instead of resolving addresses from host, such as 1.2.3.4:443",
-				},
-				&cli.BoolFlag{
-					Name:  "insecure",
-					Usage: "Client do not verify the server's certificate chain and host name",
-				},
-				&cli.StringFlag{
-					Name:  "ca",
-					Usage: "Specify ca instead of insecure, such as /path/to/ca.pem",
-				},
-				&cli.BoolFlag{
-					Name:  "withoutBrookProtocol",
-					Usage: "The data will not be encrypted with brook protocol",
+					Name:  "link",
+					Usage: "brook link, you can get it via $ brook link. The wssserver and password parameters will be ignored",
 				},
 				&cli.StringFlag{
 					Name:  "socks5",
@@ -1089,46 +1216,58 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				if c.String("socks5") == "" || c.String("quicserver") == "" || c.String("password") == "" {
+				if c.Bool("example") {
+					fmt.Println("brook quicclient --quicserver quic://domain.com:9999 --password hello --socks5 127.0.0.1:1080")
+					return nil
+				}
+				if c.String("quicserver") == "" && c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
+				}
+				var link = ""
+				if c.String("quicserver") != "" {
+					v := url.Values{}
+					v.Set("password", c.String("password"))
+					link = brook.Link("quicserver", c.String("quicserver"), v)
+				}
+				if c.String("link") != "" {
+					link = c.String("link")
 				}
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
 					return err
 				}
-				if h == "" && c.String("socks5ServerIP") == "" {
+				if c.String("socks5ServerIP") != "" {
+					h = c.String("socks5ServerIP")
+				}
+				if h == "" {
 					return errors.New("socks5 server requires a clear IP for UDP, only port is not enough. You may use loopback IP or lan IP or other, we can not decide for you")
 				}
-				var ip string
-				if h != "" {
-					ip = h
-				}
-				if c.String("socks5ServerIP") != "" {
-					ip = c.String("socks5ServerIP")
-				}
-				s, err := brook.NewQUICClient(c.String("socks5"), ip, c.String("quicserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
+				kind, _, v, err := brook.ParseLink(link)
 				if err != nil {
 					return err
 				}
-				if c.String("address") != "" {
-					s.ServerAddress = c.String("address")
+				if s := v.Get("clientHKDFInfo"); s != "" {
+					brook.ClientHKDFInfo = []byte(s)
 				}
-				if c.Bool("insecure") {
-					s.TLSConfig.InsecureSkipVerify = true
+				if s := v.Get("serverHKDFInfo"); s != "" {
+					brook.ServerHKDFInfo = []byte(s)
 				}
-				if c.String("ca") != "" {
-					b, err := os.ReadFile(c.String("ca"))
-					if err != nil {
-						return err
-					}
-					roots := x509.NewCertPool()
-					ok := roots.AppendCertsFromPEM(b)
-					if !ok {
-						return errors.New("failed to parse root certificate")
-					}
-					s.TLSConfig.RootCAs = roots
+				if kind == "socks5" {
+					return errors.New("Looks like you want create socks5 from a socks5, you may want $ brook socks5tohttp?")
+				}
+				s, err := brook.NewBrookLink(link)
+				if err != nil {
+					return err
+				}
+				err = s.PrepareSocks5Server(c.String("socks5"), h, c.Int("tcpTimeout"), c.Int("udpTimeout"))
+				if err != nil {
+					return err
 				}
 				g.Add(&runnergroup.Runner{
 					Start: func() error {
@@ -1139,16 +1278,16 @@ func main() {
 					},
 				})
 				if c.String("http") != "" {
-					h, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(ip, p), "", "", c.Int("tcpTimeout"))
+					s, err := brook.NewSocks5ToHTTP(c.String("http"), net.JoinHostPort(h, p), "", "", c.Int("tcpTimeout"))
 					if err != nil {
 						return err
 					}
 					g.Add(&runnergroup.Runner{
 						Start: func() error {
-							return h.ListenAndServe()
+							return s.ListenAndServe()
 						},
 						Stop: func() error {
-							return h.Shutdown()
+							return s.Shutdown()
 						},
 					})
 				}
@@ -1199,8 +1338,16 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook relayoverbrook --server 1.2.3.4:9999 --password hello --from :5353 --to 8.8.8.8:53")
+					return nil
+				}
 				if c.String("from") == "" || c.String("to") == "" || (c.String("server") == "" && c.String("link") == "") {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1316,8 +1463,16 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook dnsserveroverbrook --server 1.2.3.4:9999 --password hello --listen 127.0.0.1:53")
+					return nil
+				}
 				if c.String("listen") == "" || (c.String("server") == "" && c.String("link") == "") {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1445,10 +1600,22 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "fragment",
-					Usage: "When server is brook wssserver, split the ClientHello into multiple fragments and then send them one by one with delays (millisecond). The format is min_length:max_length:min_delay:max_delay, cannot be zero, such as 50:100:10:50, Note that: This is an experimental feature, currently only supported by the brook CLI and tun2brook.",
+					Usage: "When server is brook wssserver, split the ClientHello into multiple fragments and then send them one by one with delays (millisecond). The format is min_length:max_length:min_delay:max_delay, cannot be zero, such as 50:100:10:50, Note that: This is an experimental feature, currently only supported by the brook CLI and tun2brook",
+				},
+				&cli.StringFlag{
+					Name:  "token",
+					Usage: "A token represents a user's identity. A string encoded in hexadecimal. Server needs to have --userAPI enabled. Note that: Only supported by the brook GUI and tun2brook",
+				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook link --server 1.2.3.4:9999 --password hello --name 'my server'")
+					return nil
+				}
 				if c.String("server") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1504,6 +1671,9 @@ func main() {
 				if c.String("fragment") != "" {
 					v.Set("fragment", c.String("fragment"))
 				}
+				if c.String("token") != "" {
+					v.Set("token", c.String("token"))
+				}
 				fmt.Println(brook.Link(s, c.String("server"), v))
 				return nil
 			},
@@ -1546,8 +1716,16 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook connect --link 'brook://...' --socks5 127.0.0.1:1080")
+					return nil
+				}
 				if c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1637,8 +1815,16 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook relay --from :9999 --to 1.2.3.4:9999")
+					return nil
+				}
 				if c.String("from") == "" || c.String("to") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1699,8 +1885,16 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook dnsserver --listen 127.0.0.1:53")
+					return nil
+				}
 				if c.String("listen") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1765,8 +1959,16 @@ func main() {
 					Name:  "short",
 					Usage: "Short for A/AAAA",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook dnsclient --domain google.com")
+					return nil
+				}
 				if c.String("domain") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1856,8 +2058,16 @@ func main() {
 					Value: 60,
 					Usage: "time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook dohserver --domainaddress domain.com:443")
+					return nil
+				}
 				if c.String("listen") == "" && c.String("domainaddress") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -1950,8 +2160,16 @@ func main() {
 					Name:  "short",
 					Usage: "Short for A/AAAA",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook dohclient --domain google.com")
+					return nil
+				}
 				if c.String("domain") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2030,8 +2248,16 @@ func main() {
 					Name:  "cache",
 					Usage: "Cache file, local absolute file path, default is $HOME/.brook.dhcpserver",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook dhcpserver --serverip 192.168.1.10 --start 192.168.1.100 --gateway 192.168.1.1 --dnsserver 192.168.1.1")
+					return nil
+				}
 				if c.String("serverip") == "" || c.String("start") == "" || c.String("gateway") == "" || len(c.StringSlice("dnsserver")) == 0 {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2094,8 +2320,16 @@ func main() {
 					Value: 60,
 					Usage: "Connection deadline time (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook socks5 --listen :9999 --socks5ServerIP 1.2.3.4")
+					return nil
+				}
 				if c.String("listen") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2162,8 +2396,16 @@ func main() {
 					Value: 0,
 					Usage: "Connection tcp timeout (s)",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook socks5tohttp --listen 127.0.0.1:8010 --socks5 127.0.0.1:1080")
+					return nil
+				}
 				if c.String("listen") == "" || c.String("socks5") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2213,8 +2455,16 @@ func main() {
 					Aliases: []string{"f"},
 					Usage:   "Save PAC to file, this will ignore listen address",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook pac --listen 127.0.0.1:1980")
+					return nil
+				}
 				if c.String("listen") == "" && c.String("file") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2276,8 +2526,16 @@ func main() {
 					Value: "137.184.237.95",
 					Usage: "The A record of domain",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook testsocks5 --socks5 127.0.0.1:1080")
+					return nil
+				}
 				if c.String("socks5") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2320,8 +2578,16 @@ func main() {
 					Value: "137.184.237.95",
 					Usage: "The A record of domain",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook testbrook --link 'brook://...'")
+					return nil
+				}
 				if c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2364,8 +2630,16 @@ func main() {
 					Aliases: []string{"l"},
 					Usage:   "Listen address, like: ':7777'",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook echoserver --listen :9999")
+					return nil
+				}
 				if c.String("listen") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2404,8 +2678,16 @@ func main() {
 					Value: 1,
 					Usage: "Times of interactions",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook echoclient --server 1.2.3.4:9999")
+					return nil
+				}
 				if c.String("server") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
@@ -2426,8 +2708,16 @@ func main() {
 					Name:  "ip",
 					Usage: "1.1.1.1",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook ipcountry --ip 1.2.3.4")
+					return nil
+				}
 				ip := net.ParseIP(c.String("ip"))
 				if ip == nil {
 					return errors.New(c.String("ip") + " is not IP")
@@ -2450,8 +2740,16 @@ func main() {
 					Usage:   "Write to file",
 					Value:   "brook_autocomplete",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook completion --file brook_autocomplete")
+					return nil
+				}
 				l := c.App.VisibleCommands()
 				if strings.Contains(os.Getenv("SHELL"), "zsh") {
 					s := `
@@ -2539,8 +2837,16 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 					Aliases: []string{"f"},
 					Usage:   "Write to file, default print to stdout",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook mdpage")
+					return nil
+				}
 				s, err := c.App.ToMarkdown()
 				if err != nil {
 					return err
@@ -2570,8 +2876,16 @@ complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete brook
 					Aliases: []string{"f"},
 					Usage:   "Write to file, default print to stdout. You should put to /path/to/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos",
 				},
+				&cli.BoolFlag{
+					Name:  "example",
+					Usage: "Show a minimal example of usage",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				if c.Bool("example") {
+					fmt.Println("brook manpage")
+					return nil
+				}
 				s, err := c.App.ToManWithSection(1)
 				if err != nil {
 					return err

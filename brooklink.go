@@ -261,18 +261,20 @@ func (x *BrookLink) PrepareSocks5Server(addr, ip string, tcptimeout, udptimeout 
 	if err := limits.Raise(); err != nil {
 		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
 	}
-	if runtime.GOOS == "linux" {
-		c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
-		b, err := c.CombinedOutput()
-		if err != nil {
-			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+	if x.Kind == "quicserver" {
+		if runtime.GOOS == "linux" {
+			c := exec.Command("sysctl", "-w", "net.core.rmem_max=2500000")
+			b, err := c.CombinedOutput()
+			if err != nil {
+				Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+			}
 		}
-	}
-	if runtime.GOOS == "darwin" {
-		c := exec.Command("sysctl", "-w", "kern.ipc.maxsockbuf=3014656")
-		b, err := c.CombinedOutput()
-		if err != nil {
-			Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+		if runtime.GOOS == "darwin" {
+			c := exec.Command("sysctl", "-w", "kern.ipc.maxsockbuf=3014656")
+			b, err := c.CombinedOutput()
+			if err != nil {
+				Log(Error{"when": "try to raise UDP Receive Buffer Size", "warning": string(b)})
+			}
 		}
 	}
 	var err error
