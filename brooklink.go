@@ -18,6 +18,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
+	"io"
 	"net"
 	"net/url"
 	"os/exec"
@@ -319,6 +320,7 @@ func (x *BrookLink) TCPHandle(s *socks5.Server, c *net.TCPConn, r *socks5.Reques
 		if err != nil {
 			return err
 		}
+		io.Copy(io.Discard, c)
 		return nil
 	}
 	return socks5.ErrUnsupportCmd
