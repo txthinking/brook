@@ -4,7 +4,7 @@
 
 This content introduces how to develop a user system with Brook. Your system only needs to focus on two concepts: **Token** and **User API**. To support user system, you **must use brook server/wsserver/wssserver/quicserver with the brook protocol**.
 
-![](https://brook.app/images/user-system.png)
+<img src="https://brook.app/images/user-system.png" width="500">
 
 ## Token
 
@@ -13,7 +13,7 @@ The concept of a token is similar to the user authentication systems of many oth
 For example, encrypt user id or make session, and encode in hexadecimal:
 
 ```
-hex_encode(your_encrypt_or_session_function("user id"))
+hex_encode(your_encrypt_or_session_function(user id))
 // 3ae6afc9fad94abd8985d8ecc77afb273ae6afc9fad94abd8985d8ecc77afb273ae6afc9fad94abd8985d8ecc77afb27 // 48 bytes token
 ```
 
@@ -26,7 +26,7 @@ crypto.randomUUID().replaceAll('-', '')
 
 ## User API
 
-Your system must provide an API for Brook Server to validate token. For example: `https://your-api-server.com/a_unpredictable_path`, yes, it is recommended to add an unpredictable path to your https API, of course, you can also use the http api for internal network communication. Brook Server will send GET request to your User API to check if token is valid, the request format is `https://your-api-server.com/a_unpredictable_path?token=xxx`. When the response is 200, the body should be the user's unique identifier, such as user ID; all other status codes are considered to represent an illegitimate user, and in these cases, the body should be a string describing the error.
+Your system must provide an API for Brook Server to validate token. For example: `https://your-api-server.com/a_unpredictable_path`, yes, it is recommended to add an unpredictable path to your https API, of course, you can also use the http api for internal network communication. Brook Server will send GET request to your User API to check if token is valid, the request format is `https://your-api-server.com/a_unpredictable_path?token=xxx`. When the response is 200, the body should be the user's unique identifier, such as user ID; all other status codes are considered to represent an invalid user, and in these cases, the body should be a string describing the error.
 
 For example, your User API is:
 
