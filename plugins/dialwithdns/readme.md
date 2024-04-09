@@ -1,1 +1,1 @@
-`dialwithdns` plugin reslove domain with custom dns or doh, instead of local dns
+`dialwithdns` plugin resolve domain with custom dns or doh, instead of local dns
