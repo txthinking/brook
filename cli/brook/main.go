@@ -24,6 +24,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -69,7 +70,7 @@ func main() {
 		},
 		&cli.StringFlag{
 			Name:  "log",
-			Usage: "Enable log. A valid value is file path or 'console'. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true",
+			Usage: "Enable log. A valid value is file path or 'console'. Send SIGUSR1 to me to reset the log file on unix system. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true",
 		},
 		&cli.StringSliceFlag{
 			Name:  "tag",
@@ -155,10 +156,22 @@ func main() {
 			Name:  "blockListUpdateInterval",
 			Usage: "Update list --blockDomainList,--blockCIDR4List,--blockCIDR6List interval, second. default 0, only read one time on start",
 		},
+		&cli.StringFlag{
+			Name:  "pid",
+			Usage: "A file path used to store pid",
+		},
 	}
 	app.Before = func(c *cli.Context) error {
 		brook.ClientHKDFInfo = []byte(c.String("clientHKDFInfo"))
 		brook.ServerHKDFInfo = []byte(c.String("serverHKDFInfo"))
+		if c.String("pid") != "" {
+			if !filepath.IsAbs(c.String("pid")) {
+				return errors.New("--pid must be with absolute path")
+			}
+			if err := os.WriteFile(c.String("pid"), []byte(strconv.Itoa(os.Getpid())), 0744); err != nil {
+				return err
+			}
+		}
 		if c.String("pprof") != "" {
 			p, err := pprof.NewPprof(c.String("pprof"))
 			if err != nil {

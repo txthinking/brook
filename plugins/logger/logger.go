@@ -31,6 +31,7 @@ import (
 
 type Logger struct {
 	F    *os.File
+	File string
 	Lock *sync.Mutex
 	Tags map[string]string
 }
@@ -43,11 +44,11 @@ func NewLogger(tags map[string]string, file string) (*Logger, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Logger{F: f, Tags: tags, Lock: &sync.Mutex{}}, nil
+	return &Logger{F: f, File: file, Tags: tags, Lock: &sync.Mutex{}}, nil
 }
 
 func (p *Logger) Close() error {
-	if p.F == nil {
+	if p.Lock == nil {
 		return nil
 	}
 	p.Lock.Lock()
@@ -55,7 +56,25 @@ func (p *Logger) Close() error {
 	return p.F.Close()
 }
 
+func (p *Logger) Reset() error {
+	if p.Lock == nil {
+		return nil
+	}
+	p.Lock.Lock()
+	defer p.Lock.Unlock()
+	err := p.F.Close()
+	if err != nil {
+		return err
+	}
+	p.F, err = os.OpenFile(p.File, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (p *Logger) TouchBrook() {
+	go p.WatchReset()
 	brook.Log = func(err error) {
 		if _, ok := err.(brook.Error); !ok {
 			err = brook.Error{"error": err.Error()}
@@ -64,7 +83,7 @@ func (p *Logger) TouchBrook() {
 		for k, v := range p.Tags {
 			err.(brook.Error)[k] = v
 		}
-		if p.F == nil {
+		if p.Lock == nil {
 			fmt.Println(err)
 			return
 		}
