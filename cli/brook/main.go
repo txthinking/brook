@@ -2558,7 +2558,7 @@ func main() {
 		},
 		&cli.Command{
 			Name:  "testbrook",
-			Usage: "Test UDP and TCP of a brook connection. (The global-dial-parameter is ignored)",
+			Usage: "Test UDP and TCP of a brook server/wsserver/wssserver/quicserver connection. (The global-dial-parameter is ignored)",
 			BashComplete: func(c *cli.Context) {
 				l := c.Command.VisibleFlags()
 				for _, v := range l {
