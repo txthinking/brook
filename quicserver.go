@@ -148,8 +148,15 @@ func (s *QUICServer) ListenAndServe() error {
 								return
 							}
 							defer ss.Clean()
-							if err := s.TCPHandle(ss); err != nil {
-								Log(Error{"from": ss.Src(), "dst": ss.Dst(), "error": err.Error()})
+							if ss.Network() == "tcp" {
+								if err := s.TCPHandle(ss); err != nil {
+									Log(Error{"from": ss.Src(), "dst": ss.Dst(), "error": err.Error()})
+								}
+							}
+							if ss.Network() == "udp" {
+								if err := s.UDPOverTCPHandle(ss); err != nil {
+									Log(Error{"from": c.RemoteAddr().String(), "dst": ss.Dst(), "error": err.Error()})
+								}
 							}
 						}(&QUICConn{
 							Conn:   c,
@@ -230,6 +237,18 @@ func (s *QUICServer) ListenAndServe() error {
 
 func (s *QUICServer) TCPHandle(ss Exchanger) error {
 	rc, err := DialTCP("tcp", "", ss.Dst())
+	if err != nil {
+		return err
+	}
+	defer rc.Close()
+	if err := ss.Exchange(rc); err != nil {
+		return nil
+	}
+	return nil
+}
+
+func (s *QUICServer) UDPOverTCPHandle(ss Exchanger) error {
+	rc, err := NATDial("udp", ss.Src(), ss.Dst(), ss.Dst())
 	if err != nil {
 		return err
 	}

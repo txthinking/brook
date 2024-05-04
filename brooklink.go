@@ -238,6 +238,24 @@ func (blk *BrookLink) CreateExchanger(network, src string, dstb []byte, tcptimeo
 			}
 			return sc, rc, nil
 		}
+		if blk.V.Get("udpoverstream") == "true" {
+			rc, err := QUICDialTCP(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address, blk.Tc, tcptimeout)
+			if err != nil {
+				return nil, nil, err
+			}
+			var sc Exchanger
+			if blk.V.Get("withoutBrookProtocol") != "true" {
+				sc, err = NewStreamClient("udp", blk.Password, src, rc, tcptimeout, dstb)
+			}
+			if blk.V.Get("withoutBrookProtocol") == "true" {
+				sc, err = NewSimpleStreamClient("udp", blk.Password, src, rc, tcptimeout, dstb)
+			}
+			if err != nil {
+				rc.Close()
+				return nil, nil, err
+			}
+			return sc, rc, nil
+		}
 		rc, err := QUICDialUDP(src, socks5.ToAddress(dstb[0], dstb[1:len(dstb)-2], dstb[len(dstb)-2:]), blk.Address, blk.Tc, udptimeout)
 		if err != nil {
 			return nil, nil, err

@@ -1,7 +1,5 @@
 # User System
 
-⚠️  Currently, this feature is experimental. At present, only this [brook_linux_amd64.20240606](https://github.com/txthinking/bash/releases/download/v20221005/brook_linux_amd64.20240606) and [tun2brook](https://github.com/txthinking/tun2brook) support it.
-
 This content introduces how to develop a user system with Brook. Your system only needs to focus on two concepts: **Token** and **User API**. To support user system, you **must use brook server/wsserver/wssserver/quicserver with the brook protocol**.
 
 <img src="https://brook.app/images/user-system.png" width="500">
@@ -14,14 +12,14 @@ For example, encrypt user id or make session, and encode in hexadecimal:
 
 ```
 hex_encode(your_encrypt_or_session_function(user id))
-// 3ae6afc9fad94abd8985d8ecc77afb273ae6afc9fad94abd8985d8ecc77afb273ae6afc9fad94abd8985d8ecc77afb27 // 48 bytes token
+// 3ae6afc9fad94abd8985d8ecc77afb273ae6afc9fad94abd8985d8ecc77afb273ae6afc9fad94abd8985d8ecc77afb27
 ```
 
 For example, UUID:
 
 ```javascript
 crypto.randomUUID().replaceAll('-', '')
-// 3ae6afc9fad94abd8985d8ecc77afb27 // 16 bytes token
+// 3ae6afc9fad94abd8985d8ecc77afb27
 ```
 
 ## User API
@@ -79,3 +77,6 @@ You can count the traffic of each user from serverLog
 brook link --server 1.2.3.4:9999 --password hello --token xxx
 ```
 
+## Basic reference implementation
+
+https://github.com/TxThinkingInc/brook-dashboard

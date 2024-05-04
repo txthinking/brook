@@ -74,7 +74,7 @@ func main() {
 		},
 		&cli.StringSliceFlag{
 			Name:  "tag",
-			Usage: "Tag can be used to the process, will be append into log or serverLog, such as: 'key1:value1'",
+			Usage: "Tag can be used to the process, will be append into log or serverLog, such as: 'key1:value1'. All tags will also be appended as query parameters one by one to the userAPI",
 		},
 		&cli.StringFlag{
 			Name:  "dialWithDNS",
@@ -1583,6 +1583,10 @@ func main() {
 					Name:  "udpovertcp",
 					Usage: "When server is brook server, UDP over TCP",
 				},
+				&cli.BoolFlag{
+					Name:  "udpoverstream",
+					Usage: "When server is brook quicserver, UDP over Stream. Note: only brook CLI and tun2brook suppport for now",
+				},
 				&cli.StringFlag{
 					Name:  "address",
 					Usage: "When server is brook wsserver or brook wssserver or brook quicserver, specify address instead of resolving addresses from host, such as 1.2.3.4:443",
@@ -1613,11 +1617,11 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "fragment",
-					Usage: "When server is brook wssserver, split the ClientHello into multiple fragments and then send them one by one with delays (millisecond). The format is min_length:max_length:min_delay:max_delay, cannot be zero, such as 50:100:10:50, Note that: This is an experimental feature, currently only supported by the brook CLI and tun2brook",
+					Usage: "When server is brook wssserver, split the ClientHello into multiple fragments and then send them one by one with delays (millisecond). The format is min_length:max_length:min_delay:max_delay, cannot be zero, such as 50:100:10:50",
 				},
 				&cli.StringFlag{
 					Name:  "token",
-					Usage: "A token represents a user's identity. A string encoded in hexadecimal. Server needs to have --userAPI enabled. Note that: Only supported by the brook GUI and tun2brook",
+					Usage: "A token represents a user's identity. A string encoded in hexadecimal. Server needs to have --userAPI enabled. Note that: Only supported by the brook GUI(except for OpenWrt) and tun2brook",
 				},
 				&cli.BoolFlag{
 					Name:  "example",
@@ -1655,6 +1659,9 @@ func main() {
 				}
 				if c.Bool("udpovertcp") {
 					v.Set("udpovertcp", "true")
+				}
+				if c.Bool("udpoverstream") {
+					v.Set("udpoverstream", "true")
 				}
 				if c.String("address") != "" {
 					v.Set("address", c.String("address"))
