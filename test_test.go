@@ -16,10 +16,12 @@ package brook
 
 import (
 	"log"
+	"net"
 	"testing"
+
+	"github.com/phuslu/iploc"
 )
 
 func TestTest(t *testing.T) {
-	l, err := CAC("/tmp/a")
-	log.Printf("%#v %v\n", l, err)
+	log.Printf("%#v\n", iploc.Country(net.ParseIP("8.8.8.8")))
 }

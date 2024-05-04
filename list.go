@@ -71,9 +71,8 @@ func ListHasIP(c4, c6 []*net.IPNet, i net.IP, c *cache.Cache, geo []string) bool
 		}
 	}
 	if len(geo) != 0 {
-		b := iploc.Country(i)
-		if b != nil {
-			bs := string(b)
+		bs := iploc.Country(i)
+		if bs != "" {
 			for _, v := range geo {
 				if v == bs {
 					if c != nil {

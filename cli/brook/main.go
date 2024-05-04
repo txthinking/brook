@@ -2742,11 +2742,11 @@ func main() {
 				if ip == nil {
 					return errors.New(c.String("ip") + " is not IP")
 				}
-				b := iploc.Country(ip)
-				if b == nil {
+				s := iploc.Country(ip)
+				if s == "" {
 					return errors.New(c.String("ip") + " unknown")
 				}
-				fmt.Println(string(b))
+				fmt.Println(s)
 				return nil
 			},
 		},
