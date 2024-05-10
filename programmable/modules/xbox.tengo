@@ -1,0 +1,25 @@
+// Unlock Xbox country limit
+// [CA]
+
+modules = append(modules, {
+    address: func(m) {
+        if m.domainaddress {
+            if m.domainaddress == "www.xbox.com:443" || m.domainaddress == "xgpuweb.gssv-play-prod.xboxlive.com:443" {
+                if m.network == "tcp" {
+                    return {"mitm": true, "mitmprotocol": "https"}
+                }
+                if m.network == "udp" {
+                    return { "block": true }
+                }
+            }
+        }
+    },
+    httprequest: func(request) {
+        text := import("text")
+        if text.has_prefix(request["URL"], "https://www.xbox.com") || text.has_prefix(request["URL"], "https://xgpuweb.gssv-play-prod.xboxlive.com") {
+            request["X-Forwarded-For"] = "4.2.2.2" // Any country IP you want
+            return request
+        }
+    }
+})
+

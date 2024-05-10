@@ -8,11 +8,12 @@
 
 ## Programmable
 
-```
-Brook GUI will pass different global variables to the script at different times, and the script only needs to assign the processing result to the global variable out
-```
+Brook GUI will pass different _global variables_ to the script at different times, and the script only needs to assign the processing result to the global variable `out`
 
-### Introduction to incoming variables
+- address: We call it address which includes both host and port. For example, an ip address contains an ip and a port; a domain address contains a domain and a port.
+- Fake DNS: Fake DNS can allow you to obtain domain address on `in_address` step. [How Fake DNS works](https://www.txthinking.com/talks/articles/brook-fakedns-en.article)
+
+### Variables
 
 | variable                       | type | condition   | timing                            | description                                       | out type |
 | ------------------------------ | ---- | ----------- | --------------------------------- | ------------------------------------------------- | -------- |
@@ -104,7 +105,53 @@ Brook GUI will pass different global variables to the script at different times,
 
 `out`, must be set to a response
 
-## Write script
+## Module
+
+There are already some modules: https://github.com/txthinking/brook/blob/master/programmable/modules/
+
+### Brook GUI
+
+In Brook GUI, scripts are abstracted into modules, and it will automatically combine [_header.tengo](https://github.com/txthinking/brook/blob/master/programmable/modules/_header.tengo) and [_footer.tengo](https://github.com/txthinking/brook/blob/master/programmable/modules/_footer.tengo), so you only need to write the module itself.
+
+```
+modules = append(modules, {
+    // If you want to predefine multiple brook links, and then programmatically specify which one to connect to, then define `brooklinks` key a function
+    brooklinks: func(m) {
+        // Please refer to the example in `brooklinks.tengo`
+    },
+    // If you want to intercept and handle a DNS query, then define `dnsquery` key a function, `m` is the `in_dnsquery`
+    dnsquery: func(m) {
+        // Please refer to the example in `block_aaaa.tengo`
+    },
+    // If you want to intercept and handle an address, then define `address` key a function, `m` is the `in_address`
+    address: func(m) {
+        // Please refer to the example in `block_google_secure_dns.tengo`
+    },
+    // If you want to intercept and handle a http request, then define `httprequest` key a function, `request` is the `in_httprequest`
+    httprequest: func(request) {
+        // Please refer to the example in `ios_app_downgrade.tengo` or `redirect_google_cn.tengo`
+    },
+    // If you want to intercept and handle a http response, then define `httpresponse` key a function, `request` is the `in_httprequest`, `response` is the `in_httpresponse`
+    httpresponse: func(request, response) {
+        // Please refer to the example in `response_sample.tengo`
+    }
+})
+```
+
+### tun2brook
+
+If you are using tun2brook, you can combine multiple modules into a complete script in the following way. For example:
+
+```
+cat _header.tengo > my.tengo
+
+cat block_google_secure_dns.tengo >> my.tengo
+cat block_aaaa.tengo >> my.tengo
+
+cat _footer.tengo >> my.tengo
+```
+
+## Syntax
 
 [Tengo Language Syntax](https://github.com/d5/tengo/blob/master/docs/tutorial.md)
 
@@ -151,9 +198,9 @@ Library
     * hexencode(s string) => string/error: returns the hexadecimal encoding of src
     ```
 
-## Debug script
+## Debug
 
-It is recommended to use [tun2brook](https://github.com/txthinking/tun2brook) on desktop to debug with `fmt.println`
+If you are writing complex scripts, the GUI may not be convenient for debugging. It is recommended to use [tun2brook](https://github.com/txthinking/tun2brook) on desktop to debug with `fmt.println`
 
 ## Install CA
 

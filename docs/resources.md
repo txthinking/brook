@@ -27,6 +27,6 @@
 | [Socks5 Configurator](https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb) | If you prefer CLI brook client | 
 | [IPvBar](https://chromewebstore.google.com/detail/ipvbar/nepjlegfiihpkcdhlmaebfdfppckonlj) | See domain, IP and country in browser | 
 | [TxThinking SSH](https://www.txthinking.com/ssh.html) | A SSH Terminal |
-| [brook-dashboard](https://github.com/txthinkinginc/brook-dashboard) | A Brook User System |
+| [brook-user-system](https://github.com/txthinkinginc/brook-user-system) | A Brook User System |
 | [TxThinking](https://www.txthinking.com) | Everything |
 

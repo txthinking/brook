@@ -8,7 +8,7 @@ modules = append(modules, {
                 return r
             }
             s := brook.country(r.host)
-            if s == "ZZ" || s == "CN" {
+            if s == "ZZ" || s == "CN" { // All private IPs are ZZ
                 return { bypass: true }
             }
         }

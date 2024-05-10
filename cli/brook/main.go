@@ -158,7 +158,7 @@ func main() {
 		},
 		&cli.StringFlag{
 			Name:  "pid",
-			Usage: "A file path used to store pid",
+			Usage: "A file path used to store pid. Send SIGUSR1 to me to reset the --serverLog file on unix system",
 		},
 	}
 	app.Before = func(c *cli.Context) error {
@@ -1193,16 +1193,6 @@ func main() {
 			},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:    "quicserver",
-					Aliases: []string{"s"},
-					Usage:   "Brook quicserver address, like: quic://google.com:443. Do not omit the port under any circumstances",
-				},
-				&cli.StringFlag{
-					Name:    "password",
-					Aliases: []string{"p"},
-					Usage:   "Brook quicserver password",
-				},
-				&cli.StringFlag{
 					Name:  "link",
 					Usage: "brook link, you can get it via $ brook link. The wssserver and password parameters will be ignored",
 				},
@@ -1236,21 +1226,13 @@ func main() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.Bool("example") {
-					fmt.Println("brook quicclient --quicserver quic://domain.com:9999 --password hello --socks5 127.0.0.1:1080")
+					fmt.Println("brook quicclient --link 'brook://...' --socks5 127.0.0.1:1080")
 					return nil
 				}
-				if c.String("quicserver") == "" && c.String("link") == "" {
+				if c.String("link") == "" {
 					return cli.ShowSubcommandHelp(c)
 				}
-				var link = ""
-				if c.String("quicserver") != "" {
-					v := url.Values{}
-					v.Set("password", c.String("password"))
-					link = brook.Link("quicserver", c.String("quicserver"), v)
-				}
-				if c.String("link") != "" {
-					link = c.String("link")
-				}
+				link := c.String("link")
 				h, p, err := net.SplitHostPort(c.String("socks5"))
 				if err != nil {
 					return err
@@ -1375,6 +1357,9 @@ func main() {
 					}
 					if strings.HasPrefix(c.String("server"), "quic://") {
 						kind = "quicserver"
+					}
+					if kind == "quicserver" {
+						return errors.New("It is recommended to use brook link and specify --udpoverstream")
 					}
 					v := url.Values{}
 					v.Set("password", c.String("password"))
@@ -1514,6 +1499,9 @@ func main() {
 					if strings.HasPrefix(c.String("server"), "quic://") {
 						kind = "quicserver"
 					}
+					if kind == "quicserver" {
+						return errors.New("It is recommended to use brook link and specify --udpoverstream")
+					}
 					v := url.Values{}
 					v.Set("password", c.String("password"))
 					link = brook.Link(kind, c.String("server"), v)
@@ -1585,7 +1573,7 @@ func main() {
 				},
 				&cli.BoolFlag{
 					Name:  "udpoverstream",
-					Usage: "When server is brook quicserver, UDP over Stream. Note: only brook CLI and tun2brook suppport for now",
+					Usage: "When server is brook quicserver, UDP over Stream. Under normal circumstances, you need this parameter because the max datagram size for QUIC is very small. Note: only brook CLI and tun2brook suppport for now",
 				},
 				&cli.StringFlag{
 					Name:  "address",
