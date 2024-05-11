@@ -79,4 +79,4 @@ brook link --server 1.2.3.4:9999 --password hello --token xxx
 
 ## Basic reference implementation
 
-https://github.com/TxThinkingInc/brook-dashboard
+https://github.com/TxThinkingInc/brook-user-system
