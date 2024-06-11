@@ -6,6 +6,11 @@ modules = append(modules, {
     dnsquery: func(m) {
         text := import("text")
         l := [
+            "analytics.google.com",
+            "apple.com",
+            "comodoca.com",
+            "autonavi.com",
+            "giphy.com",
             "facebook.com",
             "fbcdn.net",
             "facebook.net",
