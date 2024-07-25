@@ -5,7 +5,7 @@
 | [nami](https://github.com/txthinking/nami) | A clean and tidy decentralized package manager |
 | [joker](https://github.com/txthinking/joker) | Joker can turn process into daemon. Zero-Configuration |
 | [nico](https://github.com/txthinking/nico) | Nico can work with brook wsserver together |
-| [zhen](https://github.com/txthinking/zhen) | zhen - process and cron manager |
+| [z](https://github.com/txthinking/z) | z - process manager |
 | [tun2brook](https://github.com/txthinking/tun2brook) | Proxy all traffic just one line command |
 | [mad](https://github.com/txthinking/mad) | Generate root CA and derivative certificate for any domains and any IPs |
 | [hancock](https://github.com/txthinking/hancock) | Manage multiple remote servers and execute commands remotely |

@@ -262,16 +262,4 @@ brook relay --from :9999 --to 1.2.3.4:9999
 brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
 ```
 
-## brook pac creates pac server
-
-```
-brook pac --listen 127.0.0.1:8080 --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
-```
-
-## brook pac creates pac file
-
-```
-brook pac --file proxy.pac --proxy 'SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT' --bypassDomainList ...
-```
-
 ## There are countless examples; for more feature suggestions, it's best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...

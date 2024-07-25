@@ -14,7 +14,7 @@ nami install brook
 brook server -l :9999 -p hello
 ```
 
-## GUI Client
+## Client
 
 | iOS | Android      | Mac    |Windows      |Linux        |OpenWrt      |
 | --- | --- | --- | --- | --- | --- |
