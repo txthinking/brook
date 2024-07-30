@@ -116,6 +116,8 @@ To avoid the ineffectiveness of Fake DNS, please refer to [this article](https:/
    3. The Brook client then returns the data to the app
 7. The app receives the response data
 
+To avoid the ineffectiveness of Fake DNS, please refer to [this article](https://www.txthinking.com/talks/articles/brook-fakedns-en.article).
+
 ## Handle Variable Trigger
 
 - When the `in_brooklinks` variable is triggered:
