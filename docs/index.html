@@ -1407,7 +1407,7 @@
 <li>Not all apps will use this proxy, whether they use it is up to the app itself.</li>
 <li>Generally, all UDP protocols will not go through this proxy, such as http3.</li>
 </ol>
-<p>For the specifics of socks5 and http proxy, you can read <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy.article">this article</a>.</p>
+<p>For the specifics of socks5 and http proxy, you can read <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article">this article</a>.</p>
 <h2 id="gui">GUI</h2>
 <p>The GUI client does not use socks5 and http proxy mode, so there is no issue with some software not using the system proxy. Instead, it uses a virtual network card to take over the entire system&#39;s network, including UDP-based http3. Moreover, Brook allows us to control network requests programmatically, so it is necessary to have basic knowledge of network requests.</p>
 <h2 id="without-brook-basic-knowledge-of-network-requests">Without Brook: Basic Knowledge of Network Requests</h2>
@@ -1451,7 +1451,7 @@
 <li>Fake DNS not enabled: in this case, the Brook client will not attempt to parse the domain name from the request sent to the system DNS and will treat it as a normal request sent to an IP address.</li>
 <li>Even with Fake DNS enabled, but the app uses the system&#39;s secure DNS or the app&#39;s own secure DNS: in this case, the Brook client cannot parse the domain name from the request sent to the secure DNS and will treat it as a normal request sent to an IP address.</li>
 </ul>
-<p>To avoid the ineffectiveness of Fake DNS, please refer to <a href="https://www.txthinking.com/talks/articles/brook-fakedns.article">this article</a>.</p>
+<p>To avoid the ineffectiveness of Fake DNS, please refer to <a href="https://www.txthinking.com/talks/articles/brook-fakedns-en.article">this article</a>.</p>
 <h2 id="with-brook-fake-dns-off">With Brook: Fake DNS Off</h2>
 <ol>
 <li>When an app requests a domain address, such as <code>google.com:443</code></li>
@@ -2019,7 +2019,7 @@ Functions
 <p>Some software may not read the system CA，you can use <code>curl --cacert ~/.nami/bin/ca.pem</code> to debug</p>
 </blockquote>
 <h2 id="openwrt">OpenWrt</h2>
-<p><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">https://www.txthinking.com/talks/articles/brook-openwrt-en.article</a></p>
+<p><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">Brook OpenWRT: Perfectly supports IPv4/IPv6/TCP/UDP</a></p>
 <h2 id="ipv6">IPv6</h2>
 <p>Brook&#39;s stance on IPv6 is positive, if your server or local environment doesn&#39;t have an IPv6 stack, read <a href="https://www.txthinking.com/talks/articles/brook-ipv6-en.article">this article</a>.</p>
 <h2 id="troubleshooting-steps">Troubleshooting Steps</h2>
@@ -2042,7 +2042,7 @@ Functions
 <li>Test TCP and UDP: Use the <code>Echo Client</code> for testing. If the echo server entered is a domain address, it will trigger DNS resolution.</li>
 <li>Ensure the effectiveness of Fake DNS: Fake DNS is essential to do something with a domain or domain address. Generally, enable the <code>Block Google Secure DNS</code> module is sufficient. For other cases, refer to <a href="https://www.txthinking.com/talks/articles/brook-fakedns-en.article">this article</a>.</li>
 <li>If your local or Server does not support IPv6: Refer to <a href="https://www.txthinking.com/talks/articles/brook-ipv6-en.article">this article</a>.</li>
-<li>macOS App Mode: Refer to <a href="https://www.txthinking.com/talks/articles/macos-app-mode.article">this article</a>.</li>
+<li>macOS App Mode: Refer to <a href="https://www.txthinking.com/talks/articles/macos-app-mode-en.article">this article</a>.</li>
 <li>Windows:<ul>
 <li>The client can pass the tests without any special configuration on a brand-new, genuine Windows 11.</li>
 <li>Be aware that the Windows system time is often incorrect.</li>

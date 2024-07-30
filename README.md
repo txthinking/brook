@@ -40,7 +40,7 @@ Before discussing the GUI client, let's first talk about the command line client
 1. Not all apps will use this proxy, whether they use it is up to the app itself.
 2. Generally, all UDP protocols will not go through this proxy, such as http3.
 
-For the specifics of socks5 and http proxy, you can read [this article](https://www.txthinking.com/talks/articles/socks5-and-http-proxy.article).
+For the specifics of socks5 and http proxy, you can read [this article](https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article).
 
 ## GUI
 
@@ -82,7 +82,7 @@ However, if the following situations occur, the domain name will not/cannot be p
 - Fake DNS not enabled: in this case, the Brook client will not attempt to parse the domain name from the request sent to the system DNS and will treat it as a normal request sent to an IP address.
 - Even with Fake DNS enabled, but the app uses the system's secure DNS or the app's own secure DNS: in this case, the Brook client cannot parse the domain name from the request sent to the secure DNS and will treat it as a normal request sent to an IP address.
 
-To avoid the ineffectiveness of Fake DNS, please refer to [this article](https://www.txthinking.com/talks/articles/brook-fakedns.article).
+To avoid the ineffectiveness of Fake DNS, please refer to [this article](https://www.txthinking.com/talks/articles/brook-fakedns-en.article).
 
 ## With Brook: Fake DNS Off
 
@@ -345,7 +345,7 @@ https://txthinking.github.io/ca/ca.pem
 
 ## OpenWrt
 
-https://www.txthinking.com/talks/articles/brook-openwrt-en.article
+[Brook OpenWRT: Perfectly supports IPv4/IPv6/TCP/UDP](https://www.txthinking.com/talks/articles/brook-openwrt-en.article)
 
 ## IPv6
 
@@ -369,7 +369,7 @@ Brook's stance on IPv6 is positive, if your server or local environment doesn't 
 7. Test TCP and UDP: Use the `Echo Client` for testing. If the echo server entered is a domain address, it will trigger DNS resolution.
 8. Ensure the effectiveness of Fake DNS: Fake DNS is essential to do something with a domain or domain address. Generally, enable the `Block Google Secure DNS` module is sufficient. For other cases, refer to [this article](https://www.txthinking.com/talks/articles/brook-fakedns-en.article).
 9. If your local or Server does not support IPv6: Refer to [this article](https://www.txthinking.com/talks/articles/brook-ipv6-en.article).
-10. macOS App Mode: Refer to [this article](https://www.txthinking.com/talks/articles/macos-app-mode.article).
+10. macOS App Mode: Refer to [this article](https://www.txthinking.com/talks/articles/macos-app-mode-en.article).
 11. Windows:
     - The client can pass the tests without any special configuration on a brand-new, genuine Windows 11.
     - Be aware that the Windows system time is often incorrect.
