@@ -23,12 +23,20 @@ brook server -l :9999 -p hello
 
 ## Client
 
-| iOS | Android      | Mac    |Windows      |Linux        |OpenWrt      |
-| --- | --- | --- | --- | --- | --- |
-| [![](https://brook.app/images/appstore.png)](https://apps.apple.com/us/app/brook-network-tool/id1216002642) | [![](https://brook.app/images/android.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.apk) | [![](https://brook.app/images/mac.png)](https://apps.apple.com/us/app/brook-network-tool/id1216002642) | [![Windows](https://brook.app/images/windows.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.msix) | [![](https://brook.app/images/linux.png)](https://github.com/txthinking/brook/releases/latest/download/Brook.bin) | [![OpenWrt](https://brook.app/images/openwrt.png)](https://github.com/txthinking/brook/releases) |
-| / | / | [App Mode](https://www.txthinking.com/talks/articles/macos-app-mode-en.article) | [How](https://www.txthinking.com/talks/articles/msix-brook-en.article) | [How](https://www.txthinking.com/talks/articles/linux-app-brook-en.article) | [How](https://www.txthinking.com/talks/articles/brook-openwrt-en.article) |
+- [iOS](https://apps.apple.com/us/app/brook-network-tool/id1216002642)
+- [Android](https://github.com/txthinking/brook/releases/latest/download/Brook.apk)
+- [macOS](https://apps.apple.com/us/app/brook-network-tool/id1216002642)
+- [Windows](https://github.com/txthinking/brook/releases/latest/download/Brook.msix)
+- [Linux](https://github.com/txthinking/brook/releases/latest/download/Brook.bin)
+- [OpenWrt](https://github.com/txthinking/brook/releases)
 
 > You may want to use `brook link` to customize some parameters
+
+- [About App Mode on macOS](https://www.txthinking.com/talks/articles/macos-app-mode-en.article)
+- [How to install Brook on Windows?](https://www.txthinking.com/talks/articles/msix-brook-en.article)
+- [How to install Brook on Linux](https://www.txthinking.com/talks/articles/linux-app-brook-en.article)
+- [How to install Brook on OpenWrt](https://www.txthinking.com/talks/articles/brook-openwrt-en.article)
+
 # Client
 
 Brook GUI will pass different _global variables_ to the script at different times, and the script only needs to assign the processing result to the global variable `out`
@@ -449,7 +457,7 @@ Brook [GLOBAL OPTIONS] command [COMMAND OPTIONS] [ARGUMENTS...]
 
 - **--dialWithSocks5Username**="": If there is
 
-- **--help, -h**: show help
+
 
 - **--ipLimitInterval**="": Interval (s) for ipLimitMax (default: 0)
 
@@ -1028,11 +1036,11 @@ Generate markdown page
 
 - **--file, -f**="": Write to file, default print to stdout
 
-- **--help, -h**: show help
 
-### help, h
 
-Shows a list of commands or help for one command
+
+
+
 
 ## manpage
 
@@ -1045,6 +1053,7 @@ Generate man.1 page
 ## help, h
 
 Shows a list of commands or help for one command
+
 # Examples
 
 List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself

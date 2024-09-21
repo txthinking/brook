@@ -1216,12 +1216,9 @@
 <li><a href="#echoclient">echoclient</a></li>
 <li><a href="#ipcountry">ipcountry</a></li>
 <li><a href="#completion">completion</a></li>
-<li><a href="#mdpage">mdpage</a><ul>
-<li><a href="#help-h">help, h</a></li>
-</ul>
-</li>
+<li><a href="#mdpage">mdpage</a></li>
 <li><a href="#manpage">manpage</a></li>
-<li><a href="#help-h-1">help, h</a></li>
+<li><a href="#help-h">help, h</a></li>
 </ul>
 </li>
 <li><a href="#examples">Examples</a><ul>
@@ -1319,12 +1316,9 @@
 <li><a href="#echoclient">echoclient</a></li>
 <li><a href="#ipcountry">ipcountry</a></li>
 <li><a href="#completion">completion</a></li>
-<li><a href="#mdpage">mdpage</a><ul>
-<li><a href="#help-h">help, h</a></li>
-</ul>
-</li>
+<li><a href="#mdpage">mdpage</a></li>
 <li><a href="#manpage">manpage</a></li>
-<li><a href="#help-h-1">help, h</a></li>
+<li><a href="#help-h">help, h</a></li>
 </ul>
 </li>
 <li><a href="#examples">Examples</a><ul>
@@ -1368,37 +1362,23 @@
 <pre><code>brook server -l :9999 -p hello
 </code></pre>
 <h2 id="client">Client</h2>
-<table>
-<thead>
-<tr>
-<th>iOS</th>
-<th>Android</th>
-<th>Mac</th>
-<th>Windows</th>
-<th>Linux</th>
-<th>OpenWrt</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="https://apps.apple.com/us/app/brook-network-tool/id1216002642"><img src="https://brook.app/images/appstore.png" alt=""></a></td>
-<td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk"><img src="https://brook.app/images/android.png" alt=""></a></td>
-<td><a href="https://apps.apple.com/us/app/brook-network-tool/id1216002642"><img src="https://brook.app/images/mac.png" alt=""></a></td>
-<td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.msix"><img src="https://brook.app/images/windows.png" alt="Windows"></a></td>
-<td><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin"><img src="https://brook.app/images/linux.png" alt=""></a></td>
-<td><a href="https://github.com/txthinking/brook/releases"><img src="https://brook.app/images/openwrt.png" alt="OpenWrt"></a></td>
-</tr>
-<tr>
-<td>/</td>
-<td>/</td>
-<td><a href="https://www.txthinking.com/talks/articles/macos-app-mode-en.article">App Mode</a></td>
-<td><a href="https://www.txthinking.com/talks/articles/msix-brook-en.article">How</a></td>
-<td><a href="https://www.txthinking.com/talks/articles/linux-app-brook-en.article">How</a></td>
-<td><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">How</a></td>
-</tr>
-</tbody></table>
+<ul>
+<li><a href="https://apps.apple.com/us/app/brook-network-tool/id1216002642">iOS</a></li>
+<li><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.apk">Android</a></li>
+<li><a href="https://apps.apple.com/us/app/brook-network-tool/id1216002642">macOS</a></li>
+<li><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.msix">Windows</a></li>
+<li><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin">Linux</a></li>
+<li><a href="https://github.com/txthinking/brook/releases">OpenWrt</a></li>
+</ul>
 <blockquote>
 <p>You may want to use <code>brook link</code> to customize some parameters</p>
 </blockquote>
+<ul>
+<li><a href="https://www.txthinking.com/talks/articles/macos-app-mode-en.article">About App Mode on macOS</a></li>
+<li><a href="https://www.txthinking.com/talks/articles/msix-brook-en.article">How to install Brook on Windows?</a></li>
+<li><a href="https://www.txthinking.com/talks/articles/linux-app-brook-en.article">How to install Brook on Linux</a></li>
+<li><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">How to install Brook on OpenWrt</a></li>
+</ul>
 <h1 id="client-1">Client</h1>
 <p>Brook GUI will pass different <em>global variables</em> to the script at different times, and the script only needs to assign the processing result to the global variable <code>out</code></p>
 <h2 id="cli">CLI</h2>
@@ -2119,8 +2099,6 @@ Functions
 </li>
 <li><p><strong>--dialWithSocks5Username</strong>=&quot;&quot;: If there is</p>
 </li>
-<li><p><strong>--help, -h</strong>: show help</p>
-</li>
 <li><p><strong>--ipLimitInterval</strong>=&quot;&quot;: Interval (s) for ipLimitMax (default: 0)</p>
 </li>
 <li><p><strong>--ipLimitMax</strong>=&quot;&quot;: Limit the number of client IP addresses, be careful when using this parameter, as the client may have dynamic IP. Works with server/wsserver/wssserver/quicserver (default: 0)</p>
@@ -2696,11 +2674,7 @@ Functions
 </li>
 <li><p><strong>--file, -f</strong>=&quot;&quot;: Write to file, default print to stdout</p>
 </li>
-<li><p><strong>--help, -h</strong>: show help</p>
-</li>
 </ul>
-<h3 id="help-h">help, h</h3>
-<p>Shows a list of commands or help for one command</p>
 <h2 id="manpage">manpage</h2>
 <p>Generate man.1 page</p>
 <ul>
@@ -2709,7 +2683,7 @@ Functions
 <li><p><strong>--file, -f</strong>=&quot;&quot;: Write to file, default print to stdout. You should put to /path/to/man/man1/brook.1 on linux or /usr/local/share/man/man1/brook.1 on macos</p>
 </li>
 </ul>
-<h2 id="help-h-1">help, h</h2>
+<h2 id="help-h">help, h</h2>
 <p>Shows a list of commands or help for one command</p>
 <h1 id="examples">Examples</h1>
 <p>List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself</p>
