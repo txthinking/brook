@@ -77,6 +77,6 @@ You can count the traffic of each user from serverLog
 brook link --server 1.2.3.4:9999 --password hello --token xxx
 ```
 
-## Basic reference implementation
+## A sample implementation
 
-https://github.com/TxThinkingInc/brook-user-system
+https://github.com/TxThinkingInc/brook-store
