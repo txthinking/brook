@@ -53,7 +53,7 @@ func main() {
 	df := func() {}
 	app := cli.NewApp()
 	app.Name = "Brook"
-	app.Version = "20240606"
+	app.Version = "20250202"
 	app.Usage = "A cross-platform programmable network tool"
 	app.Authors = []*cli.Author{
 		{
