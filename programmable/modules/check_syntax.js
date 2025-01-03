@@ -1,10 +1,18 @@
-#!/usr/bin/env jb
+#!/usr/bin/env bun
 
-var s = $1`ls`.split('\n').filter(v => !v.startsWith('_') && v.endsWith('.tengo')).map(v => $1(`cat ${v}`).replaceAll('import("brook")', 'undefined')).join('\n')
+import { $ } from 'bun'
+import * as fs from 'node:fs/promises'
 
-var h = $1`cat _header.tengo`
-var f = $1`cat _footer.tengo`
-write_file('/tmp/_.tengo', `
+var s = await $`ls`.text()
+var l = s.split('\n').filter(v => !v.startsWith('_') && v.endsWith('.tengo'))
+for (var i = 0; i < l.length; i++) {
+    l[i] = (await $`cat ${l[i]}`.text()).replaceAll('import("brook")', 'undefined')
+}
+s = l.join('\n')
+
+var h = await $`cat _header.tengo`.text()
+var f = await $`cat _footer.tengo`.text()
+await fs.writeFile('/tmp/_.tengo', `
 in_brooklinks := undefined
 in_dnsquery := undefined
 in_address := undefined
@@ -14,4 +22,4 @@ ${h}
 ${s}
 ${f}
 `)
-$1`tengo /tmp/_.tengo`
+await $`tengo /tmp/_.tengo`

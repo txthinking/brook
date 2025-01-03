@@ -1160,28 +1160,41 @@
 <li><a href="#client">Client</a></li>
 </ul>
 </li>
-<li><a href="#client-1">Client</a><ul>
-<li><a href="#cli">CLI</a></li>
-<li><a href="#gui">GUI</a></li>
-<li><a href="#without-brook-basic-knowledge-of-network-requests">Without Brook: Basic Knowledge of Network Requests</a></li>
-<li><a href="#with-brook-fake-dns-on">With Brook: Fake DNS On</a></li>
-<li><a href="#with-brook-fake-dns-off">With Brook: Fake DNS Off</a></li>
-<li><a href="#with-brook-fake-dns-on-but-the-app-uses-the-systems-secure-dns-or-its-own-secure-dns">With Brook: Fake DNS On, But the App Uses the System&#39;s Secure DNS or Its Own Secure DNS</a></li>
-<li><a href="#handle-variable-trigger">Handle Variable Trigger</a></li>
+<li><a href="#server-1">Server</a><ul>
+<li><a href="#brook-dns-server">Brook DNS Server</a></li>
+<li><a href="#brook-server">Brook Server</a></li>
 <li><a href="#variables">Variables</a></li>
+<li><a href="#in_dnsservers">in_dnsservers</a></li>
+<li><a href="#in_dohservers">in_dohservers</a></li>
 <li><a href="#in_brooklinks">in_brooklinks</a></li>
 <li><a href="#in_dnsquery">in_dnsquery</a></li>
 <li><a href="#in_address">in_address</a></li>
+</ul>
+</li>
+<li><a href="#client-1">Client</a><ul>
+<li><a href="#cli">CLI</a></li>
+<li><a href="#gui">GUI</a></li>
+<li><a href="#without-brook">Without Brook</a></li>
+<li><a href="#with-brook">With Brook</a></li>
+<li><a href="#variables-1">Variables</a></li>
+<li><a href="#in_brooklinks-1">in_brooklinks</a></li>
+<li><a href="#in_dnsquery-1">in_dnsquery</a></li>
+<li><a href="#in_address-1">in_address</a></li>
 <li><a href="#in_httprequest">in_httprequest</a></li>
 <li><a href="#in_httpresponse">in_httpresponse</a></li>
 <li><a href="#modules">Modules</a></li>
-<li><a href="#tun2brook">tun2brook</a></li>
-<li><a href="#syntax">Syntax</a></li>
+<li><a href="#ipio">ipio</a></li>
+<li><a href="#openwrt">openwrt</a></li>
 <li><a href="#debug">Debug</a></li>
 <li><a href="#ca">CA</a></li>
-<li><a href="#openwrt">OpenWrt</a></li>
 <li><a href="#ipv6">IPv6</a></li>
 <li><a href="#troubleshooting-steps">Troubleshooting Steps</a></li>
+</ul>
+</li>
+<li><a href="#other">Other</a><ul>
+<li><a href="#script-syntax">Script Syntax</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#resources">Resources</a></li>
 </ul>
 </li>
 <li><a href="#cli-documentation">CLI Documentation</a></li>
@@ -1199,8 +1212,8 @@
 <li><a href="#quicclient">quicclient</a></li>
 <li><a href="#relayoverbrook">relayoverbrook</a></li>
 <li><a href="#dnsserveroverbrook">dnsserveroverbrook</a></li>
-<li><a href="#link">link</a></li>
 <li><a href="#connect">connect</a></li>
+<li><a href="#link">link</a></li>
 <li><a href="#relay">relay</a></li>
 <li><a href="#dnsserver">dnsserver</a></li>
 <li><a href="#dnsclient">dnsclient</a></li>
@@ -1209,7 +1222,6 @@
 <li><a href="#dhcpserver">dhcpserver</a></li>
 <li><a href="#socks5">socks5</a></li>
 <li><a href="#socks5tohttp">socks5tohttp</a></li>
-<li><a href="#pac">pac</a></li>
 <li><a href="#testsocks5">testsocks5</a></li>
 <li><a href="#testbrook">testbrook</a></li>
 <li><a href="#echoserver">echoserver</a></li>
@@ -1221,30 +1233,6 @@
 <li><a href="#help-h">help, h</a></li>
 </ul>
 </li>
-<li><a href="#examples">Examples</a><ul>
-<li><a href="#run-brook-server">Run brook server</a></li>
-<li><a href="#run-brook-wsserver">Run brook wsserver</a></li>
-<li><a href="#run-brook-wssserver-automatically-certificate">Run brook wssserver: automatically certificate</a></li>
-<li><a href="#run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority">Run brook wssserver Use a certificate issued by an existing trust authority</a></li>
-<li><a href="#run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain">Run brook wssserver issue untrusted certificates yourself, any domain</a></li>
-<li><a href="#withoutbrookprotocol">withoutBrookProtocol</a></li>
-<li><a href="#withoutbrookprotocol-automatically-certificate">withoutBrookProtocol automatically certificate</a></li>
-<li><a href="#withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority">withoutBrookProtocol Use a certificate issued by an existing trust authority</a></li>
-<li><a href="#withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain">withoutBrookProtocol issue untrusted certificates yourself, any domain</a></li>
-<li><a href="#run-brook-socks5-a-stand-alone-standard-socks5-server">Run brook socks5, A stand-alone standard socks5 server</a></li>
-<li><a href="#run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server">Run brook socks5 with username and password. A stand-alone standard socks5 server</a></li>
-<li><a href="#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver">brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.</a></li>
-<li><a href="#brook-dnsserveroverbrook-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver">brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.</a></li>
-<li><a href="#brook-openwrt-router-perfectly-supports-ipv4ipv6tcpudp-native-ipv6">Brook OpenWRT Router: Perfectly supports IPv4/IPv6/TCP/UDP. Native IPv6</a></li>
-<li><a href="#turn-macos-into-a-gateway-with-brook">Turn macOS into a Gateway with Brook</a></li>
-<li><a href="#turn-windows-into-a-gateway-with-brook">Turn Windows into a Gateway with Brook</a></li>
-<li><a href="#turn-linux-into-a-gateway-with-brook">Turn Linux into a Gateway with Brook</a></li>
-<li><a href="#brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server">brook relay can relay a address to a remote address. It can relay any tcp and udp server</a></li>
-<li><a href="#brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy">brook socks5tohttp can convert a socks5 to a http proxy</a></li>
-<li><a href="#there-are-countless-examples-for-more-feature-suggestions-its-best-to-look-at-the-commands-and-parameters-in-the-cli-documentation-one-by-one-and-blog-youtube">There are countless examples; for more feature suggestions, it&#39;s best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...</a></li>
-</ul>
-</li>
-<li><a href="#resources">Resources</a></li>
 </ul>
 
     </div>
@@ -1260,28 +1248,41 @@
 <li><a href="#client">Client</a></li>
 </ul>
 </li>
-<li><a href="#client-1">Client</a><ul>
-<li><a href="#cli">CLI</a></li>
-<li><a href="#gui">GUI</a></li>
-<li><a href="#without-brook-basic-knowledge-of-network-requests">Without Brook: Basic Knowledge of Network Requests</a></li>
-<li><a href="#with-brook-fake-dns-on">With Brook: Fake DNS On</a></li>
-<li><a href="#with-brook-fake-dns-off">With Brook: Fake DNS Off</a></li>
-<li><a href="#with-brook-fake-dns-on-but-the-app-uses-the-systems-secure-dns-or-its-own-secure-dns">With Brook: Fake DNS On, But the App Uses the System&#39;s Secure DNS or Its Own Secure DNS</a></li>
-<li><a href="#handle-variable-trigger">Handle Variable Trigger</a></li>
+<li><a href="#server-1">Server</a><ul>
+<li><a href="#brook-dns-server">Brook DNS Server</a></li>
+<li><a href="#brook-server">Brook Server</a></li>
 <li><a href="#variables">Variables</a></li>
+<li><a href="#in_dnsservers">in_dnsservers</a></li>
+<li><a href="#in_dohservers">in_dohservers</a></li>
 <li><a href="#in_brooklinks">in_brooklinks</a></li>
 <li><a href="#in_dnsquery">in_dnsquery</a></li>
 <li><a href="#in_address">in_address</a></li>
+</ul>
+</li>
+<li><a href="#client-1">Client</a><ul>
+<li><a href="#cli">CLI</a></li>
+<li><a href="#gui">GUI</a></li>
+<li><a href="#without-brook">Without Brook</a></li>
+<li><a href="#with-brook">With Brook</a></li>
+<li><a href="#variables-1">Variables</a></li>
+<li><a href="#in_brooklinks-1">in_brooklinks</a></li>
+<li><a href="#in_dnsquery-1">in_dnsquery</a></li>
+<li><a href="#in_address-1">in_address</a></li>
 <li><a href="#in_httprequest">in_httprequest</a></li>
 <li><a href="#in_httpresponse">in_httpresponse</a></li>
 <li><a href="#modules">Modules</a></li>
-<li><a href="#tun2brook">tun2brook</a></li>
-<li><a href="#syntax">Syntax</a></li>
+<li><a href="#ipio">ipio</a></li>
+<li><a href="#openwrt">openwrt</a></li>
 <li><a href="#debug">Debug</a></li>
 <li><a href="#ca">CA</a></li>
-<li><a href="#openwrt">OpenWrt</a></li>
 <li><a href="#ipv6">IPv6</a></li>
 <li><a href="#troubleshooting-steps">Troubleshooting Steps</a></li>
+</ul>
+</li>
+<li><a href="#other">Other</a><ul>
+<li><a href="#script-syntax">Script Syntax</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#resources">Resources</a></li>
 </ul>
 </li>
 <li><a href="#cli-documentation">CLI Documentation</a></li>
@@ -1299,8 +1300,8 @@
 <li><a href="#quicclient">quicclient</a></li>
 <li><a href="#relayoverbrook">relayoverbrook</a></li>
 <li><a href="#dnsserveroverbrook">dnsserveroverbrook</a></li>
-<li><a href="#link">link</a></li>
 <li><a href="#connect">connect</a></li>
+<li><a href="#link">link</a></li>
 <li><a href="#relay">relay</a></li>
 <li><a href="#dnsserver">dnsserver</a></li>
 <li><a href="#dnsclient">dnsclient</a></li>
@@ -1309,7 +1310,6 @@
 <li><a href="#dhcpserver">dhcpserver</a></li>
 <li><a href="#socks5">socks5</a></li>
 <li><a href="#socks5tohttp">socks5tohttp</a></li>
-<li><a href="#pac">pac</a></li>
 <li><a href="#testsocks5">testsocks5</a></li>
 <li><a href="#testbrook">testbrook</a></li>
 <li><a href="#echoserver">echoserver</a></li>
@@ -1321,30 +1321,6 @@
 <li><a href="#help-h">help, h</a></li>
 </ul>
 </li>
-<li><a href="#examples">Examples</a><ul>
-<li><a href="#run-brook-server">Run brook server</a></li>
-<li><a href="#run-brook-wsserver">Run brook wsserver</a></li>
-<li><a href="#run-brook-wssserver-automatically-certificate">Run brook wssserver: automatically certificate</a></li>
-<li><a href="#run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority">Run brook wssserver Use a certificate issued by an existing trust authority</a></li>
-<li><a href="#run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain">Run brook wssserver issue untrusted certificates yourself, any domain</a></li>
-<li><a href="#withoutbrookprotocol">withoutBrookProtocol</a></li>
-<li><a href="#withoutbrookprotocol-automatically-certificate">withoutBrookProtocol automatically certificate</a></li>
-<li><a href="#withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority">withoutBrookProtocol Use a certificate issued by an existing trust authority</a></li>
-<li><a href="#withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain">withoutBrookProtocol issue untrusted certificates yourself, any domain</a></li>
-<li><a href="#run-brook-socks5-a-stand-alone-standard-socks5-server">Run brook socks5, A stand-alone standard socks5 server</a></li>
-<li><a href="#run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server">Run brook socks5 with username and password. A stand-alone standard socks5 server</a></li>
-<li><a href="#brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver">brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.</a></li>
-<li><a href="#brook-dnsserveroverbrook-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver">brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.</a></li>
-<li><a href="#brook-openwrt-router-perfectly-supports-ipv4ipv6tcpudp-native-ipv6">Brook OpenWRT Router: Perfectly supports IPv4/IPv6/TCP/UDP. Native IPv6</a></li>
-<li><a href="#turn-macos-into-a-gateway-with-brook">Turn macOS into a Gateway with Brook</a></li>
-<li><a href="#turn-windows-into-a-gateway-with-brook">Turn Windows into a Gateway with Brook</a></li>
-<li><a href="#turn-linux-into-a-gateway-with-brook">Turn Linux into a Gateway with Brook</a></li>
-<li><a href="#brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server">brook relay can relay a address to a remote address. It can relay any tcp and udp server</a></li>
-<li><a href="#brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy">brook socks5tohttp can convert a socks5 to a http proxy</a></li>
-<li><a href="#there-are-countless-examples-for-more-feature-suggestions-its-best-to-look-at-the-commands-and-parameters-in-the-cli-documentation-one-by-one-and-blog-youtube">There are countless examples; for more feature suggestions, it&#39;s best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...</a></li>
-</ul>
-</li>
-<li><a href="#resources">Resources</a></li>
 </ul>
 
             </div>
@@ -1368,171 +1344,73 @@
 <li><a href="https://apps.apple.com/us/app/brook-network-tool/id1216002642">macOS</a></li>
 <li><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.msix">Windows</a></li>
 <li><a href="https://github.com/txthinking/brook/releases/latest/download/Brook.bin">Linux</a></li>
-<li><a href="https://github.com/txthinking/brook/releases">OpenWrt</a></li>
+<li><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">OpenWrt</a></li>
 </ul>
 <blockquote>
 <p>You may want to use <code>brook link</code> to customize some parameters</p>
 </blockquote>
 <ul>
 <li><a href="https://www.txthinking.com/talks/articles/macos-app-mode-en.article">About App Mode on macOS</a></li>
-<li><a href="https://www.txthinking.com/talks/articles/msix-brook-en.article">How to install Brook on Windows?</a></li>
+<li><a href="https://www.txthinking.com/talks/articles/msix-brook-en.article">How to install Brook on Windows</a></li>
 <li><a href="https://www.txthinking.com/talks/articles/linux-app-brook-en.article">How to install Brook on Linux</a></li>
 <li><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">How to install Brook on OpenWrt</a></li>
 </ul>
-<h1 id="client-1">Client</h1>
-<p>Brook GUI will pass different <em>global variables</em> to the script at different times, and the script only needs to assign the processing result to the global variable <code>out</code></p>
-<h2 id="cli">CLI</h2>
-<p>Before discussing the GUI client, let&#39;s first talk about the command line client <code>brook</code>. As we know, after you have deployed the server, you can use the command line client <code>brook</code> to create a local socks5 proxy or http proxy on your machine, and then configure it in your system proxy settings or in your browser to use this proxy. However:</p>
-<ol>
-<li>Not all apps will use this proxy, whether they use it is up to the app itself.</li>
-<li>Generally, all UDP protocols will not go through this proxy, such as http3.</li>
-</ol>
-<p>For the specifics of socks5 and http proxy, you can read <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article">this article</a>.</p>
-<h2 id="gui">GUI</h2>
-<p>The GUI client does not use socks5 and http proxy mode, so there is no issue with some software not using the system proxy. Instead, it uses a virtual network card to take over the entire system&#39;s network, including UDP-based http3. Moreover, Brook allows us to control network requests programmatically, so it is necessary to have basic knowledge of network requests.</p>
-<h2 id="without-brook-basic-knowledge-of-network-requests">Without Brook: Basic Knowledge of Network Requests</h2>
-<blockquote>
-<p>Note: When we talk about addresses, we mean addresses that include the port number, such as a domain address: <code>google.com:443</code>, or an IP address: <code>8.8.8.8:53</code></p>
-</blockquote>
-<ol>
-<li>When an app requests a domain address, such as <code>google.com:443</code></li>
-<li>It will first perform a DNS resolution, which means that the app will send a network request to the system-configured DNS, such as <code>8.8.8.8:53</code>, to inquire about the IP of <code>google.com</code><ol>
-<li>The system DNS will return the IP of <code>google.com</code>, such as <code>1.2.3.4</code>, to the app</li>
-</ol>
-</li>
-<li>The app will combine the IP and port into an IP address, such as: <code>1.2.3.4:443</code></li>
-<li>The app makes a network request to this IP address <code>1.2.3.4:443</code></li>
-<li>The app receives the response data</li>
-</ol>
-<p>In the above process, the app actually makes two network requests: one to the IP address <code>8.8.8.8:53</code> and another to the IP address <code>1.2.3.4:443</code>. In other words, the domain name is essentially an alias for the IP, and must obtain the domain&#39;s IP to establish a connection.</p>
-<h2 id="with-brook-fake-dns-on">With Brook: Fake DNS On</h2>
-<p>Brook has a Fake DNS feature, which can parse the domain name out of the query requests that an app sends to the system DNS and decide how to respond to the app.</p>
-<ol>
-<li>When an app requests a domain name address, such as <code>google.com:443</code></li>
-<li>A DNS resolution will be performed first. That is, the app will send a network request to the system-configured DNS, such as <code>8.8.8.8:53</code>, to inquire about the IP of <code>google.com</code></li>
-<li>The Brook client detects that an app is sending a network request to <code>8.8.8.8:53</code>. <mark>This will trigger the <code>in_dnsquery</code> variable, carrying information such as <code>domain</code></mark><ol>
-<li>The Brook client returns a fake IP to the app, such as <code>240.0.0.1</code></li>
-</ol>
-</li>
-<li>The app combines the IP and port into an IP address, such as: <code>240.0.0.1:443</code></li>
-<li>The app makes a network request to the IP address <code>240.0.0.1:443</code></li>
-<li>The Brook client detects that an app is sending a network request to <code>240.0.0.1:443</code>, discovers that this is a fake IP, and will convert the fake IP address back to the domain address <code>google.com:443</code>. <mark>This will trigger the <code>in_address</code> variable, carrying information such as <code>domainaddress</code></mark><ol>
-<li>The Brook client sends <code>google.com:443</code> to the Brook Server</li>
-<li>The Brook Server first requests its own DNS to resolve the domain name to find out the IP of <code>google.com</code>, such as receiving <code>1.2.3.4</code></li>
-<li>The Brook Server combines the IP and port into an IP address, such as: <code>1.2.3.4:443</code></li>
-<li>The Brook Server sends a network request to <code>1.2.3.4:443</code> and returns the data to the Brook client</li>
-<li>The Brook client then returns the data to the app</li>
-</ol>
-</li>
-<li>The app receives the response data</li>
-</ol>
-<p>However, if the following situations occur, the domain name will not/cannot be parsed, meaning that the Brook client will not/cannot know what the domain name is and will treat it as a normal request sent to an IP address:</p>
+<h1 id="server-1">Server</h1>
+<p>brook dnsserver, dohserver, dnsserveroverbrook, server, wsserver, wssserver, quicserver can use script to do more complex thing. brook will pass different <em>global variables</em> to the script at different times, and the script only needs to assign the processing result to the global variable <code>out</code></p>
+<h2 id="brook-dns-server">Brook DNS Server</h2>
+<p><img src="./images/brook-dns-server.svg" alt="x"></p>
+<p>Script can do more:</p>
 <ul>
-<li>Fake DNS not enabled: in this case, the Brook client will not attempt to parse the domain name from the request sent to the system DNS and will treat it as a normal request sent to an IP address.</li>
-<li>Even with Fake DNS enabled, but the app uses the system&#39;s secure DNS or the app&#39;s own secure DNS: in this case, the Brook client cannot parse the domain name from the request sent to the secure DNS and will treat it as a normal request sent to an IP address.</li>
+<li>There are <a href="https://github.com/txthinking/brook/blob/master/programmable/dnsserver/">examples</a> for dns server</li>
+<li>In the <code>script: in_dnsquery</code> step, script can do more, read more below</li>
 </ul>
-<p>To avoid the ineffectiveness of Fake DNS, please refer to <a href="https://www.txthinking.com/talks/articles/brook-fakedns-en.article">this article</a>.</p>
-<h2 id="with-brook-fake-dns-off">With Brook: Fake DNS Off</h2>
-<ol>
-<li>When an app requests a domain address, such as <code>google.com:443</code></li>
-<li>A DNS resolution will be performed first. That is, the app will send a network request to the system-configured DNS, such as <code>8.8.8.8:53</code>, to inquire about the IP of <code>google.com</code></li>
-<li>The Brook client detects that an app is sending a network request to <code>8.8.8.8:53</code>. <mark>This will trigger the <code>in_address</code> variable, carrying information such as <code>ipaddress</code></mark><ol>
-<li>The Brook client sends <code>8.8.8.8:53</code> to the Brook Server</li>
-<li>The Brook Server sends a network request to <code>8.8.8.8:53</code> and returns the result, such as <code>1.2.3.4</code>, to the Brook client</li>
-<li>The Brook client then returns the result to the app</li>
-</ol>
-</li>
-<li>The app combines the IP and port into an IP address, such as: <code>1.2.3.4:443</code></li>
-<li>The app makes a network request to the IP address <code>1.2.3.4:443</code></li>
-<li>The Brook client detects that an app is sending a network request to <code>1.2.3.4:443</code>. <mark>This will trigger the <code>in_address</code> variable, carrying information such as <code>ipaddress</code></mark><ol>
-<li>The Brook client sends <code>1.2.3.4:443</code> to the Brook Server</li>
-<li>The Brook Server sends a network request to <code>1.2.3.4:443</code> and returns the data to the Brook client</li>
-<li>The Brook client then returns the data to the app</li>
-</ol>
-</li>
-<li>The app receives the response data</li>
-</ol>
-<h2 id="with-brook-fake-dns-on-but-the-app-uses-the-systems-secure-dns-or-its-own-secure-dns">With Brook: Fake DNS On, But the App Uses the System&#39;s Secure DNS or Its Own Secure DNS</h2>
-<ol>
-<li>When an app requests a domain name address, such as <code>google.com:443</code></li>
-<li>A DNS resolution will be performed first. That is, the app will send a network request to the secure DNS, such as <code>8.8.8.8:443</code>, to inquire about the IP of <code>google.com</code></li>
-<li>The Brook client detects that an app is sending a network request to <code>8.8.8.8:443</code>. <mark>This will trigger the <code>in_address</code> variable, carrying information such as <code>ipaddress</code></mark><ol>
-<li>The Brook client sends <code>8.8.8.8:443</code> to the Brook Server</li>
-<li>The Brook Server sends a network request to <code>8.8.8.8:443</code>, and returns the result, such as <code>1.2.3.4</code>, to the Brook client</li>
-<li>The Brook client then returns the result to the app</li>
-</ol>
-</li>
-<li>The app combines the IP and port into an IP address, such as: <code>1.2.3.4:443</code></li>
-<li>The app makes a network request to the IP address <code>1.2.3.4:443</code></li>
-<li>The Brook client detects that an app is sending a network request to <code>1.2.3.4:443</code>. <mark>This will trigger the <code>in_address</code> variable, carrying information such as <code>ipaddress</code></mark><ol>
-<li>The Brook client sends <code>1.2.3.4:443</code> to the Brook Server</li>
-<li>The Brook Server sends a network request to <code>1.2.3.4:443</code> and returns the data to the Brook client</li>
-<li>The Brook client then returns the data to the app</li>
-</ol>
-</li>
-<li>The app receives the response data</li>
-</ol>
-<p>To avoid the ineffectiveness of Fake DNS, please refer to <a href="https://www.txthinking.com/talks/articles/brook-fakedns-en.article">this article</a>.</p>
-<h2 id="handle-variable-trigger">Handle Variable Trigger</h2>
+<h2 id="brook-server">Brook Server</h2>
+<p><img src="./images/brook-server.svg" alt="x"></p>
+<p>Script can do more:</p>
 <ul>
-<li>When the <code>in_brooklinks</code> variable is triggered:<ul>
-<li>This is currently the only variable that gets triggered before the Brook client starts.</li>
-<li>We know that Brook starts with your choice of a Brook Server, and this variable lets you specify multiple Brook Servers.</li>
-<li>Then during runtime, you can use one of these Brook Servers as needed.</li>
+<li>There are <a href="https://github.com/txthinking/brook/blob/master/programmable/server/">examples</a> for server</li>
+<li>In the <code>script: in_address</code> step, script can do more, read more below</li>
 </ul>
-</li>
-<li>When the <code>in_dnsquery</code> variable is triggered, you can process as needed, such as:<ul>
-<li>Blocking, such as to prevent ad domain names.</li>
-<li>Directly specifying the response IP.</li>
-<li>Letting the system DNS resolve this domain.</li>
-<li>Letting Bypass DNS resolve this domain.</li>
-<li>And so on.</li>
-</ul>
-</li>
-<li>When the <code>in_address</code> variable is triggered, you can process as needed, such as:<ul>
-<li>Block this connection.</li>
-<li>Rewrite the destination.</li>
-<li>If it&#39;s a domain address, you can specify that Bypass DNS is responsible for resolving the IP of this domain.</li>
-<li>Allow it to connect directly without going through a proxy.</li>
-<li>If it&#39;s HTTP/HTTPS, you can start MITM (Man-In-The-Middle), which will subsequently trigger <code>in_httprequest</code> and <code>in_httpresponse</code>.</li>
-<li>And so on.</li>
-</ul>
-</li>
-<li>When the <code>in_httprequest</code> variable is triggered, you can process as needed, such as:<ul>
-<li>Modifying the HTTP request.</li>
-<li>Returning a custom HTTP response directly.</li>
-</ul>
-</li>
-<li>When the <code>in_httpresponse</code> variable is triggered, you can process as needed, such as:<ul>
-<li>Modifying the HTTP response.</li>
-</ul>
-</li>
-</ul>
-<p>For detailed information on the properties and responses of variables, please refer to the following content.</p>
 <h2 id="variables">Variables</h2>
 <table>
 <thead>
 <tr>
 <th>variable</th>
 <th>type</th>
-<th>condition</th>
+<th>command</th>
 <th>timing</th>
 <th>description</th>
 <th>out type</th>
 </tr>
 </thead>
 <tbody><tr>
+<td>in_dnsservers</td>
+<td>map</td>
+<td>dnsserver/dnsserveroverbrook/dohserver/server/wsserver/wssserver/quicserver</td>
+<td>When just running</td>
+<td>Predefine multiple dns servers, and then programmatically specify which one to use</td>
+<td>map</td>
+</tr>
+<tr>
+<td>in_dohservers</td>
+<td>map</td>
+<td>dnsserver/dnsserveroverbrook/dohserver/server/wsserver/wssserver/quicserver</td>
+<td>When just running</td>
+<td>Predefine multiple doh servers, and then programmatically specify which one to use</td>
+<td>map</td>
+</tr>
+<tr>
 <td>in_brooklinks</td>
 <td>map</td>
-<td>/</td>
-<td>Before connecting</td>
-<td>Predefine multiple brook links, and then programmatically specify which one to connect to</td>
+<td>server/wsserver/wssserver/quicserver</td>
+<td>When just running</td>
+<td>Predefine multiple brook links, and then programmatically specify which one to use</td>
 <td>map</td>
 </tr>
 <tr>
 <td>in_dnsquery</td>
 <td>map</td>
-<td>FakeDNS: On</td>
+<td>dnsserver/dnsserveroverbrook/dohserver</td>
 <td>When a DNS query occurs</td>
 <td>Script can decide how to handle this request</td>
 <td>map</td>
@@ -1540,26 +1418,102 @@
 <tr>
 <td>in_address</td>
 <td>map</td>
-<td>/</td>
-<td>When connecting to an address</td>
-<td>script can decide how to connect</td>
+<td>server/wsserver/wssserver/quicserver</td>
+<td>When the Server connects the proxied address</td>
+<td>Script can decide how to handle this request</td>
 <td>map</td>
 </tr>
+</tbody></table>
+<h2 id="in_dnsservers">in_dnsservers</h2>
+<table>
+<thead>
 <tr>
-<td>in_httprequest</td>
-<td>map</td>
-<td>/</td>
-<td>When an HTTP(S) request comes in</td>
-<td>the script can decide how to handle this request</td>
-<td>map</td>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>_</td>
+<td>bool</td>
+<td>meaningless</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p><code>out</code>, ignored if not of type <code>map</code></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
 </tr>
 <tr>
-<td>in_httprequest,in_httpresponse</td>
-<td>map</td>
-<td>/</td>
-<td>when an HTTP(S) response comes in</td>
-<td>the script can decide how to handle this response</td>
-<td>map</td>
+<td>custom name</td>
+<td>string</td>
+<td>dns server</td>
+<td>8.8.8.8:53</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody></table>
+<h2 id="in_dohservers">in_dohservers</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>_</td>
+<td>bool</td>
+<td>meaningless</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p><code>out</code>, ignored if not of type <code>map</code></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<td>custom name</td>
+<td>string</td>
+<td>dohserver</td>
+<td><a href="https://dns.quad9.net/dns-query?address=9.9.9.9%3A443">https://dns.quad9.net/dns-query?address=9.9.9.9%3A443</a></td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
 </tr>
 </tbody></table>
 <h2 id="in_brooklinks">in_brooklinks</h2>
@@ -1619,6 +1573,12 @@
 </tr>
 </thead>
 <tbody><tr>
+<td>fromipaddress</td>
+<td>string</td>
+<td>client address which send this request</td>
+<td>1.2.3.4:5</td>
+</tr>
+<tr>
 <td>domain</td>
 <td>string</td>
 <td>domain name</td>
@@ -1631,16 +1591,22 @@
 <td>A</td>
 </tr>
 <tr>
-<td>appid</td>
-<td>string</td>
-<td>App ID or path</td>
-<td>com.google.Chrome.helper</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
 </tr>
 <tr>
-<td>interface</td>
+<td>tag_key</td>
 <td>string</td>
-<td>network interface. Mac only</td>
-<td>en0</td>
+<td>--tag specifies the key value</td>
+<td>tag_value</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
 </tr>
 </tbody></table>
 <p><code>out</code>, if it is <code>error</code> type will be recorded in the log. Ignored if not of type <code>map</code></p>
@@ -1666,25 +1632,358 @@
 <td>1.2.3.4</td>
 </tr>
 <tr>
+<td>dnsserverkey</td>
+<td>string</td>
+<td>Use the dnsserver specified by key to resolve</td>
+<td>custom name</td>
+</tr>
+<tr>
+<td>dohserverkey</td>
+<td>string</td>
+<td>Use the dohserver specified by key to resolve</td>
+<td>custom name</td>
+</tr>
+</tbody></table>
+<h2 id="in_address">in_address</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>network</td>
+<td>string</td>
+<td><code>tcp</code> or <code>udp</code></td>
+<td>tcp</td>
+</tr>
+<tr>
+<td>fromipaddress</td>
+<td>string</td>
+<td>client address which send this request</td>
+<td>1.2.3.4:5</td>
+</tr>
+<tr>
+<td>ipaddress</td>
+<td>string</td>
+<td>ip address to be proxied</td>
+<td>1.2.3.4:443</td>
+</tr>
+<tr>
+<td>domainaddress</td>
+<td>string</td>
+<td>domain address to be proxied</td>
+<td>google.com:443</td>
+</tr>
+<tr>
+<td>user</td>
+<td>string</td>
+<td>user ID, only available when used with --userAPI</td>
+<td>9</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<td>tag_key</td>
+<td>string</td>
+<td>--tag specifies the key value</td>
+<td>tag_value</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody></table>
+<p><code>out</code>, if it is <code>error</code> type will be recorded in the log. Ignored if not of type <code>map</code></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>block</td>
+<td>bool</td>
+<td>Whether Block, default <code>false</code></td>
+<td>false</td>
+</tr>
+<tr>
+<td>address</td>
+<td>string</td>
+<td>Rewrite destination to an address</td>
+<td>1.2.3.4</td>
+</tr>
+<tr>
+<td>ipaddressfromdnsserverkey</td>
+<td>string</td>
+<td>If the destination is domain address, use the dnsserver specified by key to resolve</td>
+<td>custom name</td>
+</tr>
+<tr>
+<td>ipaddressfromdnsserverkey</td>
+<td>string</td>
+<td>If the destination is domain address, use the dohserver specified by key to resolve</td>
+<td>custom name</td>
+</tr>
+<tr>
+<td>aoraaaa</td>
+<td>string</td>
+<td>Must be used with ipaddressfromdnsserverkey or ipaddressfromdnsserverkey. Valid value is <code>A</code>/<code>AAAA</code></td>
+<td>A</td>
+</tr>
+<tr>
+<td>speedlimit</td>
+<td>int</td>
+<td>Set a rate limit for this request, for example <code>1000000</code> means 1000 kb/s</td>
+<td>1000000</td>
+</tr>
+<tr>
+<td>brooklinkkey</td>
+<td>string</td>
+<td>Use the brook link specified by key to proxy</td>
+<td>custom name</td>
+</tr>
+<tr>
+<td>dialwith</td>
+<td>string</td>
+<td>If your server has multiple IPs or network interfaces, you can specify the IP or network interface name to initiate this request</td>
+<td>192.168.1.2 or 2606:4700:3030::ac43:a86a or en1</td>
+</tr>
+</tbody></table>
+<h1 id="client-1">Client</h1>
+<h2 id="cli">CLI</h2>
+<p>Before discussing the GUI client, let&#39;s first talk about the command line client <code>brook</code>. As we know, after you have deployed the server, you can use the command line client <code>brook</code> to create a local socks5 proxy or http proxy on your machine, and then configure it in your system proxy settings or in your browser to use this proxy. However:</p>
+<ol>
+<li>Not all apps will use this proxy, whether they use it is up to the app itself.</li>
+<li>Generally, all UDP protocols will not go through this proxy, such as http3.</li>
+</ol>
+<p>For the specifics of socks5 and http proxy, you can read <a href="https://www.txthinking.com/talks/articles/socks5-and-http-proxy-en.article">this article</a>.</p>
+<h2 id="gui">GUI</h2>
+<p>The GUI client does not use socks5 and http proxy mode, so there is no issue with some software not using the system proxy. Instead, it uses a virtual network card to take over the entire system&#39;s network, including UDP-based http3. Moreover, Brook allows us to control network requests programmatically, so it is necessary to have basic knowledge of network requests. Brook GUI will pass different <em>global variables</em> to the script at different times, and the script only needs to assign the processing result to the global variable <code>out</code></p>
+<h2 id="without-brook">Without Brook</h2>
+<blockquote>
+<p>Note: When we talk about addresses, we mean addresses that include the port number, such as a domain address: <code>google.com:443</code>, or an IP address: <code>8.8.8.8:53</code></p>
+</blockquote>
+<p><img src="./images/network.svg" alt="x"></p>
+<ol>
+<li>When an app requests a domain address, such as <code>google.com:443</code></li>
+<li>It will first perform a DNS resolution, which means that the app will send a network request to the system-configured DNS, such as <code>8.8.8.8:53</code>, to inquire about the IP of <code>google.com</code></li>
+<li>The system DNS will return the IP of <code>google.com</code>, such as <code>1.2.3.4</code>, to the app</li>
+<li>The app will combine the IP and port into an IP address, such as: <code>1.2.3.4:443</code></li>
+<li>The app makes a network request to this IP address <code>1.2.3.4:443</code></li>
+<li>The app receives the response data</li>
+</ol>
+<p>In the above process, the app actually makes two network requests: one to the IP address <code>8.8.8.8:53</code> and another to the IP address <code>1.2.3.4:443</code>. In other words, the domain name is essentially an alias for the IP, and must obtain the domain&#39;s IP to establish a connection.</p>
+<h2 id="with-brook">With Brook</h2>
+<p>Brook has a Fake DNS feature default, which can parse the domain name out of the query requests that an app sends to the system DNS UDP 53 and decide how to respond to the app.</p>
+<p><img src="./images/brook-client.svg" alt="x"></p>
+<ol>
+<li>When an app requests a domain name address, such as <code>google.com:443</code></li>
+<li>A DNS resolution will be performed first. That is, the app will send a network request to the system-configured DNS, such as <code>8.8.8.8:53</code>, to inquire about the IP of <code>google.com</code></li>
+<li>The Brook client detects that an app is sending a network request to <code>8.8.8.8:53</code>. <mark>This will trigger the <code>in_dnsquery</code> variable, carrying information such as <code>domain</code></mark></li>
+<li>The Brook client returns a fake IP to the app, such as <code>240.0.0.1</code></li>
+<li>The app combines the IP and port into an IP address, such as: <code>240.0.0.1:443</code></li>
+<li>The app makes a network request to the IP address <code>240.0.0.1:443</code></li>
+<li>The Brook client detects that an app is sending a network request to <code>240.0.0.1:443</code>, discovers that this is a fake IP, and will convert the fake IP address back to the domain address <code>google.com:443</code>. <mark>This will trigger the <code>in_address</code> variable, carrying information such as <code>domainaddress</code></mark></li>
+<li>The Brook client sends <code>google.com:443</code> to the Brook Server</li>
+<li>The Brook Server first requests its own DNS to resolve the domain name to find out the IP of <code>google.com</code>, such as receiving <code>1.2.3.4</code></li>
+<li>The Brook Server combines the IP and port into an IP address, such as: <code>1.2.3.4:443</code></li>
+<li>The Brook Server sends a network request to <code>1.2.3.4:443</code> and returns the data to the Brook client</li>
+<li>The Brook client then returns the data to the app</li>
+<li>The app receives the response data</li>
+</ol>
+<p>However, if the following situations occur, the domain name will not/cannot be parsed, meaning that the Brook client will not/cannot know what the domain name is and will treat it as a normal request sent to an IP address. To avoid the ineffectiveness of Fake DNS, please refer to <a href="https://www.txthinking.com/talks/articles/brook-fakedns-en.article">this article</a>:</p>
+<ul>
+<li>Fake DNS not enabled: in this case, the Brook client will not attempt to parse the domain name from the request sent to the system DNS and will treat it as a normal request sent to an IP address.</li>
+<li>Even with Fake DNS enabled, but the app uses the system&#39;s secure DNS or the app&#39;s own secure DNS: in this case, the Brook client cannot parse the domain name from the request sent to the secure DNS and will treat it as a normal request sent to an IP address.</li>
+</ul>
+<p>Script can do more:</p>
+<ul>
+<li>In the <code>script: in_dnsquery</code> step, script can do more, read more below</li>
+<li>In the <code>script: in_address</code> step, script can do more, read more below</li>
+</ul>
+<h2 id="variables-1">Variables</h2>
+<table>
+<thead>
+<tr>
+<th>variable</th>
+<th>type</th>
+<th>condition</th>
+<th>timing</th>
+<th>description</th>
+<th>out type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>in_brooklinks</td>
+<td>map</td>
+<td>/</td>
+<td>Before connecting</td>
+<td>Predefine multiple brook links, and then programmatically specify which one to connect to</td>
+<td>map</td>
+</tr>
+<tr>
+<td>in_dnsquery</td>
+<td>map</td>
+<td>FakeDNS: On</td>
+<td>When a DNS query occurs</td>
+<td>Script can decide how to handle this request</td>
+<td>map</td>
+</tr>
+<tr>
+<td>in_address</td>
+<td>map</td>
+<td>/</td>
+<td>When connecting to an address</td>
+<td>Script can decide how to handle this request</td>
+<td>map</td>
+</tr>
+<tr>
+<td>in_httprequest</td>
+<td>map</td>
+<td>/</td>
+<td>When an HTTP(S) request comes in</td>
+<td>Script can decide how to handle this request</td>
+<td>map</td>
+</tr>
+<tr>
+<td>in_httprequest,in_httpresponse</td>
+<td>map</td>
+<td>/</td>
+<td>when an HTTP(S) response comes in</td>
+<td>Script can decide how to handle this response</td>
+<td>map</td>
+</tr>
+</tbody></table>
+<h2 id="in_brooklinks-1">in_brooklinks</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>_</td>
+<td>bool</td>
+<td>meaningless</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p><code>out</code>, ignored if not of type <code>map</code></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<td>custom name</td>
+<td>string</td>
+<td>brook link</td>
+<td>brook://...</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody></table>
+<h2 id="in_dnsquery-1">in_dnsquery</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>domain</td>
+<td>string</td>
+<td>domain name</td>
+<td>google.com</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>query type</td>
+<td>A</td>
+</tr>
+<tr>
+<td>appid</td>
+<td>string</td>
+<td>macOS App Mode: this is app id; Linux and Windows: this is app path; OpenWrt: this is IP address of client device. Note: In some operating systems, the app may initiate DNS queries through the system app.</td>
+<td>com.google.Chrome.helper</td>
+</tr>
+</tbody></table>
+<p><code>out</code>, if it is <code>error</code> type will be recorded in the log. Ignored if not of type <code>map</code></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>block</td>
+<td>bool</td>
+<td>Whether Block, default <code>false</code></td>
+<td>false</td>
+</tr>
+<tr>
+<td>ip</td>
+<td>string</td>
+<td>Ignore fake DNS, specify IP directly, only valid when <code>type</code> is <code>A</code>/<code>AAAA</code></td>
+<td>1.2.3.4</td>
+</tr>
+<tr>
 <td>system</td>
 <td>bool</td>
-<td>Resolve by System DNS, default <code>false</code></td>
+<td>Ignore fake DNS, resolve by System DNS over brook, default <code>false</code></td>
 <td>false</td>
 </tr>
 <tr>
 <td>bypass</td>
 <td>bool</td>
-<td>Resolve by Bypass DNS, default <code>false</code></td>
+<td>Ignore fake DNS, resolve by Bypass DNS, default <code>false</code></td>
 <td>false</td>
 </tr>
 <tr>
 <td>brooklinkkey</td>
 <td>string</td>
-<td>When need to connect the Server，instead, connect to the Server specified by the key in_brooklinks</td>
+<td>When need to connect the Server, instead, perfer connect to the Server specified by the key in_brooklinks</td>
 <td>custom name</td>
 </tr>
 </tbody></table>
-<h2 id="in_address">in_address</h2>
+<h2 id="in_address-1">in_address</h2>
 <table>
 <thead>
 <tr>
@@ -1703,7 +2002,7 @@
 <tr>
 <td>ipaddress</td>
 <td>string</td>
-<td>IP type address. There is only of ipaddress and domainaddress. Note that there is no relationship between these two</td>
+<td>IP type address. There is only one of ipaddress and domainaddress. Note that there is no relationship between these two</td>
 <td>1.2.3.4:443</td>
 </tr>
 <tr>
@@ -1715,14 +2014,8 @@
 <tr>
 <td>appid</td>
 <td>string</td>
-<td>App ID or path</td>
+<td>macOS App Mode: this is app id; Linux and Windows: this is app path; OpenWrt: this is IP address of client device</td>
 <td>com.google.Chrome.helper</td>
-</tr>
-<tr>
-<td>interface</td>
-<td>string</td>
-<td>network interface. Mac only</td>
-<td>en0</td>
 </tr>
 </tbody></table>
 <p><code>out</code>, if it is <code>error</code> type will be recorded in the log. Ignored if not of type <code>map</code></p>
@@ -1744,7 +2037,7 @@
 <tr>
 <td>ipaddress</td>
 <td>string</td>
-<td>IP type address, rewrite destination</td>
+<td>Rewrite destination to an ip address</td>
 <td>1.2.3.4:443</td>
 </tr>
 <tr>
@@ -1756,7 +2049,7 @@
 <tr>
 <td>bypass</td>
 <td>bool</td>
-<td>Bypass, default <code>false</code>. If <code>true</code> and <code>domainaddress</code>, then <code>ipaddress</code> or <code>ipaddressfrombypassdns</code> must be specified</td>
+<td>Bypass, default <code>false</code>. If <code>true</code> and <code>domainaddress</code> exists, then <code>ipaddress</code> or <code>ipaddressfrombypassdns</code> must be specified</td>
 <td>false</td>
 </tr>
 <tr>
@@ -1774,7 +2067,7 @@
 <tr>
 <td>mitmcertdomain</td>
 <td>string</td>
-<td>The MITM certificate domain name, which is taken from <code>domainaddress</code> by default. If <code>ipaddress</code> and <code>mitm</code> is <code>true</code> and <code>mitmprotocol</code> is <code>https</code> then must be must be specified explicitly</td>
+<td>The MITM certificate domain name, which is taken from <code>domainaddress</code> by default. If <code>ipaddress</code> exists and <code>mitm</code> is <code>true</code> and <code>mitmprotocol</code> is <code>https</code> then must be must be specified explicitly</td>
 <td>example.com</td>
 </tr>
 <tr>
@@ -1786,7 +2079,7 @@
 <tr>
 <td>mitmautohandlecompress</td>
 <td>bool</td>
-<td>Whether to automatically decompress the http body when interacting with the script, default <code>false</code></td>
+<td>Whether to automatically decompress the http body when interacting with the script, default <code>false</code>. Usually need set this to true</td>
 <td>false</td>
 </tr>
 <tr>
@@ -1849,7 +2142,7 @@
 <td>/</td>
 </tr>
 </tbody></table>
-<p><code>out</code>, must be set to a request or response</p>
+<p><code>out</code>, must be set to an unmodified or modified request or a response</p>
 <h2 id="in_httpresponse">in_httpresponse</h2>
 <table>
 <thead>
@@ -1879,9 +2172,9 @@
 <td>/</td>
 </tr>
 </tbody></table>
-<p><code>out</code>, must be set to a response</p>
+<p><code>out</code>, must be set to an unmodified or modified response</p>
 <h2 id="modules">Modules</h2>
-<p>In Brook GUI, scripts are abstracted into <strong>Modules</strong>. There are already <a href="https://github.com/txthinking/brook/blob/master/programmable/modules/">some modules</a>, and thre is no magic, it just automatically combine <a href="https://github.com/txthinking/brook/blob/master/programmable/modules/_header.tengo">_header.tengo</a> and <a href="https://github.com/txthinking/brook/blob/master/programmable/modules/_footer.tengo">_footer.tengo</a>, so you only need to write the module itself.</p>
+<p>In Brook GUI, scripts are abstracted into <strong>Modules</strong>. There are already <a href="https://github.com/txthinking/brook/blob/master/programmable/modules/">some modules</a>, and there is no magic, it just automatically combine <a href="https://github.com/txthinking/brook/blob/master/programmable/modules/_header.tengo">_header.tengo</a> and <a href="https://github.com/txthinking/brook/blob/master/programmable/modules/_footer.tengo">_footer.tengo</a>, so you only need to write the module itself.</p>
 <pre><code>modules = append(modules, {
     // If you want to predefine multiple brook links, and then programmatically specify which one to connect to, then define `brooklinks` key a function
     brooklinks: func(m) {
@@ -1905,9 +2198,9 @@
     }
 })
 </code></pre>
-<h2 id="tun2brook">tun2brook</h2>
-<p><a href="https://github.com/txthinking/tun2brook">https://github.com/txthinking/tun2brook</a></p>
-<p>If you are using tun2brook, you can manually combine multiple modules into a complete script in the following way. For example:</p>
+<h2 id="ipio">ipio</h2>
+<p><a href="https://github.com/txthinking/ipio">https://github.com/txthinking/ipio</a></p>
+<p>ipio uses the same script as the GUI. If you are using ipio, you can manually combine multiple modules into a complete script in the following way. For example:</p>
 <pre><code>cat _header.tengo &gt; my.tengo
 
 cat block_google_secure_dns.tengo &gt;&gt; my.tengo
@@ -1915,61 +2208,18 @@ cat block_aaaa.tengo &gt;&gt; my.tengo
 
 cat _footer.tengo &gt;&gt; my.tengo
 </code></pre>
-<h2 id="syntax">Syntax</h2>
-<p><a href="https://github.com/d5/tengo/blob/master/docs/tutorial.md">Tengo Language Syntax</a></p>
-<p>Library</p>
-<ul>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-text.md">text</a>: regular expressions, string conversion, and manipulation</p>
-</li>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-math.md">math</a>: mathematical constants and functions</p>
-</li>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-times.md">times</a>: time-related functions</p>
-</li>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-rand.md">rand</a>: random functions</p>
-</li>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-fmt.md">fmt</a>: formatting functions</p>
-</li>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-json.md">json</a>: JSON functions</p>
-</li>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-enum.md">enum</a>: Enumeration functions</p>
-</li>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-hex.md">hex</a>: hex encoding and decoding functions</p>
-</li>
-<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-base64.md">base64</a>: base64 encoding and decoding functions</p>
-</li>
-<li><p><code>brook</code>: brook module</p>
-<pre><code>Constants
+<h2 id="openwrt">openwrt</h2>
+<p><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">https://www.txthinking.com/talks/articles/brook-openwrt-en.article</a></p>
+<p>openwrt uses the same script as the GUI. If you are using openwrt, you can manually combine multiple modules into a complete script in the following way. For example:</p>
+<pre><code>cat _header.tengo &gt; my.tengo
 
-* os: string, linux/darwin/windows/ios/android
+cat block_google_secure_dns.tengo &gt;&gt; my.tengo
+cat block_aaaa.tengo &gt;&gt; my.tengo
 
-Functions
-
-* splithostport(address string) =&gt; map/error: splits a network address of the form &quot;host:port&quot; to { &quot;host&quot;: &quot;xxx&quot;, &quot;port&quot;: &quot;xxx&quot; }
-* country(ip string) =&gt; string/error: get country code from ip
-* cidrcontainsip(cidr string, ip string) =&gt; bool/error: reports whether the network includes ip
-* parseurl(url string) =&gt; map/error: parses a raw url into a map, keys: scheme/host/path/rawpath/rawquery
-* parsequery(query string) =&gt; map/error: parses a raw query into a kv map
-* map2query(kv map) =&gt; string/error: convert map{string:string} into a query string
-* bytes2ints(b bytes) =&gt; array/error: convert bytes into [int]
-* ints2bytes(ints array) =&gt; bytes/error: convert [int] into bytes
-* bytescompare(a bytes, b bytes) =&gt; int/error: returns an integer comparing two bytes lexicographically. The result will be 0 if a == b, -1 if a &lt; b, and +1 if a &gt; b
-* bytescontains(b bytes, sub bytes) =&gt; bool/error: reports whether sub is within b
-* byteshasprefix(s bytes, prefix bytes) =&gt; bool/error: tests whether the bytes s begins with prefix
-* byteshassuffix(s bytes, suffix bytes) =&gt; bool/error: tests whether the bytes s ends with suffix
-* bytesindex(s bytes, sep bytes) =&gt; int/error: returns the index of the first instance of sep in s, or -1 if sep is not present in s
-* byteslastindex(s bytes, sep bytes) =&gt; int/error: returns the index of the last instance of sep in s, or -1 if sep is not present in s
-* bytesreplace(s bytes, old bytes, new bytes, n int) =&gt; bytes/error: returns a copy of the s with the first n non-overlapping instances of old replaced by new. If n &lt; 0, there is no limit on the number of replacements
-* pathescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL path segment, replacing special characters (including /) with %XX sequences as needed
-* pathunescape(s string) =&gt; string/error: does the inverse transformation of pathescape
-* queryescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL query
-* queryunescape(s string) =&gt; string/error: does the inverse transformation of queryescape
-* hexdecode(s string) =&gt; bytes/error: returns the bytes represented by the hexadecimal string s
-* hexencode(s string) =&gt; string/error: returns the hexadecimal encoding of src
+cat _footer.tengo &gt;&gt; my.tengo
 </code></pre>
-</li>
-</ul>
 <h2 id="debug">Debug</h2>
-<p>If you are writing complex scripts, the GUI may not be convenient for debugging. It is recommended to use <a href="https://github.com/txthinking/tun2brook">tun2brook</a> on desktop to debug with <code>fmt.println</code></p>
+<p>If you are writing complex scripts, the GUI may not be convenient for debugging. It is recommended to use <a href="https://github.com/txthinking/ipio">ipio</a> on desktop to debug with <code>fmt.println</code></p>
 <h2 id="ca">CA</h2>
 <p><a href="https://txthinking.github.io/ca/ca.pem">https://txthinking.github.io/ca/ca.pem</a></p>
 <table>
@@ -1999,8 +2249,6 @@ Functions
 <blockquote>
 <p>Some software may not read the system CA，you can use <code>curl --cacert ~/.nami/bin/ca.pem</code> to debug</p>
 </blockquote>
-<h2 id="openwrt">OpenWrt</h2>
-<p><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">Brook OpenWRT: Perfectly supports IPv4/IPv6/TCP/UDP</a></p>
 <h2 id="ipv6">IPv6</h2>
 <p>Brook&#39;s stance on IPv6 is positive, if your server or local environment doesn&#39;t have an IPv6 stack, read <a href="https://www.txthinking.com/talks/articles/brook-ipv6-en.article">this article</a>.</p>
 <h2 id="troubleshooting-steps">Troubleshooting Steps</h2>
@@ -2054,8 +2302,166 @@ Functions
 <li>Submit <a href="https://github.com/txthinking/brook/issues?q=is%3Aissue">new issue</a></li>
 <li>Seek help in the <a href="https://t.me/txthinking">group</a></li>
 </ol>
+<h1 id="other">Other</h1>
+<h2 id="script-syntax">Script Syntax</h2>
+<p>I think just reading this one page is enough: <a href="https://github.com/d5/tengo/blob/master/docs/tutorial.md">Tengo Language Syntax</a></p>
+<p>Library</p>
+<ul>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-text.md">text</a>: regular expressions, string conversion, and manipulation</p>
+</li>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-math.md">math</a>: mathematical constants and functions</p>
+</li>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-times.md">times</a>: time-related functions</p>
+</li>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-rand.md">rand</a>: random functions</p>
+</li>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-fmt.md">fmt</a>: formatting functions</p>
+</li>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-json.md">json</a>: JSON functions</p>
+</li>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-enum.md">enum</a>: Enumeration functions</p>
+</li>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-hex.md">hex</a>: hex encoding and decoding functions</p>
+</li>
+<li><p><a href="https://github.com/d5/tengo/blob/master/docs/stdlib-base64.md">base64</a>: base64 encoding and decoding functions</p>
+</li>
+<li><p><code>brook</code>: brook module</p>
+<pre><code>Constants
+
+* os: string, linux/darwin/windows/ios/android
+
+Functions
+
+* splithostport(address string) =&gt; map/error: splits a network address of the form &quot;host:port&quot; to { &quot;host&quot;: &quot;xxx&quot;, &quot;port&quot;: &quot;xxx&quot; }
+* country(ip string) =&gt; string/error: get country code from ip
+* cidrcontainsip(cidr string, ip string) =&gt; bool/error: reports whether the network includes ip
+* parseurl(url string) =&gt; map/error: parses a raw url into a map, keys: scheme/host/path/rawpath/rawquery
+* parsequery(query string) =&gt; map/error: parses a raw query into a kv map
+* map2query(kv map) =&gt; string/error: convert map{string:string} into a query string
+* bytes2ints(b bytes) =&gt; array/error: convert bytes into [int]
+* ints2bytes(ints array) =&gt; bytes/error: convert [int] into bytes
+* bytescompare(a bytes, b bytes) =&gt; int/error: returns an integer comparing two bytes lexicographically. The result will be 0 if a == b, -1 if a &lt; b, and +1 if a &gt; b
+* bytescontains(b bytes, sub bytes) =&gt; bool/error: reports whether sub is within b
+* byteshasprefix(s bytes, prefix bytes) =&gt; bool/error: tests whether the bytes s begins with prefix
+* byteshassuffix(s bytes, suffix bytes) =&gt; bool/error: tests whether the bytes s ends with suffix
+* bytesindex(s bytes, sep bytes) =&gt; int/error: returns the index of the first instance of sep in s, or -1 if sep is not present in s
+* byteslastindex(s bytes, sep bytes) =&gt; int/error: returns the index of the last instance of sep in s, or -1 if sep is not present in s
+* bytesreplace(s bytes, old bytes, new bytes, n int) =&gt; bytes/error: returns a copy of the s with the first n non-overlapping instances of old replaced by new. If n &lt; 0, there is no limit on the number of replacements
+* pathescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL path segment, replacing special characters (including /) with %XX sequences as needed
+* pathunescape(s string) =&gt; string/error: does the inverse transformation of pathescape
+* queryescape(s string) =&gt; string/error: escapes the string so it can be safely placed inside a URL query
+* queryunescape(s string) =&gt; string/error: does the inverse transformation of queryescape
+* hexdecode(s string) =&gt; bytes/error: returns the bytes represented by the hexadecimal string s
+* hexencode(s string) =&gt; string/error: returns the hexadecimal encoding of src
+</code></pre>
+</li>
+</ul>
+<h2 id="example">Example</h2>
+<p>Each <code>subcommand</code> has a <code>--example</code>, such as:</p>
+<pre><code>brook server --example
+</code></pre>
+<h2 id="resources">Resources</h2>
+<table>
+<thead>
+<tr>
+<th>CLI</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/txthinking/nami">nami</a></td>
+<td>A clean and tidy decentralized package manager</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking/joker">joker</a></td>
+<td>Joker can turn process into daemon. Zero-Configuration</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking/nico">nico</a></td>
+<td>Nico can work with brook wsserver together</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking/z">z</a></td>
+<td>z - process manager</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking/ipio">ipio</a></td>
+<td>Proxy all traffic just one line command</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking/mad">mad</a></td>
+<td>Generate root CA and derivative certificate for any domains and any IPs</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking/hancock">hancock</a></td>
+<td>Manage multiple remote servers and execute commands remotely</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking/sshexec">sshexec</a></td>
+<td>A command-line tool to execute remote command through ssh</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking/bash">bash</a></td>
+<td>Many one-click scripts</td>
+</tr>
+<tr>
+<td><a href="https://hub.docker.com/r/txthinking/brook">docker</a></td>
+<td><code>docker run txthinking/brook</code></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Resources</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/txthinking/brook/tree/master/protocol">Protocol</a></td>
+<td>Brook Protocol</td>
+</tr>
+<tr>
+<td><a href="https://www.txthinking.com/talks/">Blog</a></td>
+<td>Some articles you should read</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/txthinking">YouTube</a></td>
+<td>Some videos you should watch</td>
+</tr>
+<tr>
+<td><a href="https://t.me/txthinking">Telegram</a></td>
+<td>Ask questions here</td>
+</tr>
+<tr>
+<td><a href="https://t.me/s/txthinking_talks">Announce</a></td>
+<td>All news you should care</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinking">GitHub</a></td>
+<td>Other useful repos</td>
+</tr>
+<tr>
+<td><a href="https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb">Socks5 Configurator</a></td>
+<td>If you prefer CLI brook client</td>
+</tr>
+<tr>
+<td><a href="https://chromewebstore.google.com/detail/ipvbar/nepjlegfiihpkcdhlmaebfdfppckonlj">IPvBar</a></td>
+<td>See domain, IP and country in browser</td>
+</tr>
+<tr>
+<td><a href="https://www.txthinking.com/ssh.html">TxThinking SSH</a></td>
+<td>A SSH Terminal</td>
+</tr>
+<tr>
+<td><a href="https://github.com/txthinkinginc/brook-store">brook-store</a></td>
+<td>A Brook User System</td>
+</tr>
+<tr>
+<td><a href="https://www.txthinking.com">TxThinking</a></td>
+<td>Everything</td>
+</tr>
+</tbody></table>
 <h1 id="cli-documentation">CLI Documentation</h1>
-<p>Each subcommand has a <code>--example</code> parameter that can print the minimal example of usage</p>
 <h1 id="name">NAME</h1>
 <p>Brook - A cross-platform programmable network tool</p>
 <h1 id="synopsis">SYNOPSIS</h1>
@@ -2067,83 +2473,37 @@ Functions
 </code></pre>
 <h1 id="global-options">GLOBAL OPTIONS</h1>
 <ul>
-<li><p><strong>--blockCIDR4List</strong>=&quot;&quot;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt">https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr4.txt</a>. Works with server/wsserver/wssserver/quicserver</p>
+<li><p><strong>--cliToken</strong>=&quot;&quot;: The CLI Token of your Brook Plus or Brook Business account, get it from <a href="https://www.txthinking.com/brook.html">https://www.txthinking.com/brook.html</a></p>
 </li>
-<li><p><strong>--blockCIDR6List</strong>=&quot;&quot;: One CIDR per line, https://, http:// or local file absolute path, like: <a href="https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt">https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_cidr6.txt</a>. Works with server/wsserver/wssserver/quicserver</p>
+<li><p><strong>--clientHKDFInfo</strong>=&quot;&quot;: client HKDF info, most time you don&#39;t need to change this, if changed, all and each brook links in client side must be same (default: &quot;brook&quot;)</p>
 </li>
-<li><p><strong>--blockDomainList</strong>=&quot;&quot;: One domain per line, suffix match mode. https://, http:// or local file absolute path. Like: <a href="https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt">https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt</a>. Works with server/wsserver/wssserver/quicserver</p>
+<li><p><strong>--log</strong>=&quot;&quot;: Works with server, wsserver, wssserver, quicserver, dnsserver, dohserver, dnsserveroverbrook. A valid value is file path. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true</p>
 </li>
-<li><p><strong>--blockGeoIP</strong>=&quot;&quot;: Block IP by Geo country code, such as US. Works with server/wsserver/wssserver/quicserver</p>
+<li><p><strong>--pid</strong>=&quot;&quot;: A file path used to store pid. Send SIGUSR1 to me to reset the --log or --userLog file on unix system</p>
 </li>
-<li><p><strong>--blockListUpdateInterval</strong>=&quot;&quot;: Update list --blockDomainList,--blockCIDR4List,--blockCIDR6List interval, second. default 0, only read one time on start (default: 0)</p>
+<li><p><strong>--script</strong>=&quot;&quot;: [Brook Plus or Brook Business]. Works with server, wsserver, wssserver, quicserver, dnsserver, dohserver, dnsserveroverbrook. https://, http:// or /path/to/file.tengo. Get details at <a href="https://brook.app">https://brook.app</a></p>
 </li>
-<li><p><strong>--clientHKDFInfo</strong>=&quot;&quot;: client HKDF info, most time you don&#39;t need to change this, if changed, all and each brook links in client side must be same, I mean each (default: &quot;brook&quot;)</p>
+<li><p><strong>--scriptUpdateInterval</strong>=&quot;&quot;: Works with --script. The interval (s) to re-fetch script. The default is 0, which means only fetch once on startup (default: 0)</p>
 </li>
-<li><p><strong>--dialWithDNS</strong>=&quot;&quot;: When a domain name needs to be resolved, use the specified DNS. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required. Note that for client-side commands, this does not affect the client passing the domain address to the server</p>
+<li><p><strong>--serverHKDFInfo</strong>=&quot;&quot;: server HKDF info, most time you don&#39;t need to change this, if changed, all and each brook links in client side must be same (default: &quot;brook&quot;)</p>
 </li>
-<li><p><strong>--dialWithDNSPrefer</strong>=&quot;&quot;: This is used with the dialWithDNS parameter. Prefer A record or AAAA record. Value is A or AAAA</p>
+<li><p><strong>--tag</strong>=&quot;&quot;: Works with --log, --userAPI, --userLog, --script. Tag can be used to the process, will be append into log or userLog, such as: &#39;key1:value1&#39;. And all tags will also be appended as query parameters one by one to the userAPI</p>
 </li>
-<li><p><strong>--dialWithIP4</strong>=&quot;&quot;: When the current machine establishes a network connection to the outside IPv4, both TCP and UDP, it is used to specify the IPv4 used</p>
+<li><p><strong>--userAPI</strong>=&quot;&quot;: [Brook Business]. Works with server, wsserver, wssserver, quicserver. When you build your own user system, Brook Server will send GET request to your userAPI to check if token is valid, for example: <a href="https://your-api-server.com/a_unpredictable_path">https://your-api-server.com/a_unpredictable_path</a>. Yes, it is recommended to add an unpredictable path to your https API, of course, you can also use the http api for internal network communication. The request format is <a href="https://your-api-server.com/a_unpredictable_path?token=xxx">https://your-api-server.com/a_unpredictable_path?token=xxx</a>. When the response is 200, the body should be the user&#39;s unique identifier, such as user ID; all other status codes are considered to represent an illegitimate user, and in these cases, the body should be a string describing the error. For more information, please read <a href="https://github.com/txthinking/brook/blob/master/protocol/user.md">https://github.com/txthinking/brook/blob/master/protocol/user.md</a></p>
 </li>
-<li><p><strong>--dialWithIP6</strong>=&quot;&quot;: When the current machine establishes a network connection to the outside IPv6, both TCP and UDP, it is used to specify the IPv6 used</p>
+<li><p><strong>--userAPIRateLimit</strong>=&quot;&quot;: Works with --userAPI. Limit the request rate per token to the user API by Brook Server, this will reduce the load on the user API. This is especially important when users have expired, and the userAPIValidCacheTime will not cache the requests, resulting in continuous requests to the user API. The default is 0, which means no limitation. For example, setting it to 1 means the rate is limited to 1 request per token per second. The phrase &#39;per token&#39; means that each token has its own rate limiter, and they do not interfere with each other (default: 1)</p>
 </li>
-<li><p><strong>--dialWithNIC</strong>=&quot;&quot;: When the current machine establishes a network connection to the outside, both TCP and UDP, it is used to specify the NIC used</p>
+<li><p><strong>--userAPIValidCacheTime</strong>=&quot;&quot;: Works with --userAPI. Once a token is checked and valid, the userAPI will not be requested to validate again for a certain period (s). A reasonable value must be set, otherwise it will affect the performance of each incoming connection (default: 3600)</p>
 </li>
-<li><p><strong>--dialWithSocks5</strong>=&quot;&quot;: When the current machine establishes a network connection to the outside, both TCP and UDP, with your socks5 proxy, such as 127.0.0.1:1081</p>
-</li>
-<li><p><strong>--dialWithSocks5Password</strong>=&quot;&quot;: If there is</p>
-</li>
-<li><p><strong>--dialWithSocks5TCPTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
-</li>
-<li><p><strong>--dialWithSocks5UDPTimeout</strong>=&quot;&quot;: time (s) (default: 60)</p>
-</li>
-<li><p><strong>--dialWithSocks5Username</strong>=&quot;&quot;: If there is</p>
-</li>
-<li><p><strong>--ipLimitInterval</strong>=&quot;&quot;: Interval (s) for ipLimitMax (default: 0)</p>
-</li>
-<li><p><strong>--ipLimitMax</strong>=&quot;&quot;: Limit the number of client IP addresses, be careful when using this parameter, as the client may have dynamic IP. Works with server/wsserver/wssserver/quicserver (default: 0)</p>
-</li>
-<li><p><strong>--ipLimitWait</strong>=&quot;&quot;: How long (s) to wait for recovery after exceeding ipLimitMax (default: 0)</p>
-</li>
-<li><p><strong>--log</strong>=&quot;&quot;: Enable log. A valid value is file path or &#39;console&#39;. Send SIGUSR1 to me to reset the log file on unix system. If you want to debug SOCKS5 lib, set env SOCKS5_DEBUG=true</p>
-</li>
-<li><p><strong>--pid</strong>=&quot;&quot;: A file path used to store pid. Send SIGUSR1 to me to reset the --serverLog file on unix system</p>
-</li>
-<li><p><strong>--pprof</strong>=&quot;&quot;: go http pprof listen addr, such as :6060</p>
-</li>
-<li><p><strong>--prometheus</strong>=&quot;&quot;: prometheus http listen addr, such as :7070. If it is transmitted on the public network, it is recommended to use it with nico</p>
-</li>
-<li><p><strong>--prometheusPath</strong>=&quot;&quot;: prometheus http path, such as /xxx. If it is transmitted on the public network, a hard-to-guess value is recommended</p>
-</li>
-<li><p><strong>--serverHKDFInfo</strong>=&quot;&quot;: server HKDF info, most time you don&#39;t need to change this, if changed, all and each brook links in client side must be same, I mean each (default: &quot;brook&quot;)</p>
-</li>
-<li><p><strong>--serverLog</strong>=&quot;&quot;: Enable server log, traffic and more. A valid value is file path or &#39;console&#39;. Send SIGUSR1 to me to reset the log file on unix system. Mutually exclusive with the --log parameter. Works with server/wsserver/wssserver/quicserver with brook protocol</p>
-</li>
-<li><p><strong>--speedLimit</strong>=&quot;&quot;: Limit speed (b), 500kb/s such as: 500000, works with server/wsserver/wssserver/quicserver (default: 0)</p>
-</li>
-<li><p><strong>--tag</strong>=&quot;&quot;: Tag can be used to the process, will be append into log or serverLog, such as: &#39;key1:value1&#39;. All tags will also be appended as query parameters one by one to the userAPI</p>
-</li>
-<li><p><strong>--userAPI</strong>=&quot;&quot;: When you build your own user system, Brook Server will send GET request to your userAPI to check if token is valid, for example: <a href="https://your-api-server.com/a_unpredictable_path">https://your-api-server.com/a_unpredictable_path</a>. Yes, it is recommended to add an unpredictable path to your https API, of course, you can also use the http api for internal network communication. The request format is <a href="https://your-api-server.com/a_unpredictable_path?token=xxx">https://your-api-server.com/a_unpredictable_path?token=xxx</a>. When the response is 200, the body should be the user&#39;s unique identifier, such as user ID; all other status codes are considered to represent an illegitimate user, and in these cases, the body should be a string describing the error. It should be used with --serverLog and server/wsserver/wssserver/quicserver with brook protocol. For more information, please read <a href="https://github.com/txthinking/brook/blob/master/protocol/user.md">https://github.com/txthinking/brook/blob/master/protocol/user.md</a></p>
-</li>
-<li><p><strong>--userAPIInvalidCacheTime</strong>=&quot;&quot;: Once a token is checked and invalid, the userAPI will not be requested to validate again for a certain period (s). A reasonable value must be set, otherwise it will affect the performance of each incoming connection. Note that this may affect the user experience, when you change the user status from invalid to valid in your user system (default: 1800)</p>
-</li>
-<li><p><strong>--userAPIValidCacheTime</strong>=&quot;&quot;: Once a token is checked and valid, the userAPI will not be requested to validate again for a certain period (s). A reasonable value must be set, otherwise it will affect the performance of each incoming connection (default: 3600)</p>
+<li><p><strong>--userLog</strong>=&quot;&quot;: Works with --userAPI. Log, traffic and more. A valid value is file path. Send SIGUSR1 to me to reset the log file on unix system. Mutually exclusive with the --log parameter.</p>
 </li>
 <li><p><strong>--version, -v</strong>: print the version</p>
 </li>
 </ul>
 <h1 id="commands">COMMANDS</h1>
-<h2 id="server-1">server</h2>
+<h2 id="server-2">server</h2>
 <p>Start a brook server that supports tcp and udp</p>
 <ul>
-<li><p><strong>--blockCIDR4List</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockCIDR6List</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockDomainList</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockGeoIP</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
 <li><p><strong>--example</strong>: Show a minimal example of usage</p>
 </li>
 <li><p><strong>--listen, -l</strong>=&quot;&quot;: Listen address, like: &#39;:9999&#39;</p>
@@ -2153,8 +2513,6 @@ Functions
 <li><p><strong>--tcpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
 </li>
 <li><p><strong>--udpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
-</li>
-<li><p><strong>--updateListInterval</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead (default: 0)</p>
 </li>
 </ul>
 <h2 id="client-2">client</h2>
@@ -2182,14 +2540,6 @@ Functions
 <h2 id="wsserver">wsserver</h2>
 <p>Start a brook wsserver that supports tcp and udp. It opens a standard http server and a websocket server</p>
 <ul>
-<li><p><strong>--blockCIDR4List</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockCIDR6List</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockDomainList</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockGeoIP</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
 <li><p><strong>--example</strong>: Show a minimal example of usage</p>
 </li>
 <li><p><strong>--listen, -l</strong>=&quot;&quot;: Listen address, like: &#39;:80&#39;</p>
@@ -2201,10 +2551,6 @@ Functions
 <li><p><strong>--tcpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
 </li>
 <li><p><strong>--udpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
-</li>
-<li><p><strong>--updateListInterval</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead (default: 0)</p>
-</li>
-<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
 </li>
 <li><p><strong>--xForwardedFor</strong>: Replace the from field in --log, note that this may be forged</p>
 </li>
@@ -2234,14 +2580,6 @@ Functions
 <h2 id="wssserver">wssserver</h2>
 <p>Start a brook wssserver that supports tcp and udp. It opens a standard https server and a websocket server</p>
 <ul>
-<li><p><strong>--blockCIDR4List</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockCIDR6List</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockDomainList</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockGeoIP</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
 <li><p><strong>--cert</strong>=&quot;&quot;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
 </li>
 <li><p><strong>--certkey</strong>=&quot;&quot;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
@@ -2257,10 +2595,6 @@ Functions
 <li><p><strong>--tcpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
 </li>
 <li><p><strong>--udpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
-</li>
-<li><p><strong>--updateListInterval</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead (default: 0)</p>
-</li>
-<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
 </li>
 </ul>
 <h2 id="wssclient">wssclient</h2>
@@ -2288,14 +2622,6 @@ Functions
 <h2 id="quicserver">quicserver</h2>
 <p>Start a brook quicserver that supports tcp and udp.</p>
 <ul>
-<li><p><strong>--blockCIDR4List</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockCIDR6List</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockDomainList</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
-<li><p><strong>--blockGeoIP</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead</p>
-</li>
 <li><p><strong>--cert</strong>=&quot;&quot;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
 </li>
 <li><p><strong>--certkey</strong>=&quot;&quot;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
@@ -2310,13 +2636,9 @@ Functions
 </li>
 <li><p><strong>--udpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
 </li>
-<li><p><strong>--updateListInterval</strong>=&quot;&quot;: This option will be removed in a future version, please use the global option instead (default: 0)</p>
-</li>
-<li><p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
-</li>
 </ul>
 <h2 id="quicclient">quicclient</h2>
-<p>Start a brook quicclient that supports tcp and udp. It can open a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook quicclient &lt;-&gt; $ brook quicserver &lt;-&gt; dst]. (The global-dial-parameter is ignored)</p>
+<p>Start a brook quicclient that supports tcp and udp. It can open a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook quicclient &lt;-&gt; $ brook quicserver &lt;-&gt; dst]</p>
 <ul>
 <li><p><strong>--example</strong>: Show a minimal example of usage</p>
 </li>
@@ -2354,19 +2676,9 @@ Functions
 </li>
 </ul>
 <h2 id="dnsserveroverbrook">dnsserveroverbrook</h2>
-<p>Run a dns server over brook, which supports TCP and UDP, [src &lt;-&gt; $ brook dnserversoverbrook &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dns] or [src &lt;-&gt; $ brook dnsserveroverbrook &lt;-&gt; dnsForBypass]</p>
+<p>Run a dns server over brook, which supports TCP and UDP, [src &lt;-&gt; $ brook dnserversoverbrook &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dns]</p>
 <ul>
-<li><p><strong>--blockDomainList</strong>=&quot;&quot;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt">https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt</a></p>
-</li>
-<li><p><strong>--bypassDomainList</strong>=&quot;&quot;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt">https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt</a></p>
-</li>
-<li><p><strong>--disableA</strong>: Disable A query</p>
-</li>
-<li><p><strong>--disableAAAA</strong>: Disable AAAA query</p>
-</li>
-<li><p><strong>--dns</strong>=&quot;&quot;: DNS server for resolving domains NOT in list (default: 8.8.8.8:53)</p>
-</li>
-<li><p><strong>--dnsForBypass</strong>=&quot;&quot;: DNS server for resolving domains in bypass list. Such as 223.5.5.5:53 or <a href="https://dns.alidns.com/dns-query?address=223.5.5.5:443">https://dns.alidns.com/dns-query?address=223.5.5.5:443</a>, the address is required (default: 223.5.5.5:53)</p>
+<li><p><strong>--dns</strong>=&quot;&quot;: Forward to DNS server (default: 8.8.8.8:53)</p>
 </li>
 <li><p><strong>--example</strong>: Show a minimal example of usage</p>
 </li>
@@ -2377,6 +2689,24 @@ Functions
 <li><p><strong>--password, -p</strong>=&quot;&quot;: Password</p>
 </li>
 <li><p><strong>--server, -s</strong>=&quot;&quot;: brook server or brook wsserver or brook wssserver or brook quicserver, like: 1.2.3.4:9999, ws://1.2.3.4:9999, wss://domain.com:443/ws, quic://domain.com:443</p>
+</li>
+<li><p><strong>--tcpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
+</li>
+<li><p><strong>--udpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
+</li>
+</ul>
+<h2 id="connect">connect</h2>
+<p>Run a client and connect with a brook link, which supports TCP and UDP. It can start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook connect &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dst]</p>
+<ul>
+<li><p><strong>--example</strong>: Show a minimal example of usage</p>
+</li>
+<li><p><strong>--http</strong>=&quot;&quot;: Where to listen for HTTP proxy connections</p>
+</li>
+<li><p><strong>--link, -l</strong>=&quot;&quot;: brook link, you can get it via $ brook link</p>
+</li>
+<li><p><strong>--socks5</strong>=&quot;&quot;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
+</li>
+<li><p><strong>--socks5ServerIP</strong>=&quot;&quot;: Only if your socks5 server IP is different from listen IP</p>
 </li>
 <li><p><strong>--tcpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
 </li>
@@ -2408,33 +2738,13 @@ Functions
 </li>
 <li><p><strong>--tlsfingerprint</strong>=&quot;&quot;: When server is brook wssserver, select tls fingerprint, value can be: chrome</p>
 </li>
-<li><p><strong>--token</strong>=&quot;&quot;: A token represents a user&#39;s identity. A string encoded in hexadecimal. Server needs to have --userAPI enabled. Note that: Only supported by the brook GUI(except for OpenWrt) and tun2brook</p>
+<li><p><strong>--token</strong>=&quot;&quot;: A token represents a user&#39;s identity. A string encoded in hexadecimal. Server needs to have --userAPI enabled</p>
 </li>
-<li><p><strong>--udpoverstream</strong>: When server is brook quicserver, UDP over Stream. Under normal circumstances, you need this parameter because the max datagram size for QUIC is very small. Note: only brook CLI and tun2brook suppport for now</p>
+<li><p><strong>--udpoverstream</strong>: When server is brook quicserver, UDP over Stream. Under normal circumstances, you need this parameter because the max datagram size for QUIC is very small</p>
 </li>
 <li><p><strong>--udpovertcp</strong>: When server is brook server, UDP over TCP</p>
 </li>
 <li><p><strong>--username, -u</strong>=&quot;&quot;: Username, when server is socks5 server</p>
-</li>
-<li><p><strong>--withoutBrookProtocol</strong>: When server is brook wsserver or brook wssserver or brook quicserver, the data will not be encrypted with brook protocol</p>
-</li>
-</ul>
-<h2 id="connect">connect</h2>
-<p>Run a client and connect with a brook link, which supports TCP and UDP. It can start a socks5 proxy, [src &lt;-&gt; socks5 &lt;-&gt; $ brook connect &lt;-&gt; $ brook server/wsserver/wssserver/quicserver &lt;-&gt; dst]</p>
-<ul>
-<li><p><strong>--example</strong>: Show a minimal example of usage</p>
-</li>
-<li><p><strong>--http</strong>=&quot;&quot;: Where to listen for HTTP proxy connections</p>
-</li>
-<li><p><strong>--link, -l</strong>=&quot;&quot;: brook link, you can get it via $ brook link</p>
-</li>
-<li><p><strong>--socks5</strong>=&quot;&quot;: Where to listen for SOCKS5 connections (default: 127.0.0.1:1080)</p>
-</li>
-<li><p><strong>--socks5ServerIP</strong>=&quot;&quot;: Only if your socks5 server IP is different from listen IP</p>
-</li>
-<li><p><strong>--tcpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
-</li>
-<li><p><strong>--udpTimeout</strong>=&quot;&quot;: time (s) (default: 0)</p>
 </li>
 </ul>
 <h2 id="relay">relay</h2>
@@ -2454,12 +2764,6 @@ Functions
 <h2 id="dnsserver">dnsserver</h2>
 <p>Run a standalone dns server</p>
 <ul>
-<li><p><strong>--blockDomainList</strong>=&quot;&quot;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt">https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt</a></p>
-</li>
-<li><p><strong>--disableA</strong>: Disable A query</p>
-</li>
-<li><p><strong>--disableAAAA</strong>: Disable AAAA query</p>
-</li>
 <li><p><strong>--dns</strong>=&quot;&quot;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p>
 </li>
 <li><p><strong>--example</strong>: Show a minimal example of usage</p>
@@ -2488,15 +2792,9 @@ Functions
 <h2 id="dohserver">dohserver</h2>
 <p>Run a standalone doh server</p>
 <ul>
-<li><p><strong>--blockDomainList</strong>=&quot;&quot;: One domain per line, suffix match mode. https://, http:// or local absolute file path. Like: <a href="https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt">https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt</a></p>
-</li>
 <li><p><strong>--cert</strong>=&quot;&quot;: The cert file absolute path for the domain, such as /path/to/cert.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
 </li>
 <li><p><strong>--certkey</strong>=&quot;&quot;: The cert key file absolute path for the domain, such as /path/to/certkey.pem. If cert or certkey is empty, a certificate will be issued automatically</p>
-</li>
-<li><p><strong>--disableA</strong>: Disable A query</p>
-</li>
-<li><p><strong>--disableAAAA</strong>: Disable AAAA query</p>
 </li>
 <li><p><strong>--dns</strong>=&quot;&quot;: DNS server which forward to. Such as 8.8.8.8:53 or <a href="https://dns.google/dns-query?address=8.8.8.8%3A443">https://dns.google/dns-query?address=8.8.8.8%3A443</a>, the address is required (default: 8.8.8.8:53)</p>
 </li>
@@ -2528,7 +2826,7 @@ Functions
 </li>
 </ul>
 <h2 id="dhcpserver">dhcpserver</h2>
-<p>Run a standalone dhcp server. Other running dhcp servers need to be stopped.</p>
+<p>Run a standalone dhcp server. IPv4 only. Other running dhcp servers need to be stopped.</p>
 <ul>
 <li><p><strong>--cache</strong>=&quot;&quot;: Cache file, local absolute file path, default is $HOME/.brook.dhcpserver</p>
 </li>
@@ -2585,26 +2883,10 @@ Functions
 <li><p><strong>--tcpTimeout</strong>=&quot;&quot;: Connection tcp timeout (s) (default: 0)</p>
 </li>
 </ul>
-<h2 id="pac">pac</h2>
-<p>Run a PAC server or save PAC to a file</p>
-<ul>
-<li><p><strong>--bypassDomainList, -b</strong>=&quot;&quot;: One domain per line, suffix match mode. http(s):// or local absolute file path. Like: <a href="https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt">https://raw.githubusercontent.com/txthinking/brook/master/programmable/list/example_domain.txt</a></p>
-</li>
-<li><p><strong>--example</strong>: Show a minimal example of usage</p>
-</li>
-<li><p><strong>--file, -f</strong>=&quot;&quot;: Save PAC to file, this will ignore listen address</p>
-</li>
-<li><p><strong>--listen, -l</strong>=&quot;&quot;: Listen address, like: 127.0.0.1:1980</p>
-</li>
-<li><p><strong>--proxy, -p</strong>=&quot;&quot;: Proxy, like: &#39;SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT&#39; (default: SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT)</p>
-</li>
-</ul>
 <h2 id="testsocks5">testsocks5</h2>
 <p>Test a socks5 server to see if it works properly</p>
 <ul>
-<li><p><strong>--dns</strong>=&quot;&quot;: DNS server for connecting (default: 8.8.8.8:53)</p>
-</li>
-<li><p><strong>--domain</strong>=&quot;&quot;: Domain for query (default: http3.ooo)</p>
+<li><p><strong>--dns</strong>=&quot;&quot;: A DNS Server to connect to and send TCP DNS query to test TCP, and UDP DNS query to test UDP. (default: 8.8.8.8:53)</p>
 </li>
 <li><p><strong>--example</strong>: Show a minimal example of usage</p>
 </li>
@@ -2614,23 +2896,15 @@ Functions
 </li>
 <li><p><strong>--username, -u</strong>=&quot;&quot;: Socks5 username</p>
 </li>
-<li><p><strong>-a</strong>=&quot;&quot;: The A record of domain (default: 137.184.237.95)</p>
-</li>
 </ul>
 <h2 id="testbrook">testbrook</h2>
-<p>Test UDP and TCP of a brook server/wsserver/wssserver/quicserver connection. (The global-dial-parameter is ignored)</p>
+<p>Test UDP and TCP of a brook server/wsserver/wssserver/quicserver connection.</p>
 <ul>
-<li><p><strong>--dns</strong>=&quot;&quot;: DNS server for connecting (default: 8.8.8.8:53)</p>
-</li>
-<li><p><strong>--domain</strong>=&quot;&quot;: Domain for query (default: http3.ooo)</p>
+<li><p><strong>--dns</strong>=&quot;&quot;: A DNS Server to connect to and send TCP DNS query to test TCP, and UDP DNS query to test UDP. (default: 8.8.8.8:53)</p>
 </li>
 <li><p><strong>--example</strong>: Show a minimal example of usage</p>
 </li>
 <li><p><strong>--link, -l</strong>=&quot;&quot;: brook link. Get it via $ brook link</p>
-</li>
-<li><p><strong>--socks5</strong>=&quot;&quot;: Temporarily listening socks5 (default: 127.0.0.1:11080)</p>
-</li>
-<li><p><strong>-a</strong>=&quot;&quot;: The A record of domain (default: 137.184.237.95)</p>
 </li>
 </ul>
 <h2 id="echoserver">echoserver</h2>
@@ -2685,267 +2959,6 @@ Functions
 </ul>
 <h2 id="help-h">help, h</h2>
 <p>Shows a list of commands or help for one command</p>
-<h1 id="examples">Examples</h1>
-<p>List some examples of common scene commands, pay attention to replace the parameters such as IP, port, password, domain name, certificate path, etc. in the example by yourself</p>
-<h2 id="run-brook-server">Run brook server</h2>
-<pre><code>brook server --listen :9999 --password hello
-</code></pre>
-<p>then</p>
-<ul>
-<li>server: <code>1.2.3.4:9999</code></li>
-<li>password: <code>hello</code></li>
-</ul>
-<p>or get brook link</p>
-<pre><code>brook link --server 1.2.3.4:9999 --password hello --name &#39;my brook server&#39;
-</code></pre>
-<p>or get brook link with <code>--udpovertcp</code></p>
-<pre><code>brook link --server 1.2.3.4:9999 --password hello --udpovertcp --name &#39;my brook server&#39;
-</code></pre>
-<h2 id="run-brook-wsserver">Run brook wsserver</h2>
-<pre><code>brook wsserver --listen :9999 --password hello
-</code></pre>
-<p>then</p>
-<ul>
-<li>server: <code>ws://1.2.3.4:9999</code></li>
-<li>password: <code>hello</code></li>
-</ul>
-<p>or get brook link</p>
-<pre><code>brook link --server ws://1.2.3.4:9999 --password hello --name &#39;my brook wsserver&#39;
-</code></pre>
-<p>or get brook link with domain, even if that&#39;s not your domain</p>
-<pre><code>brook link --server ws://hello.com:9999 --password hello --address 1.2.3.4:9999 --name &#39;my brook wsserver&#39;
-</code></pre>
-<h2 id="run-brook-wssserver-automatically-certificate">Run brook wssserver: automatically certificate</h2>
-<blockquote>
-<p>Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80</p>
-</blockquote>
-<pre><code>brook wssserver --domainaddress domain.com:443 --password hello
-</code></pre>
-<p>then</p>
-<ul>
-<li>server: <code>wss://domain.com:443</code></li>
-<li>password: <code>hello</code></li>
-</ul>
-<p>or get brook link</p>
-<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
-</code></pre>
-<h2 id="run-brook-wssserver-use-a-certificate-issued-by-an-existing-trust-authority">Run brook wssserver Use a certificate issued by an existing trust authority</h2>
-<blockquote>
-<p>Make sure your domain has been resolved to your server IP successfully</p>
-</blockquote>
-<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
-</code></pre>
-<p>then</p>
-<ul>
-<li>server: <code>wss://domain.com:443</code></li>
-<li>password: <code>hello</code></li>
-</ul>
-<p>or get brook link</p>
-<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39;
-</code></pre>
-<h2 id="run-brook-wssserver-issue-untrusted-certificates-yourself-any-domain">Run brook wssserver issue untrusted certificates yourself, any domain</h2>
-<p>Install <a href="https://github.com/txthinking/mad">mad</a></p>
-<pre><code>nami install mad
-</code></pre>
-<p>Generate root ca</p>
-<pre><code>mad ca --ca /root/ca.pem --key /root/cakey.pem
-</code></pre>
-<p>Generate domain cert by root ca</p>
-<pre><code>mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
-</code></pre>
-<p>Run brook</p>
-<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem
-</code></pre>
-<p>get brook link with <code>--insecure</code></p>
-<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --address 1.2.3.4:443 --insecure
-</code></pre>
-<p>or get brook link with <code>--ca</code></p>
-<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --address 1.2.3.4:443 --ca /root/ca.pem
-</code></pre>
-<h2 id="withoutbrookprotocol">withoutBrookProtocol</h2>
-<p>Better performance, but data is not strongly encrypted using Brook protocol. So please use certificate encryption, and it is not recommended to use --withoutBrookProtocol and --insecure together</p>
-<h2 id="withoutbrookprotocol-automatically-certificate">withoutBrookProtocol automatically certificate</h2>
-<blockquote>
-<p>Make sure your domain has been resolved to your server IP successfully. Automatic certificate issuance requires the use of port 80</p>
-</blockquote>
-<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --withoutBrookProtocol
-</code></pre>
-<p>get brook link</p>
-<pre><code>brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol
-</code></pre>
-<h2 id="withoutbrookprotocol-use-a-certificate-issued-by-an-existing-trust-authority">withoutBrookProtocol Use a certificate issued by an existing trust authority</h2>
-<blockquote>
-<p>Make sure your domain has been resolved to your server IP successfully</p>
-</blockquote>
-<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
-</code></pre>
-<p>get brook link</p>
-<pre><code>brook link --server wss://domain.com:443 --password hello --name &#39;my brook wssserver&#39; --withoutBrookProtocol
-</code></pre>
-<h2 id="withoutbrookprotocol-issue-untrusted-certificates-yourself-any-domain">withoutBrookProtocol issue untrusted certificates yourself, any domain</h2>
-<p>Install <a href="https://github.com/txthinking/mad">mad</a></p>
-<pre><code>nami install mad
-</code></pre>
-<p>Generate root ca</p>
-<pre><code>mad ca --ca /root/ca.pem --key /root/cakey.pem
-</code></pre>
-<p>Generate domain cert by root ca</p>
-<pre><code>mad cert --ca /root/ca.pem --ca_key /root/cakey.pem --cert /root/cert.pem --key /root/certkey.pem --domain domain.com
-</code></pre>
-<p>Run brook wssserver</p>
-<pre><code>brook wssserver --domainaddress domain.com:443 --password hello --cert /root/cert.pem --certkey /root/certkey.pem --withoutBrookProtocol
-</code></pre>
-<p>Get brook link</p>
-<pre><code>brook link --server wss://domain.com:443 --password hello --withoutBrookProtocol --address 1.2.3.4:443 --ca /root/ca.pem
-</code></pre>
-<h2 id="run-brook-socks5-a-stand-alone-standard-socks5-server">Run brook socks5, A stand-alone standard socks5 server</h2>
-<pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4
-</code></pre>
-<p>then</p>
-<ul>
-<li>server: <code>1.2.3.4:1080</code></li>
-</ul>
-<p>or get brook link</p>
-<pre><code>brook link --server socks5://1.2.3.4:1080
-</code></pre>
-<h2 id="run-brook-socks5-with-username-and-password-a-stand-alone-standard-socks5-server">Run brook socks5 with username and password. A stand-alone standard socks5 server</h2>
-<pre><code>brook socks5 --listen :1080 --socks5ServerIP 1.2.3.4 --username hello --password world
-</code></pre>
-<p>then</p>
-<ul>
-<li>server: <code>1.2.3.4:1080</code></li>
-<li>username: <code>hello</code></li>
-<li>password: <code>world</code></li>
-</ul>
-<p>or get brook link</p>
-<pre><code>brook link --server socks5://1.2.3.4:1080 --username hello --password world
-</code></pre>
-<h2 id="brook-relayoverbrook-can-relay-a-local-address-to-a-remote-address-over-brook-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver">brook relayoverbrook can relay a local address to a remote address over brook, both TCP and UDP, it works with brook server wsserver wssserver.</h2>
-<pre><code>brook relayoverbrook ... --from 127.0.0.1:5353 --to 8.8.8.8:53
-</code></pre>
-<h2 id="brook-dnsserveroverbrook-can-create-a-encrypted-dns-server-both-tcp-and-udp-it-works-with-brook-server-wsserver-wssserver">brook dnsserveroverbrook can create a encrypted DNS server, both TCP and UDP, it works with brook server wsserver wssserver.</h2>
-<pre><code>brook dnsserveroverbrook ... --listen 127.0.0.1:53
-</code></pre>
-<h2 id="brook-openwrt-router-perfectly-supports-ipv4ipv6tcpudp-native-ipv6">Brook OpenWRT Router: Perfectly supports IPv4/IPv6/TCP/UDP. Native IPv6</h2>
-<p><a href="https://www.txthinking.com/talks/articles/brook-openwrt-en.article">https://www.txthinking.com/talks/articles/brook-openwrt-en.article</a></p>
-<h2 id="turn-macos-into-a-gateway-with-brook">Turn macOS into a Gateway with Brook</h2>
-<p><a href="https://www.txthinking.com/talks/articles/brook-macos-gateway-en.article">https://www.txthinking.com/talks/articles/brook-macos-gateway-en.article</a></p>
-<h2 id="turn-windows-into-a-gateway-with-brook">Turn Windows into a Gateway with Brook</h2>
-<p><a href="https://www.txthinking.com/talks/articles/brook-windows-gateway-en.article">https://www.txthinking.com/talks/articles/brook-windows-gateway-en.article</a></p>
-<h2 id="turn-linux-into-a-gateway-with-brook">Turn Linux into a Gateway with Brook</h2>
-<p><a href="https://www.txthinking.com/talks/articles/brook-linux-gateway-en.article">https://www.txthinking.com/talks/articles/brook-linux-gateway-en.article</a></p>
-<h2 id="brook-relay-can-relay-a-address-to-a-remote-address-it-can-relay-any-tcp-and-udp-server">brook relay can relay a address to a remote address. It can relay any tcp and udp server</h2>
-<pre><code>brook relay --from :9999 --to 1.2.3.4:9999
-</code></pre>
-<h2 id="brook-socks5tohttp-can-convert-a-socks5-to-a-http-proxy">brook socks5tohttp can convert a socks5 to a http proxy</h2>
-<pre><code>brook socks5tohttp --socks5 127.0.0.1:1080 --listen 127.0.0.1:8010
-</code></pre>
-<h2 id="there-are-countless-examples-for-more-feature-suggestions-its-best-to-look-at-the-commands-and-parameters-in-the-cli-documentation-one-by-one-and-blog-youtube">There are countless examples; for more feature suggestions, it&#39;s best to look at the commands and parameters in the CLI documentation one by one, and blog, YouTube...</h2>
-<h1 id="resources">Resources</h1>
-<table>
-<thead>
-<tr>
-<th>CLI</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="https://github.com/txthinking/nami">nami</a></td>
-<td>A clean and tidy decentralized package manager</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/joker">joker</a></td>
-<td>Joker can turn process into daemon. Zero-Configuration</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/nico">nico</a></td>
-<td>Nico can work with brook wsserver together</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/z">z</a></td>
-<td>z - process manager</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/tun2brook">tun2brook</a></td>
-<td>Proxy all traffic just one line command</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/mad">mad</a></td>
-<td>Generate root CA and derivative certificate for any domains and any IPs</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/hancock">hancock</a></td>
-<td>Manage multiple remote servers and execute commands remotely</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/sshexec">sshexec</a></td>
-<td>A command-line tool to execute remote command through ssh</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/jb">jb</a></td>
-<td>write script in an easier way than bash</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking/bash">bash</a></td>
-<td>Many one-click scripts</td>
-</tr>
-<tr>
-<td><a href="https://hub.docker.com/r/txthinking/brook">docker</a></td>
-<td><code>docker run txthinking/brook</code></td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>Resources</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="https://github.com/txthinking/brook/tree/master/protocol">Protocol</a></td>
-<td>Brook Protocol</td>
-</tr>
-<tr>
-<td><a href="https://www.txthinking.com/talks/">Blog</a></td>
-<td>Some articles you should read</td>
-</tr>
-<tr>
-<td><a href="https://www.youtube.com/txthinking">YouTube</a></td>
-<td>Some videos you should watch</td>
-</tr>
-<tr>
-<td><a href="https://t.me/txthinking">Telegram</a></td>
-<td>Ask questions here</td>
-</tr>
-<tr>
-<td><a href="https://t.me/s/txthinking_news">Announce</a></td>
-<td>All news you should care</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinking">GitHub</a></td>
-<td>Other useful repos</td>
-</tr>
-<tr>
-<td><a href="https://chromewebstore.google.com/detail/socks5-configurator/hnpgnjkeaobghpjjhaiemlahikgmnghb">Socks5 Configurator</a></td>
-<td>If you prefer CLI brook client</td>
-</tr>
-<tr>
-<td><a href="https://chromewebstore.google.com/detail/ipvbar/nepjlegfiihpkcdhlmaebfdfppckonlj">IPvBar</a></td>
-<td>See domain, IP and country in browser</td>
-</tr>
-<tr>
-<td><a href="https://www.txthinking.com/ssh.html">TxThinking SSH</a></td>
-<td>A SSH Terminal</td>
-</tr>
-<tr>
-<td><a href="https://github.com/txthinkinginc/brook-user-system">brook-user-system</a></td>
-<td>A Brook User System</td>
-</tr>
-<tr>
-<td><a href="https://www.txthinking.com">TxThinking</a></td>
-<td>Everything</td>
-</tr>
-</tbody></table>
 
         </div>
     </div>

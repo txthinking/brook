@@ -1,0 +1,69 @@
+f := func() {
+    if in_dnsservers {
+        return {
+            "google4": "8.8.8.8:53",
+            "google6": "[2001:4860:4860::8888]:53",
+            "quad4": "9.9.9.9:53"
+        }
+    }
+    if in_dohservers {
+        return {
+            "google4": "https://dns.google/dns-query?address=8.8.8.8%3A443",
+            "google6": "https://dns.google/dns-query?address=%5B2001%3A4860%3A4860%3A%3A8888%5D%3A443",
+            "quad4": "https://dns.quad9.net/dns-query?address=9.9.9.9%3A443"
+        }
+    }
+    if in_brooklinks {
+        return {
+            "huluwa": "brook://server?password=hello&server=1.3.6.9%3A9999",
+            "jiuyeye": "brook://socks5?password=&socks5=socks5%3A%2F%2F127.0.0.1%3A1080"
+        }
+    }
+    if in_address {
+        m := in_address
+        brook := import("brook")
+        if m.ipaddress {
+            r := brook.splithostport(m.ipaddress)
+            s := brook.country(r.host)
+            if s == "ZZ" {
+                return { block: true }
+            }
+            if m.network == "tcp" && m.ipaddress == "8.8.8.8:53" {
+                return { address: "9.9.9.9:53" }
+            }
+            return
+        }
+        if m.domainaddress {
+            r := brook.splithostport(m.domainaddress)
+            text := import("text")
+            if r.host == "localhost" || text.contains(r.host, "speedtest") {
+                return { block: true }
+            }
+            if m.domainaddress == "heygirl:443" {
+                return { address: "1.2.3.4:443" }
+            }
+            if m.domainaddress == "hello.com:443" {
+                return { ipaddressfromdohserverkey: "quad4", aoraaaa: "A" }
+            }
+            if m.network == "tcp" && m.domainaddress == "world.com:443" {
+                return { brooklinkkey: "jiuyeye" }
+            }
+            if m.domainaddress == "helloworld:443" {
+                return { ipaddressfromdohserverkey: "quad4", aoraaaa: "AAAA", brooklinkkey: "huluwa" }
+            }
+            if m.domainaddress == "nihao.com:443" {
+                return { speedlimit: 500000 }
+            }
+            if m.domainaddress == "shijie.com:443" {
+                return { speedlimit: 500000, brooklinkkey: "huluwa" }
+            }
+            if m.domainaddress == "nihaoshijie.com:443" {
+                return { speedlimit: 500000, dialwith: "192.168.3.99" }
+            }
+            return
+        }
+        return
+    }
+}
+out := f()
+

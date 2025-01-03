@@ -1,0 +1,31 @@
+f := func() {
+    if in_dnsservers {
+        return {
+            "google4": "8.8.8.8:53",
+            "google6": "[2001:4860:4860::8888]:53",
+            "quad4": "9.9.9.9:53"
+        }
+    }
+    if in_dohservers {
+        return {
+            "google4": "https://dns.google/dns-query?address=8.8.8.8%3A443",
+            "google6": "https://dns.google/dns-query?address=%5B2001%3A4860%3A4860%3A%3A8888%5D%3A443",
+            "quad4": "https://dns.quad9.net/dns-query?address=9.9.9.9%3A443"
+        }
+    }
+    if in_dnsquery {
+        m := in_dnsquery
+        if m.domain == "360.cn" {
+            return { block: true }
+        }
+        if m.domain == "360.com" && m.type == "A" {
+            return { ip: "1.2.3.4" }
+        }
+        if m.domain == "http3.ooo" {
+            return { dohserverkey: "quad4" }
+        }
+        return
+    }
+}
+out := f()
+

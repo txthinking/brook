@@ -61,10 +61,10 @@ The user 9 has expired
 ## Run Brook Server with your User API
 
 ```
-brook --serverLog /path/to/log.txt --userAPI https://your-api-server.com/a_unpredictable_path server --listen :9999 --password hello
+brook --userLog /path/to/log.txt --userAPI https://your-api-server.com/a_unpredictable_path server --listen :9999 --password hello
 ```
 
-You can count the traffic of each user from serverLog
+You can count the traffic of each user from userLog
 
 ```
 {"bytes":"2190","dst":"8.8.8.8:53","from":"34.105.110.232:49514","network":"tcp","time":"2024-02-26T09:56:12Z","user":"9"}

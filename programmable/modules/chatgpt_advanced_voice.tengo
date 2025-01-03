@@ -1,0 +1,14 @@
+// Ignore fake DNS for ChatGPT Advanced Voice
+modules = append(modules, {
+    dnsquery: func(m) {
+        text := import("text")
+        l := [
+            "livekit.cloud"
+        ]
+        for v in l {
+            if m.domain == v || text.has_suffix(m.domain, "."+v) {
+                return { system: true }
+            }
+        }
+    }
+})

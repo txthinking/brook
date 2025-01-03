@@ -27,9 +27,9 @@ modules = append(modules, {
 })
 ```
 
-## tun2brook
+## ipio or openwrt
 
-If you are using tun2brook, you can combine multiple modules into a complete script in the following way. For example:
+If you are using opio or openwrt, you can combine multiple modules into a complete script in the following way. For example:
 
 ```
 cat _header.tengo > my.tengo
