@@ -425,6 +425,10 @@ Brook's stance on IPv6 is positive, if your server or local environment doesn't 
     - `Bypass Apple`: To prevent issues receiving Apple message notifications.
     - `Bypass China domain` or `Bypass China domain A`: The former uses `Bypass DNS` to obtain the IP, then `Bypass Geo` or other modules decide whether to bypass; the latter bypasses directly after obtaining the IP with `Bypass DNS` using A records. The latter is needed if your local does not support IPv6.
     - If you are a [Shiliew](https://www.txthinking.com/shiliew.html) user, some modules are enabled by default, which is usually sufficient.
+14. If Fake DNS works properly, this should return an IP from server DNS Server IP pool. Otherwise, your application(such as browser) may has its own DNS setting instead of use system DNS.
+    ```
+    curl https://`date +%s`.http3.ooo --http2
+    ```
 14. Search [GitHub issues](https://github.com/txthinking/brook/issues?q=is%3Aissue)
 15. Read the [blog](https://www.txthinking.com/talks/)
 16. Read the [documentation](https://brook.app)
