@@ -1358,14 +1358,14 @@
 <h1 id="server-1">Server</h1>
 <p>brook dnsserver, dohserver, dnsserveroverbrook, server, wsserver, wssserver, quicserver can use script to do more complex thing. brook will pass different <em>global variables</em> to the script at different times, and the script only needs to assign the processing result to the global variable <code>out</code></p>
 <h2 id="brook-dns-server">Brook DNS Server</h2>
-<p><img src="./images/brook-dns-server.svg" alt="x"></p>
+<p><img src="https://brook.app/images/brook-dns-server.svg" alt="x"></p>
 <p>Script can do more:</p>
 <ul>
 <li>There are <a href="https://github.com/txthinking/brook/blob/master/programmable/dnsserver/">examples</a> for dns server</li>
 <li>In the <code>script: in_dnsquery</code> step, script can do more, read more below</li>
 </ul>
 <h2 id="brook-server">Brook Server</h2>
-<p><img src="./images/brook-server.svg" alt="x"></p>
+<p><img src="https://brook.app/images/brook-server.svg" alt="x"></p>
 <p>Script can do more:</p>
 <ul>
 <li>There are <a href="https://github.com/txthinking/brook/blob/master/programmable/server/">examples</a> for server</li>
@@ -1776,7 +1776,7 @@
 <blockquote>
 <p>Note: When we talk about addresses, we mean addresses that include the port number, such as a domain address: <code>google.com:443</code>, or an IP address: <code>8.8.8.8:53</code></p>
 </blockquote>
-<p><img src="./images/network.svg" alt="x"></p>
+<p><img src="https://brook.app/images/network.svg" alt="x"></p>
 <ol>
 <li>When an app requests a domain address, such as <code>google.com:443</code></li>
 <li>It will first perform a DNS resolution, which means that the app will send a network request to the system-configured DNS, such as <code>8.8.8.8:53</code>, to inquire about the IP of <code>google.com</code></li>
@@ -1788,7 +1788,7 @@
 <p>In the above process, the app actually makes two network requests: one to the IP address <code>8.8.8.8:53</code> and another to the IP address <code>1.2.3.4:443</code>. In other words, the domain name is essentially an alias for the IP, and must obtain the domain&#39;s IP to establish a connection.</p>
 <h2 id="with-brook">With Brook</h2>
 <p>Brook has a Fake DNS feature default, which can parse the domain name out of the query requests that an app sends to the system DNS UDP 53 and decide how to respond to the app.</p>
-<p><img src="./images/brook-client.svg" alt="x"></p>
+<p><img src="https://brook.app/images/brook-client.svg" alt="x"></p>
 <ol>
 <li>When an app requests a domain name address, such as <code>google.com:443</code></li>
 <li>A DNS resolution will be performed first. That is, the app will send a network request to the system-configured DNS, such as <code>8.8.8.8:53</code>, to inquire about the IP of <code>google.com</code></li>

@@ -4,7 +4,7 @@ brook dnsserver, dohserver, dnsserveroverbrook, server, wsserver, wssserver, qui
 
 ## Brook DNS Server
 
-![x](./images/brook-dns-server.svg)
+![x](https://brook.app/images/brook-dns-server.svg)
 
 Script can do more:
 
@@ -13,7 +13,7 @@ Script can do more:
 
 ## Brook Server
 
-![x](./images/brook-server.svg)
+![x](https://brook.app/images/brook-server.svg)
 
 Script can do more:
 
