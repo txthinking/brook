@@ -153,8 +153,8 @@ Script can do more:
 | block        | bool   | Whether Block, default `false`                                                | false   |
 | address           | string | Rewrite destination to an address                                                                     | 1.2.3.4 |
 | ipaddressfromdnsserverkey       | string   | If the destination is domain address, use the dnsserver specified by key to resolve | custom name |
-| ipaddressfromdnsserverkey       | string   | If the destination is domain address, use the dohserver specified by key to resolve | custom name |
-| aoraaaa       | string   | Must be used with ipaddressfromdnsserverkey or ipaddressfromdnsserverkey. Valid value is `A`/`AAAA` | A |
+| ipaddressfromdohserverkey       | string   | If the destination is domain address, use the dohserver specified by key to resolve | custom name |
+| aoraaaa       | string   | Must be used with ipaddressfromdnsserverkey or ipaddressfromdohserverkey. Valid value is `A`/`AAAA` | A |
 | speedlimit       | int   | Set a rate limit for this request, for example `1000000` means 1000 kb/s | 1000000 |
 | brooklinkkey       | string   | Use the brook link specified by key to proxy | custom name |
 | dialwith       | string   | If your server has multiple IPs or network interfaces, you can specify the IP or network interface name to initiate this request | 192.168.1.2 or 2606:4700:3030::ac43:a86a or en1 |
