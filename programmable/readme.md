@@ -5,7 +5,7 @@ Just add an object to [gallery.json](https://github.com/txthinking/brook/blob/ma
 | Key | Type | Description |
 | --- | --- | --- |
 | name | string | Your script or module name |
-| url | string | Your script or module url. It can be placed in the programmable directory of this project, or anywhere else |
+| url | string | Your script or module url. It can be placed in the programmable directory of this project, or anywhere else no CORS limit |
 | kind | string | one of `dnsserver`/`server`/`module`/`client` |
 | ca | bool | Need to install CA or not |
 | author | string | Your name |
