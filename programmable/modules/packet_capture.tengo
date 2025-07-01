@@ -1,3 +1,5 @@
+// Note: You may need to add more conditions to narrow the scope to avoid consuming too many resources and causing lag
+
 // Brook Packet Capture on All Platform
 // https://www.txthinking.com/talks/articles/brook-packet-capture-en.article
 // Brook 全平台抓包

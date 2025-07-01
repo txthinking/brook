@@ -1,6 +1,7 @@
+// Note: The script limits the stack size 2048. If your array or map exceeds max stack size, try splitting it into multiple. The memory occupied by a dictionary is approximately twice that of an array with same elements.
+
 // 大陆域名用 Bypass DNS 来解析 A 并直连
 // 注意：这是一个包含主流的精小样本. 你可以自己生成自用的模块：https://www.txthinking.com/talks/articles/china-list.article
-// The script limits the stack size 2048. If your array or map exceeds max stack size, try splitting it into multiple. The memory occupied by a dictionary is approximately twice that of an array with same elements.
 modules = append(modules, {
     address: func(m) {
         if m.domainaddress {

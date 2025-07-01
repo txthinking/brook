@@ -1,3 +1,6 @@
+// Note: This is just an example, you can modify it according to your needs
+//       Brook macOS need enable App Mode
+
 // Allow some apps to connect to internet, block others.
 // 仅允许某些 app 联网
 modules = append(modules, {

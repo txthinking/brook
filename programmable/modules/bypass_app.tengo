@@ -1,4 +1,6 @@
-// Bypass some app
+// Note: Brook macOS 需要开启 App Mode
+
+// Bypass 微信
 modules = append(modules, {
     dnsquery: func(m) {
         if m.appid {

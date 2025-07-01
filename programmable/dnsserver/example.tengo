@@ -1,3 +1,5 @@
+// Note: This is just an example, you can modify it according to your needs
+
 f := func() {
     if in_dnsservers {
         return {

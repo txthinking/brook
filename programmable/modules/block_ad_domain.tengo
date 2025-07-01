@@ -1,6 +1,7 @@
+// Note: The script limits the stack size 2048. If your array or map exceeds max stack size, try splitting it into multiple. The memory occupied by a dictionary is approximately twice that of an array with same elements.
+
 // Block some AD domains. This is a sample containing a small amount of data.
 // 阻断一些广告域名. 这是一个包含少量数据的样本.
-// The script limits the stack size 2048. If your array or map exceeds max stack size, try splitting it into multiple. The memory occupied by a dictionary is approximately twice that of an array with same elements.
 modules = append(modules, {
     dnsquery: func(m) {
         text := import("text")

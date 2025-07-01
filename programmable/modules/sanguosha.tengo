@@ -1,0 +1,21 @@
+// Note: 本模块基于 macOS 编写
+//       Brook macOS 客户端需要开启 App Mode
+//       需要通过 `brooklinks` 预先定一个 key 为 `sanguosha` 的 brook link
+//       Chrome 访问 sanguosha 会直连
+//       Safari 访问 sanguosha 会使用预先定义的 key 为 `sanguosha` 的 brook link, 
+
+modules = append(modules, {
+    address: func(m) {
+        if m.domainaddress {          
+            text := import("text")     
+            if text.contains(m.domainaddress, "sanguosha.com") || text.contains(m.domainaddress, "hzyoka.com"){
+                if m.appid {                 
+                    if text.contains(m.appid, "Chrome") {
+                        return {ipaddressfrombypassdns: "A", bypass: true}
+                    }                                                                                 
+                    return {brooklinkkey: "sanguosha"}
+                }           
+            }    
+        }          
+    }                                 
+}) 

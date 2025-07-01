@@ -1,3 +1,5 @@
+// Note: This is just an example, you can modify it according to your needs
+
 // Blacklist mode, only proxy some domains.
 // 黑名单模式，仅代理指定的域名.
 modules = append(modules, {

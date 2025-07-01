@@ -1,0 +1,80 @@
+// Note: 这个例子没有收集域名，会使用 system DNS (默认为 Google DNS) 通过 Server 来解析出域名的 IP，然后判断如果是大陆 IP 则直连
+//       缺点是有些大陆域名会有海外 IP，可以根据自己需求自行修改。
+
+modules := []
+
+modules = append(modules, {
+    dnsquery: func(m) {
+	    return { system: true }
+    },
+    address: func(m) {
+	if m.ipaddress {
+            brook := import("brook")
+            r := brook.splithostport(m.ipaddress)
+            s := brook.country(r.host)
+            if s == "ZZ" || s == "CN" { // All private IPs are ZZ
+                return { bypass: true }
+            }
+        }
+    }
+})
+
+f := func() {
+    if in_brooklinks {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["brooklinks"] {
+                r := modules[i]["brooklinks"](in_brooklinks)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return
+    }
+    if in_dnsquery {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["dnsquery"] {
+                r := modules[i]["dnsquery"](in_dnsquery)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return
+    }
+    if in_address {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["address"] {
+                r := modules[i]["address"](in_address)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return
+    }
+    if in_httprequest && !in_httpresponse {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["httprequest"] {
+                r := modules[i]["httprequest"](in_httprequest)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return in_httprequest
+    }
+    if in_httprequest && in_httpresponse {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["httpresponse"] {
+                r :=  modules[i]["httpresponse"](in_httprequest, in_httpresponse)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return in_httpresponse
+    }
+}
+out := f()
+
