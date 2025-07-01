@@ -144,6 +144,13 @@
         "author_url": "https://www.txthinking.com"
     },
     {
+        "name": "Bypass 小部分主流中国大陆域名",
+        "url": "https://raw.githubusercontent.com/txthinking/brook/master/programmable/modules/bypass_china_domain_a.tengo",
+        "kind": "module",
+        "author": "TxThinking",
+        "author_url": "https://www.txthinking.com"
+    },
+    {
         "name": "Bypass 大部分中国大陆域名",
         "url": "https://bot.txthinking.com/bypass_more_china_domain_a.tengo",
         "kind": "module",

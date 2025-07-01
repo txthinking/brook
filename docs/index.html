@@ -32,7 +32,6 @@
                         zh: navigator.language.toLowerCase().startsWith("zh-"),
                         wx: navigator.userAgent.toLowerCase().indexOf("micromessenger") != -1,
                         mob: /iPhone|iPod|Android/i.test(navigator.userAgent),
-                        contentWidth: window.innerWidth,
                         ing: false,
                         list: [],
                         err: false,
@@ -86,7 +85,7 @@
 
 <body>
     <div id="app">
-        <t-layout :style="'display: flex;flex-direction: column;height: 100%;width:'+contentWidth+'px'">
+        <t-layout :style="'display: flex;flex-direction: column;height: 100%;'">
             <t-header style="flex-shrink: 0;">
                 <t-head-menu value="null">
                     <template #logo>
@@ -125,52 +124,54 @@
                     <div style="flex-grow:1;">
                         <div style="display: flex;flex-wrap: wrap;gap:15px;">
                             <t-card :bordered="false" v-for="item in list" :style="item.expanded ? 'width:100%' : 'max-width:100%'">
-                                <t-collapse :borderless="true" @change="expand(item)">
-                                    <t-collapse-panel :header="item.name">
-                                        <div style="display: flex;justify-content: space-between;width:100%">
-                                            <div><code>{{item.url}}</code></div>
-                                            <t-button theme="default" shape="square" variant="text" @click="copy(item.url)">
-                                                <t-icon name="copy"></t-icon>
-                                            </t-button>
+                                <div style="display: flex;flex-direction: column;">
+                                    <t-collapse :borderless="true" @change="expand(item)">
+                                        <t-collapse-panel :header="item.name">
+                                            <div style="display: flex;justify-content: space-between;">
+                                                <div><code>{{item.url}}</code></div>
+                                                <t-button theme="default" shape="square" variant="text" @click="copy(item.url)">
+                                                    <t-icon name="copy"></t-icon>
+                                                </t-button>
+                                            </div>
+                                            <pre style="width:100%;padding:1rem;overflow-x:scroll;font-size:85%;line-height: 1.45;color:#1f2328;background-color: #f6f8fa;border-radius:6px;"><code style="display: inline;padding:0px;margin:0px;overflow:visible;word-wrap:normal;background-color:transparent;border:0">{{item.script}}</code></pre>
+                                        </t-collapse-panel>
+                                    </t-collapse>
+                                    <div style="display: flex;justify-content:space-around;align-items:center">
+                                        <div style="display: flex;gap:15px;" v-if="item.kind=='dnsserver'">
+                                            <t-tooltip content="brook dnsserver, dohserver, dnsserveroverbrook">
+                                                <t-tag shape="round" variant="outline">DNS Server</t-tag>
+                                            </t-tooltip>
                                         </div>
-                                        <pre style="width:100%;padding:1rem;overflow-x:scroll;font-size:85%;line-height: 1.45;color:#1f2328;background-color: #f6f8fa;border-radius:6px;"><code style="display: inline;padding:0px;margin:0px;overflow:visible;word-wrap:normal;background-color:transparent;border:0">{{item.script}}</code></pre>
-                                    </t-collapse-panel>
-                                </t-collapse>
-                                <div style="display: flex;justify-content:space-around;align-items:center">
-                                    <div style="display: flex;gap:15px;" v-if="item.kind=='dnsserver'">
-                                        <t-tooltip content="brook dnsserver, dohserver, dnsserveroverbrook">
-                                            <t-tag shape="round" variant="outline">DNS Server</t-tag>
-                                        </t-tooltip>
+                                        <div style="display: flex;gap:15px;" v-if="item.kind=='server'">
+                                            <t-tooltip content="brook server, wsserver, wssserver, quicserver">
+                                                <t-tag shape="round" variant="outline">Server</t-tag>
+                                            </t-tooltip>
+                                        </div>
+                                        <div style="display: flex;gap:15px;" v-if="item.kind=='client'">
+                                            <t-tooltip content="ipio">
+                                                <t-tag shape="round" variant="outline">ipio</t-tag>
+                                            </t-tooltip>
+                                            <t-tooltip content="brook.openwrt">
+                                                <t-tag shape="round" variant="outline">brook.openwrt</t-tag>
+                                            </t-tooltip>
+                                            <t-tooltip :content="zh ? '需要安装 CA' : 'Need to install CA'">
+                                                <t-tag shape="round" theme="warning" variant="outline" v-if="item.ca">CA</t-tag>
+                                            </t-tooltip>
+                                        </div>
+                                        <div style="display: flex;gap:15px;" v-if="item.kind=='module'">
+                                            <t-tooltip content="Brook GUI Client">
+                                                <t-tag shape="round" variant="outline">Client</t-tag>
+                                            </t-tooltip>
+                                            <t-tooltip :content="zh ? '需要安装 CA' : 'Need to install CA'">
+                                                <t-tag shape="round" theme="warning" variant="outline" v-if="item.ca">CA</t-tag>
+                                            </t-tooltip>
+                                        </div>
+                                        <t-link v-if="item.expanded" :href="item.author_url" target="_blank">
+                                            <t-tooltip :content="zh ? '作者' : 'Author'">
+                                                <t-tag variant="outline"><template #icon><t-icon name="user-circle"></t-icon></template>{{item.author}}</t-tag>
+                                            </t-tooltip>
+                                        </t-link>
                                     </div>
-                                    <div style="display: flex;gap:15px;" v-if="item.kind=='server'">
-                                        <t-tooltip content="brook server, wsserver, wssserver, quicserver">
-                                            <t-tag shape="round" variant="outline">Server</t-tag>
-                                        </t-tooltip>
-                                    </div>
-                                    <div style="display: flex;gap:15px;" v-if="item.kind=='client'">
-                                        <t-tooltip content="ipio">
-                                            <t-tag shape="round" variant="outline">ipio</t-tag>
-                                        </t-tooltip>
-                                        <t-tooltip content="brook.openwrt">
-                                            <t-tag shape="round" variant="outline">brook.openwrt</t-tag>
-                                        </t-tooltip>
-                                        <t-tooltip :content="zh ? '需要安装 CA' : 'Need to install CA'">
-                                            <t-tag shape="round" theme="warning" variant="outline" v-if="item.ca">CA</t-tag>
-                                        </t-tooltip>
-                                    </div>
-                                    <div style="display: flex;gap:15px;" v-if="item.kind=='module'">
-                                        <t-tooltip content="Brook GUI Client">
-                                            <t-tag shape="round" variant="outline">Client</t-tag>
-                                        </t-tooltip>
-                                        <t-tooltip :content="zh ? '需要安装 CA' : 'Need to install CA'">
-                                            <t-tag shape="round" theme="warning" variant="outline" v-if="item.ca">CA</t-tag>
-                                        </t-tooltip>
-                                    </div>
-                                    <t-link v-if="item.expanded" :href="item.author_url" target="_blank">
-                                        <t-tooltip :content="zh ? '作者' : 'Author'">
-                                            <t-tag variant="outline"><template #icon><t-icon name="user-circle"></t-icon></template>{{item.author}}</t-tag>
-                                        </t-tooltip>
-                                    </t-link>
                                 </div>
                             </t-card>
                         </div>
