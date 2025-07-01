@@ -1,3 +1,5 @@
+// Note: 因为大部分应用请求都是 domain address，只有少量会直接请求 IP address，此模块仅处理后者
+
 // Bypass Geo IP
 modules = append(modules, {
     address: func(m) {
