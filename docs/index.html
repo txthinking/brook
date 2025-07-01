@@ -127,9 +127,9 @@
                                 <div style="display: flex;flex-direction: column;">
                                     <t-collapse :borderless="true" @change="expand(item)">
                                         <t-collapse-panel :header="item.name">
-                                            <div style="display: flex;justify-content: space-between;">
-                                                <div><code>{{item.url}}</code></div>
-                                                <t-button theme="default" shape="square" variant="text" @click="copy(item.url)">
+                                            <div style="display: flex;justify-content: space-between;align-items:center">
+                                                <div style="flex-grow:1;overflow-x:hidden;text-overflow: ellipsis;white-space:nowrap">{{item.url}}</div>
+                                                <t-button style="flex-shrink: 0;" theme="default" shape="square" variant="text" @click="copy(item.url)">
                                                     <t-icon name="copy"></t-icon>
                                                 </t-button>
                                             </div>
