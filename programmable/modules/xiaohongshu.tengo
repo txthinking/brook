@@ -1,0 +1,20 @@
+// 小红书定制 IP 归属地
+// Note: 需要通过 `brooklinks` 预先定一个 key 为 `beijing` 的 brook link
+modules = append(modules, {
+    dnsquery: func(m) {
+        text := import("text")
+        l := [
+            "fengkongcloud.com",
+            "xhscdn.com",
+            "xhscdn.net",
+            "xiaohongshu.com"
+        ]
+        for v in l {
+            if m.domain == v || text.has_suffix(m.domain, "."+v) {
+                return {brooklinkkey: "beijing"}
+            }
+        }
+    }
+})
+
+
