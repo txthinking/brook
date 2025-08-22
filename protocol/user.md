@@ -80,3 +80,7 @@ brook link --server 1.2.3.4:9999 --password hello --token xxx
 ## A sample implementation
 
 https://github.com/TxThinkingInc/brook-store
+
+## Read more
+
+[Brook Business: Powering Your Own Branded Client](https://www.txthinking.com/talks/articles/brook-business-en.article)
