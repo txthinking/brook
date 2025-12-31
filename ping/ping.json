@@ -1,7 +1,7 @@
 {
-    "version": "20250808",
-    "text": "Pre-release reminder: Brook v20260101, released on January 1, 2026, will reset the local cache. Please back up the brook link and script beforehand.",
-    "link": "https://www.txthinking.com/talks/articles/brook-v20260101-en.article",
-    "text_zh": "预发布提醒：在 2026-01-01 发布的 Brook v20260101 将会重置本地缓存。请提前备份 brook link 和 script。",
-    "link_zh": "https://www.txthinking.com/talks/articles/brook-v20260101.article"
+    "version": "20260101",
+    "text": "",
+    "link": "",
+    "text_zh": "",
+    "link_zh": ""
 }
