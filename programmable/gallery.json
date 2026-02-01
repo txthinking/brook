@@ -100,7 +100,7 @@
         "author_url": "https://www.txthinking.com"
     },
     {
-        "name": "Blokc iOS YouTube v17.15.1 AD",
+        "name": "Block iOS YouTube v17.15.1 AD",
         "url": "https://raw.githubusercontent.com/txthinking/brook/master/programmable/modules/block_youtube_ad.tengo",
         "kind": "module",
         "ca": true,
