@@ -18,8 +18,8 @@ require (
 	github.com/txthinking/x v0.0.0-20240301021728-6f68aba84c87
 	github.com/urfave/cli/v2 v2.25.7
 	github.com/urfave/negroni v1.0.0
-	golang.org/x/crypto v0.36.0
-	golang.org/x/net v0.38.0
+	golang.org/x/crypto v0.45.0
+	golang.org/x/net v0.47.0
 )
 
 require (
@@ -41,10 +41,10 @@ require (
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	go.uber.org/mock v0.4.0 // indirect
 	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
-	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/sync v0.12.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
-	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
+	golang.org/x/mod v0.29.0 // indirect
+	golang.org/x/sync v0.18.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
+	golang.org/x/tools v0.38.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 )
