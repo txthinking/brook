@@ -1,6 +1,6 @@
 module github.com/txthinking/brook
 
-go 1.23.0
+go 1.24.0
 
 require (
 	github.com/gorilla/mux v1.8.1
@@ -11,7 +11,7 @@ require (
 	github.com/phuslu/iploc v1.0.20240501
 	github.com/prometheus/client_golang v1.19.1
 	github.com/quic-go/quic-go v0.48.2
-	github.com/refraction-networking/utls v1.5.4
+	github.com/refraction-networking/utls v1.7.0
 	github.com/tdewolff/minify v2.3.6+incompatible
 	github.com/txthinking/runnergroup v0.0.0-20230325130830-408dc5853f86
 	github.com/txthinking/socks5 v0.0.0-20230325130024-4230056ae301
@@ -23,15 +23,14 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/andybalholm/brotli v1.0.6 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/cloudflare/circl v1.3.7 // indirect
+	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
-	github.com/gaukas/godicttls v0.0.4 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/google/pprof v0.0.0-20210407192527-94a9f03dee38 // indirect
-	github.com/klauspost/compress v1.16.7 // indirect
+	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/onsi/ginkgo/v2 v2.9.5 // indirect
 	github.com/prometheus/client_model v0.5.0 // indirect
 	github.com/prometheus/common v0.48.0 // indirect
