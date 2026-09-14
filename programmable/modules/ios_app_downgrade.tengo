@@ -9,12 +9,9 @@ modules = append(modules, {
         if m.network == "tcp" && m.domainaddress {
             if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
                 return {
-                     bypass:true,
-                     ipaddressfrombypassdns:"A",
                      mitm:true,
                      mitmprotocol: "https",
-                     mitmwithbody: true,
-                     mitmautohandlecompress: true
+                     mitmhandlebody: true
                 }
             }
         }
@@ -22,6 +19,12 @@ modules = append(modules, {
             if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
                 return { block:true }
             }
+        }
+    },
+    mitmaddress: func(m) {
+        text := import("text")
+        if m.domainaddress && text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
+            return { bypass: true, ipaddressfrombypassdns: "A" }
         }
     },
     httprequest: func(request) {
@@ -33,7 +36,7 @@ modules = append(modules, {
             if text.contains(s, "<string>"+appid+"</string>") {
                 request["Body"] = bytes(text.re_replace(`<key>appExtVrsId</key>\s*<string>\d+</string>`, s, "<key>appExtVrsId</key>\n<string>"+versionid+"</string>"))
             }
-            return request
         }
+        return request
     }
 })

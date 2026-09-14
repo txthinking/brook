@@ -24,9 +24,8 @@ modules = append(modules, {
             }
             // Packet Capture all tcp 443, most https http/1.1 and http/2 use it
             if m.network == "tcp" && text.has_suffix(m.domainaddress, ":443"){
-                // Note: mitmwithbody and mitmautohandlecompress will read body into memory, add more conditions to narrow the scope, such as:
-                if m.domainaddress == "httpbin.org:443" {
-                    return { mitm: true, mitmprotocol: "https", mitmwithbody: true, mitmautohandlecompress: true }
+                if m.domainaddress == "ifconfig.co:443" {
+                    return { mitm: true, mitmprotocol: "https", mitmsavebody: true}
                 }
                 return { mitm: true, mitmprotocol: "https" }
             }

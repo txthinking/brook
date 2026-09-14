@@ -16,8 +16,12 @@ await fs.writeFile('/tmp/_.tengo', `
 in_brooklinks := undefined
 in_dnsquery := undefined
 in_address := undefined
+in_mitmaddress := undefined
 in_httprequest := undefined
 in_httpresponse := undefined
+in_websocketrequest := undefined
+in_websocketrequestmessage := undefined
+in_websocketresponsemessage := undefined
 ${h}
 ${s}
 ${f}

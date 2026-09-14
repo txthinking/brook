@@ -9,12 +9,9 @@ modules = append(modules, {
             text := import("text")
             if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
                 return {
-                     bypass:true,
-                     ipaddressfrombypassdns:"A",
                      mitm:true,
                      mitmprotocol: "https",
-                     mitmwithbody: true,
-                     mitmautohandlecompress: true
+                     mitmhandlebody: true
                 }
             }
         }
@@ -23,6 +20,12 @@ modules = append(modules, {
             if text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
                 return { block:true }
             }
+        }
+    },
+    mitmaddress: func(m) {
+        text := import("text")
+        if m.domainaddress && text.has_suffix(m.domainaddress, "-buy.itunes.apple.com:443") {
+            return { bypass: true, ipaddressfrombypassdns: "A" }
         }
     }
 })

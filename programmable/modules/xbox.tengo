@@ -6,10 +6,10 @@ modules = append(modules, {
         if m.domainaddress {
             if m.domainaddress == "www.xbox.com:443" || m.domainaddress == "xgpuweb.gssv-play-prod.xboxlive.com:443" {
                 if m.network == "tcp" {
-                    return {"mitm": true, "mitmprotocol": "https"}
+                    return {mitm: true, mitmprotocol: "https"}
                 }
                 if m.network == "udp" {
-                    return { "block": true }
+                    return { block: true }
                 }
             }
         }
@@ -20,6 +20,7 @@ modules = append(modules, {
             request["X-Forwarded-For"] = "4.2.2.2" // Any country IP you want
             return request
         }
+        return request
     }
 })
 

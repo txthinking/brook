@@ -14,7 +14,7 @@
         "author_url": "https://www.txthinking.com"
     },
     {
-        "name": "Block google secure DNS",
+        "name": "Block Google DOH",
         "url": "https://raw.githubusercontent.com/txthinking/brook/refs/heads/master/programmable/modules/block_google_secure_dns.tengo",
         "kind": "module",
         "author": "TxThinking",

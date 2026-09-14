@@ -5,14 +5,14 @@ f := func() {
         return {
             "google4": "8.8.8.8:53",
             "google6": "[2001:4860:4860::8888]:53",
-            "quad4": "9.9.9.9:53"
+            "cloudflare4": "1.1.1.1:53"
         }
     }
     if in_dohservers {
         return {
             "google4": "https://dns.google/dns-query?address=8.8.8.8%3A443",
             "google6": "https://dns.google/dns-query?address=%5B2001%3A4860%3A4860%3A%3A8888%5D%3A443",
-            "quad4": "https://dns.quad9.net/dns-query?address=9.9.9.9%3A443"
+            "cloudflare4": "https://one.one.one.one/dns-query?address=1.1.1.1%3A443"
         }
     }
     if in_brooklinks {
@@ -31,7 +31,7 @@ f := func() {
                 return { block: true }
             }
             if m.network == "tcp" && m.ipaddress == "8.8.8.8:53" {
-                return { address: "9.9.9.9:53" }
+                return { address: "1.1.1.1:53" }
             }
             return
         }
@@ -45,13 +45,13 @@ f := func() {
                 return { address: "1.2.3.4:443" }
             }
             if m.domainaddress == "hello.com:443" {
-                return { ipaddressfromdohserverkey: "quad4", aoraaaa: "A" }
+                return { ipaddressfromdohserverkey: "cloudflare4", aoraaaa: "A" }
             }
             if m.network == "tcp" && m.domainaddress == "world.com:443" {
                 return { brooklinkkey: "jiuyeye" }
             }
             if m.domainaddress == "helloworld:443" {
-                return { ipaddressfromdohserverkey: "quad4", aoraaaa: "AAAA", brooklinkkey: "huluwa" }
+                return { ipaddressfromdohserverkey: "cloudflare4", aoraaaa: "AAAA", brooklinkkey: "huluwa" }
             }
             if m.domainaddress == "nihao.com:443" {
                 return { speedlimit: 500000 }

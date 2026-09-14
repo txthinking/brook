@@ -37,5 +37,6 @@ modules = append(modules, {
                 "Location": text.replace(request["URL"], "https://www.google.cn", "https://www.google.com", 1)
             }
         }
+        return request
     }
 })

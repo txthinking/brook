@@ -7,10 +7,15 @@ modules = append(modules, {
             return
         }
         if m.network == "tcp" && m.domainaddress && m.domainaddress == "api.douban.com:443" {
-            return { ipaddressfrombypassdns: "A", bypass: true, mitm:true, mitmprotocol: "https" }
+            return { mitm:true, mitmprotocol: "https" }
         }
         if m.network == "udp" && m.domainaddress && m.domainaddress == "api.douban.com:443" {
             return { block:true }
+        }
+    },
+    mitmaddress: func(m) {
+        if m.domainaddress && m.domainaddress == "api.douban.com:443" {
+            return { bypass: true, ipaddressfrombypassdns: "A" }
         }
     },
     httprequest: func(request) {
@@ -20,6 +25,7 @@ modules = append(modules, {
                 return { "StatusCode": 503 }
             }
         }
+        return request
     }
 })
 

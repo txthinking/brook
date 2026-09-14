@@ -54,5 +54,49 @@ f := func() {
         }
         return in_httpresponse
     }
+    if in_websocketrequest && !in_websocketrequestmessage && !in_websocketresponsemessage {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["websocketrequest"] {
+                r :=  modules[i]["websocketrequest"](in_websocketrequest)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return in_websocketrequest
+    }
+    if in_websocketrequest && in_websocketrequestmessage {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["websocketrequestmessage"] {
+                r :=  modules[i]["websocketrequestmessage"](in_websocketrequest, in_websocketrequestmessage)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return in_websocketrequestmessage
+    }
+    if in_websocketrequest && in_websocketresponsemessage {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["websocketresponsemessage"] {
+                r :=  modules[i]["websocketresponsemessage"](in_websocketrequest, in_websocketresponsemessage)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return in_websocketresponsemessage
+    }
+    if in_mitmaddress {
+        for i:=0; i<len(modules); i++{
+            if modules[i]["mitmaddress"] {
+                r := modules[i]["mitmaddress"](in_mitmaddress)
+                if is_error(r) || is_map(r) {
+                    return r
+                }
+            }
+        }
+        return
+    }
 }
 out := f()
