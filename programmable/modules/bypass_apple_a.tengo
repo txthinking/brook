@@ -1,0 +1,78 @@
+// Bypass Apple with A, if your local does not support ipv6
+
+modules = append(modules, {
+    address: func(m) {
+        if m.domainaddress {
+            brook := import("brook")
+            hp := brook.splithostport(m.domainaddress)
+            if is_error(hp) {
+                return hp
+            }
+            text := import("text")
+            f := func(domain, l){
+                ss := text.split(text.to_lower(domain), ".")
+                s := ""
+                for i := len(ss) - 1; i >= 0; i-- {
+                    if s == "" {
+                        s = ss[i]
+                    } else {
+                        s = ss[i] + "." + s
+                    }
+                    if l[s] {
+                        return { ipaddressfrombypassdns: "A", bypass: true }
+                    }
+                }
+            }
+            l := {
+		"apple.com": true,
+            	"icloud.com": true,
+            	"cdn-apple.com": true,
+            	"mzstatic.com": true,
+            	"entrust.net": true,
+            	"digicert.com": true,
+            	"verisign.net": true,
+            	"apple": true,
+            	"push-apple.com.akadns.net": true,
+            	"itunes-apple.com.akadns.net": true,
+            	"cdn-apple.com.akadns.net": true,
+            	"ks-cdn.com": true,
+            	"ksyuncdn.com": true,
+            	"cdn-apple.com.edgekey.net": true,
+            	"e2885.e9.akamaiedge.net": true,
+            	"apple.com.edgekey.net": true,
+            	"e2490.dscb.akamaiedge.net": true,
+            	"idms-apple.com.akadns.net": true,
+            	"apple.com.edgekey.net.globalredir.akadns.net": true,
+            	"e6858.dscx.akamaiedge.net": true,
+            	"ioshost.qtlcdn.com": true
+            }
+            r := f(hp.host, l)
+            if r != undefined {
+                return r
+            }
+        }
+	if m.ipaddress {
+            brook := import("brook")
+            r := brook.splithostport(m.ipaddress)
+            if is_error(r) {
+                return r
+            }
+            l := [
+                "17.0.0.0/8",
+                "103.81.148.0/22",
+                "103.81.148.0/24",
+                "103.81.149.0/24",
+                "2620:149:a44::/48",
+                "2403:300:a42::/48",
+                "2403:300:a51::/48",
+                "2a01:b740:a42::/48"
+            ]
+            for v in l {
+                if brook.cidrcontainsip(v, r.host) {
+                    return { bypass: true }
+                }
+            }
+        }
+    }
+})
+
