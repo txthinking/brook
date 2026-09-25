@@ -78,6 +78,13 @@
         "author_url": "https://www.txthinking.com"
     },
     {
+        "name": "Bypass Apple A",
+        "url": "https://raw.githubusercontent.com/txthinking/brook/master/programmable/modules/bypass_apple_a.tengo",
+        "kind": "module",
+        "author": "TxThinking",
+        "author_url": "https://www.txthinking.com"
+    },
+    {
         "name": "Disalbe Fake DNS for Instagram",
         "url": "https://raw.githubusercontent.com/txthinking/brook/master/programmable/modules/instagram_system_dns.tengo",
         "kind": "module",
