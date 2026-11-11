@@ -1,5 +1,4 @@
-// Bypass Apple, because Apple's push service does not allow proxying.
-// Bypass Apple, 因为苹果推送服务不允许使用代理.
+// Bypass Apple
 modules = append(modules, {
     dnsquery: func(m) {
         text := import("text")
@@ -12,18 +11,11 @@ modules = append(modules, {
             "digicert.com",
             "verisign.net",
             "apple",
-            "push-apple.com.akadns.net",
-            "itunes-apple.com.akadns.net",
-            "cdn-apple.com.akadns.net",
+            "akadns.net",
             "ks-cdn.com",
             "ksyuncdn.com",
-            "cdn-apple.com.edgekey.net",
-            "e2885.e9.akamaiedge.net",
-            "apple.com.edgekey.net",
-            "e2490.dscb.akamaiedge.net",
-            "idms-apple.com.akadns.net",
-            "apple.com.edgekey.net.globalredir.akadns.net",
-            "e6858.dscx.akamaiedge.net",
+            "edgekey.net",
+            "akamaiedge.net",
             "ioshost.qtlcdn.com"
         ]
         for v in l {
@@ -57,3 +49,4 @@ modules = append(modules, {
         }
     }
 })
+
