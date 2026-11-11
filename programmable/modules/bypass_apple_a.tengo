@@ -24,20 +24,20 @@ modules = append(modules, {
                 }
             }
             l := {
-            "apple.com",
-            "icloud.com",
-            "cdn-apple.com",
-            "mzstatic.com",
-            "entrust.net",
-            "digicert.com",
-            "verisign.net",
-            "apple",
-            "akadns.net",
-            "ks-cdn.com",
-            "ksyuncdn.com",
-            "edgekey.net",
-            "akamaiedge.net",
-            "ioshost.qtlcdn.com"
+            "apple.com": true,
+            "icloud.com": true,
+            "cdn-apple.com": true,
+            "mzstatic.com": true,
+            "entrust.net": true,
+            "digicert.com": true,
+            "verisign.net": true,
+            "apple": true,
+            "akadns.net": true,
+            "ks-cdn.com": true,
+            "ksyuncdn.com": true,
+            "edgekey.net": true,
+            "akamaiedge.net": true,
+            "ioshost.qtlcdn.com": true
             }
             r := f(hp.host, l)
             if r != undefined {
@@ -68,4 +68,3 @@ modules = append(modules, {
         }
     }
 })
-
