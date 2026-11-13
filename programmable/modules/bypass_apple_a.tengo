@@ -9,6 +9,10 @@ modules = append(modules, {
                 return hp
             }
             text := import("text")
+            // but do not bypass push
+            if hp.domain == "push.apple.com" || text.has_suffix(hp.domain, ".push.apple.com") {
+                return
+            }
             f := func(domain, l){
                 ss := text.split(text.to_lower(domain), ".")
                 s := ""
@@ -24,31 +28,48 @@ modules = append(modules, {
                 }
             }
             l := {
-            "apple.com": true,
-            "icloud.com": true,
-            "cdn-apple.com": true,
-            "mzstatic.com": true,
-            "entrust.net": true,
-            "digicert.com": true,
-            "verisign.net": true,
-            "apple": true,
-            "akadns.net": true,
-            "ks-cdn.com": true,
-            "ksyuncdn.com": true,
-            "edgekey.net": true,
-            "akamaiedge.net": true,
-            "ioshost.qtlcdn.com": true
+                "apple.com": true,
+                "icloud.com": true,
+                "cdn-apple.com": true,
+                "mzstatic.com": true,
+                "entrust.net": true,
+                "digicert.com": true,
+                "verisign.net": true,
+                "apple": true,
+                "akadns.net": true,
+                "ks-cdn.com": true,
+                "ksyuncdn.com": true,
+                "edgekey.net": true,
+                "akamaiedge.net": true,
+                "ioshost.qtlcdn.com": true
             }
             r := f(hp.host, l)
             if r != undefined {
                 return r
             }
         }
-	if m.ipaddress {
+        if m.ipaddress {
             brook := import("brook")
             r := brook.splithostport(m.ipaddress)
             if is_error(r) {
                 return r
+            }
+            // but do not bypass push
+            l := [
+                "17.249.0.0/16",
+                "17.252.0.0/16",
+                "17.57.144.0/22",
+                "17.188.128.0/18",
+                "17.188.20.0/23",
+                "2620:149:a44::/48",
+                "2403:300:a42::/48",
+                "2403:300:a51::/48",
+                "2a01:b740:a42::/48"
+            ]
+            for v in l {
+                if brook.cidrcontainsip(v, r.host) {
+                    return
+                }
             }
             l := [
                 "17.0.0.0/8",
@@ -68,3 +89,4 @@ modules = append(modules, {
         }
     }
 })
+
