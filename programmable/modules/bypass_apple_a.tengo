@@ -10,7 +10,7 @@ modules = append(modules, {
             }
             text := import("text")
             // but do not bypass push
-            if hp.domain == "push.apple.com" || text.has_suffix(hp.domain, ".push.apple.com") {
+            if hp.host == "push.apple.com" || text.has_suffix(hp.host, ".push.apple.com") {
                 return
             }
             f := func(domain, l){
