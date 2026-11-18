@@ -23,25 +23,36 @@ modules = append(modules, {
                         s = ss[i] + "." + s
                     }
                     if l[s] {
-                        return { ipaddressfrombypassdns: "A", bypass: true }
+                        return { ipaddressfrombypassdns: "AorAAAA", bypass: true }
                     }
                 }
             }
             l := {
-                "apple.com": true,
-                "icloud.com": true,
-                "cdn-apple.com": true,
-                "mzstatic.com": true,
-                "entrust.net": true,
-                "digicert.com": true,
-                "verisign.net": true,
-                "apple": true,
-                "akadns.net": true,
-                "ks-cdn.com": true,
-                "ksyuncdn.com": true,
-                "edgekey.net": true,
-                "akamaiedge.net": true,
-                "ioshost.qtlcdn.com": true
+        		"apple-cloudkit.com": true,
+        		"apple-dns.net": true,
+        		"apple-livephotoskit.com": true,
+        		"apple-mapkit.com": true,
+        		"apple.com": true,
+        		"appleschoolcontent.com": true,
+        		"apzones.com": true,
+        		"axm-usercontent-apple.com": true,
+        		"cdn-apple.com": true,
+        		"icloud-content.com": true,
+        		"icloud.com": true,
+        		"itunes.com": true,
+        		"mzstatic.com": true,
+        		"networking.apple": true,
+        		"safebrowsing.apple": true,
+        
+        		"digicert.com": true,
+        		"edgesuite.net": true,
+        		"vertexsmb.com": true,
+        		"edgekey.net": true,
+        		"akamaiedge.net": true,
+        
+        		"ks-cdn.com": true,
+        		"ksyuncdn.com": true,
+        		"ioshost.qtlcdn.com": true
             }
             r := f(hp.host, l)
             if r != undefined {
@@ -73,13 +84,9 @@ modules = append(modules, {
             }
             l = [
                 "17.0.0.0/8",
-                "103.81.148.0/22",
-                "103.81.148.0/24",
-                "103.81.149.0/24",
-                "2620:149:a44::/48",
-                "2403:300:a42::/48",
-                "2403:300:a51::/48",
-                "2a01:b740:a42::/48"
+		        "2403:300::/32",
+		        "2620:149::/32",
+		        "2a01:b740::/32"
             ]
             for v in l {
                 if brook.cidrcontainsip(v, r.host) {
